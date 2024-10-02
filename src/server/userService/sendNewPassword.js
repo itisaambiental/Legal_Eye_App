@@ -1,22 +1,22 @@
+
 import server from "../config/server";
 
-export default async function login_user({ email, password }) {
+export default async function sendNewPassword(gmail, code) {
     try {
-        const response = await server.post('/user/login', {
-            gmail: email,
-            password
+        const response = await server.post('/user/verify-code', {
+            gmail, 
+            code
         });
 
         if (response.status !== 200) {
             throw new Error('Response is NOT ok');
         }
 
-        const { token } = response.data; 
-        return { token };
+       return response.status;
+
 
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
-

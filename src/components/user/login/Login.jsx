@@ -10,9 +10,9 @@ import microsoft from "../../../assets/microsoft.png";
 function Login({ onLogin }) {
     const [isLoading, setIsLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
-    const [gmail, setGmail] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
+    const [emailError, setemailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -69,11 +69,11 @@ function Login({ onLogin }) {
 
         let isValid = true;
 
-        if (gmail.trim() === "") {
-            setUsernameError(true);
+        if (email.trim() === "") {
+            setemailError(true);
             isValid = false;
         } else {
-            setUsernameError(false);
+            setemailError(false);
         }
 
         if (password.trim() === "") {
@@ -84,7 +84,7 @@ function Login({ onLogin }) {
         }
 
         if (isValid) {
-            login({ gmail, password }).then(() => {
+            login({ email, password }).then(() => {
                 navigate('/');
             });
         }
@@ -97,9 +97,13 @@ function Login({ onLogin }) {
         login_microsoft();
     };
 
+    const handleResetPassword = () => {
+        navigate('/reset-password/request', { state: { fromLogin: true } });
+    };
+    
 
     const showPasswordError = formSubmitted && passwordError;
-    const showUsernameError = formSubmitted && usernameError;
+    const showUsernameError = formSubmitted && emailError;
 
     if (isLoading) {
         return (
@@ -129,8 +133,8 @@ function Login({ onLogin }) {
                                 type="email"
                                 className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showUsernameError ? 'border-blue' : ''}`}
                                 placeholder="Dirección de correo"
-                                onChange={(e) => handleInputChange(e, setGmail, setUsernameError)}
-                                value={gmail}
+                                onChange={(e) => handleInputChange(e, setEmail, setemailError)}
+                                value={email}
                             />
                             {showUsernameError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
                         </div>
@@ -144,7 +148,9 @@ function Login({ onLogin }) {
                             />
                             <button
                                 onClick={handleShowPassword}
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                                className={`absolute right-2 transform -translate-y-1/2 ${
+                                    showUsernameError || showPasswordError ? 'top-1/3' : 'top-1/2'
+                                }`}
                             >
                                 <img
                                     src={showPassword ? closed_eye : eye}
@@ -155,8 +161,8 @@ function Login({ onLogin }) {
                             {showPasswordError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
                         </div>
                         <div className="w-full text-start -mt-4 mb-2">
-                            <button type="button" className="text-sm text-primary hover:text-primary/70 transition-colors">
-                                ¿Olvidaste Contraseña?
+                            <button onClick={handleResetPassword} type="button" className="text-sm text-primary hover:text-primary/60 transition-colors">
+                                ¿Olvidaste tu contraseña?
                             </button>
                         </div>
                         <div className="w-full">
@@ -166,9 +172,9 @@ function Login({ onLogin }) {
                             >
                                 {isLoginLoading ? <Spinner size="sm" color="white" /> : 'Iniciar sesión'}
                             </button>
-                            {formSubmitted && !usernameError && !passwordError && hasLoginError && (
+                            {formSubmitted && !emailError && !passwordError && hasLoginError && (
                                 <div className="mt-2 text-red-500 text-xs">
-                                    <strong>Gmail o contraseña inválido</strong>
+                                    <strong>Dirección de correo o contraseña inválido</strong>
                                 </div>
                             )}
 

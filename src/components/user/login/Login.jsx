@@ -7,6 +7,7 @@ import eye from "../../../assets/ojo.png";
 import closed_eye from "../../../assets/ojo2.png";
 import microsoft from "../../../assets/microsoft.png";
 
+// eslint-disable-next-line react/prop-types
 function Login({ onLogin }) {
     const [isLoading, setIsLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);

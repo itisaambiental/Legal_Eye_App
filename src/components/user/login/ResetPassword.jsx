@@ -90,7 +90,7 @@ function ResetPassword() {
                         </button>
                     </div>
                     <div className="flex justify-center">
-                        <img src={logo} className="h-24 w-27 ml-3 -mt-4" />
+                    <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
                         <h1 className="text-xl text-blue font-bold">Restablece tu contraseña</h1>

@@ -1,10 +1,12 @@
 import { PublicClientApplication } from '@azure/msal-browser';
+const clientId = import.meta.env.VITE_MSAL_ID;
+const redirectUri  = import.meta.env.VITE_APP_URL; 
 
 const msalConfig = {
     auth: {
-        clientId: "a1739412-13c0-4678-af70-759ea45586e3",
+        clientId: clientId,
         authority: "https://login.microsoftonline.com/01708f05-25e1-4d84-a5f4-86558a6b8b0e", 
-        redirectUri: "http://localhost:5173", 
+        redirectUri: redirectUri, 
     },
     cache: {
         cacheLocation: "localStorage", 

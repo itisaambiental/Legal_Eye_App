@@ -1,38 +1,37 @@
-import { useState, useContext, useEffect } from 'react';
-import Context from '../context/userContext.jsx';
-import { jwtDecode } from "jwt-decode";
+import { useState, useEffect } from 'react';
 import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import useUser from "../hooks/user/auth.jsx";
+import useUserProfile from '../hooks/user/profile.jsx';
+import menu_hamburguesa from "../assets/menu-hamburguesa.png"
+import logo from "../assets/logo2.png"
+import hogar from "../assets/hogar.png"
+import flecha_izquierda from "../assets/flecha_izquierda.png"
+import users from "../assets/users.png"
+import user from "../assets/usuario.png"
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 
+import { User } from '@nextui-org/react';
 function Dashboard() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { jwt, isAdmin, isAnalyst } = useContext(Context);
     const { logout } = useUser();
+    const { name, email, role, profilePicture } = useUserProfile();
     const navigate = useNavigate();
     const location = useLocation();
-    const [gmail, setGmail] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    useEffect(() => {
-        if (jwt) {
-            const decodedToken = jwtDecode(jwt);
-            setGmail(decodedToken.userForToken.gmail);
-        }
-    }, [jwt]);
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+    const handlerSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
     };
 
     useEffect(() => {
         const handleDocumentClick = (event) => {
-            if (isMenuOpen && !event.target.closest("#logo-sidebar")) {
-                setIsMenuOpen(false);
+            if (isSidebarOpen && !event.target.closest("#logo-sidebar") && !event.target.closest("button[aria-controls='logo-sidebar']")) {
+                setIsSidebarOpen(false);
             }
         };
 
@@ -40,15 +39,11 @@ function Dashboard() {
         return () => {
             document.removeEventListener("click", handleDocumentClick);
         };
-    }, [isMenuOpen]);
-
-    const handlerSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen)
-    }
+    }, [isSidebarOpen]);
 
     return (
         <div>
-            <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <nav className="fixed top-0 z-50 w-full bg-blue border-b border-blue">
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start rtl:justify-end">
@@ -56,46 +51,46 @@ function Dashboard() {
                                 onClick={handlerSidebar}
                                 aria-controls="logo-sidebar"
                                 type="button"
-                                className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg xl:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                className="inline-flex items-center p-2 text-sm rounded-lg lg:hidden xl:hidden hover:border-blue focus:outline-none focus:ring-2 focus:ring-blue"
                             >
-                                <span className="sr-only">Open sidebar</span>
+                                <img
+                                    src={menu_hamburguesa}
+                                    alt="Open sidebar"
+                                    className="w-6 h-6"
+                                />
                             </button>
+                            <a className="flex ms-2 md:me-24">
+                                <img src={logo} className="me-3 rounded-full h-20 w-24" alt="FlowBite Logo" />
+                            </a>
                         </div>
                         <div className="flex items-center">
                             <div className="flex items-center ms-3 relative">
-                                {isMenuOpen && (
-                                    <div className="absolute bg-white mt-48 ml-[-220%] sm:ml-[-200%] md:ml-[-220%] xs:ml-[-230%]s py-2 w-25 sm:w-26 md:w-28 xs:w-36 border rounded-lg shadow-lg">
-                                        <div className="px-4 py-3" role="none">
-                                            <p className="text-sm text-gray-900 dark:text-white" role="none">
-                                                {gmail}
-                                            </p>
-                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                                {isAdmin ? "Admin" : isAnalyst ? "Analista" : "Usuario"}
-                                            </p>
+                                <Dropdown>
+                                    <DropdownTrigger>
+                                        <User
+                                            isBordered
+                                            color='warning'
+                                            as="button"
+                                            className="transition-transform"
+                                            avatarProps={{
+                                                src: profilePicture ? profilePicture : user,  
+                                              }}
+                                        />
+                                    </DropdownTrigger>
+                                    <DropdownMenu aria-label="User Menu" variant="light">
 
+                                        <DropdownItem key="profile" className="h-14 gap-2">
+                                            <p className="font-semibold mt-2 text-primary">{name || "Invitado"} - {role || "Usuario"}</p>
+                                            <p className="font-normal mb-1 text-blue">{email || "example@isaambiental.com"}</p>
 
-                                        </div>
-                                        <ul>
-                                            <li>
-                                                <a onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Cerrar sesión</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                )}
-                                <div>
-                                    <button
-                                        onClick={(e) => {
-                                            toggleMenu();
-                                            e.stopPropagation();
-                                        }}
-                                        type="button"
-                                        className="flex text-sm rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 hover:scale-110 transition-transform duration-200"
-                                        aria-expanded={isMenuOpen}
-                                        data-dropdown-toggle="dropdown-user"
-                                    >
-                                        <span className="sr-only">Open user menu</span>
-                                    </button>
-                                </div>
+                                        </DropdownItem>
+
+                                        <DropdownItem className='mt-1 hover:bg-red-100' key="logout" color='danger' onClick={handleLogout}>
+                                            <p className="font-normal text-red-500">Cerrar Sesión</p>
+
+                                        </DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>
@@ -103,40 +98,36 @@ function Dashboard() {
             </nav>
             <aside
                 id="logo-sidebar"
-                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-white border-r border-gray-200 lg:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-blue border-r border-blue lg:translate-x-0`}
                 aria-label="Sidebar"
             >
-                <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-                    <ul className="space-y-2 font-medium">
+                <div className="h-full px-3 pb-4 overflow-y-auto bg-blue">
+                    <ul className="space-y-2 mt-12 font-medium">
                         <li>
-                            <Link to="/" className={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${location.pathname === '/' ? 'bg-gray-100 dark:bg-gray-700' : ''}`}>
-                                <span className="ms-3">Hogar</span>
+                            <Link to="/" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/' ? 'bg-white/20' : ''}`}>
+                                <img src={hogar} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                <span className="ms-3 font-medium">Hogar</span>
                             </Link>
                         </li>
-                        {isAdmin && (
-                            <>
-                                <li>
-                                    <span className="flex-1 ms-3 whitespace-nowrap">Abogados</span>
-
-                                </li>
-
-                            </>
-                        )}
-                        {isAnalyst && (
+                        {role === 'Admin' && (
                             <li>
-                                <span className="ms-3">Tus Expedientes</span>
-
+                                <Link to="/users" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/users' ? 'bg-white/20' : ''}`}>
+                                    <img src={users} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                    <span className="ms-3 font-medium">Usuarios</span>
+                                </Link>
                             </li>
                         )}
                         <li>
-                            <a onClick={handleLogout} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <a onClick={handleLogout} className="flex items-center p-2 text-white hover:bg-white/15 rounded-lg group">
+                                <img src={flecha_izquierda} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+
                                 <span className="flex-1 ms-3 whitespace-nowrap">Cerrar sesión</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </aside>
-            <main className="ml-64 pt-20 px-4">
+            <main className="ml-64 pt-20 px-4 bg-gray-50">
                 <Outlet />
             </main>
         </div>

@@ -15,6 +15,7 @@ export default {
         blue: '#2581cc',
         green: '#4eaf8f',
         white: '#e5e9ee',
+        warning: '#2581cc'
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

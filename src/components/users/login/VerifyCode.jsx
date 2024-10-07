@@ -148,7 +148,7 @@ function VerifyCode() {
                             </button>
                         </div>
                         {hasVerifyCodeError && (
-                            <div className="mt-2 text-red-500 text-xs">
+                            <div className="mt-2 text-red text-xs">
                                 <strong>{hasVerifyCodeError}</strong>
                             </div>
                         )}
@@ -165,7 +165,7 @@ function VerifyCode() {
                             </button>
 
                         {hasResetPasswordError && (
-                            <div className="mt-2 text-red-500 text-xs">
+                            <div className="mt-2 text-red text-xs">
                                 <strong>{hasResetPasswordError}</strong>
                             </div>
                         )}

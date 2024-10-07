@@ -9,7 +9,7 @@ import flecha_izquierda from "../assets/flecha_izquierda.png"
 import users from "../assets/users.png"
 import user from "../assets/usuario.png"
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
-
+import logout_icon from "../assets/salida.png"
 import { User } from '@nextui-org/react';
 function Dashboard() {
     const { logout } = useUser();
@@ -85,8 +85,8 @@ function Dashboard() {
 
                                         </DropdownItem>
 
-                                        <DropdownItem className='mt-1 hover:bg-red-100' key="logout" color='danger' onClick={handleLogout}>
-                                            <p className="font-normal text-red-500">Cerrar Sesión</p>
+                                        <DropdownItem startContent={<img src={logout_icon} alt="CSV Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
+                                            <p className="font-normal text-red ml-20">Cerrar Sesión</p>
 
                                         </DropdownItem>
                                     </DropdownMenu>
@@ -127,7 +127,7 @@ function Dashboard() {
                     </ul>
                 </div>
             </aside>
-            <main className="ml-64 pt-20 px-4 bg-gray-50">
+            <main className="ml-64 pt-20 px-4 bg-white ">
                 <Outlet />
             </main>
         </div>

@@ -14,8 +14,8 @@ export default {
         secondary: '#3d7692',
         blue: '#2581cc',
         green: '#4eaf8f',
-        white: '#e5e9ee',
-        warning: '#2581cc'
+        warning: '#2581cc',
+        red: '#d1302b'
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],

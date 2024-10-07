@@ -120,7 +120,7 @@ function ResetPassword() {
                         </div>
 
                         {hasResetPasswordError && (
-                            <div className="mt-2 text-red-500 text-xs">
+                            <div className="mt-2 text-red text-xs">
                                 <strong>{hasResetPasswordError}</strong>
                             </div>
                         )}

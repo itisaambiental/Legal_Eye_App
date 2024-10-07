@@ -1,29 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
 import useUserProfile from '../hooks/user/profile.jsx';
-const motivationalPhrases = [
-  "La justicia está de tu lado. Nosotros también.",
-  "Cada deuda tiene una solución. Nosotros encontramos la tuya.",
-  "Recupera lo que te pertenece con nuestra ayuda legal.",
-  "Protegiendo tus derechos, asegurando tu futuro.",
-  "Confía en los expertos para resolver tus problemas de crédito.",
-  "Tu tranquilidad es nuestro compromiso."
-];
 
 function Home() {
-  const [motivationalPhrase, setMotivationalPhrase] = useState("");
   const { name } = useUserProfile();
 
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * motivationalPhrases.length);
-    setMotivationalPhrase(motivationalPhrases[randomIndex]);
-  }, []);
+  
 
   const handleDynamicClick = () => {
      };
 
 
   return (
-    <section className="bg-white mt-12 text-center justify-center  flex flex-col items-center -ml-64">
+    <section className="bg-gray-50 mt-12 text-center justify-center  flex flex-col items-center -ml-64">
       <div className="py-8 px-4 max-w-screen-xl text-center lg:py-16 z-10 relative container xs:mx-auto sm:mx-auto md:mx-auto lg:mx-36 xl:mx-64 lg:pl-80">
         <button
           onClick={handleDynamicClick}
@@ -37,7 +24,7 @@ function Home() {
         </button>
 
         <h1 className="mb-4 text-3xl font-extrabold tracking-tight leading-none text-primary dark:text-white sm:text-2xl md:text-5xl lg:text-6xl">Bienvenido {name || "Invitado"}</h1>
-        <p className="mb-8 text-lg font-normal text-secondary lg:text-xl sm:px-12 lg:px-44 sm:text-sm md:text-base">{motivationalPhrase}</p>
+        <p className="mb-8 text-lg font-normal text-secondary lg:text-xl sm:px-12 lg:px-44 sm:text-sm md:text-base">Dale click aca abajo para empezar</p>
         <form className="w-full max-w-md mx-auto sm:w-full md:w-3/4 lg:w-1/2">
           <div className="relative">
             <button
@@ -52,7 +39,7 @@ function Home() {
           </div>
         </form>
       </div>
-      <div className="bg-white dark:from-blue-900 w-full h-full absolute top-0 left-0 z-0"></div>
+      <div className="bg-gray-50  dark:from-blue-900 w-full h-full absolute top-0 left-0 z-0"></div>
     </section>
   );
 }

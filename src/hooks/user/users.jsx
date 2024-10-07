@@ -19,17 +19,17 @@ export default function useUsers() {
       setStateUsers({ loading: false, error: null }); 
     } catch (error) {
       console.error('Error fetching users:', error);
-      let errorMessage = 'Error retrieving users';
-      
-      // Maneja diferentes tipos de errores
-      if (error.response && error.response.status === 404) {
-        errorMessage = 'Users not found';
-      } else if (error.response && error.response.status === 403) {
+      let errorMessage;
+
+      if (error.response && error.response.status === 403) {
         errorMessage = 'Unauthorized access';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error, please try again later';
+        errorMessage = 'Network error';
+      } else if (error.response && error.response.status === 500) {
+        errorMessage = 'Server error';
+      } else {
+        errorMessage = 'Unexpected error';
       }
-
       setStateUsers({ loading: false, error: errorMessage }); 
     }
   }, [jwt]);

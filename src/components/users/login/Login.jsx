@@ -174,7 +174,7 @@ function Login({ onLogin }) {
                                 {isLoginLoading ? <Spinner size="sm" color="white" /> : 'Iniciar sesión'}
                             </button>
                             {formSubmitted && !emailError && !passwordError && hasLoginError && (
-                                <div className="mt-2 text-red-500 text-xs">
+                                <div className="mt-2 text-red text-xs">
                                     <strong>Dirección de correo o contraseña inválido</strong>
                                 </div>
                             )}
@@ -202,7 +202,7 @@ function Login({ onLogin }) {
                         </button>
 
                         {stateMicrosoft.error && (
-                            <div className="mt-2 text-red-500 text-xs">
+                            <div className="mt-2 text-red text-xs">
                                 <strong>{stateMicrosoft.error}</strong>
                             </div>
                         )}

@@ -14,9 +14,9 @@ function Home() {
       <div className="py-8 px-4 max-w-screen-xl text-center lg:py-16 z-10 relative container xs:mx-auto sm:mx-auto md:mx-auto lg:mx-36 xl:mx-64 lg:pl-80">
         <button
           onClick={handleDynamicClick}
-          className="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-primary bg-blue/30 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-blue/40 sm:text-xs md:text-sm"
+          className="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-primary bg-secondary/30 rounded-full dark:bg-primary-900 dark:text-primary-300 hover:bg-primary/40 sm:text-xs md:text-sm"
         >
-          <span className="text-xs bg-blue rounded-full text-white px-4 py-1.5 me-3">¡Confía en ti!</span>
+          <span className="text-xs bg-secondary rounded-full text-white px-4 py-1.5 me-3">¡Confía en ti!</span>
           <span className="text-sm font-medium">Empieza a trabajar ahora.</span>
           <svg className="w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
@@ -29,7 +29,7 @@ function Home() {
           <div className="relative">
             <button
               onClick={handleDynamicClick}
-              className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue hover:bg-blue/80 sm:text-sm md:text-base"
+              className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary hover:bg-primary/80 sm:text-sm md:text-base"
             >
               Comenzar
               <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -39,7 +39,7 @@ function Home() {
           </div>
         </form>
       </div>
-      <div className="bg-gray-50  dark:from-blue-900 w-full h-full absolute top-0 left-0 z-0"></div>
+      <div className="bg-gray-50  dark:from-primary-900 w-full h-full absolute top-0 left-0 z-0"></div>
     </section>
   );
 }

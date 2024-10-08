@@ -19,7 +19,7 @@ function BottomContent({ page, totalPages, onPageChange, onPreviousPage, onNextP
           isCompact
           showControls
           showShadow
-          color="danger"
+          color="primary"
           page={page}
           total={totalPages}
           onChange={onPageChange}
@@ -27,10 +27,10 @@ function BottomContent({ page, totalPages, onPageChange, onPreviousPage, onNextP
         </div>
 
         <div className="hidden sm:flex w-[30%] justify-start gap-2 ">
-          <Button isDisabled={page <= 1} size="sm" color="danger" variant="solid" onPress={onPreviousPage}>
+          <Button isDisabled={page <= 1} size="sm" color="primary" variant="solid" onPress={onPreviousPage}>
             Anterior
           </Button>
-          <Button isDisabled={page >= totalPages} size="sm" color="danger" variant="solid" onPress={onNextPage}>
+          <Button isDisabled={page >= totalPages} size="sm" color="primary" variant="solid" onPress={onNextPage}>
             Siguiente
           </Button>
         </div>

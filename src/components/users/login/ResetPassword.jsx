@@ -93,7 +93,7 @@ function ResetPassword() {
                     <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
-                        <h1 className="text-xl text-blue font-bold">Restablece tu contraseña</h1>
+                        <h1 className="text-xl text-primary font-bold">Restablece tu contraseña</h1>
                         <p className="text-secondary text-sm text-center">Ingrese su dirección de correo electrónico y le enviaremos el código de verificación para restablecer su contraseña.</p>
                     </div>
 
@@ -102,18 +102,18 @@ function ResetPassword() {
                         <div className="w-full">
                             <input
                                 type="email"
-                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showEmailError ? 'border-blue' : ''}`}
+                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showEmailError ? 'border-primary' : ''}`}
                                 placeholder="Dirección de correo"
                                 onChange={(e) => handleInputChange(e, setEmail, setUsernameError)}
                                 value={email}
                             />
-                            {showEmailError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
+                            {showEmailError && <span className="text-primary text-xs">Este campo es obligatorio</span>}
                         </div>
 
                         <div className="w-full">
                             <button
                                 type="submit"
-                                className="w-full bg-blue py-2 px-4 text-white rounded-md hover:bg-blue/70 transition-colors"
+                                className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
                                 {isResetPasswordLoading ? <Spinner size="sm" color="white" /> : 'Enviar Email'}
                             </button>

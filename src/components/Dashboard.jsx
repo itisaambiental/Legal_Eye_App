@@ -43,7 +43,7 @@ function Dashboard() {
 
     return (
         <div>
-            <nav className="fixed top-0 z-50 w-full bg-blue border-b border-blue">
+            <nav className="fixed top-0 z-50 w-full bg-primary border-b border-primary">
                 <div className="px-3 py-3 lg:px-5 lg:pl-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center justify-start rtl:justify-end">
@@ -51,7 +51,7 @@ function Dashboard() {
                                 onClick={handlerSidebar}
                                 aria-controls="logo-sidebar"
                                 type="button"
-                                className="inline-flex items-center p-2 text-sm rounded-lg lg:hidden xl:hidden hover:border-blue focus:outline-none focus:ring-2 focus:ring-blue"
+                                className="inline-flex items-center p-2 text-sm rounded-lg lg:hidden xl:hidden hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
                             >
                                 <img
                                     src={menu_hamburguesa}
@@ -81,7 +81,7 @@ function Dashboard() {
 
                                         <DropdownItem key="profile" className="h-14 gap-2">
                                             <p className="font-semibold mt-2 text-primary">{name || "Invitado"} - {role || "Usuario"}</p>
-                                            <p className="font-normal mb-1 text-blue">{email || "example@isaambiental.com"}</p>
+                                            <p className="font-normal mb-1 text-secondary">{email || "example@isaambiental.com"}</p>
 
                                         </DropdownItem>
 
@@ -98,10 +98,10 @@ function Dashboard() {
             </nav>
             <aside
                 id="logo-sidebar"
-                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-blue border-r border-blue lg:translate-x-0`}
+                className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-primary border-r border-primary lg:translate-x-0`}
                 aria-label="Sidebar"
             >
-                <div className="h-full px-3 pb-4 overflow-y-auto bg-blue">
+                <div className="h-full px-3 pb-4 overflow-y-auto bg-primary">
                     <ul className="space-y-2 mt-12 font-medium">
                         <li>
                             <Link to="/" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/' ? 'bg-white/20' : ''}`}>

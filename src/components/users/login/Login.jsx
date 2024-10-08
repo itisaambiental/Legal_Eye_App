@@ -123,7 +123,7 @@ function Login({ onLogin }) {
                         <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
-                        <h1 className="text-xl text-blue font-bold">Bienvenido</h1>
+                        <h1 className="text-xl text-primary font-bold">Bienvenido</h1>
                         <p className="text-secondary text-sm">Inicia sesión en tu cuenta</p>
                     </div>
 
@@ -132,17 +132,17 @@ function Login({ onLogin }) {
                         <div className="w-full">
                             <input
                                 type="email"
-                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showUsernameError ? 'border-blue' : ''}`}
+                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showUsernameError ? 'border-primary' : ''}`}
                                 placeholder="Dirección de correo"
                                 onChange={(e) => handleInputChange(e, setEmail, setemailError)}
                                 value={email}
                             />
-                            {showUsernameError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
+                            {showUsernameError && <span className="text-primary text-xs">Este campo es obligatorio</span>}
                         </div>
                         <div className="w-full relative">
                             <input
                                 type={showPassword ? "text" : "password"}
-                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showPasswordError ? 'border-blue' : ''}`}
+                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showPasswordError ? 'border-primary' : ''}`}
                                 placeholder="Contraseña"
                                 onChange={(e) => handleInputChange(e, setPassword, setPasswordError)}
                                 value={password}
@@ -159,7 +159,7 @@ function Login({ onLogin }) {
                                     className="w-5 h-5"
                                 />
                             </button>
-                            {showPasswordError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
+                            {showPasswordError && <span className="text-primary text-xs">Este campo es obligatorio</span>}
                         </div>
                         <div className="w-full text-start -mt-4 mb-2">
                             <button onClick={handleResetPassword} type="button" className="text-sm text-primary hover:text-primary/60 transition-colors">
@@ -169,7 +169,7 @@ function Login({ onLogin }) {
                         <div className="w-full">
                             <button
                                 type="submit"
-                                className="w-full bg-blue py-2 px-4 text-white rounded-md hover:bg-blue/70 transition-colors"
+                                className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
                                 {isLoginLoading ? <Spinner size="sm" color="white" /> : 'Iniciar sesión'}
                             </button>
@@ -192,7 +192,7 @@ function Login({ onLogin }) {
                     <div className="w-full">
                         <button
                             type="button"
-                            className="w-full bg-blue py-2 px-4 text-white rounded-md hover:bg-blue/70 transition-colors flex items-center justify-center gap-2"
+                            className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors flex items-center justify-center gap-2"
                             onClick={handleMicrosoftLogin}
                         >
                             {!isMicrosoftLoading && (

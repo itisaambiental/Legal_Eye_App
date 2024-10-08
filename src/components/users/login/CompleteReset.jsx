@@ -57,7 +57,7 @@ function CompleteReset() {
                     <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
-                        <h1 className="text-xl text-blue font-bold">Contraseña Actualizada</h1>
+                        <h1 className="text-xl text-primary font-bold">Contraseña Actualizada</h1>
                         <p className="text-secondary text-sm text-center mb-4">
                             Se te ha enviado un correo electrónico con tu nueva contraseña.
                         </p>
@@ -72,7 +72,7 @@ function CompleteReset() {
                             <button
                                 type="button"
                                 onClick={handleGoToLogin}
-                                className="w-full bg-blue py-2 px-4 text-white rounded-md hover:bg-blue/70 transition-colors"
+                                className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
                                 {isLoadingToLogin ? <Spinner size="sm" color="white" /> : 'Ir al Inicio de Sesión'}
                             </button>

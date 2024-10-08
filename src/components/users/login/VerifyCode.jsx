@@ -116,10 +116,10 @@ function VerifyCode() {
                     <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                    </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
-                        <h1 className="text-xl text-blue font-bold">Código enviado</h1>
+                        <h1 className="text-xl text-primary font-bold">Código enviado</h1>
                         <p className="text-secondary text-sm text-center mb-4">
                             Se ha enviado un código de seguridad a la dirección de correo
-                            <span className="text-blue text-sm font-medium"> {decodedEmail} </span>.
+                            <span className="text-primary text-sm font-medium"> {decodedEmail} </span>.
                             Revísalo y pégalo abajo.
                         </p>
                         <h1 className="text-sm text-primary font-bold">
@@ -131,18 +131,18 @@ function VerifyCode() {
                         <div className="w-full">
                             <input
                                 type="text"
-                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showCodeError ? 'border-blue' : ''}`}
+                                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showCodeError ? 'border-primary' : ''}`}
                                 placeholder="XXXXXX"
                                 onChange={(e) => handleInputChange(e, setCode, setCodeError)}
                                 value={code}
                             />
-                            {showCodeError && <span className="text-blue text-xs">Este campo es obligatorio</span>}
+                            {showCodeError && <span className="text-primary text-xs">Este campo es obligatorio</span>}
                         </div>
 
                         <div className="w-full">
                             <button
                                 type="submit"
-                                className="w-full bg-blue py-2 px-4 text-white rounded-md hover:bg-blue/70 transition-colors"
+                                className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
                                 {isVerifyCodeLoading ? <Spinner size="sm" color="white" /> : 'Verificar Código'}
                             </button>

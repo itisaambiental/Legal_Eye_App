@@ -12,7 +12,7 @@ function translateRole(role) {
   return roleTranslations[role] || role; 
 }
 
-function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, selectedKeys, capitalize }) {
+function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, selectedKeys, capitalize, openModalCreate }) {
   const [selectedKeysRoles, setSelectedKeysRoles] = useState(new Set(["all"])); 
 
   const selectedValue = useMemo(() => {
@@ -25,7 +25,7 @@ function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, selectedKey
       <div className="flex justify-between gap-16 items-end">
     
         <Input
-          color="danger"
+          color="primary"
           variant="faded"
           isClearable
           className="w-full sm:max-w-[44%] flex-grow"
@@ -36,12 +36,12 @@ function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, selectedKey
         <div className="flex gap-3 ml-auto flex-wrap sm:flex-wrap md:flex-nowrap lg:flex-nowrap xl:flex-nowrap">
           <Dropdown>
             <DropdownTrigger className="flex xs:hidden md:flex md:order-none md:w-auto md:justify-start order-2 w-full justify-center">
-              <Button endContent={<img src={angulo_abajo_icon} alt="Search Icon" className="w-4 h-4 flex-shrink-0 text-small" />} variant="faded" color="danger">
+              <Button endContent={<img src={angulo_abajo_icon} alt="Search Icon" className="w-4 h-4 flex-shrink-0 text-small" />} variant="faded" color="primary">
                 {selectedValue}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
-            color="danger"
+            color="primary"
             variant="flat"
               disallowEmptySelection
               aria-label="Seleccionar Rol"
@@ -59,7 +59,7 @@ function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, selectedKey
             </DropdownMenu>
           </Dropdown>
 
-          <Button color="danger" endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
+          <Button color="primary" onClick={openModalCreate} endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
             <p className="text-white">Nuevo Usuario</p>
           </Button>
         </div>

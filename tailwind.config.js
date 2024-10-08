@@ -10,12 +10,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#113c53', 
         secondary: '#3d7692',
-        blue: '#2581cc',
+        primary: '#113c53',
         green: '#4eaf8f',
         warning: '#2581cc',
-        danger: '#2581cc',
         red: '#d1302b'
       },
       fontFamily: {

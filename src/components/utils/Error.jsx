@@ -1,7 +1,6 @@
 function Error(props) {
   const { message } = props;
-  console.log(message)
-
+ 
   const handleReload = () => {
     window.location.reload();
   };

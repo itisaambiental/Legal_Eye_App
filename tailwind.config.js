@@ -15,6 +15,7 @@ export default {
         blue: '#2581cc',
         green: '#4eaf8f',
         warning: '#2581cc',
+        danger: '#2581cc',
         red: '#d1302b'
       },
       fontFamily: {

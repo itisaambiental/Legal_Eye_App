@@ -3,6 +3,7 @@ import Context from '../../context/userContext.jsx';
 import getUsers from '../../server/userService/getUsers.js';
 import registerNewUser from '../../server/userService/registerNewUser.js';
 import deleteUserById from '../../server/userService/deleteUserById.js';
+import deleteUsers from '../../server/userService/deleteUsers.js';
 
 export default function useUsers() {
   const { jwt } = useContext(Context);  
@@ -92,6 +93,39 @@ export default function useUsers() {
     }
   }, [jwt]);
 
+
+  const deleteUsersBatch = useCallback(async (userIds) => {
+    try {
+      const success = await deleteUsers({ userIds, token: jwt });
+      
+      if (success) {
+        setUsers(prevUsers => prevUsers.filter(user => !userIds.includes(user.id)));
+        return { success: true };
+      } else {
+        throw new Error('Failed to delete users');
+      }
+    } catch (error) {
+      console.error('Error deleting users batch:', error);
+      let errorMessage;
+
+      if (error.response && error.response.status === 400) {
+        errorMessage = 'Missing required fields: userIds';
+      } else if (error.response && error.response.status === 403) {
+        errorMessage = 'Unauthorized to delete users';
+      } else if (error.response && error.response.status === 404) {
+        errorMessage = error.response.data.message || 'One or more users not found';
+      } else if (error.message === 'Network Error') {
+        errorMessage = 'Network error occurred while deleting users';
+      } else if (error.response && error.response.status === 500) {
+        errorMessage = 'Internal server error';
+      } else {
+        errorMessage = 'Unexpected error occurred while deleting users';
+      }
+
+      return { success: false, error: errorMessage };
+    }
+  }, [jwt]);
+
   useEffect(() => {
     if (jwt) {
       fetchUsers();  
@@ -104,5 +138,6 @@ export default function useUsers() {
     error: stateUsers.error,    
     addUser, 
     deleteUser,
+    deleteUsersBatch
   };
 }

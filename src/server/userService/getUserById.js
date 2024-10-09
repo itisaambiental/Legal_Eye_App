@@ -16,7 +16,7 @@ export default async function getUserById({ id, token }) {
        return user;
 
     } catch (error) {
-        console.error('Error retrieving user by ID:', error);
+        console.error(error);
         throw error;
     }
 }

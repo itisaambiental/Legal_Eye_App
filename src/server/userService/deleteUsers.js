@@ -11,7 +11,7 @@ export default async function deleteUsers({ userIds, token }) {
         });
 
         if (response.status !== 204) {
-            throw new Error('Failed to delete users');
+            throw new Error('Response is NOT ok');
         }
 
         return true;

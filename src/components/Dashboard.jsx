@@ -7,6 +7,7 @@ import logo from "../assets/logo2.png"
 import hogar from "../assets/hogar.png"
 import flecha_izquierda from "../assets/flecha_izquierda.png"
 import users from "../assets/users.png"
+import fundamentos_icon from "../assets/fundamento-legal.png"
 import user from "../assets/usuario.png"
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import logout_icon from "../assets/salida.png"
@@ -116,7 +117,14 @@ function Dashboard() {
                                     <span className="ms-3 font-medium">Usuarios</span>
                                 </Link>
                             </li>
-                        )}
+                        )} 
+                            <li>
+                                <Link to="/fundamentos" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/fundamentos' ? 'bg-white/20' : ''}`}>
+                                    <img src={fundamentos_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                    <span className="ms-3 font-medium">Fundamentos Legales</span>
+                                </Link>
+                            </li>
+                        
                         <li>
                             <a onClick={handleLogout} className="flex items-center p-2 text-white hover:bg-white/15 rounded-lg group">
                                 <img src={flecha_izquierda} className="flex-shrink-0 w-5 h-5 transition duration-75" />

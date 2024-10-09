@@ -13,9 +13,6 @@ import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
 import { toast } from "react-toastify";
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 
 const columns = [
   { name: "Nombre", uid: "name" },
@@ -23,9 +20,20 @@ const columns = [
   { name: "Acciones", uid: "actions" }
 ];
 
+function translateRole(role) {
+  const roleTranslations = {
+    "Admin": "Admin",
+    "Analyst": "Analista",
+  };
+  return roleTranslations[role] || role;
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export default function Users() {
-  const { users, loading, error, addUser, deleteUser, deleteUsersBatch } = useUsers();
+  const { users, filteredUsersByRole, loading, error, addUser, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
   const [filterValue, setFilterValue] = useState("");
   const { roles, roles_loading, roles_error } = useRoles();
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -38,6 +46,9 @@ export default function Users() {
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [deletingUserId, setDeletingUserId] = useState(null);
   const [fileError, setFileError] = useState(null);
+  const [selectedRoleKeys, setSelectedRoleKeys] = useState(new Set(["0"]));
+  const [selectedValue, setSelectedValue] = useState("Todos los Roles");
+  
   const [formData, setFormData] = useState({
     id: '',
     user_type: '',
@@ -72,6 +83,27 @@ export default function Users() {
     setFilterValue("")
     setPage(1)
   }, [])
+
+  const handleRoleSelection = useCallback((selectedRole) => {
+    console.log(selectedRole)
+    if (selectedRole === "0" || !selectedRole) {
+      fetchUsers();
+      setSelectedValue("Todos los Roles");
+    } else {
+      fetchUsersByRole(selectedRole);
+      const roleName = roles.find(role => role.id.toString() === selectedRole)?.role || "Todos los Roles";
+      setSelectedValue(capitalize(translateRole(roleName)));
+    }
+  }, [roles, fetchUsers, fetchUsersByRole]);
+
+  const onRoleChange = (keys) => {
+    const selectedArray = Array.from(keys);
+    const selectedRole = selectedArray[0];
+    setSelectedRoleKeys(keys);
+    handleRoleSelection(selectedRole);
+    setFilterValue("");
+  };
+
 
 
   const handleDelete = useCallback(async (userId) => {
@@ -119,10 +151,17 @@ export default function Users() {
       const { success, error } = await deleteUsersBatch(userIds);
   
       if (success) {
+        if(userIds.length <= 1) {
+          toast.success('Usuario eliminado con éxito', {
+            icon: () => <img src={check} alt="Success Icon" />,
+            progressStyle: { background: '#113c53' },
+          });
+        } else {
         toast.success('Usuarios eliminados con éxito', {
           icon: () => <img src={check} alt="Success Icon" />,
           progressStyle: { background: '#113c53' },
         });
+      }
         setSelectedKeys(new Set());
         setShowDeleteModal(false);
       } else {
@@ -281,13 +320,21 @@ export default function Users() {
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
 
       <TopContent
-        rolesOptions={roles}
+        roles={roles}
         onRowsPerPageChange={onRowsPerPageChange}
         totalUsers={filteredUsers.length}
         capitalize={capitalize}
         openModalCreate={openModalCreate}
         onFilterChange={handleFilterChange}
         onClear={onClear}
+        fetchUsers={fetchUsers}
+        fetchUsersByRole={fetchUsersByRole} 
+        users={users}
+        selectedValue={selectedValue}
+        selectedRoleKeys={selectedRoleKeys}
+        onRoleChange={onRoleChange}
+        translateRole={translateRole}
+  
       />
 
 
@@ -367,7 +414,7 @@ export default function Users() {
               </h3>
 
               <button onClick={handleDeleteBatch} type="button" className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-3">
-                {isDeletingBatch ? <Spinner size='sm' color="primary" /> : 'Sí, estoy seguro'}
+                {isDeletingBatch ? <Spinner size='sm' color="white" /> : 'Sí, estoy seguro'}
               </button>
               <button onClick={closeDeleteModal} type="button" className="py-2.5 px-5 text-sm font-medium text-primary focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-primary/10 hover:text-primary focus:z-10">No, cancelar</button>
             </div>

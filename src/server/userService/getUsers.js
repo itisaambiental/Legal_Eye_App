@@ -15,7 +15,7 @@ export default async function getUsers({ token }) {
         const { users } = response.data;
         return users;  
     } catch (error) {
-        console.error('Error retrieving users:', error);
+        console.error(error);
         throw error;
     }
 }

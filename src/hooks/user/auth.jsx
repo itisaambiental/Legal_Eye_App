@@ -85,7 +85,7 @@ export default function useUser() {
       if (error.errorCode === 'user_cancelled') {
         setStateMicrosoft({ loading: false, error: null }); 
       } else if (error.response && error.response.status === 401 && error.response.data.message === 'Invalid email') {
-        setStateMicrosoft({ loading: false, error: 'Correo Inválido' });
+        setStateMicrosoft({ loading: false, error: 'Dirección de correo no válida' });
       } else {
         setStateMicrosoft({ loading: false, error: 'Error al iniciar sesión con Microsoft' });
       }

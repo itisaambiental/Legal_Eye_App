@@ -9,7 +9,7 @@ export default async function deleteUserById({ id, token }) {
         });
 
         if (response.status !== 204) {
-            throw new Error('Failed to delete user');
+            throw new Error('Response is NOT ok');
         }
 
         return true

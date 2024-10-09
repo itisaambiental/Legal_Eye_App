@@ -27,7 +27,7 @@ function App() {
   <Route element={<AccessUser element={<Dashboard />} />}>
     <Route path="/" element={<Home />} />
     <Route path="/users" element={<Users />} />
-
+    <Route path="/fundamentos" element={<Home />} />
   </Route>
 
   <Route path="*" element={<NotFound />} />

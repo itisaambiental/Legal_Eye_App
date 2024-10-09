@@ -1,24 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import angulo_abajo_icon from "../../assets/angulo_abajo.png";
 import mas_icon from "../../assets/mas.png";
 
-function translateRole(role) {
-  const roleTranslations = {
-    "Admin": "Admin",
-    "Analyst": "Analista",
-  };
-  return roleTranslations[role] || role; 
-}
 
-function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, capitalize, openModalCreate, onFilterChange, onClear }) {
-  const [selectedKeysRoles, setSelectedKeysRoles] = useState(new Set(["all"])); 
-
-  const selectedValue = useMemo(() => {
-    const value = Array.from(selectedKeysRoles).join(", ").replaceAll("_", " ");
-    return value === "all" ? "Todos los Roles" : value;
-  }, [selectedKeysRoles]);
+function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openModalCreate, onFilterChange, onClear, selectedValue, selectedRoleKeys, onRoleChange, translateRole }) {
 
   return (
     <div className="flex flex-col gap-4 mb-4">
@@ -30,10 +17,10 @@ function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, capitalize,
           className="w-full sm:max-w-[44%] flex-grow"
           placeholder="Buscar por nombre o email..."
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4 flex-shrink-0" />}
-          onClear={() => onClear()}
+          onClear={onClear}
           onValueChange={onFilterChange}
         />
-        
+
         <div className="flex gap-3 ml-auto">
           <Dropdown>
             <DropdownTrigger>
@@ -44,14 +31,15 @@ function TopContent({ rolesOptions, onRowsPerPageChange, totalUsers, capitalize,
             <DropdownMenu
               color="primary"
               variant="flat"
+              disallowEmptySelection
               aria-label="Seleccionar Rol"
               selectionMode="single"
-              selectedKeys={selectedKeysRoles}
-              onSelectionChange={setSelectedKeysRoles}
+              selectedKeys={selectedRoleKeys}
+              onSelectionChange={onRoleChange}
             >
-              <DropdownItem key="all">Todos los Roles</DropdownItem>
-              {rolesOptions.map((role) => (
-                <DropdownItem key={role.role}>{capitalize(translateRole(role.role))}</DropdownItem>
+              <DropdownItem key="0">Todos los Roles</DropdownItem> 
+              {roles.map((role) => (
+                <DropdownItem key={role.id.toString()}>{capitalize(translateRole(role.role))}</DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>

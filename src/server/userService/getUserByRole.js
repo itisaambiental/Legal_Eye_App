@@ -1,10 +1,10 @@
 import server from "../config/server";
 
-export default async function getRoles({ token }) {
+export default async function getUserByRoleId({ roleId, token }) {
     try {
-        const response = await server.get('/roles/', {
+        const response = await server.get(`/users/role/${roleId}`, {
             headers: {
-                Authorization: `Bearer ${token}`  
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -12,8 +12,9 @@ export default async function getRoles({ token }) {
             throw new Error('Response is NOT ok');
         }
 
-        const { roles } = response.data;
-        return roles;  
+        const { users } = response.data;
+        return users;
+
     } catch (error) {
         console.error(error);
         throw error;

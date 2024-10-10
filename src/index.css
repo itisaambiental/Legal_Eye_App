@@ -7,3 +7,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Para Chrome, Brave, Safari y otros navegadores basados en Webkit */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Scrollbar container */
+	::-webkit-scrollbar {
+	  width: 4px; /* Ancho de la scrollbar */
+	  background: #fff; 
+	}
+  
+	/* Scrollbar track */
+	::-webkit-scrollbar-track {
+	  background: #fff; /* Color del track (pista) */
+	  border-radius: 10px;
+	}
+  
+	/* Scrollbar handle */
+	::-webkit-scrollbar-thumb {
+	  background:  #113c53; /* Color del handle (control deslizante) */
+	  border-radius: 10px;
+	}
+  
+	/* Scrollbar handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+	  background: #194c68; /* Color del handle cuando se pasa el mouse sobre él */
+	}
+  }
+  
+  /* Para Firefox */
+  @-moz-document url-prefix() {
+	* {
+	  scrollbar-width: thin; /* Tamaño de la scrollbar */
+	  scrollbar-color: #8d97a2 #fff; /* Color del handle y del track */
+	}
+  }

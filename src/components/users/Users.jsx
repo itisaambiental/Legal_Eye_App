@@ -14,6 +14,7 @@ import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
 import { toast } from "react-toastify";
 
+
 const columns = [
   { name: "Nombre", uid: "name" },
   { name: "Rol", uid: "role" },
@@ -33,13 +34,15 @@ function capitalize(str) {
 }
 
 export default function Users() {
-  const { users, filteredUsersByRole, loading, error, addUser, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
+  const { users, loading, error, addUser, updateUser, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
   const [filterValue, setFilterValue] = useState("");
   const { roles, roles_loading, roles_error } = useRoles();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
-  const [isopenCreateModal, setIsModalOpenCreate] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [usertypeError, setusertypeError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -48,7 +51,6 @@ export default function Users() {
   const [fileError, setFileError] = useState(null);
   const [selectedRoleKeys, setSelectedRoleKeys] = useState(new Set(["0"]));
   const [selectedValue, setSelectedValue] = useState("Todos los Roles");
-  
   const [formData, setFormData] = useState({
     id: '',
     user_type: '',
@@ -85,7 +87,6 @@ export default function Users() {
   }, [])
 
   const handleRoleSelection = useCallback((selectedRole) => {
-    console.log(selectedRole)
     if (selectedRole === "0" || !selectedRole) {
       fetchUsers();
       setSelectedValue("Todos los Roles");
@@ -145,23 +146,23 @@ export default function Users() {
     setIsDeletingBatch(true);
     const userIds = selectedKeys === "all"
       ? users.map(user => user.id)
-      : Array.from(selectedKeys).map(id => Number(id)); 
-  
+      : Array.from(selectedKeys).map(id => Number(id));
+
     try {
       const { success, error } = await deleteUsersBatch(userIds);
-  
+
       if (success) {
-        if(userIds.length <= 1) {
+        if (userIds.length <= 1) {
           toast.success('Usuario eliminado con éxito', {
             icon: () => <img src={check} alt="Success Icon" />,
             progressStyle: { background: '#113c53' },
           });
         } else {
-        toast.success('Usuarios eliminados con éxito', {
-          icon: () => <img src={check} alt="Success Icon" />,
-          progressStyle: { background: '#113c53' },
-        });
-      }
+          toast.success('Usuarios eliminados con éxito', {
+            icon: () => <img src={check} alt="Success Icon" />,
+            progressStyle: { background: '#113c53' },
+          });
+        }
         setSelectedKeys(new Set());
         setShowDeleteModal(false);
       } else {
@@ -175,7 +176,7 @@ export default function Users() {
       setIsDeletingBatch(false);
     }
   }, [selectedKeys, deleteUsersBatch, users]);
-  
+
 
 
   const openDeleteModal = () => setShowDeleteModal(true);
@@ -205,13 +206,23 @@ export default function Users() {
       email: '',
       profile_picture: null,
     });
-    setIsModalOpenCreate(true)
+    setIsCreateModalOpen(true)
   }
 
 
   const closeModalCreate = () => {
-    setIsModalOpenCreate(false)
+    setIsCreateModalOpen(false)
   }
+
+  const openEditModal = (user) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedUser(null);
+  };
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -328,13 +339,13 @@ export default function Users() {
         onFilterChange={handleFilterChange}
         onClear={onClear}
         fetchUsers={fetchUsers}
-        fetchUsersByRole={fetchUsersByRole} 
+        fetchUsersByRole={fetchUsersByRole}
         users={users}
         selectedValue={selectedValue}
         selectedRoleKeys={selectedRoleKeys}
         onRoleChange={onRoleChange}
         translateRole={translateRole}
-  
+
       />
 
 
@@ -352,7 +363,10 @@ export default function Users() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage)}>
+        <TableBody
+          items={filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+          emptyContent="No hay usuarios para mostrar"
+        >
           {(user) => (
             <TableRow key={user.id}>
               {(columnKey) => (
@@ -387,7 +401,7 @@ export default function Users() {
         selectedKeys={selectedKeys}
         filteredItems={users}
       />
-      {isopenCreateModal && (
+      {isCreateModalOpen && (
         <CreateModal
           closeModalCreate={closeModalCreate}
           addUser={addUser}
@@ -400,6 +414,8 @@ export default function Users() {
           fileError={fileError}
           setEmailError={setEmailError}
           emailError={emailError}
+          roles={roles}
+          translateRole={translateRole}
         />
       )}
 
@@ -410,8 +426,11 @@ export default function Users() {
               <h3 className="mb-5 text-lg font-normal text-primary">
                 {selectedKeys === "all"
                   ? "¿Estás seguro de que deseas eliminar TODOS los usuarios?"
-                  : "¿Estás seguro de que deseas eliminar estos usuarios?"}
+                  : selectedKeys.size <= 1
+                    ? "¿Estás seguro de que deseas eliminar este usuario?"
+                    : "¿Estás seguro de que deseas eliminar estos usuarios?"}
               </h3>
+
 
               <button onClick={handleDeleteBatch} type="button" className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-3">
                 {isDeletingBatch ? <Spinner size='sm' color="white" /> : 'Sí, estoy seguro'}

@@ -6,21 +6,26 @@ import cruz_icon from "../../assets/cruz.png"
 import { Button, Spinner } from '@nextui-org/react';
 import chevron_icon from "../../assets/chevron.png"
 
+const options = [
+    { name: 'Selecciona el tipo de usuario:', value: '' },
+    { name: 'Admin', value: 1 },
+    { name: 'Analista', value: 2 },
+];
+
+const getRoleName = (value) => {
+    const selectedRole = options.find(option => option.value === value);
+    return selectedRole ? selectedRole.name : 'Selecciona el tipo de usuario';
+};
 
 
-function CreateModal({ closeModalCreate, addUser, handleChange, formData, usertypeError, setusertypeError, handleTypeChange, handleFileChange, fileError, setEmailError, emailError, roles, translateRole }) {
+function UpdateModal({ closeModalCreate, addUser, handleChange, formData, usertypeError, setusertypeError, handleTypeChange, handleFileChange, fileError, setEmailError, emailError }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
-
-    const getRoleName = (value, roles) => {
-        const selectedRole = roles.find(option => option.id === value);
-        return selectedRole ? translateRole(selectedRole.role) : 'Selecciona el tipo de usuario';
-    };
 
     const handleCreate = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
+    
         if (formData.user_type === '') {
             setusertypeError('Este campo es obligatorio');
             setIsLoading(false);
@@ -28,7 +33,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
         } else {
             setusertypeError(null);
         }
-
+    
         if (!formData.email.endsWith('@isaambiental.com')) {
             setEmailError('El correo debe terminar con @isaambiental.com');
             setIsLoading(false);
@@ -36,7 +41,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
         } else {
             setEmailError(null);
         }
-
+    
         try {
             const { success, error } = await addUser({
                 name: formData.nombre,
@@ -44,7 +49,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                 role_id: formData.user_type,
                 profile_picture: formData.profile_picture
             });
-
+    
             if (success) {
                 toast.info('El usuario ha sido registrado correctamente', {
                     icon: () => <img src={check} alt="Success Icon" />,
@@ -75,7 +80,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
             setIsLoading(false);
         }
     };
-
+    
     return (
         <div>
             <div id="crud-modal" tabIndex="-1" aria-hidden="true" className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black bg-opacity-50">
@@ -104,6 +109,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                                 <label htmlFor="floating_nombre" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre</label>
                             </div>
 
+
                             <div className="relative z-0 w-full mb-5 group">
                                 <input
                                     type="email"
@@ -117,6 +123,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                                 />
                                 <label htmlFor="floating_email" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo Electrónico</label>
                                 {emailError && <p className="mt-2 text-sm text-red">{emailError}</p>}
+                 
                             </div>
                         </div>
                         <div className="relative z-20 mb-6">
@@ -143,7 +150,7 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                             <Listbox value={formData.user_type} onChange={handleTypeChange}>
                                 <ListboxButton className="relative z-20 mt-2 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-black dark:border-dark-3">
                                     <span className={`block truncate ${usertypeError ? 'text-red' : ''}`}>
-                                        {usertypeError || getRoleName(formData.user_type, roles)}
+                                        {usertypeError || getRoleName(formData.user_type)}
                                     </span>
 
                                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -161,14 +168,14 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                                     leaveTo="opacity-0"
                                 >
                                     <ListboxOptions className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                                        {roles.map((role) => (
+                                        {options.map((type, typeIdx) => (
                                             <ListboxOption
-                                                key={role.id}
+                                                key={typeIdx}
                                                 className={({ active }) =>
                                                     `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'text-white bg-primary/90' : 'text-gray-900'
                                                     }`
                                                 }
-                                                value={role.id}
+                                                value={type.value}
                                             >
                                                 {({ selected }) => (
                                                     <>
@@ -176,13 +183,14 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                                                             className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                                                 }`}
                                                         >
-                                                            {translateRole(role.role)}
+                                                            {type.name}
                                                         </span>
                                                         {selected ? (
                                                             <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                                                                 <img src={check} alt="Check Icon" className="h-5 w-5" aria-hidden="true" />
                                                             </span>
                                                         ) : null}
+
                                                     </>
                                                 )}
                                             </ListboxOption>
@@ -190,6 +198,8 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
                                     </ListboxOptions>
                                 </Transition>
                             </Listbox>
+
+
                         </div>
                         <div>
                             <button
@@ -213,4 +223,4 @@ function CreateModal({ closeModalCreate, addUser, handleChange, formData, userty
     );
 }
 
-export default CreateModal;
+export default UpdateModal;

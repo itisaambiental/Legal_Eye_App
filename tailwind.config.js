@@ -6,6 +6,7 @@ export default {
     "./src/**/*.{js,ts,tsx,jsx,css}", 
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
     'node_modules/flowbite-react/lib/esm/**/*.js',
+    'node_modules/preline/dist/*.js',
   ],
   theme: {
     extend: {
@@ -23,6 +24,6 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [nextui(), 'flowbite/plugin'],
+  plugins: [nextui(), 'flowbite/plugin', 'preline/plugin'],
 }
 

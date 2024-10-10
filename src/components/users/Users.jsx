@@ -2,6 +2,7 @@ import { useCallback, useState, useMemo } from "react";
 import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Spinner, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import useUsers from "../../hooks/user/users.jsx";
 import TopContent from "./TopContent";
+import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent";
 import Error from "../utils/Error.jsx";
 import defaultAvatar from "../../assets/usuario.png";
@@ -44,6 +45,7 @@ export default function Users() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [usertypeError, setusertypeError] = useState(null);
+  const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
@@ -79,6 +81,15 @@ export default function Users() {
       setFilterValue("");
     }
   }, []);
+
+
+  const handleNameChange = (e) => {
+    handleChange(e);
+    if (nameError && e.target.value.trim() !== '') {
+      setNameError(null);
+    }
+  };
+
 
 
   const onClear = useCallback(() => {
@@ -404,12 +415,16 @@ export default function Users() {
       {isCreateModalOpen && (
         <CreateModal
           closeModalCreate={closeModalCreate}
+          isOpen={isCreateModalOpen}
           addUser={addUser}
           handleChange={handleChange}
           formData={formData}
           usertypeError={usertypeError}
           setusertypeError={setusertypeError}
           handleTypeChange={handleTypeChange}
+          nameError={nameError}
+          setNameError={setNameError}
+          handleNameChange={handleNameChange}
           handleFileChange={handleFileChange}
           fileError={fileError}
           setEmailError={setEmailError}
@@ -420,25 +435,13 @@ export default function Users() {
       )}
 
       {showDeleteModal && (
-        <div id="popup-modal" className="fixed top-0 right-0 left-0 bottom-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow w-full max-w-md">
-            <div className="p-4 md:p-5 text-center">
-              <h3 className="mb-5 text-lg font-normal text-primary">
-                {selectedKeys === "all"
-                  ? "¿Estás seguro de que deseas eliminar TODOS los usuarios?"
-                  : selectedKeys.size <= 1
-                    ? "¿Estás seguro de que deseas eliminar este usuario?"
-                    : "¿Estás seguro de que deseas eliminar estos usuarios?"}
-              </h3>
-
-
-              <button onClick={handleDeleteBatch} type="button" className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-3">
-                {isDeletingBatch ? <Spinner size='sm' color="white" /> : 'Sí, estoy seguro'}
-              </button>
-              <button onClick={closeDeleteModal} type="button" className="py-2.5 px-5 text-sm font-medium text-primary focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-primary/10 hover:text-primary focus:z-10">No, cancelar</button>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          showDeleteModal={showDeleteModal}
+          closeDeleteModal={closeDeleteModal}
+          handleDeleteBatch={handleDeleteBatch}
+          isDeletingBatch={isDeletingBatch}
+          selectedKeys={selectedKeys}
+        />
       )}
     </div>
 

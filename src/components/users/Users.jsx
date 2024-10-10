@@ -14,6 +14,7 @@ import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
 import { toast } from "react-toastify";
+import EditModal from "./EditModal.jsx";
 
 
 const columns = [
@@ -35,7 +36,7 @@ function capitalize(str) {
 }
 
 export default function Users() {
-  const { users, loading, error, addUser, updateUser, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
+  const { users, loading, error, addUser, updateUserDetails, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
   const [filterValue, setFilterValue] = useState("");
   const { roles, roles_loading, roles_error } = useRoles();
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -199,14 +200,34 @@ export default function Users() {
     const file = e.target.files[0];
     const validTypes = ["image/png", "image/jpeg", "image/webp"];
 
-    if (file && !validTypes.includes(file.type)) {
-      setFileError("Solo se permiten archivos PNG, JPG, o WEBP.");
-      setFormData({ ...formData, profile_picture: null });
-    } else {
+    if (file && validTypes.includes(file.type)) {
       setFileError(null);
-      setFormData({ ...formData, profile_picture: file });
+      const imageUrl = URL.createObjectURL(file);
+
+      setFormData({
+        ...formData,
+        profile_picture: {
+          file: file,
+          previewUrl: imageUrl
+        }
+      });
+    } else {
+      setFileError("Solo se permiten archivos PNG, JPG, o WEBP.");
+      setFormData({
+        ...formData,
+        profile_picture: null
+      });
     }
   };
+
+
+  const handleRemoveImage = () => {
+    setFormData({
+      ...formData,
+      profile_picture: null
+    });
+  };
+
 
 
   const openModalCreate = () => {
@@ -223,6 +244,10 @@ export default function Users() {
 
   const closeModalCreate = () => {
     setIsCreateModalOpen(false)
+    setFileError(null)
+    setNameError(null)
+    setEmailError(null)
+    setusertypeError(null)
   }
 
   const openEditModal = (user) => {
@@ -298,7 +323,14 @@ export default function Users() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">
-                <DropdownItem startContent={<img src={edit_user} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />} className="hover:bg-primary/20" key="edit">
+                <DropdownItem
+                  startContent={<img src={edit_user} alt="Edit Icon"
+                    className="w-4 h-4 flex-shrink-0" />}
+                  className="hover:bg-primary/20"
+                  key="edit"
+                  onClick={() => openEditModal(user)}
+                >
+
                   <p className="font-normal text-primary">Editar Usuario</p>
                 </DropdownItem>
                 <DropdownItem
@@ -419,6 +451,32 @@ export default function Users() {
           addUser={addUser}
           handleChange={handleChange}
           formData={formData}
+          usertypeError={usertypeError}
+          setusertypeError={setusertypeError}
+          handleTypeChange={handleTypeChange}
+          nameError={nameError}
+          setNameError={setNameError}
+          handleNameChange={handleNameChange}
+          handleFileChange={handleFileChange}
+          fileError={fileError}
+          handleRemoveImage={handleRemoveImage}
+          setEmailError={setEmailError}
+          emailError={emailError}
+          roles={roles}
+          translateRole={translateRole}
+        />
+      )}
+
+
+      {isEditModalOpen && (
+        <EditModal
+          formData={formData}
+          setFormData={setFormData}
+          selectedUser={selectedUser}
+          closeModalEdit={closeEditModal}
+          isOpen={isEditModalOpen}
+          updateUserDetails={updateUserDetails}
+          handleChange={handleChange}
           usertypeError={usertypeError}
           setusertypeError={setusertypeError}
           handleTypeChange={handleTypeChange}

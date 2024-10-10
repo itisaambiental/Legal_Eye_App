@@ -1,11 +1,12 @@
 import { toast } from 'react-toastify';
 import { Listbox, ListboxOption, ListboxOptions, ListboxButton, Transition } from '@headlessui/react';
 import { useState, Fragment, useRef } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, Spinner } from '@nextui-org/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, Spinner, Card, CardFooter, Image, Button, Tooltip } from '@nextui-org/react';
 import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
+import cruz_icon from "../../assets/cruz.png"
 
-function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, setEmailError, emailError, roles, translateRole }) {
+function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
 
@@ -17,7 +18,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
     const handleCreate = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
+    
         if (formData.nombre === '') {
             setNameError('Este campo es obligatorio');
             setIsLoading(false);
@@ -25,7 +26,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
         } else {
             setNameError(null);
         }
-
+    
         if (formData.email === '') {
             setEmailError('Este campo es obligatorio');
             setIsLoading(false);
@@ -37,7 +38,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
         } else {
             setEmailError(null);
         }
-
+    
         if (formData.user_type === '') {
             setusertypeError('Este campo es obligatorio');
             setIsLoading(false);
@@ -45,15 +46,17 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
         } else {
             setusertypeError(null);
         }
-
+    
         try {
-            const { success, error } = await addUser({
+            const userData = {
                 name: formData.nombre,
                 email: formData.email,
                 role_id: formData.user_type,
-                profile_picture: formData.profile_picture
-            });
-
+                ...(formData.profile_picture && { profile_picture: formData.profile_picture.file })
+            };
+    
+            const { success, error } = await addUser(userData);
+    
             if (success) {
                 toast.info('El usuario ha sido registrado correctamente', {
                     icon: () => <img src={check} alt="Success Icon" />,
@@ -63,18 +66,24 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
                 });
                 closeModalCreate();
             } else {
-                if (error === 'Gmail already exists') {
-                    toast.error('El correo ya está en uso. Por favor, elige otro.');
-                } else if (error === 'Validation failed') {
-                    toast.error('Fallo de validación. Revisa los campos e intenta nuevamente.');
-                } else if (error === 'Unauthorized to register a new user') {
-                    toast.error('No tienes autorización para registrar un nuevo usuario.');
-                } else if (error === 'Network error occurred while registering') {
-                    toast.error('Ocurrió un error de red. Revisa tu conexión e intenta de nuevo.');
-                } else if (error === 'Internal server error') {
-                    toast.error('Error interno del servidor. Intenta más tarde.');
-                } else {
-                    toast.error('Ocurrió un error inesperado al registrar el usuario. Intenta nuevamente.');
+                switch (error) {
+                    case 'Gmail already exists':
+                        toast.error('El correo ya está en uso. Por favor, elige otro.');
+                        break;
+                    case 'Validation failed':
+                        toast.error('Fallo de validación. Revisa los campos e intenta nuevamente.');
+                        break;
+                    case 'Unauthorized to register a new user':
+                        toast.error('No tienes autorización para registrar un nuevo usuario.');
+                        break;
+                    case 'Network error occurred while registering':
+                        toast.error('Ocurrió un error de red. Revisa tu conexión e intenta de nuevo.');
+                        break;
+                    case 'Internal server error':
+                        toast.error('Error interno del servidor. Intenta más tarde.');
+                        break;
+                    default:
+                        toast.error('Ocurrió un error inesperado al registrar el usuario. Intenta nuevamente.');
                 }
             }
         } catch (error) {
@@ -84,6 +93,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
             setIsLoading(false);
         }
     };
+    
 
     return (
         <Modal isOpen={isOpen} onOpenChange={closeModalCreate}
@@ -131,28 +141,79 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
                                     </div>
                                 </div>
                                 <div className="relative z-20 mb-6">
-                                    <button
-                                        type="button"
-                                        onClick={() => inputFileRef.current.click()}
-                                        className="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary cursor-pointer"
-                                    >
-                                        <span className="block truncate">
-                                            {formData.profile_picture ? formData.profile_picture.name : "Selecciona una foto de perfil"}
-                                        </span>
-                                    </button>
+                                    {formData.profile_picture ? (
+                                        <div className="flex justify-center items-center h-full">
+                                            <Card isFooterBlurred radius="sm" className="border-none relative z-20 mb-6 w-full max-w-lg h-auto">
 
-                                    <input
-                                        type="file"
-                                        name="profile_picture"
-                                        id="profile_picture"
-                                        accept=".png, .jpg, .jpeg, .webp"
-                                        ref={inputFileRef}
-                                        onChange={handleFileChange}
-                                        className="hidden"
-                                    />
-                                    {fileError && <p className="mt-2 text-sm text-red">{fileError}</p>}
+                                                <div className="w-full h-60 relative">
+                                                    <Image
+                                                        alt={formData.nombre}
+                                                        className="object-cover w-full h-full"
+                                                        src={formData.profile_picture.previewUrl}
+                                                    />
+                                                     <Tooltip color='primary' content="Eliminar">
+                                                    <Button
+                                                        className="absolute top-2 right-2 bg-transparent z-10"
+                                                        onClick={handleRemoveImage}
+                                                        auto
+                                                        size="sm"
+                                                        isIconOnly
+                                                        variant="light"
+                                                    >
+                                                        <img src={cruz_icon} alt="Remove Icon" className="w-6 h-6" />
+                                                    </Button>
+                                                    </Tooltip>
+                                                </div>
+
+                                                <CardFooter className="flex flex-col items-center justify-center bg-primary/70 before:bg-primary/10 border-primary/20 border-1 overflow-hidden py-2 absolute bottom-0 w-full shadow-small rounded-b-lg z-10">
+                                                    <p className="text-tiny text-white text-center">Imagen seleccionada</p>
+                                                    <Button
+                                                        onClick={() => inputFileRef.current.click()}
+                                                        className="text-tiny text-primary mt-2"
+                                                        variant="solid"
+                                                        color="default"
+                                                        radius="lg"
+                                                        size="sm"
+                                                    >
+                                                        Editar
+                                                    </Button>
+                                                    <input
+                                                        type="file"
+                                                        name="profile_picture"
+                                                        id="profile_picture"
+                                                        accept=".png, .jpg, .jpeg, .webp"
+                                                        ref={inputFileRef}
+                                                        onChange={handleFileChange}
+                                                        className="hidden"
+                                                    />
+                                                </CardFooter>
+                                            </Card>
+                                        </div>
+                                    ) : (
+                                        <div className="relative z-20 mb-6">
+                                            <button
+                                                type="button"
+                                                onClick={() => inputFileRef.current.click()}
+                                                className="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary cursor-pointer"
+                                            >
+                                                <span className="block truncate">
+                                                    {formData.profile_picture ? formData.profile_picture.name : "Selecciona una foto de perfil"}
+                                                </span>
+                                            </button>
+                                            <input
+                                                type="file"
+                                                name="profile_picture"
+                                                id="profile_picture"
+                                                accept=".png, .jpg, .jpeg, .webp"
+                                                ref={inputFileRef}
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                            {fileError && <p className="mt-2 text-sm text-red">{fileError}</p>}
+                                        </div>
+                                    )}
                                     <Listbox value={formData.user_type} onChange={handleTypeChange}>
-                                        <ListboxButton className="relative z-20 mt-2 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-black dark:border-dark-3">
+                                        <ListboxButton className="relative z-20 -mt-2 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-black dark:border-dark-3">
                                             <span className={`block truncate ${usertypeError ? 'text-red' : ''}`}>
                                                 {usertypeError || getRoleName(formData.user_type, roles)}
                                             </span>

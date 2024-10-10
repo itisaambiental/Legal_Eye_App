@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
 import getUsers from '../../server/userService/getUsers.js';
 import registerNewUser from '../../server/userService/registerNewUser.js';
+import updateUser from '../../server/userService/updateUser.js';
 import deleteUserById from '../../server/userService/deleteUserById.js';
 import deleteUsers from '../../server/userService/deleteUsers.js';
 import getUserByRoleId from '../../server/userService/getUserByRole.js';
@@ -9,6 +10,8 @@ import getUserByRoleId from '../../server/userService/getUserByRole.js';
 export default function useUsers() {
   const { jwt } = useContext(Context);
   const [users, setUsers] = useState([]);
+
+  
   const [stateUsers, setStateUsers] = useState({ loading: false, error: null });
 
   const fetchUsers = useCallback(async () => {
@@ -34,6 +37,8 @@ export default function useUsers() {
       setStateUsers({ loading: false, error: errorMessage });
     }
   }, [jwt]);
+
+
 
   const fetchUsersByRole = useCallback(async (roleId) => {
       setStateUsers({ loading: true, error: null });
@@ -73,9 +78,6 @@ export default function useUsers() {
 
       if (error.response && error.response.status === 400) {
         errorMessage = error.response.data.message || 'Validation error';
-        if (error.response.data.errors) {
-          errorMessage += `: ${error.response.data.errors.map(err => `${err.field}: ${err.message}`).join(', ')}`;
-        }
       } else if (error.response && error.response.status === 403) {
         errorMessage = 'Unauthorized to register a new user';
       } else if (error.message === 'Network Error') {
@@ -84,6 +86,27 @@ export default function useUsers() {
         errorMessage = 'Internal server error';
       } else {
         errorMessage = 'Unexpected error occurred while registering';
+      }
+      return { success: false, error: errorMessage };
+    }
+  }, [jwt]);
+
+  const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile_picture }) => {
+    try {
+      const updatedUser = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
+      setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
+      return { success: true, updatedUser };
+    } catch (error) {
+      console.error('Error updating user:', error);
+      let errorMessage = 'Unexpected error occurred while updating';
+      if (error.response && error.response.status === 400) {
+        errorMessage = error.response.data.message || 'Validation error';
+      } else if (error.response && error.response.status === 403) {
+        errorMessage = 'Unauthorized to update user';
+      } else if (error.message === 'Network Error') {
+        errorMessage = 'Network error occurred while updating';
+      } else if (error.response && error.response.status === 500) {
+        errorMessage = 'Internal server error';
       }
       return { success: false, error: errorMessage };
     }
@@ -165,6 +188,7 @@ export default function useUsers() {
     fetchUsersByRole,
     fetchUsers,
     addUser,
+    updateUserDetails,
     deleteUser,
     deleteUsersBatch
   };

@@ -62,6 +62,8 @@ export default function Users() {
     profile_picture: null,
   });
 
+  console.log(users)
+
   const filteredUsers = useMemo(() => {
     if (!filterValue) return users;
 
@@ -485,6 +487,7 @@ export default function Users() {
           handleNameChange={handleNameChange}
           handleFileChange={handleFileChange}
           fileError={fileError}
+          handleRemoveImage={handleRemoveImage}
           setEmailError={setEmailError}
           emailError={emailError}
           roles={roles}

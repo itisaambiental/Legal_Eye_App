@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner } from '@nextui-org/react';
 
 function DeleteModal({ showDeleteModal, closeDeleteModal, handleDeleteBatch, isDeletingBatch, selectedKeys }) {
@@ -12,7 +13,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, handleDeleteBatch, isD
             }}
         >
             <ModalContent>
-                {(onClose) => (
+                {() => (
                     <>
                         <ModalHeader className="text-center">
                             {selectedKeys === "all"

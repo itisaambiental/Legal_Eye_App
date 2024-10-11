@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+/* eslint-disable react/prop-types */
 import { Input, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import angulo_abajo_icon from "../../assets/angulo_abajo.png";
@@ -37,7 +37,7 @@ function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openMo
               selectedKeys={selectedRoleKeys}
               onSelectionChange={onRoleChange}
             >
-              <DropdownItem key="0">Todos los Roles</DropdownItem> 
+              <DropdownItem key="0">Todos los Roles</DropdownItem>
               {roles.map((role) => (
                 <DropdownItem key={role.id.toString()}>{capitalize(translateRole(role.role))}</DropdownItem>
               ))}

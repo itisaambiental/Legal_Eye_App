@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { toast } from 'react-toastify';
 import { Listbox, ListboxOption, ListboxOptions, ListboxButton, Transition } from '@headlessui/react';
 import { useState, Fragment, useRef } from 'react';
@@ -104,7 +105,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
             }}
         >
             <ModalContent>
-                {(onClose) => (
+                {() => (
                     <>
                         <ModalHeader className="flex flex-col gap-1">
                             Registrar Nuevo Usuario

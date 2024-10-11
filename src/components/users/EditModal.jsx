@@ -1,16 +1,16 @@
+/* eslint-disable react/prop-types */
 import { toast } from 'react-toastify';
 import { Listbox, ListboxOption, ListboxOptions, ListboxButton, Transition } from '@headlessui/react';
 import { useState, Fragment, useRef } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, Spinner, Card, CardFooter, Image, Button } from '@nextui-org/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, Spinner, Card, CardFooter, Image, Button, Tooltip } from '@nextui-org/react';
 import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
+import cruz_icon from "../../assets/cruz.png"
 
-function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, setEmailError, emailError, roles, translateRole }) {
+
+function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage , setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
-
-    console.log(selectedUser)
-
     useState(() => {
         if (selectedUser) {
             setFormData({
@@ -118,7 +118,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
             }}
         >
             <ModalContent>
-                {(onClose) => (
+                {() => (
                     <>
                         <ModalHeader className="flex flex-col gap-1">
                             Editar Usuario
@@ -169,6 +169,20 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                                             ? formData.profile_picture
                                                             : formData.profile_picture?.previewUrl}
                                                     />
+
+                                                     <Tooltip color='primary' content="Eliminar">
+                                                    <Button
+                                                        className="absolute top-2 right-2 bg-transparent z-10"
+                                                        onClick={handleRemoveImage}
+                                                        auto
+                                                        size="sm"
+                                                        isIconOnly
+                                                        variant="light"
+                                                    >
+                                                        <img src={cruz_icon} alt="Remove Icon" className="w-6 h-6" />
+                                                    </Button>
+                                                    </Tooltip>
+                                    
                                                 </div>
                                                 <CardFooter className="flex flex-col items-center justify-center bg-primary/40 before:bg-primary/10 border-primary/20 border-1 overflow-hidden py-2 absolute bottom-0 w-full shadow-small rounded-b-lg z-10">
                                                     <p className="text-tiny text-white text-center">Foto de perfil actual</p>

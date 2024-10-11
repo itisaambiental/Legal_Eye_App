@@ -62,7 +62,6 @@ export default function Users() {
     profile_picture: null,
   });
 
-  console.log(users)
 
   const filteredUsers = useMemo(() => {
     if (!filterValue) return users;

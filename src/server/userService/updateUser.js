@@ -20,7 +20,10 @@ export default async function updateUser({ id, name, email, role_id, profile_pic
             throw new Error('Response is NOT ok');
         }
 
-        return response.data.updatedUser;
+        return { 
+            updatedUser: response.data.updatedUser, 
+            token: response.data.token || null 
+        };
 
     } catch (error) {
         console.error('Error updating user:', error);

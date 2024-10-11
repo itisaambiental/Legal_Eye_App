@@ -66,9 +66,13 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 name: formData.nombre,
                 email: formData.email,
                 role_id: formData.user_type,
-                ...(formData.profile_picture && { profile_picture: formData.profile_picture.file })
+                profile_picture: 
+                    formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file 
+                        ? formData.profile_picture.file 
+                        : formData.profile_picture || undefined
             };
-
+            
+            
             const { success, error } = await updateUserDetails(userData);
 
             if (success) {
@@ -78,6 +82,9 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                         background: '#113c53',
                     }
                 });
+
+        
+
                 closeModalEdit();
             } else {
                 switch (error) {

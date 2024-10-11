@@ -1,30 +1,31 @@
-import { useState, useEffect } from 'react';
+// Dashboard.jsx
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
-import useUser from "../hooks/user/auth.jsx";
+import Context from '../context/userContext.jsx';
 import useUserProfile from '../hooks/user/profile.jsx';
-import menu_hamburguesa from "../assets/menu-hamburguesa.png"
-import logo from "../assets/logo2.png"
-import hogar from "../assets/hogar.png"
-import flecha_izquierda from "../assets/flecha_izquierda.png"
-import users from "../assets/users.png"
-import fundamentos_icon from "../assets/fundamento-legal.png"
-import user from "../assets/usuario.png"
+import menu_hamburguesa from "../assets/menu-hamburguesa.png";
+import logo from "../assets/logo2.png";
+import hogar from "../assets/hogar.png";
+import flecha_izquierda from "../assets/flecha_izquierda.png";
+import users from "../assets/users.png";
+import fundamentos_icon from "../assets/fundamento-legal.png";
+import user from "../assets/usuario.png";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
-import logout_icon from "../assets/salida.png"
+import logout_icon from "../assets/salida.png";
 import { User } from '@nextui-org/react';
+
 function Dashboard() {
-    const { logout } = useUser();
-    const { name, email, role, profilePicture } = useUserProfile();
+    const { logout, isAdmin, isAnalyst } = useContext(Context);
+    const { name, email, profilePicture } = useUserProfile();
     const navigate = useNavigate();
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
-
+      
     const handlerSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -54,11 +55,7 @@ function Dashboard() {
                                 type="button"
                                 className="inline-flex items-center p-2 text-sm rounded-lg lg:hidden xl:hidden hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
                             >
-                                <img
-                                    src={menu_hamburguesa}
-                                    alt="Open sidebar"
-                                    className="w-6 h-6"
-                                />
+                                <img src={menu_hamburguesa} alt="Open sidebar" className="w-6 h-6" />
                             </button>
                             <a className="flex ms-2 md:me-24">
                                 <img src={logo} className="me-3 rounded-full h-20 w-24" alt="FlowBite Logo" />
@@ -74,21 +71,19 @@ function Dashboard() {
                                             as="button"
                                             className="transition-transform"
                                             avatarProps={{
-                                                src: profilePicture ? profilePicture : user,  
-                                              }}
+                                                src: profilePicture || user,
+                                            }}
                                         />
                                     </DropdownTrigger>
                                     <DropdownMenu aria-label="User Menu" variant="light">
-
                                         <DropdownItem key="profile" className="h-14 gap-2">
-                                            <p className="font-semibold mt-2 text-primary">{name || "Invitado"} - {role || "Usuario"}</p>
+                                            <p className="font-semibold mt-2 text-primary">
+                                                {name || "Usuario"} - {isAdmin ? "Admin" : isAnalyst ? "Analista" : "Invitado"}
+                                            </p>
                                             <p className="font-normal mb-1 text-secondary">{email || "example@isaambiental.com"}</p>
-
                                         </DropdownItem>
-
-                                        <DropdownItem startContent={<img src={logout_icon} alt="CSV Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
+                                        <DropdownItem startContent={<img src={logout_icon} alt="Logout Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
                                             <p className="font-normal text-red ml-20">Cerrar Sesión</p>
-
                                         </DropdownItem>
                                     </DropdownMenu>
                                 </Dropdown>
@@ -110,25 +105,23 @@ function Dashboard() {
                                 <span className="ms-3 font-medium">Hogar</span>
                             </Link>
                         </li>
-                        {role === 'Admin' && (
+                        {isAdmin && (
                             <li>
                                 <Link to="/users" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/users' ? 'bg-white/20' : ''}`}>
                                     <img src={users} className="flex-shrink-0 w-5 h-5 transition duration-75" />
                                     <span className="ms-3 font-medium">Usuarios</span>
                                 </Link>
                             </li>
-                        )} 
-                            <li>
-                                <Link to="/fundamentos" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/fundamentos' ? 'bg-white/20' : ''}`}>
-                                    <img src={fundamentos_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
-                                    <span className="ms-3 font-medium">Fundamentos Legales</span>
-                                </Link>
-                            </li>
-                        
+                        )}
+                        <li>
+                            <Link to="/fundamentos" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/fundamentos' ? 'bg-white/20' : ''}`}>
+                                <img src={fundamentos_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                <span className="ms-3 font-medium">Fundamentos Legales</span>
+                            </Link>
+                        </li>
                         <li>
                             <a onClick={handleLogout} className="flex items-center p-2 text-white hover:bg-white/15 rounded-lg group">
                                 <img src={flecha_izquierda} className="flex-shrink-0 w-5 h-5 transition duration-75" />
-
                                 <span className="flex-1 ms-3 whitespace-nowrap">Cerrar sesión</span>
                             </a>
                         </li>

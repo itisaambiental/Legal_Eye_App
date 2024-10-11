@@ -6,9 +6,10 @@ import updateUser from '../../server/userService/updateUser.js';
 import deleteUserById from '../../server/userService/deleteUserById.js';
 import deleteUsers from '../../server/userService/deleteUsers.js';
 import getUserByRoleId from '../../server/userService/getUserByRole.js';
+import { jwtDecode } from 'jwt-decode';
 
 export default function useUsers() {
-  const { jwt } = useContext(Context);
+  const { jwt, logout, updateUserContext } = useContext(Context);
   const [users, setUsers] = useState([]);
 
   
@@ -93,31 +94,45 @@ export default function useUsers() {
 
   const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile_picture }) => {
     try {
-      const updatedUser = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
-      setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
-      return { success: true, updatedUser };
+        const { updatedUser, token } = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
+        setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
+        
+        if (jwt && id === jwtDecode(jwt).userForToken.id && token) {
+            updateUserContext(token); 
+        }
+
+        return { success: true, updatedUser };
     } catch (error) {
-      console.error('Error updating user:', error);
-      let errorMessage = 'Unexpected error occurred while updating';
-      if (error.response && error.response.status === 400) {
-        errorMessage = error.response.data.message || 'Validation error';
-      } else if (error.response && error.response.status === 403) {
-        errorMessage = 'Unauthorized to update user';
-      } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error occurred while updating';
-      } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Internal server error';
-      }
-      return { success: false, error: errorMessage };
+        console.error('Error updating user:', error);
+        let errorMessage = 'Unexpected error occurred while updating';
+        if (error.response && error.response.status === 400) {
+            errorMessage = error.response.data.message || 'Validation error';
+        } else if (error.response && error.response.status === 403) {
+            errorMessage = 'Unauthorized to update user';
+        } else if (error.message === 'Network Error') {
+            errorMessage = 'Network error occurred while updating';
+        } else if (error.response && error.response.status === 500) {
+            errorMessage = 'Internal server error';
+        }
+        return { success: false, error: errorMessage };
     }
-  }, [jwt]);
+}, [jwt, updateUserContext]);
+
+
+
 
   const deleteUser = useCallback(async (id) => {
     try {
       const success = await deleteUserById({ id, token: jwt });
-
+  
       if (success) {
         setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
+  
+      
+        if (jwt && id === jwtDecode(jwt).userForToken.id) {
+          logout(); 
+        }
+  
         return { success: true };
       } else {
         throw new Error('Failed to delete user');
@@ -125,7 +140,7 @@ export default function useUsers() {
     } catch (error) {
       console.error('Error deleting user:', error);
       let errorMessage;
-
+  
       if (error.response && error.response.status === 404) {
         errorMessage = 'User not found';
       } else if (error.response && error.response.status === 403) {
@@ -137,18 +152,23 @@ export default function useUsers() {
       } else {
         errorMessage = 'Unexpected error occurred while deleting the user';
       }
-
+  
       return { success: false, error: errorMessage };
     }
-  }, [jwt]);
-
-
+  }, [jwt, logout]);
+  
   const deleteUsersBatch = useCallback(async (userIds) => {
     try {
       const success = await deleteUsers({ userIds, token: jwt });
-
+  
       if (success) {
         setUsers(prevUsers => prevUsers.filter(user => !userIds.includes(user.id)));
+  
+
+        if (jwt && userIds.includes(jwtDecode(jwt).userForToken.id)) {
+          logout(); 
+        }
+  
         return { success: true };
       } else {
         throw new Error('Failed to delete users');
@@ -156,7 +176,7 @@ export default function useUsers() {
     } catch (error) {
       console.error('Error deleting users batch:', error);
       let errorMessage;
-
+  
       if (error.response && error.response.status === 400) {
         errorMessage = 'Missing required fields: userIds';
       } else if (error.response && error.response.status === 403) {
@@ -170,10 +190,11 @@ export default function useUsers() {
       } else {
         errorMessage = 'Unexpected error occurred while deleting users';
       }
-
+  
       return { success: false, error: errorMessage };
     }
-  }, [jwt]);
+  }, [jwt, logout]);
+  
 
   useEffect(() => {
     if (jwt) {

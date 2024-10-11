@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import Context from '../context/userContext.jsx';

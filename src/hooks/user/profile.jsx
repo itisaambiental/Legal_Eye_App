@@ -1,15 +1,15 @@
+// hooks/user/profile.jsx
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
 import getUserById from '../../server/userService/getUserById.js';
 import { jwtDecode } from "jwt-decode";
-export default function useUserProfile() {
-  const { jwt } = useContext(Context)
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [role, setRole] = useState("")
-  const [profilePicture, setProfilePicture] = useState(null)
-  const [stateProfile, setStateProfile] = useState({ loading: false, error: null })
 
+export default function useUserProfile() {
+  const { jwt } = useContext(Context);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [stateProfile, setStateProfile] = useState({ loading: false, error: null });
 
   const fetchUserProfile = useCallback(async (id) => {
     setStateProfile({ loading: true, error: null }); 
@@ -20,7 +20,6 @@ export default function useUserProfile() {
       if (user) {
         setName(user.name);
         setEmail(user.gmail);
-        setRole(user.roleId === 1 ? "Admin" : user.roleId === 2 ? "Analista" : "Usuario");
         setProfilePicture(user.profile_picture);
         setStateProfile({ loading: false, error: null });
       }
@@ -48,10 +47,8 @@ export default function useUserProfile() {
   return {
     name,
     email,
-    role,
     profilePicture,
     isLoading: stateProfile.loading,
     error: stateProfile.error,
-    fetchUserProfile, 
   };
 }

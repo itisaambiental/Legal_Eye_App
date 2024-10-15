@@ -162,6 +162,7 @@ export default function useUser() {
     reset_password,
     verify_code,
     setStateMicrosoft,
+    setStateLogin,
     stateMicrosoft,
   };
 }

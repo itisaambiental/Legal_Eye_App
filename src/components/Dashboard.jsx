@@ -69,6 +69,7 @@ function Dashboard() {
                                             isBordered
                                             color='warning'
                                             as="button"
+                                            aria-label='user_avatar'
                                             className="transition-transform"
                                             avatarProps={{
                                                 src: profilePicture || user,
@@ -76,13 +77,13 @@ function Dashboard() {
                                         />
                                     </DropdownTrigger>
                                     <DropdownMenu aria-label="User Menu" variant="light">
-                                        <DropdownItem key="profile" className="h-14 gap-2">
+                                        <DropdownItem textValue='Nombre de Usuario' key="profile" className="h-14 gap-2">
                                             <p className="font-semibold mt-2 text-primary">
                                                 {name || "Usuario"} - {isAdmin ? "Admin" : isAnalyst ? "Analista" : "Invitado"}
                                             </p>
                                             <p className="font-normal mb-1 text-secondary">{email || "example@isaambiental.com"}</p>
                                         </DropdownItem>
-                                        <DropdownItem startContent={<img src={logout_icon} alt="Logout Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
+                                        <DropdownItem textValue='Cerrar Sesión'  startContent={<img src={logout_icon} alt="Logout Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
                                             <p className="font-normal text-red ml-20">Cerrar Sesión</p>
                                         </DropdownItem>
                                     </DropdownMenu>

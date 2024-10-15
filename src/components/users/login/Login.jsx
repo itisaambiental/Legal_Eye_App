@@ -162,13 +162,14 @@ function Login({ onLogin }) {
                             {showPasswordError && <span className="text-primary text-xs">Este campo es obligatorio</span>}
                         </div>
                         <div className="w-full text-start -mt-4 mb-2">
-                            <button onClick={handleResetPassword} type="button" className="text-sm text-primary hover:text-primary/60 transition-colors">
+                            <button onClick={handleResetPassword} disabled={isMicrosoftLoading || isLoginLoading} type="button" className="text-sm text-primary hover:text-primary/60 transition-colors">
                                 ¿Olvidaste tu contraseña?
                             </button>
                         </div>
                         <div className="w-full">
                             <button
                                 type="submit"
+                                disabled={isMicrosoftLoading || isLoginLoading}
                                 className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
                                 {isLoginLoading ? <Spinner size="sm" color="white" /> : 'Iniciar sesión'}
@@ -192,6 +193,7 @@ function Login({ onLogin }) {
                     <div className="w-full">
                         <button
                             type="button"
+                            disabled={isMicrosoftLoading || isLoginLoading}
                             className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors flex items-center justify-center gap-2"
                             onClick={handleMicrosoftLogin}
                         >

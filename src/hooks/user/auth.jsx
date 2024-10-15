@@ -48,8 +48,7 @@ export default function useUser() {
       };
   
       await msalInstance.initialize();
-  
-      // Revisar si ya hay una interacción en progreso
+
       if (msalInstance.getActiveAccount()) {
         console.warn("Login is already in progress.");
         setStateMicrosoft({ loading: false, error: 'Una interacción de inicio de sesión ya está en progreso.' });
@@ -73,7 +72,7 @@ export default function useUser() {
   
       let errorMessage = 'Error al iniciar sesión con Microsoft';
       if (error.errorCode === 'user_cancelled') {
-        errorMessage = null; // Ignorar el error de cancelación del usuario
+        errorMessage = null; 
       } else if (error.message.includes('interaction_in_progress')) {
         errorMessage = 'Una interacción de inicio de sesión ya está en progreso.';
       } else if (error.response && error.response.status === 401 && error.response.data.message === 'Invalid email') {

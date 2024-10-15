@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 import { vi } from "vitest";
 import { MemoryRouter } from 'react-router-dom';
@@ -75,5 +75,67 @@ describe("Dashboard Component", () => {
     const fundamentosLink = screen.getByText("Fundamentos Legales");
     expect(fundamentosLink).toBeInTheDocument();
     expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/fundamentos'); 
+  });
+
+  test("calls logout when clicking on 'Cerrar sesión' button", () => {
+    render(
+      <MemoryRouter>
+        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+          <Dashboard />
+        </Context.Provider>
+      </MemoryRouter>
+    );
+
+    const logoutButton = screen.getByText("Cerrar sesión");
+    fireEvent.click(logoutButton);
+
+    expect(mockLogout).toHaveBeenCalledTimes(1);
+  });
+
+
+  test("renders user info in dropdown for admin", () => {
+    render(
+      <MemoryRouter>
+        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+          <Dashboard />
+        </Context.Provider>
+      </MemoryRouter>
+    );
+    const dropdownButton = screen.getByLabelText('user_avatar');
+    fireEvent.click(dropdownButton);
+    const userInfo = screen.getByText("John Doe - Admin");
+    expect(userInfo).toBeInTheDocument();
+    expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
+  });
+
+
+  test("renders user info in dropdown for analyst", () => {
+    render(
+      <MemoryRouter>
+        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}>
+          <Dashboard />
+        </Context.Provider>
+      </MemoryRouter>
+    );
+    const dropdownButton = screen.getByLabelText('user_avatar');
+    fireEvent.click(dropdownButton);
+    const userInfo = screen.getByText("John Doe - Analista");
+    expect(userInfo).toBeInTheDocument();
+    expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
+  });
+
+  test("renders user info in dropdown for guest", () => {
+    render(
+      <MemoryRouter>
+        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: false }}>
+          <Dashboard />
+        </Context.Provider>
+      </MemoryRouter>
+    );
+    const dropdownButton = screen.getByLabelText('user_avatar');
+    fireEvent.click(dropdownButton);
+    const userInfo = screen.getByText("John Doe - Invitado");
+    expect(userInfo).toBeInTheDocument();
+    expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
   });
 });

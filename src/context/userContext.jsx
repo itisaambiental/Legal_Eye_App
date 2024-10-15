@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, createContext, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { msalInstance } from '../utils/msalConfig';
 
 const Context = createContext({});
 
@@ -29,6 +30,7 @@ export function UserContextProvider({ children }) {
 
     const logout = useCallback(() => {
         updateUserContext(null);
+        msalInstance.clearCache()
     }, [updateUserContext]);
 
     useEffect(() => {

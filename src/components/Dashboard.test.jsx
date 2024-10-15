@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
-import { vi } from "vitest";
 import { MemoryRouter } from 'react-router-dom';
 import Context from '../context/userContext.jsx';
 import useUserProfile from '../hooks/user/profile.jsx'; 

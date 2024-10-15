@@ -2,7 +2,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Users from "./Users.jsx";
 import useUsers from "../../hooks/user/users.jsx";
-import { expect, vi } from "vitest";
 
 // Mock global de useUsers y useRoles
 vi.mock("../../hooks/user/users.jsx", () => ({

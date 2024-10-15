@@ -86,10 +86,70 @@ export default function Users() {
 
 
   const handleNameChange = (e) => {
-    handleChange(e);
-    if (nameError && e.target.value.trim() !== '') {
+    const { value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      nombre: value
+    }));
+    if (nameError && value.trim() !== '') {
       setNameError(null);
     }
+  };
+
+  const handleEmailChange = (e) => {
+    const { value, name } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+    if (emailError && value.trim() !== '') {
+      setEmailError(null);
+    }
+  };
+
+
+  const handleTypeChange = (value) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      user_type: value
+    }));
+    if (usertypeError && value !== '') {
+      setusertypeError(null);
+    }
+  };
+
+
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const validTypes = ["image/png", "image/jpeg", "image/webp"];
+
+    if (file && validTypes.includes(file.type)) {
+      setFileError(null);
+      const imageUrl = URL.createObjectURL(file);
+
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        profile_picture: {
+          file: file,
+          previewUrl: imageUrl
+        }
+      }));
+    } else {
+      setFileError("Solo se permiten archivos PNG, JPG, o WEBP.");
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        profile_picture: null
+      }));
+    }
+  };
+
+
+  const handleRemoveImage = () => {
+    setFormData({
+      ...formData,
+      profile_picture: null
+    });
   };
 
 
@@ -154,82 +214,8 @@ export default function Users() {
     }
   }, [deleteUser]);
 
-
-  const handleDeleteBatch = useCallback(async () => {
-    setIsDeletingBatch(true);
-    const userIds = selectedKeys === "all"
-      ? users.map(user => user.id)
-      : Array.from(selectedKeys).map(id => Number(id));
-
-    try {
-      const { success, error } = await deleteUsersBatch(userIds);
-
-      if (success) {
-        if (userIds.length <= 1) {
-          toast.success('Usuario eliminado con éxito', {
-            icon: () => <img src={check} alt="Success Icon" />,
-            progressStyle: { background: '#113c53' },
-          });
-        } else {
-          toast.success('Usuarios eliminados con éxito', {
-            icon: () => <img src={check} alt="Success Icon" />,
-            progressStyle: { background: '#113c53' },
-          });
-        }
-        setSelectedKeys(new Set());
-        setShowDeleteModal(false);
-      } else {
-        const errorMessage = error || 'Ocurrió un error inesperado al eliminar los usuarios. Intenta nuevamente.';
-        toast.error(errorMessage);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Algo mal sucedió al eliminar los usuarios. Intente de nuevo');
-    } finally {
-      setIsDeletingBatch(false);
-    }
-  }, [selectedKeys, deleteUsersBatch, users]);
-
-
-
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
-
-
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const validTypes = ["image/png", "image/jpeg", "image/webp"];
-
-    if (file && validTypes.includes(file.type)) {
-      setFileError(null);
-      const imageUrl = URL.createObjectURL(file);
-
-      setFormData({
-        ...formData,
-        profile_picture: {
-          file: file,
-          previewUrl: imageUrl
-        }
-      });
-    } else {
-      setFileError("Solo se permiten archivos PNG, JPG, o WEBP.");
-      setFormData({
-        ...formData,
-        profile_picture: null
-      });
-    }
-  };
-
-
-  const handleRemoveImage = () => {
-    setFormData({
-      ...formData,
-      profile_picture: null
-    });
-  };
-
-
 
   const openModalCreate = () => {
     setFormData({
@@ -261,24 +247,6 @@ export default function Users() {
     setSelectedUser(null);
   };
 
-  const handleChange = (e) => {
-    let value = e.target.value;
-    setFormData({
-      ...formData,
-      [e.target.name]: value
-    });
-    setEmailError(null);
-  };
-
-  const handleTypeChange = (value) => {
-    if (value !== '') {
-      setusertypeError(null);
-    }
-    setFormData({
-      ...formData,
-      user_type: value
-    });
-  };
 
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
@@ -305,7 +273,9 @@ export default function Users() {
       case "actions":
         return (
           <div className="relative flex items-center justify-center gap-2">
-            <Dropdown>
+            <Dropdown
+
+            >
               <DropdownTrigger>
                 <Button
                   variant="bordered"
@@ -325,20 +295,24 @@ export default function Users() {
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">
                 <DropdownItem
+                  aria-label="Editar Usuario"
                   startContent={<img src={edit_user} alt="Edit Icon"
                     className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-primary/20"
                   key="edit"
                   onClick={() => openEditModal(user)}
+                  textValue="Editar Usuario"
                 >
 
                   <p className="font-normal text-primary">Editar Usuario</p>
                 </DropdownItem>
                 <DropdownItem
+                  aria-label="Eliminar Usuario"
                   startContent={<img src={delete_user} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-red/20"
                   key="delete"
                   onClick={() => handleDelete(user.id)}
+                  textValue="Eliminar Usuario"
                 >
                   <p className="font-normal text-red">Eliminar Usuario</p>
                 </DropdownItem>
@@ -450,7 +424,7 @@ export default function Users() {
           closeModalCreate={closeModalCreate}
           isOpen={isCreateModalOpen}
           addUser={addUser}
-          handleChange={handleChange}
+          handleEmailChange={handleEmailChange}
           formData={formData}
           usertypeError={usertypeError}
           setusertypeError={setusertypeError}
@@ -477,7 +451,7 @@ export default function Users() {
           closeModalEdit={closeEditModal}
           isOpen={isEditModalOpen}
           updateUserDetails={updateUserDetails}
-          handleChange={handleChange}
+          handleEmailChange={handleEmailChange}
           usertypeError={usertypeError}
           setusertypeError={setusertypeError}
           handleTypeChange={handleTypeChange}
@@ -498,9 +472,15 @@ export default function Users() {
         <DeleteModal
           showDeleteModal={showDeleteModal}
           closeDeleteModal={closeDeleteModal}
-          handleDeleteBatch={handleDeleteBatch}
+          setIsDeletingBatch={setIsDeletingBatch}
           isDeletingBatch={isDeletingBatch}
           selectedKeys={selectedKeys}
+          users={users}
+          deleteUsersBatch={deleteUsersBatch}
+          setShowDeleteModal={setShowDeleteModal}
+          setSelectedKeys={setSelectedKeys}
+          check={check}
+
         />
       )}
     </div>

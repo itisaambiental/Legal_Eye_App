@@ -7,7 +7,7 @@ import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
 import cruz_icon from "../../assets/cruz.png"
 
-function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
+function CreateModal({ isOpen, closeModalCreate, addUser, handleEmailChange, formData, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
 
@@ -119,7 +119,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
                                             name="nombre"
                                             id="floating_nombre"
                                             value={formData.nombre}
-                                            onChange={handleNameChange} // Usa `handleNameChange` en lugar de `handleChange`
+                                            onChange={handleNameChange} 
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
                                             placeholder=" "
                                         />
@@ -133,11 +133,13 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleChange, formData
                                             name="email"
                                             id="floating_email"
                                             value={formData.email}
-                                            onChange={handleChange}
+                                            onChange={handleEmailChange}
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-primary peer"
                                             placeholder=" "
                                         />
-                                        <label htmlFor="floating_email" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo Electrónico</label>
+                                        <label htmlFor="floating_email" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        Correo Electrónico
+                                        </label>
                                         {emailError && <p className="mt-2 text-sm text-red">{emailError}</p>}
                                     </div>
                                 </div>

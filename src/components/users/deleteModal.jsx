@@ -1,7 +1,46 @@
 /* eslint-disable react/prop-types */
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner } from '@nextui-org/react';
+import { useCallback } from 'react';
+import { toast } from 'react-toastify';
 
-function DeleteModal({ showDeleteModal, closeDeleteModal, handleDeleteBatch, isDeletingBatch, selectedKeys }) {
+function DeleteModal({ showDeleteModal, closeDeleteModal,setIsDeletingBatch, isDeletingBatch, selectedKeys, users, deleteUsersBatch, setShowDeleteModal, setSelectedKeys, check }) {
+
+    const handleDeleteBatch = useCallback(async () => {
+        setIsDeletingBatch(true);
+        const userIds = selectedKeys === "all"
+          ? users.map(user => user.id)
+          : Array.from(selectedKeys).map(id => Number(id));
+    
+        try {
+          const { success, error } = await deleteUsersBatch(userIds);
+    
+          if (success) {
+            if (userIds.length <= 1) {
+              toast.success('Usuario eliminado con éxito', {
+                icon: () => <img src={check} alt="Success Icon" />,
+                progressStyle: { background: '#113c53' },
+              });
+            } else {
+              toast.success('Usuarios eliminados con éxito', {
+                icon: () => <img src={check} alt="Success Icon" />,
+                progressStyle: { background: '#113c53' },
+              });
+            }
+            setSelectedKeys(new Set());
+            setShowDeleteModal(false);
+          } else {
+            const errorMessage = error || 'Ocurrió un error inesperado al eliminar los usuarios. Intenta nuevamente.';
+            toast.error(errorMessage);
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error('Algo mal sucedió al eliminar los usuarios. Intente de nuevo');
+        } finally {
+          setIsDeletingBatch(false);
+        }
+      }, [selectedKeys, deleteUsersBatch, users, setIsDeletingBatch, setSelectedKeys, setShowDeleteModal, check]);
+
+      
     return (
         <Modal
             isOpen={showDeleteModal}

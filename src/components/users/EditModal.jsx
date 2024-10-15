@@ -1,20 +1,21 @@
 /* eslint-disable react/prop-types */
 import { toast } from 'react-toastify';
 import { Listbox, ListboxOption, ListboxOptions, ListboxButton, Transition } from '@headlessui/react';
-import { useState, Fragment, useRef } from 'react';
+import { useState, Fragment, useRef, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, Spinner, Card, CardFooter, Image, Button, Tooltip } from '@nextui-org/react';
 import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
 import cruz_icon from "../../assets/cruz.png"
 
 
-function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage , setEmailError, emailError, roles, translateRole }) {
+function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleEmailChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage , setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
-    useState(() => {
+
+    
+    useEffect(() => {
         if (selectedUser) {
             setFormData({
-                ...formData,
                 id: selectedUser.id,
                 user_type: selectedUser.roleId,
                 nombre: selectedUser.name,
@@ -22,7 +23,8 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 profile_picture: selectedUser.profile_picture
             });
         }
-    }, [selectedUser]);
+    }, [selectedUser, setFormData]);
+    
 
     const getRoleName = (value, roles) => {
         const selectedRole = roles.find(option => option.id === value);
@@ -118,6 +120,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
 
     return (
         <Modal isOpen={isOpen} onOpenChange={closeModalEdit}
+        
             backdrop="opaque"
             placement='center'
             classNames={{
@@ -126,10 +129,10 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
         >
             <ModalContent>
                 {() => (
-                    <>
-                        <ModalHeader className="flex flex-col gap-1">
+                    <><ModalHeader role="heading" className="flex flex-col gap-1">
                             Editar Usuario
                         </ModalHeader>
+                        
                         <ModalBody>
                             <form onSubmit={handleEdit}>
                                 <div className="grid gap-4 mb-4 grid-cols-2">
@@ -153,7 +156,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                             name="email"
                                             id="floating_email"
                                             value={formData.email}
-                                            onChange={handleChange}
+                                            onChange={handleEmailChange}
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-primary peer"
                                             placeholder=" "
                                         />

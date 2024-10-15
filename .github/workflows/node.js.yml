@@ -33,11 +33,10 @@ jobs:
         with:
           connection_url: smtp://${{ secrets.SMTP_USER }}:${{ secrets.SMTP_PASSWORD }}@${{ secrets.SMTP_SERVER }}:${{ secrets.SMTP_PORT }}
           subject: 'CI Notification: All Tests Passed'
-          to: it@isaambiental.com
+          to: ${{ secrets.NOTIFICATION_EMAIL }}  # Usa el secreto para la dirección de correo
           from: ${{ secrets.SMTP_USER }}
           body: |
             All tests have passed successfully in the LegalEye App CI workflow.
-            Date and time: $(date)
 
     concurrency:
       group: "ci-${{ github.ref }}"

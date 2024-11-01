@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import CreateModal from "./CreateModal";
-import { vi } from "vitest";
 import { useState } from "react";
 
 describe("CreateModal Component", () => {

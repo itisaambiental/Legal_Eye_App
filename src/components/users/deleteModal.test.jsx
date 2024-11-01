@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent } from "@testing-library/react";
 import DeleteModal from "../users/deleteModal.jsx";
-import { vi } from "vitest";
 
 describe("DeleteModal Component", () => {
     const mockCloseDeleteModal = vi.fn();

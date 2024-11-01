@@ -23,7 +23,7 @@ const AppRoutes = () => {
       <Route element={<AccessUser element={<Dashboard />} />}>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<AccessAdmin element={<Users />} />} />
-        <Route path="/fundamentos" element={<Home />} />
+        <Route path="/legal_basis" element={<Home />} />
       </Route>
 
       <Route path="/unauthorized" element={<Unauthorized />} /> 

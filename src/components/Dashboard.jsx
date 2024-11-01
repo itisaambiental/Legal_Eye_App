@@ -115,7 +115,7 @@ function Dashboard() {
                             </li>
                         )}
                         <li>
-                            <Link to="/fundamentos" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/fundamentos' ? 'bg-white/20' : ''}`}>
+                            <Link to="/legal_basis" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/legal_basis' ? 'bg-white/20' : ''}`}>
                                 <img src={fundamentos_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
                                 <span className="ms-3 font-medium">Fundamentos Legales</span>
                             </Link>

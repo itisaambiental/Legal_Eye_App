@@ -7,6 +7,24 @@ import eye from "../../../assets/ojo.png";
 import closed_eye from "../../../assets/ojo2.png";
 import microsoft from "../../../assets/microsoft.png";
 
+/**
+ * Login component
+ * 
+ * This component provides the user interface for logging into the application.
+ * It includes fields for email and password input, with client-side validation.
+ * Users can also log in using their Microsoft account. If login is successful,
+ * the user is redirected to the home page, and any login errors are displayed.
+ * 
+ * Props:
+ * - onLogin (function): Optional callback function triggered after successful login.
+ * 
+ * @component
+ * @example
+ * <Login onLogin={() => console.log("Logged in")} />
+ * 
+ * @returns {JSX.Element} - Rendered Login component.
+ */
+
 // eslint-disable-next-line react/prop-types
 function Login({ onLogin }) {
     const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +119,7 @@ function Login({ onLogin }) {
     const handleResetPassword = () => {
         navigate('/reset-password/request', { state: { fromLogin: true } });
     };
-    
+
 
     const showPasswordError = formSubmitted && passwordError;
     const showUsernameError = formSubmitted && emailError;
@@ -149,9 +167,8 @@ function Login({ onLogin }) {
                             />
                             <button
                                 onClick={handleShowPassword}
-                                className={`absolute right-2 transform -translate-y-1/2 ${
-                                    showUsernameError || showPasswordError ? 'top-1/3' : 'top-1/2'
-                                }`}
+                                className={`absolute right-2 transform -translate-y-1/2 ${showUsernameError || showPasswordError ? 'top-1/3' : 'top-1/2'
+                                    }`}
                             >
                                 <img
                                     src={showPassword ? closed_eye : eye}

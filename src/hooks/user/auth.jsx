@@ -7,7 +7,10 @@ import { msalInstance } from '../../utils/msalConfig.js';
 import login_user_microsoft from '../../server/userService/login_microsoft.js';
 import sendNewPassword from '../../server/userService/sendNewPassword.js';
 
-
+/**
+ * Custom hook for managing user authentication and related operations.
+ * @returns {Object} - Contains functions and states for user authentication, Microsoft login, password reset, and verification.
+ */
 export default function useUser() {
   const { jwt, updateUserContext, logout } = useContext(Context);
   const [stateLogin, setStateLogin] = useState({ loading: false, error: false });
@@ -15,9 +18,12 @@ export default function useUser() {
   const [stateResetPassword, setStateResetPassword] = useState({ loading: false, error: false });
   const [stateVerifyCode, setStateVerifyCode] = useState({ loading: false, error: false });
 
+  /**
+   * Initiates login process using email and password.
+   * @param {Object} - User's email and password.
+   */
   const login = useCallback(({ email, password }) => {
     setStateLogin({ loading: true, error: false });
-    
     login_user({ email, password })
       .then(response => {
         const token = response.token;
@@ -36,40 +42,33 @@ export default function useUser() {
       });
   }, [updateUserContext, logout]);
 
- 
+  /**
+   * Initiates Microsoft login process with popup authentication.
+   */
   const login_microsoft = useCallback(async () => {
     if (stateMicrosoft.loading) return;
-  
     setStateMicrosoft({ loading: true, error: null });
-  
     try {
       const loginRequest = {
         scopes: ['openid', 'profile', 'User.Read']
       };
-  
       await msalInstance.initialize();
-
       if (msalInstance.getActiveAccount()) {
-        console.warn("Login is already in progress.");
         setStateMicrosoft({ loading: false, error: 'Una interacción de inicio de sesión ya está en progreso.' });
         return;
       }
-  
       const loginResponse = await msalInstance.loginPopup(loginRequest);
       const accessToken = loginResponse.accessToken;
-  
       const response = await login_user_microsoft({ accessToken });
       const token = response.token;
-  
       if (token) {
         updateUserContext(token);
         setStateMicrosoft({ loading: false, error: null });
       } else {
-        throw new Error('No token returned from backend');
+        throw new Error('No se devolvió un token del backend');
       }
     } catch (error) {
-      console.error('Error during Microsoft login:', error);
-  
+      console.error('Error durante el inicio de sesión con Microsoft:', error)
       let errorMessage = 'Error al iniciar sesión con Microsoft';
       if (error.errorCode === 'user_cancelled') {
         errorMessage = null; 
@@ -83,9 +82,13 @@ export default function useUser() {
       logout();
     }
   }, [updateUserContext, stateMicrosoft, logout]);
-  
-  
 
+  /**
+   * Initiates password reset by sending a verification code.
+   * @param {string} email - User's email address.
+   * @param {boolean} [isResend=false] - Whether this is a resend request.
+   * @returns {boolean} - Returns true if successful, false otherwise.
+   */
   const reset_password = useCallback(async (email, isResend = false) => {
     setStateResetPassword({ loading: true, error: null });
   
@@ -96,7 +99,7 @@ export default function useUser() {
         return true;
       }
     } catch (error) {
-      console.error('Error during password reset:', error);
+      console.error('Error al restablecer contraseña:', error);
   
       const errorMessage = isResend
         ? 'Error al reenviar el código de verificación'
@@ -106,7 +109,13 @@ export default function useUser() {
       return false;
     }
   }, []);
-  
+
+  /**
+   * Verifies the code sent to the user for password reset.
+   * @param {string} gmail - User's email address.
+   * @param {string} code - Verification code.
+   * @returns {boolean} - Returns true if the code is valid, false otherwise.
+   */
   const verify_code = useCallback(async (gmail, code) => {
     setStateVerifyCode({ loading: true, error: null });
   
@@ -117,13 +126,13 @@ export default function useUser() {
         setStateVerifyCode({ loading: false, error: null });
         return true;
       } else {
-        throw new Error('Unexpected response');
+        throw new Error('Respuesta inesperada');
       }
     } catch (error) {
       if (error.response && error.response.status === 400 && error.response.data.message) {
-        if (error.response.data.message === 'Invalid verification code') {
+        if (error.response.data.message === 'Código de verificación inválido') {
           setStateVerifyCode({ loading: false, error: 'Código inválido' });
-        } else if (error.response.data.message === 'Verification code has expired') {
+        } else if (error.response.data.message === 'Código de verificación expirado') {
           setStateVerifyCode({ loading: false, error: 'Código expirado' });
         } else {
           setStateVerifyCode({ loading: false, error: 'Fallo al verificar el código' });

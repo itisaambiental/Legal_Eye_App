@@ -1,6 +1,20 @@
+/* eslint-disable react/prop-types */
+/**
+ * Error component for displaying error messages based on specific error types.
+ * Offers a user-friendly message and a button to reload the page.
+ * 
+ * @component
+ * @param {Object} props - Component props.
+ * @param {string} props.message - The error message to be displayed and used for determining the type of error.
+ * 
+ * @returns {JSX.Element} A styled error message component with a reload button.
+ */
 function Error(props) {
   const { message } = props;
- 
+
+    /**
+   * Reloads the page when the user clicks the "Retry" button.
+   */
   const handleReload = () => {
     window.location.reload();
   };

@@ -5,12 +5,23 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import logo from "../../../assets/logo.png";
 import go_back from "../../../assets/volver.png";
 
+/**
+ * VerifyCode component
+ * 
+ * This component provides an interface for users to enter and verify a security code
+ * sent to their email as part of the password reset process. The code is time-sensitive 
+ * and expires after a set duration. Users can also request a new code if the original expires.
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} - Rendered VerifyCode component.
+ */
 function VerifyCode() {
     const [isLoading, setIsLoading] = useState(true);
     const [code, setCode] = useState("");
     const [codeError, setCodeError] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const [timer, setTimer] = useState(60); 
+    const [timer, setTimer] = useState(60);
     const { email } = useParams();
     const decodedEmail = decodeURIComponent(email);
     const {
@@ -83,7 +94,7 @@ function VerifyCode() {
         const success = await reset_password(decodedEmail, true);
         if (success) {
             setTimer(60);
-        } 
+        }
     };
 
     const handleGoToResetPassword = () => {
@@ -113,8 +124,8 @@ function VerifyCode() {
                         </button>
                     </div>
                     <div className="flex justify-center">
-                    <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
-                   </div>
+                        <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
+                    </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
                         <h1 className="text-xl text-primary font-bold">Código enviado</h1>
                         <p className="text-secondary text-sm text-center mb-4">
@@ -159,16 +170,16 @@ function VerifyCode() {
                                 type="button"
                                 className="text-sm text-primary hover:underline transition-colors"
                                 onClick={handleResendCode}
-                                disabled={timer > 0 || isResetPasswordLoading} 
+                                disabled={timer > 0 || isResetPasswordLoading}
                             >
                                 Reenviar Código {timer > 0 && `(${timer}s)`}
                             </button>
 
-                        {hasResetPasswordError && (
-                            <div className="mt-2 text-red text-xs">
-                                <strong>{hasResetPasswordError}</strong>
-                            </div>
-                        )}
+                            {hasResetPasswordError && (
+                                <div className="mt-2 text-red text-xs">
+                                    <strong>{hasResetPasswordError}</strong>
+                                </div>
+                            )}
 
                         </div>
                     </form>

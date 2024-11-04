@@ -9,11 +9,19 @@ import hogar from "../assets/hogar.png";
 import flecha_izquierda from "../assets/flecha_izquierda.png";
 import users from "../assets/users.png";
 import fundamentos_icon from "../assets/fundamento-legal.png";
+import materias_icon from "../assets/materias.png";
 import user from "../assets/usuario.png";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import logout_icon from "../assets/salida.png";
 import { User } from '@nextui-org/react';
 
+/**
+ * Dashboard component
+ * Provides the main layout and navigation for the dashboard.
+ * Includes a sidebar for navigation and a top navbar with user options.
+ * @component
+ * @returns {JSX.Element} The rendered Dashboard component.
+ */
 function Dashboard() {
     const { logout, isAdmin, isAnalyst } = useContext(Context);
     const { name, email, profilePicture } = useUserProfile();
@@ -24,8 +32,7 @@ function Dashboard() {
     const handleLogout = () => {
         logout();
         navigate('/login');
-    };
-      
+    };  
     const handlerSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
@@ -114,6 +121,12 @@ function Dashboard() {
                                 </Link>
                             </li>
                         )}
+                         <li>
+                            <Link to="/subjects" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/subjects' ? 'bg-white/20' : ''}`}>
+                                <img src={materias_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
+                                <span className="ms-3 font-medium">Materias Legales</span>
+                            </Link>
+                        </li>
                         <li>
                             <Link to="/legal_basis" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/legal_basis' ? 'bg-white/20' : ''}`}>
                                 <img src={fundamentos_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />

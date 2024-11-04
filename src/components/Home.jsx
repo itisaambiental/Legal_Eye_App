@@ -1,13 +1,20 @@
 import useUserProfile from '../hooks/user/profile.jsx';
+import { useNavigate } from 'react-router-dom';
 
+/**
+ * Home component
+ * Displays a welcome message for the user and provides navigation options to start working.
+ * @component
+ * @returns {JSX.Element} The rendered Home component.
+ */
 function Home() {
   const { name } = useUserProfile();
+  const navigate = useNavigate();
 
   
-
   const handleDynamicClick = () => {
-     };
-
+    navigate('/legal_basis');
+  };
 
   return (
     <section className="bg-gray-50 mt-12 text-center justify-center  flex flex-col items-center -ml-64">

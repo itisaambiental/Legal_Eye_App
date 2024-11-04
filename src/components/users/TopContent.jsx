@@ -4,6 +4,28 @@ import search_icon from "../../assets/busqueda_blue.png";
 import angulo_abajo_icon from "../../assets/angulo_abajo.png";
 import mas_icon from "../../assets/mas.png";
 
+/**
+ * TopContent component
+ * 
+ * This component renders the top section of a user management interface, providing search, filter, 
+ * and pagination controls, as well as a button to create a new user.
+ * 
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Array} props.roles - List of roles available for filtering users.
+ * @param {Function} props.onRowsPerPageChange - Callback function for changing rows per page.
+ * @param {number} props.totalUsers - The total number of users.
+ * @param {Function} props.capitalize - Function to capitalize role names.
+ * @param {Function} props.openModalCreate - Function to open the modal for creating a new user.
+ * @param {Function} props.onFilterChange - Callback function for handling search input changes.
+ * @param {Function} props.onClear - Callback function to clear the search input.
+ * @param {string} props.selectedValue - Currently selected value for role filtering display.
+ * @param {Set} props.selectedRoleKeys - Set of selected role keys for filtering.
+ * @param {Function} props.onRoleChange - Callback function for handling role selection changes.
+ * @param {Function} props.translateRole - Function to translate role names.
+ * 
+ * @returns {JSX.Element} Rendered TopContent component for managing users.
+ */
 
 function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openModalCreate, onFilterChange, onClear, selectedValue, selectedRoleKeys, onRoleChange, translateRole }) {
 

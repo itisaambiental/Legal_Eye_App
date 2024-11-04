@@ -59,7 +59,7 @@ describe("Dashboard Component", () => {
 
     const fundamentosLink = screen.getByText("Fundamentos Legales");
     expect(fundamentosLink).toBeInTheDocument();
-    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/fundamentos'); 
+    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/legal_basis'); 
   });
 
   test("renders 'Fundamentos Legales' link for analyst", () => {
@@ -73,7 +73,7 @@ describe("Dashboard Component", () => {
 
     const fundamentosLink = screen.getByText("Fundamentos Legales");
     expect(fundamentosLink).toBeInTheDocument();
-    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/fundamentos'); 
+    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/legal_basis'); 
   });
 
   test("calls logout when clicking on 'Cerrar sesión' button", () => {

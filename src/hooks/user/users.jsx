@@ -8,13 +8,18 @@ import deleteUsers from '../../server/userService/deleteUsers.js';
 import getUserByRoleId from '../../server/userService/getUserByRole.js';
 import { jwtDecode } from 'jwt-decode';
 
+/**
+ * Custom hook for managing users and performing CRUD operations.
+ * @returns {Object} - Contains user list, loading state, error state, and functions for user operations.
+ */
 export default function useUsers() {
   const { jwt, logout, updateUserContext } = useContext(Context);
   const [users, setUsers] = useState([]);
-
-  
   const [stateUsers, setStateUsers] = useState({ loading: false, error: null });
 
+  /**
+   * Fetches the complete list of users.
+   */
   const fetchUsers = useCallback(async () => {
     setStateUsers({ loading: true, error: null });
 
@@ -25,114 +30,124 @@ export default function useUsers() {
     } catch (error) {
       console.error('Error fetching users:', error);
       let errorMessage;
+
       if (error.response && error.response.status === 403) {
-        errorMessage = 'Unauthorized access';
+        errorMessage = 'Acceso no autorizado';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error';
+        errorMessage = 'Error de conexión';
       } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Server error';
+        errorMessage = 'Error en el servidor';
       } else {
-        errorMessage = 'Unexpected error';
+        errorMessage = 'Error inesperado';
       }
 
       setStateUsers({ loading: false, error: errorMessage });
     }
   }, [jwt]);
 
-
-
+  /**
+   * Fetches users by their role ID.
+   * @param {number} roleId - Role ID to filter users.
+   */
   const fetchUsersByRole = useCallback(async (roleId) => {
-      setStateUsers({ loading: true, error: null });
+    setStateUsers({ loading: true, error: null });
 
-      try {
-        const usersList = await getUserByRoleId({ roleId, token: jwt });
-        setUsers(usersList.reverse());
-        setStateUsers({ loading: false, error: null });
-      } catch (error) {
-        console.error('Error fetching users by Role:', error);
-        let errorMessage;
-        if (error.response && error.response.status === 403) {
-          errorMessage = 'Unauthorized access';
-        } else if (error.message === 'Network Error') {
-          errorMessage = 'Network error';
-        } else if (error.response && error.response.status === 500) {
-          errorMessage = 'Server error';
-        } else {
-          errorMessage = 'Unexpected error';
-        }
-  
-        setStateUsers({ loading: false, error: errorMessage });
+    try {
+      const usersList = await getUserByRoleId({ roleId, token: jwt });
+      setUsers(usersList.reverse());
+      setStateUsers({ loading: false, error: null });
+    } catch (error) {
+      console.error('Error fetching users by Role:', error);
+      let errorMessage;
+
+      if (error.response && error.response.status === 403) {
+        errorMessage = 'Acceso no autorizado';
+      } else if (error.message === 'Network Error') {
+        errorMessage = 'Error de conexión';
+      } else if (error.response && error.response.status === 500) {
+        errorMessage = 'Error en el servidor';
+      } else {
+        errorMessage = 'Error inesperado';
       }
-    }, [jwt]);
 
+      setStateUsers({ loading: false, error: errorMessage });
+    }
+  }, [jwt]);
 
+  /**
+   * Registers a new user.
+   * @param {Object} userData - User data including name, email, role ID, and profile picture.
+   * @returns {Promise<Object>} - Success status and user data or error message.
+   */
   const addUser = useCallback(async ({ name, email, role_id, profile_picture }) => {
     try {
       const user = await registerNewUser({ name, email, role_id, profile_picture, token: jwt });
-
       setUsers(prevUsers => [user, ...prevUsers]);
-
       return { success: true, user };
     } catch (error) {
       console.error('Error registering new user:', error);
       let errorMessage;
 
       if (error.response && error.response.status === 400) {
-        errorMessage = error.response.data.message || 'Validation error';
+        errorMessage = error.response.data.message || 'Error de validación';
       } else if (error.response && error.response.status === 403) {
-        errorMessage = 'Unauthorized to register a new user';
+        errorMessage = 'No autorizado para registrar un nuevo usuario';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error occurred while registering';
+        errorMessage = 'Error de conexión durante el registro';
       } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Internal server error';
+        errorMessage = 'Error interno del servidor';
       } else {
-        errorMessage = 'Unexpected error occurred while registering';
+        errorMessage = 'Error inesperado durante el registro';
       }
       return { success: false, error: errorMessage };
     }
   }, [jwt]);
 
+  /**
+   * Updates user details.
+   * @param {Object} userData - User data including ID, name, email, role ID, and profile picture.
+   * @returns {Promise<Object>} - Success status and updated user data or error message.
+   */
   const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile_picture }) => {
     try {
-        const { updatedUser, token } = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
-        setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
-        
-        if (jwt && id === jwtDecode(jwt).userForToken.id && token) {
-            updateUserContext(token); 
-        }
+      const { updatedUser, token } = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
+      setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
 
-        return { success: true, updatedUser };
+      if (jwt && id === jwtDecode(jwt).userForToken.id && token) {
+        updateUserContext(token);
+      }
+
+      return { success: true, updatedUser };
     } catch (error) {
-        console.error('Error updating user:', error);
-        let errorMessage = 'Unexpected error occurred while updating';
-        if (error.response && error.response.status === 400) {
-            errorMessage = error.response.data.message || 'Validation error';
-        } else if (error.response && error.response.status === 403) {
-            errorMessage = 'Unauthorized to update user';
-        } else if (error.message === 'Network Error') {
-            errorMessage = 'Network error occurred while updating';
-        } else if (error.response && error.response.status === 500) {
-            errorMessage = 'Internal server error';
-        }
-        return { success: false, error: errorMessage };
+      console.error('Error updating user:', error);
+      let errorMessage = 'Error inesperado al actualizar';
+      if (error.response && error.response.status === 400) {
+        errorMessage = error.response.data.message || 'Error de validación';
+      } else if (error.response && error.response.status === 403) {
+        errorMessage = 'No autorizado para actualizar el usuario';
+      } else if (error.message === 'Network Error') {
+        errorMessage = 'Error de conexión durante la actualización';
+      } else if (error.response && error.response.status === 500) {
+        errorMessage = 'Error interno del servidor';
+      }
+      return { success: false, error: errorMessage };
     }
-}, [jwt, updateUserContext]);
+  }, [jwt, updateUserContext]);
 
-
-
-
+  /**
+   * Deletes a user by ID.
+   * @param {number} id - User ID.
+   * @returns {Promise<Object>} - Success status or error message.
+   */
   const deleteUser = useCallback(async (id) => {
     try {
       const success = await deleteUserById({ id, token: jwt });
-  
+
       if (success) {
         setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
-  
-      
         if (jwt && id === jwtDecode(jwt).userForToken.id) {
-          logout(); 
+          logout();
         }
-  
         return { success: true };
       } else {
         throw new Error('Failed to delete user');
@@ -140,35 +155,37 @@ export default function useUsers() {
     } catch (error) {
       console.error('Error deleting user:', error);
       let errorMessage;
-  
+
       if (error.response && error.response.status === 404) {
-        errorMessage = 'User not found';
+        errorMessage = 'Usuario no encontrado';
       } else if (error.response && error.response.status === 403) {
-        errorMessage = 'Unauthorized to delete user';
+        errorMessage = 'No autorizado para eliminar usuario';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error occurred while deleting';
+        errorMessage = 'Error de conexión al eliminar';
       } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Internal server error';
+        errorMessage = 'Error interno del servidor';
       } else {
-        errorMessage = 'Unexpected error occurred while deleting the user';
+        errorMessage = 'Error inesperado al eliminar el usuario';
       }
-  
+
       return { success: false, error: errorMessage };
     }
   }, [jwt, logout]);
-  
+
+  /**
+   * Deletes multiple users by their IDs.
+   * @param {Array<number>} userIds - Array of user IDs to delete.
+   * @returns {Promise<Object>} - Success status or error message.
+   */
   const deleteUsersBatch = useCallback(async (userIds) => {
     try {
       const success = await deleteUsers({ userIds, token: jwt });
-  
+
       if (success) {
         setUsers(prevUsers => prevUsers.filter(user => !userIds.includes(user.id)));
-  
-
         if (jwt && userIds.includes(jwtDecode(jwt).userForToken.id)) {
-          logout(); 
+          logout();
         }
-  
         return { success: true };
       } else {
         throw new Error('Failed to delete users');
@@ -176,25 +193,24 @@ export default function useUsers() {
     } catch (error) {
       console.error('Error deleting users batch:', error);
       let errorMessage;
-  
+
       if (error.response && error.response.status === 400) {
-        errorMessage = 'Missing required fields: userIds';
+        errorMessage = 'Faltan campos requeridos: userIds';
       } else if (error.response && error.response.status === 403) {
-        errorMessage = 'Unauthorized to delete users';
+        errorMessage = 'No autorizado para eliminar usuarios';
       } else if (error.response && error.response.status === 404) {
-        errorMessage = error.response.data.message || 'One or more users not found';
+        errorMessage = error.response.data.message || 'Uno o más usuarios no encontrados';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Network error occurred while deleting users';
+        errorMessage = 'Error de conexión al eliminar usuarios';
       } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Internal server error';
+        errorMessage = 'Error interno del servidor';
       } else {
-        errorMessage = 'Unexpected error occurred while deleting users';
+        errorMessage = 'Error inesperado al eliminar usuarios';
       }
-  
+
       return { success: false, error: errorMessage };
     }
   }, [jwt, logout]);
-  
 
   useEffect(() => {
     if (jwt) {

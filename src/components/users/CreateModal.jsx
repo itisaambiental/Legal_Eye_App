@@ -7,6 +7,39 @@ import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
 import cruz_icon from "../../assets/cruz.png"
 
+
+/**
+ * CreateModal component
+ * 
+ * This component provides a form for creating a new user, including fields
+ * for name, email, user type, and profile picture upload. Validation is 
+ * performed for required fields, and appropriate error messages are shown. 
+ * The form submission triggers the addUser function to create the user, and 
+ * feedback is displayed to the user based on the response.
+ * 
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Controls whether the modal is open.
+ * @param {Function} props.closeModalCreate - Function to close the modal.
+ * @param {Function} props.addUser - Function to add a new user.
+ * @param {Function} props.handleEmailChange - Handler for email input change.
+ * @param {Object} props.formData - The data of the form being filled.
+ * @param {string|null} props.usertypeError - Error message for user type selection.
+ * @param {Function} props.setusertypeError - Setter function for usertypeError.
+ * @param {Function} props.handleTypeChange - Handler for user type selection.
+ * @param {string|null} props.nameError - Error message for the name input field.
+ * @param {Function} props.setNameError - Setter function for nameError.
+ * @param {Function} props.handleNameChange - Handler for name input change.
+ * @param {Function} props.handleFileChange - Handler for profile picture file input.
+ * @param {string|null} props.fileError - Error message for file input.
+ * @param {Function} props.handleRemoveImage - Handler to remove the selected profile picture.
+ * @param {Function} props.setEmailError - Setter function for email error.
+ * @param {string|null} props.emailError - Error message for email input field.
+ * @param {Array} props.roles - List of roles available for selection.
+ * @param {Function} props.translateRole - Function to translate role names.
+ * 
+ * @returns {JSX.Element} Rendered CreateModal component with form elements and validation.
+ */
 function CreateModal({ isOpen, closeModalCreate, addUser, handleEmailChange, formData, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);

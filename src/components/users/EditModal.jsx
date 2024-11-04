@@ -7,12 +7,44 @@ import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
 import cruz_icon from "../../assets/cruz.png"
 
+/**
+ * EditModal component
+ * 
+ * This component provides a modal dialog for editing user information.
+ * It includes fields for updating the user's name, email, role, and profile picture.
+ * Upon submission, it validates input fields and displays feedback to the user.
+ * 
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Object} props.formData - Current form data for the user being edited.
+ * @param {Function} props.setFormData - Function to update form data.
+ * @param {boolean} props.isOpen - Controls whether the modal is visible.
+ * @param {Function} props.updateUserDetails - Function to submit the updated user data.
+ * @param {Function} props.closeModalEdit - Function to close the modal.
+ * @param {Object} props.selectedUser - The user object selected for editing.
+ * @param {Function} props.handleEmailChange - Function to handle changes in the email input.
+ * @param {string} props.usertypeError - Error message for the user type field, if any.
+ * @param {Function} props.setusertypeError - Function to set the user type error message.
+ * @param {Function} props.handleTypeChange - Function to handle changes in the user type selection.
+ * @param {string} props.nameError - Error message for the name field, if any.
+ * @param {Function} props.setNameError - Function to set the name error message.
+ * @param {Function} props.handleNameChange - Function to handle changes in the name input.
+ * @param {Function} props.handleFileChange - Function to handle changes in the profile picture input.
+ * @param {string} props.fileError - Error message for the profile picture field, if any.
+ * @param {Function} props.handleRemoveImage - Function to remove the profile picture.
+ * @param {Function} props.setEmailError - Function to set the email error message.
+ * @param {string} props.emailError - Error message for the email field, if any.
+ * @param {Array} props.roles - Array of role options for user type selection.
+ * @param {Function} props.translateRole - Function to translate the role name.
+ * 
+ * @returns {JSX.Element} Rendered EditModal component for editing user details.
+ */
 
-function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleEmailChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage , setEmailError, emailError, roles, translateRole }) {
+function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleEmailChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
 
-    
+
     useEffect(() => {
         if (selectedUser) {
             setFormData({
@@ -24,7 +56,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
             });
         }
     }, [selectedUser, setFormData]);
-    
+
 
     const getRoleName = (value, roles) => {
         const selectedRole = roles.find(option => option.id === value);
@@ -68,13 +100,13 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 name: formData.nombre,
                 email: formData.email,
                 role_id: formData.user_type,
-                profile_picture: 
-                    formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file 
-                        ? formData.profile_picture.file 
+                profile_picture:
+                    formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file
+                        ? formData.profile_picture.file
                         : formData.profile_picture || undefined
             };
-            
-            
+
+
             const { success, error } = await updateUserDetails(userData);
 
             if (success) {
@@ -85,7 +117,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                     }
                 });
 
-        
+
 
                 closeModalEdit();
             } else {
@@ -120,7 +152,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
 
     return (
         <Modal isOpen={isOpen} onOpenChange={closeModalEdit}
-        
+
             backdrop="opaque"
             placement='center'
             classNames={{
@@ -130,9 +162,9 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
             <ModalContent>
                 {() => (
                     <><ModalHeader role="heading" className="flex flex-col gap-1">
-                            Editar Usuario
-                        </ModalHeader>
-                        
+                        Editar Usuario
+                    </ModalHeader>
+
                         <ModalBody>
                             <form onSubmit={handleEdit}>
                                 <div className="grid gap-4 mb-4 grid-cols-2">
@@ -180,19 +212,19 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                                             : formData.profile_picture?.previewUrl}
                                                     />
 
-                                                     <Tooltip color='primary' content="Eliminar">
-                                                    <Button
-                                                        className="absolute top-2 right-2 bg-transparent z-10"
-                                                        onClick={handleRemoveImage}
-                                                        auto
-                                                        size="sm"
-                                                        isIconOnly
-                                                        variant="light"
-                                                    >
-                                                        <img src={cruz_icon} alt="Remove Icon" className="w-6 h-6" />
-                                                    </Button>
+                                                    <Tooltip color='primary' content="Eliminar">
+                                                        <Button
+                                                            className="absolute top-2 right-2 bg-transparent z-10"
+                                                            onClick={handleRemoveImage}
+                                                            auto
+                                                            size="sm"
+                                                            isIconOnly
+                                                            variant="light"
+                                                        >
+                                                            <img src={cruz_icon} alt="Remove Icon" className="w-6 h-6" />
+                                                        </Button>
                                                     </Tooltip>
-                                    
+
                                                 </div>
                                                 <CardFooter className="flex flex-col items-center justify-center bg-primary/40 before:bg-primary/10 border-primary/20 border-1 overflow-hidden py-2 absolute bottom-0 w-full shadow-small rounded-b-lg z-10">
                                                     <p className="text-tiny text-white text-center">Foto de perfil actual</p>

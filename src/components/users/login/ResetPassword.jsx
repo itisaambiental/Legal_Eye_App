@@ -5,6 +5,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import logo from "../../../assets/logo.png";
 import go_back from "../../../assets/volver.png";
 
+/**
+ * ResetPassword component
+ * 
+ * This component provides an interface for users to initiate a password reset process.
+ * It includes an input for the user's email address and submits a request to send a verification code 
+ * to the provided email. Upon successful submission, the user is redirected to a verification page.
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} - Rendered ResetPassword component.
+ */
+
 function ResetPassword() {
     const [isLoading, setIsLoading] = useState(true);
     const [email, setEmail] = useState("");
@@ -23,9 +35,9 @@ function ResetPassword() {
             navigate('/*', { replace: true });
         }
     }, [location, navigate]);
-    
 
-  
+
+
     useEffect(() => {
         setIsLoading(true);
         const timeout = setTimeout(() => {
@@ -60,7 +72,7 @@ function ResetPassword() {
                 const encodedEmail = encodeURIComponent(email);
                 navigate(`/reset-password/verify/${encodedEmail} `, { state: { fromRequest: true } });
 
-            } 
+            }
         }
     };
 
@@ -90,7 +102,7 @@ function ResetPassword() {
                         </button>
                     </div>
                     <div className="flex justify-center">
-                    <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
+                        <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
                         <h1 className="text-xl text-primary font-bold">Restablece tu contraseña</h1>

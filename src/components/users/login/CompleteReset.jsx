@@ -3,12 +3,19 @@ import { Spinner } from "@nextui-org/react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import logo from "../../../assets/logo.png";
 
+
+/**
+ * CompleteReset component
+ * This component provides the interface shown after a successful password reset.
+ * It displays a confirmation message and allows the user to navigate back to the login page.
+ * If accessed without a proper reset process, it redirects the user to a not-found page.
+ *
+ * @component
+ * @returns {JSX.Element} - Rendered CompleteReset component.
+ */
 function CompleteReset() {
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingToLogin, setIsLoadingToLogin] = useState(false);
-
-
-
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -20,7 +27,6 @@ function CompleteReset() {
     }, [location, navigate]);
 
 
-
     useEffect(() => {
         setIsLoading(true);
         const timeout = setTimeout(() => {
@@ -28,7 +34,6 @@ function CompleteReset() {
         }, 0);
         return () => clearTimeout(timeout);
     }, []);
-
 
 
     const handleGoToLogin = async () => {
@@ -54,7 +59,7 @@ function CompleteReset() {
                 <div className="bg-white w-full rounded-xl p-8 mb-8 relative flex flex-col items-center">
                     <div className="flex justify-center"></div>
                     <div className="flex justify-center">
-                    <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
+                        <img src={logo} className="h-24 w-24 ml-3 -mt-4" />
                     </div>
                     <div className="flex flex-col items-center gap-1 mb-8">
                         <h1 className="text-xl text-primary font-bold">Contraseña Actualizada</h1>

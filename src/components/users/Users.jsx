@@ -16,7 +16,6 @@ import check from "../../assets/check.png"
 import { toast } from "react-toastify";
 import EditModal from "./EditModal.jsx";
 
-
 const columns = [
   { name: "Nombre", uid: "name" },
   { name: "Rol", uid: "role" },
@@ -35,6 +34,18 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+
+/**
+ * Users component
+ * 
+ * This component provides a user management interface, including features for listing, filtering, 
+ * pagination, role-based filtering, and CRUD operations. Users can be added, edited, or deleted, 
+ * with appropriate feedback displayed for each action.
+ * 
+ * @returns {JSX.Element} Rendered Users component, displaying the user management interface with 
+ * filters, pagination, and modals for adding, editing, and deleting users.
+ * 
+ */
 export default function Users() {
   const { users, loading, error, addUser, updateUserDetails, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
   const [filterValue, setFilterValue] = useState("");
@@ -245,6 +256,10 @@ export default function Users() {
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setSelectedUser(null);
+    setFileError(null)
+    setNameError(null)
+    setEmailError(null)
+    setusertypeError(null)
   };
 
 
@@ -278,7 +293,7 @@ export default function Users() {
             >
               <DropdownTrigger>
                 <Button
-                  variant="bordered"
+                  variant="light"
                   color="primary"
                   size="sm"
                   isIconOnly
@@ -289,7 +304,7 @@ export default function Users() {
                   {deletingUserId === user.id ? (
                     <Spinner size="sm" color="primary" />
                   ) : (
-                    <img src={menu_icon} alt="Menu" className="w-4 h-4" />
+                    <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                   )}
                 </Button>
               </DropdownTrigger>

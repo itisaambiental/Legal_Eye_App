@@ -4,6 +4,7 @@ import getSubjects from '../../server/subjectService/getSubjects.js';
 import createNewSubject from '../../server/subjectService/createSubject.js';
 import updateSubject from '../../server/subjectService/updateSubject.js';
 import deleteSubject from '../../server/subjectService/deleteSubject.js';
+import deleteSubjects from '../../server/subjectService/deleteSubjects.js';
 
 /**
  * Custom hook for managing subjects and performing CRUD operations.
@@ -79,45 +80,52 @@ export default function useSubjects() {
         }
     }, [jwt]);
 
-    /**
-     * Updates an existing subject by ID.
-     * @async
-     * @function modifySubject
-     * @param {string} id - The ID of the subject to update.
-     * @param {string} subjectName - The new name of the subject.
-     * @returns {Promise<Object>} - Result of the operation with success status and updated subject or error message.
-     * @throws {Object} - Returns an error message if the update fails.
-     */
-    const modifySubject = useCallback(async (id, subjectName) => {
-        try {
-            const updatedSubject = await updateSubject({ id, subjectName, token: jwt });
-            setSubjects(prevSubjects =>
-                prevSubjects.map(subject =>
-                    subject.id === id ? updatedSubject : subject
-                )
-            );
-            return { success: true, subject: updatedSubject };
-        } catch (error) {
-            console.error('Error updating subject:', error);
-            let errorMessage;
+   /**
+ * Updates an existing subject by ID.
+ * @async
+ * @function modifySubject
+ * @param {string} id - The ID of the subject to update.
+ * @param {string} subjectName - The new name of the subject.
+ * @returns {Promise<Object>} - Result of the operation with success status and updated subject or error message.
+ * @throws {Object} - Returns an error message if the update fails.
+ */
+const modifySubject = useCallback(async (id, subjectName) => {
+    try {
+        const updatedSubject = await updateSubject({ id, subjectName, token: jwt });
+        const formattedSubject = {
+            id: updatedSubject.id,
+            subject_name: updatedSubject.subjectName  
+        };
 
-            if (error.response && error.response.status === 400) {
-                errorMessage = error.response.data.message || 'Error de validación';
-            } else if (error.response && error.response.status === 403) {
-                errorMessage = 'No autorizado para actualizar el subject';
-            } else if (error.response && error.response.status === 404) {
-                errorMessage = 'Subject no encontrado';
-            } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión durante la actualización';
-            } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error interno del servidor';
-            } else {
-                errorMessage = 'Error inesperado durante la actualización';
-            }
+        setSubjects(prevSubjects =>
+            prevSubjects.map(subject =>
+                subject.id === id ? formattedSubject : subject
+            )
+        );
+        
+        return { success: true, subject: formattedSubject };
+    } catch (error) {
+        console.error('Error updating subject:', error);
+        let errorMessage;
 
-            return { success: false, error: errorMessage };
+        if (error.response && error.response.status === 400) {
+            errorMessage = error.response.data.message || 'Error de validación';
+        } else if (error.response && error.response.status === 403) {
+            errorMessage = 'No autorizado para actualizar el subject';
+        } else if (error.response && error.response.status === 404) {
+            errorMessage = 'Subject no encontrado';
+        } else if (error.message === 'Network Error') {
+            errorMessage = 'Error de conexión durante la actualización';
+        } else if (error.response && error.response.status === 500) {
+            errorMessage = 'Error interno del servidor';
+        } else {
+            errorMessage = 'Error inesperado durante la actualización';
         }
-    }, [jwt]);
+
+        return { success: false, error: errorMessage };
+    }
+}, [jwt]);
+
 
     /**
      * Deletes an existing subject by ID.
@@ -152,6 +160,44 @@ export default function useSubjects() {
         }
     }, [jwt]);
 
+
+/**
+ * Deletes multiple subjects by their IDs.
+ * @param {Array<number>} subjectIds - Array of subject IDs to delete.
+ * @returns {Promise<Object>} - Success status or error message.
+ */
+const deleteSubjectsBatch = useCallback(async (subjectIds) => {
+    try {
+        const success = await deleteSubjects({ subjectIds, token: jwt });
+
+        if (success) {
+            setSubjects(prevSubjects => prevSubjects.filter(subject => !subjectIds.includes(subject.id)));
+            return { success: true };
+        } else {
+            throw new Error('Failed to delete subjects');
+        }
+    } catch (error) {
+        console.error('Error deleting subjects batch:', error);
+        let errorMessage;
+
+        if (error.response && error.response.status === 400) {
+            errorMessage = 'Faltan campos requeridos: subjectIds';
+        } else if (error.response && error.response.status === 403) {
+            errorMessage = 'No autorizado para eliminar materias';
+        } else if (error.response && error.response.status === 404) {
+            errorMessage = error.response.data.message || 'Una o más materias no encontradas';
+        } else if (error.message === 'Network Error') {
+            errorMessage = 'Error de conexión al eliminar materias';
+        } else if (error.response && error.response.status === 500) {
+            errorMessage = 'Error interno del servidor';
+        } else {
+            errorMessage = 'Error inesperado al eliminar materias';
+        }
+
+        return { success: false, error: errorMessage };
+    }
+}, [jwt]);
+
     useEffect(() => {
         fetchSubjects();
     }, [fetchSubjects]);
@@ -164,6 +210,7 @@ export default function useSubjects() {
         addSubject,
         modifySubject,
         removeSubject,
+        deleteSubjectsBatch,
         setSubjects,
     };
 }

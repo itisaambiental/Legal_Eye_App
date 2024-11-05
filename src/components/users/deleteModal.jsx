@@ -39,26 +39,39 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
       const { success, error } = await deleteUsersBatch(userIds);
 
       if (success) {
-        if (userIds.length <= 1) {
-          toast.success('Usuario eliminado con éxito', {
+        toast.success(
+          userIds.length <= 1 ? 'Usuario eliminado con éxito' : 'Usuarios eliminados con éxito',
+          {
             icon: () => <img src={check} alt="Success Icon" />,
             progressStyle: { background: '#113c53' },
-          });
-        } else {
-          toast.success('Usuarios eliminados con éxito', {
-            icon: () => <img src={check} alt="Success Icon" />,
-            progressStyle: { background: '#113c53' },
-          });
-        }
+          }
+        );
         setSelectedKeys(new Set());
         setShowDeleteModal(false);
       } else {
-        const errorMessage = error || 'Ocurrió un error inesperado al eliminar los usuarios. Intenta nuevamente.';
-        toast.error(errorMessage);
+        switch (error) {
+          case 'Faltan campos requeridos: userIds':
+            toast.error('Faltan campos requeridos: userIds');
+            break;
+          case 'No autorizado para eliminar usuarios':
+            toast.error('No tienes autorización para eliminar estos usuarios.');
+            break;
+          case 'Uno o más usuarios no encontrados':
+            toast.error('Uno o más usuarios no fueron encontrados.');
+            break;
+          case 'Error de conexión al eliminar usuarios':
+            toast.error('Error de red. Revisa tu conexión a internet e intenta de nuevo.');
+            break;
+          case 'Error interno del servidor':
+            toast.error('Error interno del servidor. Intenta más tarde.');
+            break;
+          default:
+            toast.error('Ocurrió un error inesperado al eliminar los usuarios. Intenta nuevamente.');
+        }
       }
     } catch (error) {
       console.error(error);
-      toast.error('Algo mal sucedió al eliminar los usuarios. Intente de nuevo');
+      toast.error('Algo salió mal al eliminar los usuarios. Intente de nuevo');
     } finally {
       setIsDeletingBatch(false);
     }

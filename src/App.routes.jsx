@@ -10,6 +10,7 @@ import AccessAdmin from './middleware/access_admin.jsx'
 import Dashboard from "./components/Dashboard.jsx"
 import Home from './components/Home.jsx'
 import Users from './components/users/Users.jsx'
+import Subjects from './components/subjects/Subjects.jsx'
 
 /**
  * Application routing component.
@@ -31,8 +32,8 @@ const AppRoutes = () => {
       <Route element={<AccessUser element={<Dashboard />} />}>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<AccessAdmin element={<Users />} />} />
+        <Route path="/subjects" element={<Subjects />} />
         <Route path="/legal_basis" element={<Home />} />
-        <Route path="/subjects" element={<Home />} />
       </Route>
 
       {/* Error and Unauthorized routes */}

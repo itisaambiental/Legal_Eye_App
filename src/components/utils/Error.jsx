@@ -21,7 +21,7 @@ function Error(props) {
 
   let displayMessage;
   
-  if (message === 'Network error') {
+  if (message === 'Network error' || message === 'Error de conexión') {
     displayMessage = "Error de conexión. Revisa tu conexión a Internet e intenta de nuevo.";
   } else if (message === 'Unauthorized access') {
     displayMessage = "Recurso no permitido. Asegúrate de tener los permisos necesarios.";

@@ -205,16 +205,21 @@ export default function Users() {
           }
         });
       } else {
-        if (error === 'User not found') {
-          toast.error('El usuario no fue encontrado.');
-        } else if (error === 'Unauthorized') {
-          toast.error('No tienes autorización para eliminar este usuario.');
-        } else if (error === 'Network error occurred while deleting') {
-          toast.error('Ocurrió un error de red. Revisa tu conexión e intenta de nuevo.');
-        } else if (error === 'Internal server error') {
-          toast.error('Error interno del servidor. Intenta más tarde.');
-        } else {
-          toast.error('Ocurrió un error inesperado al eliminar el usuario. Intenta nuevamente.');
+        switch (error) {
+          case 'User not found':
+            toast.error('El usuario no fue encontrado.');
+            break;
+          case 'Unauthorized':
+            toast.error('No tienes autorización para eliminar este usuario.');
+            break;
+          case 'Network error occurred while deleting':
+            toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
+            break;
+          case 'Internal server error':
+            toast.error('Error interno del servidor. Intenta más tarde.');
+            break;
+          default:
+            toast.error('Ocurrió un error inesperado al eliminar el usuario. Intenta nuevamente.');
         }
       }
     } catch (error) {
@@ -371,9 +376,6 @@ export default function Users() {
         openModalCreate={openModalCreate}
         onFilterChange={handleFilterChange}
         onClear={onClear}
-        fetchUsers={fetchUsers}
-        fetchUsersByRole={fetchUsersByRole}
-        users={users}
         selectedValue={selectedValue}
         selectedRoleKeys={selectedRoleKeys}
         onRoleChange={onRoleChange}

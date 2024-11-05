@@ -18,7 +18,6 @@ export default async function deleteUsers({ userIds, token }) {
         const response = await server.delete('/users/batch', {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
             },
             data: { userIds }
         })

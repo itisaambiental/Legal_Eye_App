@@ -132,7 +132,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                         toast.error('No tienes autorización para actualizar este usuario.');
                         break;
                     case 'Network error occurred while updating':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión e intenta de nuevo.');
+                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
                         break;
                     case 'Internal server error':
                         toast.error('Error interno del servidor. Intenta más tarde.');

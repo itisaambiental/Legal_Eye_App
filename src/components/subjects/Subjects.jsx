@@ -43,7 +43,6 @@ export default function Subjects() {
     const [nameError, setNameError] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeletingBatch, setIsDeletingBatch] = useState(false);
-    const [deletingSubjectId, setDeletingSubjectId] = useState(null);
     const [formData, setFormData] = useState({
         id: '',
         nombre: '',
@@ -84,7 +83,6 @@ export default function Subjects() {
 
 
     const handleDelete = useCallback(async (subjectId) => {
-        setDeletingSubjectId(subjectId);
         try {
             const { success, error } = await removeSubject(subjectId);
             if (success) {
@@ -115,8 +113,6 @@ export default function Subjects() {
         } catch (error) {
             console.error(error);
             toast.error('Algo salió mal al eliminar la materia. Intente de nuevo');
-        } finally {
-            setDeletingSubjectId(null);
         }
     }, [removeSubject]);
 
@@ -169,14 +165,10 @@ export default function Subjects() {
                                     isIconOnly
                                     auto
                                     aria-label="Opciones"
-                                    disabled={deletingSubjectId === subject.id}
                                 >
-                                    {deletingSubjectId === subject.id ? (
-                                        <Spinner size="sm" color="primary" />
-                                    ) : (
-                                        <img src={menu_icon} alt="Menu" className="w-6 h-6" />
-                                    )}
+                                    <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                                 </Button>
+
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Opciones de materia" variant="light">
                                 <DropdownItem
@@ -215,7 +207,7 @@ export default function Subjects() {
             default:
                 return null;
         }
-    }, [deletingSubjectId, handleDelete]);
+    }, [handleDelete]);
 
     const onRowsPerPageChange = useCallback((e) => {
         setRowsPerPage(Number(e.target.value));

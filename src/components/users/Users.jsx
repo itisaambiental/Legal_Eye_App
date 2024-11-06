@@ -61,7 +61,6 @@ export default function Users() {
   const [emailError, setEmailError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
-  const [deletingUserId, setDeletingUserId] = useState(null);
   const [fileError, setFileError] = useState(null);
   const [selectedRoleKeys, setSelectedRoleKeys] = useState(new Set(["0"]));
   const [selectedValue, setSelectedValue] = useState("Todos los Roles");
@@ -192,8 +191,6 @@ export default function Users() {
 
 
   const handleDelete = useCallback(async (userId) => {
-    setDeletingUserId(userId);
-
     try {
       const { success, error } = await deleteUser(userId);
 
@@ -225,8 +222,6 @@ export default function Users() {
     } catch (error) {
       console.error(error);
       toast.error('Algo mal sucedió al eliminar el usuario. Intente de nuevo');
-    } finally {
-      setDeletingUserId(null);
     }
   }, [deleteUser]);
 
@@ -304,13 +299,9 @@ export default function Users() {
                   isIconOnly
                   auto
                   aria-label="Opciones"
-                  disabled={deletingUserId === user.id}
+                 
                 >
-                  {deletingUserId === user.id ? (
-                    <Spinner size="sm" color="primary" />
-                  ) : (
-                    <img src={menu_icon} alt="Menu" className="w-6 h-6" />
-                  )}
+                <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">
@@ -343,7 +334,7 @@ export default function Users() {
       default:
         return null;
     }
-  }, [deletingUserId, handleDelete]);
+  }, [handleDelete]);
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));

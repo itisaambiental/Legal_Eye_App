@@ -173,9 +173,9 @@ export default function Subjects() {
                             <DropdownMenu aria-label="Opciones de materia" variant="light">
                                 <DropdownItem
                                     aria-label="Ver Aspectos"
-                                    startContent={<img src={watch_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
+                                    startContent={<img src={watch_icon} alt="Watch Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-primary/20"
-                                    key="edit"
+                                    key="watch"
                                     textValue="Ver Aspectos"
                                 >
                                     <p className="font-normal text-primary">Ver Aspectos</p>
@@ -216,7 +216,7 @@ export default function Subjects() {
 
     if (loading) {
         return (
-            <div className="fixed inset-0 flex items-center justify-center">
+            <div role="status" className="fixed inset-0 flex items-center justify-center">
                 <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
             </div>
         );

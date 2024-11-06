@@ -59,6 +59,18 @@ describe("Users Component", () => {
     expect(screen.getByText("analyst@ejemplo.com")).toBeInTheDocument();
     expect(screen.getByText("Analista")).toBeInTheDocument();
   });
+
+  test("shows a loading indicator when users are loading", () => {
+    useUsers.mockReturnValueOnce({ ...useUsers(), loading: true });
+    render(<Users />);
+    expect(screen.getByRole("status")).toBeInTheDocument();
+  });
+
+  test("displays an error message if there is an error loading users", () => {
+    useUsers.mockReturnValueOnce({ ...useUsers(), error: "Failed to load users" });
+    render(<Users />);
+    expect(screen.getByText("Failed to load users")).toBeInTheDocument();
+  });
 });
 
 describe("Users Component with no users", () => {
@@ -115,7 +127,5 @@ describe("Users Component - Edit Modal", () => {
     const emailInput = screen.getByDisplayValue("admin@ejemplo.com");
     expect(nameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
-});
-
-
+  });
 });

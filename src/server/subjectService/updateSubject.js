@@ -19,7 +19,6 @@ export default async function updateSubject({ id, subjectName, token }) {
         const response = await server.patch(`/subject/${id}`, { subjectName }, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
             }
         })
 

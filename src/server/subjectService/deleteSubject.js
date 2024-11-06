@@ -18,7 +18,6 @@ export default async function deleteSubject({ id, token }) {
         const response = await server.delete(`/subject/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
             }
         })
 

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import CreateModal from "./CreateModal";
 import { useState } from "react";
 
-describe("CreateModal Component", () => {
+describe("CreateModal Component for Users", () => {
     const mockCloseModalCreate = vi.fn();
     const mockAddUser = vi.fn();
     const mockSetNameError = vi.fn();
@@ -56,6 +56,15 @@ describe("CreateModal Component", () => {
         render(<TestCreateModalComponent />);
     });
 
+    beforeAll(() => {
+        global.ResizeObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        };
+    });
+    
+
     test("modal opens with empty fields", () => {
         expect(screen.getByLabelText("Nombre")).toHaveValue("");
         expect(screen.getByLabelText("Correo Electrónico")).toHaveValue("");
@@ -72,39 +81,66 @@ describe("CreateModal Component", () => {
         const nameInput = screen.getByLabelText("Nombre");
         fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
         expect(nameInput).toHaveValue("Nuevo Nombre");
+
         const submitButton = screen.getByText("Registrar Usuario");
         await act(async () => {
             fireEvent.click(submitButton);
         });
+
         expect(mockSetNameError).not.toHaveBeenCalledWith("Este campo es obligatorio");
         expect(mockSetEmailError).toHaveBeenCalledWith("Este campo es obligatorio");
     });
+
     test("displays email error when email format is incorrect", async () => {
-      const nameInput = screen.getByLabelText("Nombre");
-      fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
+        const nameInput = screen.getByLabelText("Nombre");
+        fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
 
-      const emailInput = screen.getByLabelText("Correo Electrónico");
-      fireEvent.change(emailInput, { target: { value: "example@gmail.com" } });
+        const emailInput = screen.getByLabelText("Correo Electrónico");
+        fireEvent.change(emailInput, { target: { value: "example@gmail.com" } });
 
-      const submitButton = screen.getByText("Registrar Usuario");
-      await act(async () => {
-          fireEvent.click(submitButton);
-      });
+        const submitButton = screen.getByText("Registrar Usuario");
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
 
-      expect(mockSetEmailError).toHaveBeenCalledWith("El correo debe terminar con @isaambiental.com");
-  });
-  test("displays user type error when user type is not filled", async () => {
-    const nameInput = screen.getByLabelText("Nombre");
-    fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
-
-    const emailInput = screen.getByLabelText("Correo Electrónico");
-    fireEvent.change(emailInput, { target: { value: "usuario@isaambiental.com" } });
-
-    const submitButton = screen.getByText("Registrar Usuario");
-    await act(async () => {
-        fireEvent.click(submitButton);
+        expect(mockSetEmailError).toHaveBeenCalledWith("El correo debe terminar con @isaambiental.com");
     });
 
-    expect(mockSetusertypeError).toHaveBeenCalledWith("Este campo es obligatorio");
-});
+    test("displays user type error when user type is not filled", async () => {
+        const nameInput = screen.getByLabelText("Nombre");
+        fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
+
+        const emailInput = screen.getByLabelText("Correo Electrónico");
+        fireEvent.change(emailInput, { target: { value: "usuario@isaambiental.com" } });
+
+        const submitButton = screen.getByText("Registrar Usuario");
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        expect(mockSetusertypeError).toHaveBeenCalledWith("Este campo es obligatorio");
+    });
+
+    test("closes the modal on successful user creation", async () => {
+        mockAddUser.mockResolvedValueOnce({ success: true });
+    
+        const nameInput = screen.getByLabelText("Nombre");
+        fireEvent.change(nameInput, { target: { value: "Nuevo Nombre" } });
+    
+        const emailInput = screen.getByLabelText("Correo Electrónico");
+        fireEvent.change(emailInput, { target: { value: "usuario@isaambiental.com" } });
+    
+        const userTypeDropdown = screen.getByText("Selecciona el tipo de usuario");
+        fireEvent.click(userTypeDropdown);
+        const userTypeOption = screen.getByText("Admin");
+        fireEvent.click(userTypeOption);
+    
+        const submitButton = screen.getByText("Registrar Usuario");
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+    
+        expect(mockCloseModalCreate).toHaveBeenCalled();
+    });
+    
 });

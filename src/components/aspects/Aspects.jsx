@@ -1,5 +1,7 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import useAspects from "../../hooks/aspect/useAspects.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
@@ -8,55 +10,80 @@ import Error from "../utils/Error.jsx";
 import menu_icon from "../../assets/aplicaciones.png"
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
-import watch_icon from "../../assets/ver.png";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
 import { toast } from "react-toastify";
 import EditModal from "./EditModal.jsx";
-import { useNavigate } from "react-router-dom";
 
 const columns = [
-    { name: "Materia", uid: "subject_name" },
+    { name: "Aspecto", uid: "aspect_name" },
     { name: "Acciones", uid: "actions" }
 ];
 
 /**
- * Subjects component
+ * Aspects component
  *
- * This component provides an interface for managing subjects, including features for listing,
- * pagination, and CRUD operations. Subjects can be added, edited, or deleted, with appropriate
+ * This component provides an interface for managing aspects, including features for listing,
+ * pagination, and CRUD operations. Aspects can be added, edited, or deleted, with appropriate
  * feedback displayed for each action.
  *
- * @returns {JSX.Element} Rendered Subjects component, displaying the subject management interface with
- * filters, pagination, and modals for adding, editing, and deleting subjects.
+ * @returns {JSX.Element} Rendered Aspects component, displaying the aspect management interface with
+ * filters, pagination, and modals for adding, editing, and deleting aspects.
  *
  */
-export default function Subjects() {
-    const { subjects, loading, error, addSubject, modifySubject, removeSubject, deleteSubjectsBatch } = useSubjects();
-    const navigate = useNavigate();
+
+export default function Aspects() {
+    const { id } = useParams(); 
+    const [loadingAspects, setLoadingAspects] = useState(true);
+    const [ subjectName, setSubjectName ] = useState(null); 
+    const { aspects, loading, error,  fetchAspects, addAspect, modifyAspect, removeAspect, deleteAspectsBatch } = useAspects();
+    const { fetchSubjectById, loading: subjectLoading, error: subjectError  } = useSubjects();
     const [filterValue, setFilterValue] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(1);
     const [selectedKeys, setSelectedKeys] = useState(new Set());
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedSubject, setSelectedSubject] = useState(null);
+    const [selectedAspect, setSelectedAspect] = useState(null);
     const [nameError, setNameError] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeletingBatch, setIsDeletingBatch] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
         nombre: '',
+        subject_id: '',
+        subject_name: '',
     });
-    const filteredSubjects = useMemo(() => {
-        if (!filterValue) return subjects;
 
-        return subjects.filter(subject =>
-            subject.subject_name.toLowerCase().includes(filterValue.toLowerCase())
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id) {
+                setLoadingAspects(true)
+                await fetchAspects(id);
+                const { success, data } = await fetchSubjectById(id);
+                if (success && data) {
+                    setSubjectName(data.subject_name);
+                } else {
+                    setSubjectName(null); 
+                }
+                setLoadingAspects(false)
+            }
+        };
+    
+        fetchData();
+    }, [id, fetchAspects, fetchSubjectById]);
+    
+    
+    
+    const filteredAspects = useMemo(() => {
+        if (!filterValue) return aspects;
+        return aspects.filter(aspect =>
+            aspect.aspect_name.toLowerCase().includes(filterValue.toLowerCase())
         );
-    }, [subjects, filterValue]);
-    const totalPages = useMemo(() => Math.ceil(filteredSubjects.length / rowsPerPage), [filteredSubjects, rowsPerPage]);
+    }, [aspects, filterValue]);
+
+    const totalPages = useMemo(() => Math.ceil(filteredAspects.length / rowsPerPage), [filteredAspects, rowsPerPage]);
 
     const handleFilterChange = useCallback((value) => {
         if (value) {
@@ -84,11 +111,11 @@ export default function Subjects() {
     }, [])
 
 
-    const handleDelete = useCallback(async (subjectId) => {
+    const handleDelete = useCallback(async (aspectId) => {
         try {
-            const { success, error } = await removeSubject(subjectId);
+            const { success, error } = await removeAspect(aspectId);
             if (success) {
-                toast.success('Materia eliminada con éxito', {
+                toast.success('Aspecto eliminado con éxito', {
                     icon: () => <img src={check} alt="Success Icon" />,
                     progressStyle: {
                         background: '#113c53',
@@ -96,11 +123,11 @@ export default function Subjects() {
                 });
             } else {
                 switch (error) {
-                    case 'No autorizado para eliminar el subject':
-                        toast.error('No tienes autorización para eliminar esta materia.');
+                    case 'No autorizado para eliminar el aspecto':
+                        toast.error('No tienes autorización para eliminar este aspecto.');
                         break;
-                    case 'Subject no encontrado':
-                        toast.error('La materia no fue encontrada.');
+                    case 'Aspecto no encontrado':
+                        toast.error('El aspecto no fue encontrado.');
                         break;
                     case 'Error de conexión durante la eliminación':
                         toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
@@ -109,14 +136,14 @@ export default function Subjects() {
                         toast.error('Error interno del servidor. Intenta más tarde.');
                         break;
                     default:
-                        toast.error('Ocurrió un error inesperado al eliminar la materia. Intenta nuevamente.');
+                        toast.error('Ocurrió un error inesperado al eliminar el aspecto. Intenta nuevamente.');
                 }
             }
         } catch (error) {
             console.error(error);
-            toast.error('Algo salió mal al eliminar la materia. Intente de nuevo');
+            toast.error('Algo salió mal al eliminar el aspecto. Intente de nuevo');
         }
-    }, [removeSubject]);
+    }, [removeAspect]);
 
     const openDeleteModal = () => setShowDeleteModal(true);
     const closeDeleteModal = () => setShowDeleteModal(false);
@@ -125,6 +152,8 @@ export default function Subjects() {
         setFormData({
             id: '',
             nombre: '',
+            subject_id: id,
+            subject_name: subjectName,
         });
         setIsCreateModalOpen(true)
     }
@@ -135,14 +164,14 @@ export default function Subjects() {
         setNameError(null)
     }
 
-    const openEditModal = (subject) => {
-        setSelectedSubject(subject);
+    const openEditModal = (aspect) => {
+        setSelectedAspect(aspect);
         setIsEditModalOpen(true);
     };
 
     const closeEditModal = () => {
         setIsEditModalOpen(false);
-        setSelectedSubject(null);
+        setSelectedAspect(null);
         setNameError(null)
     };
 
@@ -151,13 +180,10 @@ export default function Subjects() {
     const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
     const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
 
-    const renderCell = useCallback((subject, columnKey) => {
-        const goToAspects = (subjectId) => { 
-            navigate(`/subjects/${subjectId}/aspects`);
-        };
+    const renderCell = useCallback((aspect, columnKey) => {
         switch (columnKey) {
-            case "subject_name":
-                return <p className="text-sm font-normal">{subject.subject_name}</p>;
+            case "aspect_name":
+                return <p className="text-sm font-normal">{aspect.aspect_name}</p>;
             case "actions":
                 return (
                     <div className="relative flex items-center justify-center gap-2">
@@ -173,38 +199,27 @@ export default function Subjects() {
                                 >
                                     <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                                 </Button>
-
                             </DropdownTrigger>
-                            <DropdownMenu aria-label="Opciones de materia" variant="light">
+                            <DropdownMenu aria-label="Opciones de aspecto" variant="light">
                                 <DropdownItem
-                                    aria-label="Ver Aspectos"
-                                    startContent={<img src={watch_icon} alt="Watch Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-primary/20"
-                                    key="watch"
-                                    onClick={() => goToAspects(subject.id)}
-                                    textValue="Ver Aspectos"
-                                >
-                                    <p className="font-normal text-primary">Ver Aspectos</p>
-                                </DropdownItem>
-                                <DropdownItem
-                                    aria-label="Editar Materia"
+                                    aria-label="Editar Aspecto"
                                     startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-primary/20"
                                     key="edit"
-                                    onClick={() => openEditModal(subject)}
-                                    textValue="Editar Materia"
+                                    onClick={() => openEditModal(aspect)}
+                                    textValue="Editar Aspecto"
                                 >
-                                    <p className="font-normal text-primary">Editar Materia</p>
+                                    <p className="font-normal text-primary">Editar Aspecto</p>
                                 </DropdownItem>
                                 <DropdownItem
-                                    aria-label="Eliminar Materia"
+                                    aria-label="Eliminar Aspecto"
                                     startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-red/20"
                                     key="delete"
-                                    onClick={() => handleDelete(subject.id)}
-                                    textValue="Eliminar Materia"
+                                    onClick={() => handleDelete(aspect.id)}
+                                    textValue="Eliminar Aspecto"
                                 >
-                                    <p className="font-normal text-red">Eliminar Materia</p>
+                                    <p className="font-normal text-red">Eliminar Aspecto</p>
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
@@ -213,14 +228,14 @@ export default function Subjects() {
             default:
                 return null;
         }
-    }, [handleDelete, navigate]);
+    }, [handleDelete]);
 
     const onRowsPerPageChange = useCallback((e) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
     }, []);
 
-    if (loading) {
+    if (loading || subjectLoading || loadingAspects) {
         return (
             <div role="status" className="fixed inset-0 flex items-center justify-center">
                 <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
@@ -231,12 +246,15 @@ export default function Subjects() {
     if (error) {
         return <Error message={error} />;
     }
+    if (subjectError) {
+        return <Error message={error} />;
+    }
     return (
         <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
-
             <TopContent
+                subjectName={subjectName}
                 onRowsPerPageChange={onRowsPerPageChange}
-                totalSubjects={filteredSubjects.length}
+                totalAspects={filteredAspects.length}
                 openModalCreate={openModalCreate}
                 onFilterChange={handleFilterChange}
                 onClear={onClear}
@@ -244,7 +262,7 @@ export default function Subjects() {
 
 
             <Table
-                aria-label="Tabla de Materias"
+                aria-label="Tabla de Aspectos"
                 selectionMode="multiple"
                 selectedKeys={selectedKeys}
                 onSelectionChange={setSelectedKeys}
@@ -258,13 +276,13 @@ export default function Subjects() {
                     )}
                 </TableHeader>
                 <TableBody
-                    items={filteredSubjects.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
-                    emptyContent="No hay materias para mostrar"
+                    items={filteredAspects.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+                    emptyContent="No hay aspectos para mostrar"
                 >
-                    {(subject) => (
-                        <TableRow key={subject.id}>
+                    {(aspect) => (
+                        <TableRow key={aspect.id}>
                             {(columnKey) => (
-                                <TableCell>{renderCell(subject, columnKey)}</TableCell>
+                                <TableCell>{renderCell(aspect, columnKey)}</TableCell>
                             )}
                         </TableRow>
                     )}
@@ -293,13 +311,13 @@ export default function Subjects() {
                 onPreviousPage={onPreviousPage}
                 onNextPage={onNextPage}
                 selectedKeys={selectedKeys}
-                filteredItems={subjects}
+                filteredItems={aspects}
             />
             {isCreateModalOpen && (
                 <CreateModal
                     closeModalCreate={closeModalCreate}
                     isOpen={isCreateModalOpen}
-                    addSubject={addSubject}
+                    addAspect={addAspect}
                     formData={formData}
                     nameError={nameError}
                     setNameError={setNameError}
@@ -307,20 +325,20 @@ export default function Subjects() {
 
                 />
             )}
-            {isEditModalOpen && (
+             {isEditModalOpen && (
                 <EditModal
                     formData={formData}
                     setFormData={setFormData}
-                    selectedSubject={selectedSubject}
+                    selectedAspect={selectedAspect}
                     closeModalEdit={closeEditModal}
                     isOpen={isEditModalOpen}
-                    updateSubject={modifySubject}
+                    updateAspect={modifyAspect}
                     nameError={nameError}
                     setNameError={setNameError}
                     handleNameChange={handleNameChange}
                 />
             )}
-
+ 
             {showDeleteModal && (
                 <DeleteModal
                     showDeleteModal={showDeleteModal}
@@ -328,14 +346,14 @@ export default function Subjects() {
                     setIsDeletingBatch={setIsDeletingBatch}
                     isDeletingBatch={isDeletingBatch}
                     selectedKeys={selectedKeys}
-                    subjects={subjects}
-                    deleteSubjectsBatch={deleteSubjectsBatch}
+                    aspects={aspects}
+                    deleteAspectsBatch={deleteAspectsBatch}
                     setShowDeleteModal={setShowDeleteModal}
                     setSelectedKeys={setSelectedKeys}
                     check={check}
 
                 />
-            )}
+            )}  
         </div>
 
     );

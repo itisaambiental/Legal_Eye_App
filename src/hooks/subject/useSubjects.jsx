@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
 import getSubjects from '../../server/subjectService/getSubjects.js';
+import getSubjectById from '../../server/subjectService/getSubjectById.js';
 import createNewSubject from '../../server/subjectService/createSubject.js';
 import updateSubject from '../../server/subjectService/updateSubject.js';
 import deleteSubject from '../../server/subjectService/deleteSubject.js';
@@ -44,6 +45,40 @@ export default function useSubjects() {
             }
 
             setStateSubjects({ loading: false, error: errorMessage });
+        }
+    }, [jwt]);
+
+      /**
+     * Fetches a specific subject by its ID.
+     * @async
+     * @function fetchSubjectById
+     * @param {number} subjectId - The ID of the subject to retrieve.
+     * @returns {Promise<Object|null>} - The retrieved subject data or null if an error occurs.
+     */
+      const fetchSubjectById = useCallback(async (subjectId) => {
+        setStateSubjects({ loading: true, error: null });
+
+        try {
+            const subject = await getSubjectById({ subjectId, token: jwt });
+            setStateSubjects({ loading: false, error: null });
+            return { success: true, data: subject };
+        } catch (error) {
+            console.error('Error fetching subject by ID:', error);
+            let errorMessage;
+            if (error.response && error.response.status === 403) {
+                errorMessage = 'Acceso no autorizado';
+            } else if (error.response && error.response.status === 404) {
+                errorMessage = 'Materia no encontrada';
+            } else if (error.message === 'Network Error') {
+                errorMessage = 'Error de conexión';
+            } else if (error.response && error.response.status === 500) {
+                errorMessage = 'Error interno del servidor';
+            } else {
+                errorMessage = 'Error inesperado';
+            }
+
+            setStateSubjects({ loading: false, error: errorMessage });
+            return { success: false, error: errorMessage };
         }
     }, [jwt]);
 
@@ -207,6 +242,7 @@ const deleteSubjectsBatch = useCallback(async (subjectIds) => {
         loading: stateSubjects.loading,
         error: stateSubjects.error,
         fetchSubjects,
+        fetchSubjectById,
         addSubject,
         modifySubject,
         removeSubject,

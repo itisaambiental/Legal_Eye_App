@@ -11,6 +11,8 @@ import Dashboard from "./components/Dashboard.jsx"
 import Home from './components/Home.jsx'
 import Users from './components/users/Users.jsx'
 import Subjects from './components/subjects/Subjects.jsx'
+import Aspects from './components/aspects/Aspects.jsx'
+
 
 /**
  * Application routing component.
@@ -33,6 +35,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<AccessAdmin element={<Users />} />} />
         <Route path="/subjects" element={<Subjects />} />
+        <Route path="/subjects/:id/aspects" element={<Aspects />} />
         <Route path="/legal_basis" element={<Home />} />
       </Route>
 

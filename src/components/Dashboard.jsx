@@ -122,7 +122,7 @@ function Dashboard() {
                             </li>
                         )}
                          <li>
-                            <Link to="/subjects" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === '/subjects' ? 'bg-white/20' : ''}`}>
+                            <Link to="/subjects" className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${/\/subjects(\/\d+\/aspects)?$/.test(location.pathname) ? 'bg-white/20' : ''}`}>
                                 <img src={materias_icon} className="flex-shrink-0 w-5 h-5 transition duration-75" />
                                 <span className="ms-3 font-medium">Materias Legales</span>
                             </Link>

@@ -341,7 +341,7 @@ export default function Users() {
     setPage(1);
   }, []);
 
-  if (loading || roles_loading) {
+  if (loading && roles_loading) {
     return (
       <div role="status" className="fixed inset-0 flex items-center justify-center">
         <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />

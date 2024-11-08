@@ -24,7 +24,7 @@ import flecha_icon from "../../assets/flecha_izquierda.png"
  * @returns {JSX.Element} Rendered TopContent component for managing aspects, with options for filtering, pagination, and creating aspects.
  */
 
-function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalCreate, onFilterChange, onClear }) {
+function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalCreate, onFilterChange, onClear}) {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -34,15 +34,12 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
   return (
     <div>
       {/* Display the subject name as a title, if provided */}
-      {subjectName && (
         <div className="text-center text-black text-xl font-normal -mt-12 mb-8">
           <div>
             Aspectos de la materia: {subjectName}
           </div>
         </div>
-      )}
-      
-      <div className="ml-1 mb-12 xl:-ml-80 xl:mb-0">
+      <div className="ml-1 mb-12 xl:-ml-64 xl:mb-0">
         {/* Back Button */}
         <Button
           color="primary"

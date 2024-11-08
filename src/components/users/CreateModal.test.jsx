@@ -2,7 +2,7 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import CreateModal from "./CreateModal";
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 describe("CreateModal Component for Users", () => {
     const mockCloseModalCreate = vi.fn();
     const mockAddUser = vi.fn();
@@ -10,6 +10,13 @@ describe("CreateModal Component for Users", () => {
     const mockSetEmailError = vi.fn();
     const mockSetusertypeError = vi.fn();
 
+
+    vi.mock('react-toastify', () => ({
+        toast: {
+            error: vi.fn(),
+            info: vi.fn(),
+        },
+    }))
     const TestCreateModalComponent = () => {
         const [formData, setFormData] = useState({ nombre: "", email: "", user_type: "", profile_picture: null });
 
@@ -142,5 +149,28 @@ describe("CreateModal Component for Users", () => {
     
         expect(mockCloseModalCreate).toHaveBeenCalled();
     });
+
+    test("shows error toast when email already exists", async () => {
+        mockAddUser.mockResolvedValueOnce({ success: false, error: "Gmail already exists" });
+        
+        const nameInput = screen.getByLabelText("Nombre");
+        fireEvent.change(nameInput, { target: { value: "Usuario Existente" } });
+        
+        const emailInput = screen.getByLabelText("Correo Electrónico");
+        fireEvent.change(emailInput, { target: { value: "usuario@isaambiental.com" } });
+        
+        const userTypeDropdown = screen.getByText("Selecciona el tipo de usuario");
+        fireEvent.click(userTypeDropdown);
+        const userTypeOption = screen.getByText("Admin");
+        fireEvent.click(userTypeOption);
+        
+        const submitButton = screen.getByText("Registrar Usuario");
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+        
+        expect(toast.error).toHaveBeenCalledWith("El correo ya está en uso. Por favor, elige otro.");
+    });
+    
     
 });

@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Users from "./Users.jsx";
 import useUsers from "../../hooks/user/users.jsx";
+import useRoles from "../../hooks/user/roles.jsx";
 
 // Mock global de useUsers y useRoles
 vi.mock("../../hooks/user/users.jsx", () => ({
@@ -62,6 +63,8 @@ describe("Users Component", () => {
 
   test("shows a loading indicator when users are loading", () => {
     useUsers.mockReturnValueOnce({ ...useUsers(), loading: true });
+    useRoles.mockReturnValueOnce({ ...useRoles(), roles_loading: true });
+
     render(<Users />);
     expect(screen.getByRole("status")).toBeInTheDocument();
   });

@@ -35,7 +35,6 @@ const columns = [
 
 export default function Aspects() {
     const { id } = useParams(); 
-    const [loadingAspects, setLoadingAspects] = useState(true);
     const [ subjectName, setSubjectName ] = useState(null); 
     const { aspects, loading, error,  fetchAspects, addAspect, modifyAspect, removeAspect, deleteAspectsBatch } = useAspects();
     const { fetchSubjectById, loading: subjectLoading, error: subjectError  } = useSubjects();
@@ -59,7 +58,6 @@ export default function Aspects() {
     useEffect(() => {
         const fetchData = async () => {
             if (id) {
-                setLoadingAspects(true)
                 await fetchAspects(id);
                 const { success, data } = await fetchSubjectById(id);
                 if (success && data) {
@@ -67,15 +65,12 @@ export default function Aspects() {
                 } else {
                     setSubjectName(null); 
                 }
-                setLoadingAspects(false)
             }
         };
     
         fetchData();
     }, [id, fetchAspects, fetchSubjectById]);
-    
-    
-    
+        
     const filteredAspects = useMemo(() => {
         if (!filterValue) return aspects;
         return aspects.filter(aspect =>
@@ -234,13 +229,14 @@ export default function Aspects() {
         setPage(1);
     }, []);
 
-    if (loading || subjectLoading || loadingAspects) {
+    if (loading && subjectLoading) {
         return (
             <div role="status" className="fixed inset-0 flex items-center justify-center">
                 <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
             </div>
         );
     }
+    
 
     if (error) {
         return <Error message={error} />;

@@ -149,8 +149,6 @@ export default function useUsers() {
           logout();
         }
         return { success: true };
-      } else {
-        throw new Error('Failed to delete user');
       }
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -187,8 +185,6 @@ export default function useUsers() {
           logout();
         }
         return { success: true };
-      } else {
-        throw new Error('Failed to delete users');
       }
     } catch (error) {
       console.error('Error deleting users batch:', error);

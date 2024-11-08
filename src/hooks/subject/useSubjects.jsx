@@ -208,9 +208,7 @@ const deleteSubjectsBatch = useCallback(async (subjectIds) => {
         if (success) {
             setSubjects(prevSubjects => prevSubjects.filter(subject => !subjectIds.includes(subject.id)));
             return { success: true };
-        } else {
-            throw new Error('Failed to delete subjects');
-        }
+        } 
     } catch (error) {
         console.error('Error deleting subjects batch:', error);
         let errorMessage;

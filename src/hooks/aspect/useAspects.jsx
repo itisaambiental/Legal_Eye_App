@@ -137,7 +137,6 @@ export default function useAspects() {
         } catch (error) {
             console.error('Error deleting aspect:', error);
             let errorMessage;
-
             if (error.response && error.response.status === 403) {
                 errorMessage = 'No autorizado para eliminar el aspecto';
             } else if (error.response && error.response.status === 404) {
@@ -162,13 +161,10 @@ export default function useAspects() {
             if (success) {
                 setAspects(prevAspects => prevAspects.filter(aspect => !aspectIds.includes(aspect.id)));
                 return { success: true };
-            } else {
-                throw new Error('Failed to delete aspects');
-            }
+            } 
         } catch (error) {
             console.error('Error deleting aspects batch:', error);
             let errorMessage;
-    
             if (error.response && error.response.status === 400) {
                 errorMessage = 'Faltan campos requeridos: aspectIds';
             } else if (error.response && error.response.status === 403) {

@@ -93,7 +93,6 @@ export default function Aspects() {
             setFilterValue("");
         }
     }, []);
-
     const handleNameChange = (e) => {
         const { value } = e.target;
         setFormData(prevFormData => ({

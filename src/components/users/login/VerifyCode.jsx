@@ -105,7 +105,7 @@ function VerifyCode() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-primary">
+            <div role='status' className="flex items-center justify-center h-screen bg-primary">
                 <Spinner className="h-10 w-10 ml-4" color="white" />
             </div>
         );

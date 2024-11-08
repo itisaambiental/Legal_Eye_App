@@ -46,7 +46,7 @@ function CompleteReset() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-primary">
+            <div role='status' className="flex items-center justify-center h-screen bg-primary">
                 <Spinner className="h-10 w-10 ml-4" color="white" />
             </div>
         );
@@ -79,7 +79,7 @@ function CompleteReset() {
                                 onClick={handleGoToLogin}
                                 className="w-full bg-primary py-2 px-4 text-white rounded-md hover:bg-primary/70 transition-colors"
                             >
-                                {isLoadingToLogin ? <Spinner size="sm" color="white" /> : 'Ir al Inicio de Sesión'}
+                                {isLoadingToLogin ? <Spinner role='status' size="sm" color="white" /> : 'Ir al Inicio de Sesión'}
                             </button>
                         </div>
 

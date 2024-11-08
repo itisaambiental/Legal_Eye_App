@@ -70,7 +70,7 @@ function ResetPassword() {
             const success = await reset_password(email);
             if (success) {
                 const encodedEmail = encodeURIComponent(email);
-                navigate(`/reset-password/verify/${encodedEmail} `, { state: { fromRequest: true } });
+                navigate(`/reset-password/verify/${encodedEmail}`, { state: { fromRequest: true } });
 
             }
         }
@@ -84,7 +84,7 @@ function ResetPassword() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen bg-primary">
+            <div role='status' className="flex items-center justify-center h-screen bg-primary">
                 <Spinner className="h-10 w-10 ml-4" color="white" />
             </div>
         );

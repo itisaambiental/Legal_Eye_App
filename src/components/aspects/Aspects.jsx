@@ -116,22 +116,7 @@ export default function Aspects() {
                     }
                 });
             } else {
-                switch (error) {
-                    case 'No autorizado para eliminar el aspecto':
-                        toast.error('No tienes autorización para eliminar este aspecto.');
-                        break;
-                    case 'Aspecto no encontrado':
-                        toast.error('El aspecto no fue encontrado.');
-                        break;
-                    case 'Error de conexión durante la eliminación':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al eliminar el aspecto. Intenta nuevamente.');
-                }
+               toast.error(error)
             }
         } catch (error) {
             console.error(error);
@@ -229,7 +214,7 @@ export default function Aspects() {
         setPage(1);
     }, []);
 
-    if (loading && subjectLoading) {
+    if (loading || subjectLoading) {
         return (
             <div role="status" className="fixed inset-0 flex items-center justify-center">
                 <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
@@ -237,12 +222,11 @@ export default function Aspects() {
         );
     }
     
-
     if (error) {
-        return <Error message={error} />;
+        return <Error title={error.title} message={error.message} />;
     }
     if (subjectError) {
-        return <Error message={error} />;
+        return <Error title={subjectError.title} message={subjectError.message} />;
     }
     return (
         <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">

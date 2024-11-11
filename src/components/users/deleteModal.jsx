@@ -49,25 +49,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
         setSelectedKeys(new Set());
         setShowDeleteModal(false);
       } else {
-        switch (error) {
-          case 'Faltan campos requeridos: userIds':
-            toast.error('Faltan campos requeridos: userIds');
-            break;
-          case 'No autorizado para eliminar usuarios':
-            toast.error('No tienes autorización para eliminar estos usuarios.');
-            break;
-          case 'Uno o más usuarios no encontrados':
-            toast.error('Uno o más usuarios no fueron encontrados.');
-            break;
-          case 'Error de conexión al eliminar usuarios':
-            toast.error('Error de red. Revisa tu conexión a internet e intenta de nuevo.');
-            break;
-          case 'Error interno del servidor':
-            toast.error('Error interno del servidor. Intenta más tarde.');
-            break;
-          default:
-            toast.error('Ocurrió un error inesperado al eliminar los usuarios. Intenta nuevamente.');
-        }
+        toast.error(error);
       }
     } catch (error) {
       console.error(error);

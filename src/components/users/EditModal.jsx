@@ -105,10 +105,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                         ? formData.profile_picture.file
                         : formData.profile_picture || undefined
             };
-
-
             const { success, error } = await updateUserDetails(userData);
-
             if (success) {
                 toast.info('El usuario ha sido actualizado correctamente', {
                     icon: () => <img src={check} alt="Success Icon" />,
@@ -116,30 +113,9 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                         background: '#113c53',
                     }
                 });
-
-
-
                 closeModalEdit();
-            } else {
-                switch (error) {
-                    case 'Gmail already exists':
-                        toast.error('El correo ya está en uso. Por favor, elige otro.');
-                        break;
-                    case 'Validation failed':
-                        toast.error('Fallo de validación. Revisa los campos e intenta nuevamente.');
-                        break;
-                    case 'Unauthorized to update user':
-                        toast.error('No tienes autorización para actualizar este usuario.');
-                        break;
-                    case 'Network error occurred while updating':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Internal server error':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al actualizar el usuario. Intenta nuevamente.');
-                }
+            }  else {
+                toast.error(error)
             }
         } catch (error) {
             console.error('Error al actualizar el usuario:', error);

@@ -48,22 +48,7 @@ function CreateModal({ isOpen, closeModalCreate, addSubject, nameError, setNameE
                 });
                 closeModalCreate();
             } else {
-                switch (error) {
-                    case 'Subject already exists':
-                        toast.error('La materia ya existe. Cambia el nombre de la materia e intenta nuevamente.');
-                        break;
-                    case 'No autorizado para crear un nuevo subject':
-                        toast.error('No tienes autorización para registrar una nueva materia.');
-                        break;
-                    case 'Error de conexión durante la creación':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al registrar la materia. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error(error);

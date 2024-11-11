@@ -189,11 +189,10 @@ export default function Users() {
   };
 
 
-
   const handleDelete = useCallback(async (userId) => {
     try {
       const { success, error } = await deleteUser(userId);
-
+  
       if (success) {
         toast.success('Usuario eliminado con éxito', {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -202,29 +201,14 @@ export default function Users() {
           }
         });
       } else {
-        switch (error) {
-          case 'User not found':
-            toast.error('El usuario no fue encontrado.');
-            break;
-          case 'Unauthorized':
-            toast.error('No tienes autorización para eliminar este usuario.');
-            break;
-          case 'Network error occurred while deleting':
-            toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-            break;
-          case 'Internal server error':
-            toast.error('Error interno del servidor. Intenta más tarde.');
-            break;
-          default:
-            toast.error('Ocurrió un error inesperado al eliminar el usuario. Intenta nuevamente.');
-        }
+        toast.error(error);
       }
     } catch (error) {
       console.error(error);
       toast.error('Algo mal sucedió al eliminar el usuario. Intente de nuevo');
     }
   }, [deleteUser]);
-
+  
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
 
@@ -341,7 +325,7 @@ export default function Users() {
     setPage(1);
   }, []);
 
-  if (loading && roles_loading) {
+  if (loading || roles_loading) {
     return (
       <div role="status" className="fixed inset-0 flex items-center justify-center">
         <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
@@ -350,10 +334,10 @@ export default function Users() {
   }
 
   if (error) {
-    return <Error message={error} />;
+    return <Error title={error.title} message={error.message} />;
   }
   if (roles_error) {
-    return <Error message={roles_error} />;
+    return <Error title={roles_error.message} message={roles_error.message} />;
   }
 
   return (

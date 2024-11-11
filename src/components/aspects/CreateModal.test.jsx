@@ -73,14 +73,14 @@ describe("CreateModal Component for Aspects", () => {
     });
 
     test("shows error toast when aspect already exists", async () => {
-        mockAddAspect.mockResolvedValueOnce({ success: false, error: "Aspect already exists" });
+        mockAddAspect.mockResolvedValueOnce({ success: false, error: "El aspecto ya existe. Por favor cambie el nombre e intente de nuevo." });
         const nameInput = screen.getByLabelText("Nombre del Aspecto");
         fireEvent.change(nameInput, { target: { value: "Seguridad" } });
         const submitButton = screen.getByText("Registrar Aspecto");
         await act(async () => {
             fireEvent.click(submitButton);
         });
-        expect(toast.error).toHaveBeenCalledWith("El aspecto ya existe. Cambia el nombre del aspecto e intenta nuevamente.");
+        expect(toast.error).toHaveBeenCalledWith("El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.");
 
         expect(mockSetNameError).not.toHaveBeenCalledWith("Este campo es obligatorio");
     });

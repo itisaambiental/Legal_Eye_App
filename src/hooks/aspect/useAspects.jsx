@@ -23,30 +23,37 @@ export default function useAspects() {
             setStateAspects({ loading: false, error: null });
         } catch (error) {
             console.error('Error fetching aspects:', error);
+
+            let errorTitle;
             let errorMessage;
+
             if (error.response && error.response.status === 403) {
-                errorMessage = 'Acceso no autorizado';
+                errorTitle = 'Acceso no autorizado';
+                errorMessage = 'No tiene permisos para ver los aspectos de esta materia. Verifique su sesión.';
             } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión';
+                errorTitle = 'Error de conexión';
+                errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
             } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error en el servidor';
+                errorTitle = 'Error en el servidor';
+                errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
             } else {
-                errorMessage = 'Error inesperado';
+                errorTitle = 'Error inesperado';
+                errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
             }
 
-            setStateAspects({ loading: false, error: errorMessage });
+            setStateAspects({ loading: false, error: { title: errorTitle, message: errorMessage } });
         }
     }, [jwt]);
 
     /**
-     * Adds a new aspect to a specific subject.
-     * @async
-     * @function addAspect
-     * @param {number} subjectId - The ID of the subject to link this aspect to.
-     * @param {string} aspectName - The name of the aspect to add.
-     * @returns {Promise<Object>} - Result of the operation with success status and aspect or error message.
-     * @throws {Object} - Returns an error message if the addition fails.
-     */
+   * Adds a new aspect to a specific subject.
+   * @async
+   * @function addAspect
+   * @param {number} subjectId - The ID of the subject to link this aspect to.
+   * @param {string} aspectName - The name of the aspect to add.
+   * @returns {Promise<Object>} - Result of the operation with success status and aspect or error message.
+   * @throws {Object} - Returns an error message if the addition fails.
+   */
     const addAspect = useCallback(async (subjectId, aspectName) => {
         try {
             const newAspect = await createNewAspect({ subjectId, aspectName, token: jwt });
@@ -55,18 +62,30 @@ export default function useAspects() {
         } catch (error) {
             console.error('Error creating aspect:', error);
             let errorMessage;
-            if (error.response && error.response.status === 400) {
-                errorMessage = error.response.data.message || 'Error de validación';
-            } else if (error.response && error.response.status === 403) {
-                errorMessage = 'No autorizado para crear un nuevo aspecto';
-            } else if (error.response && error.response.status === 404) {
-                errorMessage = 'La materia no existe';
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        errorMessage = 'Error de validación: revisa los datos introducidos.';
+                        break;
+                    case 403:
+                        errorMessage = 'No autorizado para crear un nuevo aspecto. Verifique su sesión.';
+                        break;
+                    case 404:
+                        errorMessage = 'La materia no existe. Verifique la existencia de la materia e intente de nuevo';
+                        break;
+                    case 409:
+                        errorMessage = 'El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
+                        break;
+                    default:
+                        errorMessage = 'Error inesperado durante la creación del aspecto. Intente de nuevo.';
+                }
             } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión durante la creación';
-            } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error interno del servidor';
+                errorMessage = 'Error de conexión durante la creación. Verifique su conexión a internet.';
             } else {
-                errorMessage = 'Error inesperado durante la creación';
+                errorMessage = 'Error inesperado durante la creación del aspecto. Intente de nuevo.';
             }
 
             return { success: false, error: errorMessage };
@@ -91,30 +110,39 @@ export default function useAspects() {
                 subject_id: updatedAspect.subject_id,
                 subject_name: updatedAspect.subject_name
             };
-
             setAspects(prevAspects =>
                 prevAspects.map(aspect =>
                     aspect.id === aspectId ? formattedAspect : aspect
                 )
             );
-
             return { success: true, aspect: formattedAspect };
         } catch (error) {
             console.error('Error updating aspect:', error);
             let errorMessage;
-
-            if (error.response && error.response.status === 400) {
-                errorMessage = error.response.data.message || 'Error de validación';
-            } else if (error.response && error.response.status === 403) {
-                errorMessage = 'No autorizado para actualizar el aspecto';
-            } else if (error.response && error.response.status === 404) {
-                errorMessage = 'Aspecto no encontrado';
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        errorMessage = 'Error de validación: revisa los datos introducidos.';
+                        break;
+                    case 403:
+                        errorMessage = 'No autorizado para actualizar el aspecto. Verifique su sesión.';
+                        break;
+                    case 404:
+                        errorMessage = 'Aspecto no encontrado. Verifique la existencia del aspecto e intente de nuevo.';
+                        break;
+                    case 409:
+                        errorMessage = 'El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
+                        break;
+                    default:
+                        errorMessage = 'Error inesperado durante la actualización del aspecto. Intente de nuevo.';
+                }
             } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión durante la actualización';
-            } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error interno del servidor';
+                errorMessage = 'Error de conexión durante la actualización. Verifique su conexión a internet.';
             } else {
-                errorMessage = 'Error inesperado durante la actualización';
+                errorMessage = 'Error inesperado durante la actualización del aspecto. Intente de nuevo.';
             }
 
             return { success: false, error: errorMessage };
@@ -122,13 +150,13 @@ export default function useAspects() {
     }, [jwt]);
 
     /**
- * Deletes an existing aspect by ID.
- * @async
- * @function removeAspect
- * @param {number} aspectId - The ID of the aspect to delete.
- * @returns {Promise<Object>} - Result of the operation with success status or error message.
- * @throws {Object} - Returns an error message if the deletion fails.
- */
+  * Deletes an existing aspect by ID.
+  * @async
+  * @function removeAspect
+  * @param {number} aspectId - The ID of the aspect to delete.
+  * @returns {Promise<Object>} - Result of the operation with success status or error message.
+  * @throws {Object} - Returns an error message if the deletion fails.
+  */
     const removeAspect = useCallback(async (aspectId) => {
         try {
             await deleteAspect({ aspectId, token: jwt });
@@ -137,16 +165,24 @@ export default function useAspects() {
         } catch (error) {
             console.error('Error deleting aspect:', error);
             let errorMessage;
-            if (error.response && error.response.status === 403) {
-                errorMessage = 'No autorizado para eliminar el aspecto';
-            } else if (error.response && error.response.status === 404) {
-                errorMessage = 'Aspecto no encontrado';
+            if (error.response) {
+                switch (error.response.status) {
+                    case 403:
+                        errorMessage = 'No autorizado para eliminar el aspecto. Verifique su sesión.';
+                        break;
+                    case 404:
+                        errorMessage = 'Aspecto no encontrado. Verifique la existencia del aspecto e intente de nuevo.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
+                        break;
+                    default:
+                        errorMessage = 'Error inesperado durante la eliminación del aspecto. Intente de nuevo.';
+                }
             } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión durante la eliminación';
-            } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error interno del servidor';
+                errorMessage = 'Error de conexión durante la eliminación. Verifique su conexión a internet.';
             } else {
-                errorMessage = 'Error inesperado durante la eliminación';
+                errorMessage = 'Error inesperado durante la eliminación del aspecto. Intente de nuevo.';
             }
 
             return { success: false, error: errorMessage };
@@ -154,34 +190,52 @@ export default function useAspects() {
     }, [jwt]);
 
 
+    /**
+  * Deletes a batch of aspects by their IDs.
+  * @async
+  * @function deleteAspectsBatch
+  * @param {Array<number>} aspectIds - The IDs of the aspects to delete.
+  * @returns {Promise<Object>} - Result of the operation with success status or error message.
+  * @throws {Object} - Returns an error message if the deletion fails.
+  */
     const deleteAspectsBatch = useCallback(async (aspectIds) => {
         try {
             const success = await deleteAspects({ aspectIds, token: jwt });
-    
+
             if (success) {
                 setAspects(prevAspects => prevAspects.filter(aspect => !aspectIds.includes(aspect.id)));
                 return { success: true };
-            } 
+            }
         } catch (error) {
             console.error('Error deleting aspects batch:', error);
             let errorMessage;
-            if (error.response && error.response.status === 400) {
-                errorMessage = 'Faltan campos requeridos: aspectIds';
-            } else if (error.response && error.response.status === 403) {
-                errorMessage = 'No autorizado para eliminar aspectos';
-            } else if (error.response && error.response.status === 404) {
-                errorMessage = error.response.data.message || 'Uno o más aspectos no encontrados';
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        errorMessage = 'Faltan campos requeridos: aspectIds. Verifique los parámetros enviados.';
+                        break;
+                    case 403:
+                        errorMessage = 'No autorizado para eliminar aspectos. Verifique su sesión.';
+                        break;
+                    case 404:
+                        errorMessage = 'Una o más aspectos no encontradas. Verifique su existencia e intente de nuevo.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
+                        break;
+                    default:
+                        errorMessage = 'Error inesperado al eliminar aspectos. Intente de nuevo.';
+                }
             } else if (error.message === 'Network Error') {
-                errorMessage = 'Error de conexión al eliminar aspectos';
-            } else if (error.response && error.response.status === 500) {
-                errorMessage = 'Error interno del servidor';
+                errorMessage = 'Error de conexión al eliminar aspectos. Verifique su conexión a internet.';
             } else {
-                errorMessage = 'Error inesperado al eliminar aspectos';
+                errorMessage = 'Error inesperado al eliminar aspectos. Intente de nuevo.';
             }
-    
+
             return { success: false, error: errorMessage };
         }
     }, [jwt]);
+
 
     return {
         aspects,

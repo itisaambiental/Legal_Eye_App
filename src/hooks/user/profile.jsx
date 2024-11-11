@@ -32,14 +32,25 @@ export default function useUserProfile() {
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      let errorMessage = 'Error al obtener el perfil del usuario';
+
+      let errorTitle;
+      let errorMessage;
+
       if (error.response && error.response.status === 404) {
-        errorMessage = 'Usuario no encontrado';
+        errorTitle = 'Usuario no encontrado';
+        errorMessage = 'Su informacion no fue encontrada en el sistema. Vuelva a iniciar sesión e intente de nuevo';
       } else if (error.response && error.response.status === 403) {
-        errorMessage = 'Acceso no autorizado';
+        errorTitle = 'Acceso no autorizado';
+        errorMessage = 'No tiene permiso para acceder a este perfil. Verifique su sesión.';
+      } else if (error.message === 'Network Error') {
+        errorTitle = 'Error de conexión';
+        errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
+      } else {
+        errorTitle = 'Error inesperado';
+        errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
       }
 
-      setStateProfile({ loading: false, error: errorMessage });
+      setStateProfile({ loading: false, error: { title: errorTitle, message: errorMessage } });
     }
   }, [jwt]);
 
@@ -58,7 +69,7 @@ export default function useUserProfile() {
     name,
     email,
     profilePicture,
-    isLoading: stateProfile.loading,
+    loading: stateProfile.loading,
     error: stateProfile.error,
   };
 }

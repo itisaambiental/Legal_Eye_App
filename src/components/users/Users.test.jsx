@@ -70,9 +70,10 @@ describe("Users Component", () => {
   });
 
   test("displays an error message if there is an error loading users", () => {
-    useUsers.mockReturnValueOnce({ ...useUsers(), error: "Failed to load users" });
+    useUsers.mockReturnValueOnce({ ...useUsers(), error: { title: "Failed to load users", message: "Server Error" }});
     render(<Users />);
     expect(screen.getByText("Failed to load users")).toBeInTheDocument();
+    expect(screen.getByText("Server Error")).toBeInTheDocument();
   });
 });
 

@@ -60,25 +60,7 @@ function EditModal({ formData, setFormData, isOpen, updateSubject, closeModalEdi
                 });
                 closeModalEdit();
             } else {
-                switch (error) {
-                    case 'Subject already exists':
-                        toast.error('La materia ya existe. Cambia el nombre de la materia e intenta nuevamente.');
-                        break;
-                    case 'No autorizado para actualizar el subject':
-                        toast.error('No tienes autorización para actualizar esta materia.');
-                        break;
-                    case 'Subject no encontrado':
-                        toast.error('Materia no encontrada.');
-                        break;
-                    case 'Error de conexión durante la actualización':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al actualizar la materia. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error('Error al actualizar la materia:', error);

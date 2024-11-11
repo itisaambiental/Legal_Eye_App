@@ -95,22 +95,7 @@ export default function Subjects() {
                     }
                 });
             } else {
-                switch (error) {
-                    case 'No autorizado para eliminar el subject':
-                        toast.error('No tienes autorización para eliminar esta materia.');
-                        break;
-                    case 'Subject no encontrado':
-                        toast.error('La materia no fue encontrada.');
-                        break;
-                    case 'Error de conexión durante la eliminación':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al eliminar la materia. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error(error);
@@ -229,7 +214,7 @@ export default function Subjects() {
     }
 
     if (error) {
-        return <Error message={error} />;
+        return <Error title={error.title} message={error.message} />;
     }
     return (
         <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">

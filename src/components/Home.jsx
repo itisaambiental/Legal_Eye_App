@@ -1,5 +1,7 @@
 import useUserProfile from '../hooks/user/profile.jsx';
 import { useNavigate } from 'react-router-dom';
+import Error from './utils/Error.jsx';
+import { Spinner } from '@nextui-org/react';
 
 /**
  * Home component
@@ -8,13 +10,25 @@ import { useNavigate } from 'react-router-dom';
  * @returns {JSX.Element} The rendered Home component.
  */
 function Home() {
-  const { name } = useUserProfile();
+  const { name, loading, error } = useUserProfile();
   const navigate = useNavigate();
 
   
   const handleDynamicClick = () => {
     navigate('/legal_basis');
   };
+
+  if (loading) {
+    return (
+      <div role="status" className="fixed inset-0 flex items-center justify-center">
+        <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <Error title={error.title} message={error.message} />;
+  }
 
   return (
     <section className="bg-gray-50 mt-12 text-center justify-center  flex flex-col items-center -ml-64">

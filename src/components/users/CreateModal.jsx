@@ -80,7 +80,6 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleEmailChange, for
         } else {
             setusertypeError(null);
         }
-    
         try {
             const userData = {
                 name: formData.nombre,
@@ -100,25 +99,7 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleEmailChange, for
                 });
                 closeModalCreate();
             } else {
-                switch (error) {
-                    case 'Gmail already exists':
-                        toast.error('El correo ya está en uso. Por favor, elige otro.');
-                        break;
-                    case 'Validation failed':
-                        toast.error('Fallo de validación. Revisa los campos e intenta nuevamente.');
-                        break;
-                    case 'Unauthorized to register a new user':
-                        toast.error('No tienes autorización para registrar un nuevo usuario.');
-                        break;
-                    case 'Network error occurred while registering':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Internal server error':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al registrar el usuario. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error(error);
@@ -128,7 +109,6 @@ function CreateModal({ isOpen, closeModalCreate, addUser, handleEmailChange, for
         }
     };
     
-
     return (
         <Modal isOpen={isOpen} onOpenChange={closeModalCreate}
             backdrop="opaque"

@@ -73,7 +73,7 @@ describe("CreateModal Component for Subjects", () => {
     });
 
     test("shows error toast when subject already exists", async () => {
-        mockAddSubject.mockResolvedValueOnce({ success: false, error: "Subject already exists" });
+        mockAddSubject.mockResolvedValueOnce({ success: false, error: "La materia ya existe. Cambia el nombre de la materia e intenta nuevamente." });
         const nameInput = screen.getByLabelText("Nombre de la Materia");
         fireEvent.change(nameInput, { target: { value: "Matemáticas" } });
         const submitButton = screen.getByText("Registrar Materia");

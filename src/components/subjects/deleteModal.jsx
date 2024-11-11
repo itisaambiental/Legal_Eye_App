@@ -48,25 +48,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
                 setSelectedKeys(new Set());
                 setShowDeleteModal(false);
             } else {
-                switch (error) {
-                    case 'Faltan campos requeridos: subjectIds':
-                        toast.error('Faltan campos requeridos: subjectIds');
-                        break;
-                    case 'No autorizado para eliminar materias':
-                        toast.error('No tienes autorización para eliminar estas materias.');
-                        break;
-                    case 'Una o más materias no encontradas':
-                        toast.error('Una o más materias no fueron encontradas.');
-                        break;
-                    case 'Error de conexión al eliminar materias':
-                        toast.error('Error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al eliminar las materias. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error(error);

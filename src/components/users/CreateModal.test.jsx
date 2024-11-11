@@ -9,8 +9,6 @@ describe("CreateModal Component for Users", () => {
     const mockSetNameError = vi.fn();
     const mockSetEmailError = vi.fn();
     const mockSetusertypeError = vi.fn();
-
-
     vi.mock('react-toastify', () => ({
         toast: {
             error: vi.fn(),
@@ -151,7 +149,7 @@ describe("CreateModal Component for Users", () => {
     });
 
     test("shows error toast when email already exists", async () => {
-        mockAddUser.mockResolvedValueOnce({ success: false, error: "Gmail already exists" });
+        mockAddUser.mockResolvedValueOnce({ success: false, error: "El correo ya está en uso. Por favor, elige otro." });
         
         const nameInput = screen.getByLabelText("Nombre");
         fireEvent.change(nameInput, { target: { value: "Usuario Existente" } });

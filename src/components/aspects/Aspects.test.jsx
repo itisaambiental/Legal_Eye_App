@@ -70,13 +70,14 @@ describe("Aspects Component", () => {
   });
 
   test("displays an error message if there is an error loading aspects", () => {
-    useAspects.mockReturnValueOnce({ ...useAspects(), error: "Failed to load aspects" });
+    useAspects.mockReturnValueOnce({ ...useAspects(), error: { title: "Failed to load aspects", message: "Server Error" }});
     render(
       <MemoryRouter>
         <Aspects />
       </MemoryRouter>
     );
     expect(screen.getByText("Failed to load aspects")).toBeInTheDocument();
+    expect(screen.getByText("Server Error")).toBeInTheDocument();
   });
 
   describe("Aspects Component with no aspects", () => {

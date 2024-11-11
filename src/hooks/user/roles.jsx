@@ -23,18 +23,24 @@ export default function useRoles() {
       setStateRoles({ loading: false, error: null });
     } catch (error) {
       console.error('Error fetching roles:', error);
-      let errorMessage;
 
+      let errorTitle;
+      let errorMessage;
       if (error.response && error.response.status === 403) {
-        errorMessage = 'Acceso no autorizado';
+        errorTitle = 'Acceso no autorizado';
+        errorMessage = 'No tiene permisos para acceder a los roles. Verifique su sesión.';
       } else if (error.message === 'Network Error') {
-        errorMessage = 'Error de conexión';
+        errorTitle = 'Error de conexión';
+        errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
       } else if (error.response && error.response.status === 500) {
-        errorMessage = 'Error en el servidor';
+        errorTitle = 'Error en el servidor';
+        errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
       } else {
-        errorMessage = 'Error inesperado';
+        errorTitle = 'Error inesperado';
+        errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
       }
-      setStateRoles({ loading: false, error: errorMessage });
+
+      setStateRoles({ loading: false, error: { title: errorTitle, message: errorMessage } });
     }
   }, [jwt]);
 

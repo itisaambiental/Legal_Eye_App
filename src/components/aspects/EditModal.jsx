@@ -62,25 +62,7 @@ function EditModal({ formData, setFormData, isOpen, updateAspect, closeModalEdit
                 });
                 closeModalEdit();
             } else {
-                switch (error) {
-                    case 'Aspect already exists':
-                        toast.error('El aspecto ya existe. Cambia el nombre del aspecto e intenta nuevamente.');
-                        break;
-                    case 'No autorizado para actualizar el aspecto':
-                        toast.error('No tienes autorización para actualizar este aspecto.');
-                        break;
-                    case 'Aspecto no encontrado':
-                        toast.error('Aspecto no encontrado.');
-                        break;
-                    case 'Error de conexión durante la actualización':
-                        toast.error('Ocurrió un error de red. Revisa tu conexión a internet e intenta de nuevo.');
-                        break;
-                    case 'Error interno del servidor':
-                        toast.error('Error interno del servidor. Intenta más tarde.');
-                        break;
-                    default:
-                        toast.error('Ocurrió un error inesperado al actualizar el aspecto. Intenta nuevamente.');
-                }
+                toast.error(error)
             }
         } catch (error) {
             console.error('Error al actualizar el aspecto:', error);

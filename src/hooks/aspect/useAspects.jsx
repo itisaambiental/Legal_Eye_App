@@ -128,7 +128,7 @@ export default function useAspects() {
                         errorMessage = 'No autorizado para actualizar el aspecto. Verifique su sesión.';
                         break;
                     case 404:
-                        errorMessage = 'Aspecto no encontrado. Verifique la existencia del aspecto e intente de nuevo.';
+                        errorMessage = 'Aspecto no encontrado. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
                     case 409:
                         errorMessage = 'El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.';
@@ -170,8 +170,17 @@ export default function useAspects() {
                     case 403:
                         errorMessage = 'No autorizado para eliminar el aspecto. Verifique su sesión.';
                         break;
+                    case 409: {
+                        const message = error.response.data.message;
+                        if (message === 'The aspect is associated with one or more legal bases') {
+                            errorMessage = 'El aspecto está vinculado a uno o más fundamentos legales y no puede ser eliminado. Por favor, verifique e intente de nuevo.';
+                        } else {
+                            errorMessage = 'El aspecto no puede ser eliminado debido a que tiene vinculaciones con otros módulos. Por favor, verifique e intente de nuevo';
+                        }
+                        break;
+                    }
                     case 404:
-                        errorMessage = 'Aspecto no encontrado. Verifique la existencia del aspecto e intente de nuevo.';
+                        errorMessage = 'Aspecto no encontrado. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
                     case 500:
                         errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
@@ -189,19 +198,17 @@ export default function useAspects() {
         }
     }, [jwt]);
 
-
     /**
-  * Deletes a batch of aspects by their IDs.
-  * @async
-  * @function deleteAspectsBatch
-  * @param {Array<number>} aspectIds - The IDs of the aspects to delete.
-  * @returns {Promise<Object>} - Result of the operation with success status or error message.
-  * @throws {Object} - Returns an error message if the deletion fails.
-  */
+     * Deletes a batch of aspects by their IDs.
+     * @async
+     * @function deleteAspectsBatch
+     * @param {Array<number>} aspectIds - The IDs of the aspects to delete.
+     * @returns {Promise<Object>} - Result of the operation with success status or error message.
+     * @throws {Object} - Returns an error message if the deletion fails.
+     */
     const deleteAspectsBatch = useCallback(async (aspectIds) => {
         try {
             const success = await deleteAspects({ aspectIds, token: jwt });
-
             if (success) {
                 setAspects(prevAspects => prevAspects.filter(aspect => !aspectIds.includes(aspect.id)));
                 return { success: true };
@@ -217,8 +224,23 @@ export default function useAspects() {
                     case 403:
                         errorMessage = 'No autorizado para eliminar aspectos. Verifique su sesión.';
                         break;
+                    case 409: {
+                        const { errors, message } = error.response.data;
+                        const { associatedAspects } = errors;
+                        if (associatedAspects && associatedAspects.length > 0) {
+                            const associatedNames = associatedAspects.map(aspect => aspect.name).join(', ');
+                            if (message === 'Aspects are associated with legal bases') {
+                                errorMessage = `Los aspectos ${associatedNames} están vinculados a uno o más fundamentos legales y no pueden ser eliminados. Por favor, verifique e intente de nuevo.`;
+                            } else {
+                                errorMessage = `Los aspectos ${associatedNames} no pueden ser eliminados debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
+                            }
+                        } else {
+                            errorMessage = `Los aspectos no pueden ser eliminados debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
+                        }
+                        break;
+                    }
                     case 404:
-                        errorMessage = 'Una o más aspectos no encontradas. Verifique su existencia e intente de nuevo.';
+                        errorMessage = 'Una o más aspectos no encontrados. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
                     case 500:
                         errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';

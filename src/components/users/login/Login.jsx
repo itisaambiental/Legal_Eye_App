@@ -20,7 +20,6 @@ import microsoft from "../../../assets/microsoft.png";
  * 
  * @component
  * @example
- * <Login onLogin={() => console.log("Logged in")} />
  * 
  * @returns {JSX.Element} - Rendered Login component.
  */

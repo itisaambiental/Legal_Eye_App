@@ -156,7 +156,7 @@ const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile
           errorMessage = 'El correo ya está en uso. Por favor, utiliza otro.';
           break;
         case 404:
-          errorMessage = 'El usuario no fue encontrado. Verifique su existencia e intente de nuevo.';
+          errorMessage = 'El usuario no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.';
           break;
         case 500:
           errorMessage = 'Error interno del servidor. Espere un momento e intente de nuevo.';
@@ -196,7 +196,7 @@ const deleteUser = useCallback(async (id) => {
     if (error.response) {
       switch (error.response.status) {
         case 404:
-          errorMessage = 'El usuario no fue encontrado. Verifique su existencia e intente de nuevo.';
+          errorMessage = 'El usuario no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.';
           break;
         case 403:
           errorMessage = 'No autorizado para eliminar este usuario. Intente de nuevo.';
@@ -246,7 +246,7 @@ const deleteUsersBatch = useCallback(async (userIds) => {
           errorMessage = 'No autorizado para eliminar usuarios. Intente de nuevo.';
           break;
         case 404:
-          errorMessage = 'Uno o más usuarios no encontrados. Verifique su existencia e intente de nuevo.';
+          errorMessage = 'Uno o más usuarios no encontrados.  Verifique su existencia recargando la app e intente de nuevo.';
           break;
         case 500:
           errorMessage = 'Error interno del servidor. Espere un momento e intente de nuevo.';

@@ -199,13 +199,13 @@ export default function useAspects() {
     }, [jwt]);
 
     /**
-     * Deletes a batch of aspects by their IDs.
-     * @async
-     * @function deleteAspectsBatch
-     * @param {Array<number>} aspectIds - The IDs of the aspects to delete.
-     * @returns {Promise<Object>} - Result of the operation with success status or error message.
-     * @throws {Object} - Returns an error message if the deletion fails.
-     */
+    * Deletes a batch of aspects by their IDs.
+    * @async
+    * @function deleteAspectsBatch
+    * @param {Array<number>} aspectIds - The IDs of the aspects to delete.
+    * @returns {Promise<Object>} - Result of the operation with success status or error message.
+    * @throws {Object} - Returns an error message if the deletion fails.
+    */
     const deleteAspectsBatch = useCallback(async (aspectIds) => {
         try {
             const success = await deleteAspects({ aspectIds, token: jwt });
@@ -216,6 +216,7 @@ export default function useAspects() {
         } catch (error) {
             console.error('Error deleting aspects batch:', error);
             let errorMessage;
+
             if (error.response) {
                 switch (error.response.status) {
                     case 400:
@@ -229,10 +230,11 @@ export default function useAspects() {
                         const { associatedAspects } = errors;
                         if (associatedAspects && associatedAspects.length > 0) {
                             const associatedNames = associatedAspects.map(aspect => aspect.name).join(', ');
+                            const plural = associatedAspects.length > 1;
                             if (message === 'Aspects are associated with legal bases') {
-                                errorMessage = `Los aspectos ${associatedNames} están vinculados a uno o más fundamentos legales y no pueden ser eliminados. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Los aspectos' : 'El aspecto'} ${associatedNames} ${plural ? 'están' : 'está'} vinculado${plural ? 's' : ''} a ${plural ? 'uno o más' : 'un'} fundamento${plural ? 's' : ''} legal${plural ? 'es' : ''} y no puede${plural ? 'n' : ''} ser eliminado${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else {
-                                errorMessage = `Los aspectos ${associatedNames} no pueden ser eliminados debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Los aspectos' : 'El aspecto'} ${associatedNames} no puede${plural ? 'n' : ''} ser eliminado${plural ? 's' : ''} debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
                             }
                         } else {
                             errorMessage = `Los aspectos no pueden ser eliminados debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
@@ -240,7 +242,7 @@ export default function useAspects() {
                         break;
                     }
                     case 404:
-                        errorMessage = 'Una o más aspectos no encontrados. Verifique su existencia recargando la app e intente de nuevo.';
+                        errorMessage = 'Uno o más aspectos no encontrados. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
                     case 500:
                         errorMessage = 'Error interno del servidor. Por favor, intente más tarde.';
@@ -257,7 +259,6 @@ export default function useAspects() {
             return { success: false, error: errorMessage };
         }
     }, [jwt]);
-
 
     return {
         aspects,

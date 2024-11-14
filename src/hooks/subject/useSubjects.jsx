@@ -214,17 +214,17 @@ export default function useSubjects() {
                     case 403:
                         errorMessage = 'No autorizado para eliminar esta materia. Verifique su sesión.';
                         break;
-                        case 409: {
-                            const message = error.response.data.message;
-                            if (message === 'The subject is associated with one or more legal bases') {
-                                errorMessage = 'La materia está vinculada a uno o más fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.';
-                            } else if (message === 'Some aspects of the subject are associated with legal bases') {
-                                errorMessage = 'Algunos aspectos de esta materia están vinculados a fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.';
-                            } else {
-                                errorMessage = 'La materia no puede ser eliminada debido a que tiene vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.';
-                            }
-                            break;
-                        }                        
+                    case 409: {
+                        const message = error.response.data.message;
+                        if (message === 'The subject is associated with one or more legal bases') {
+                            errorMessage = 'La materia está vinculada a uno o más fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.';
+                        } else if (message === 'Some aspects of the subject are associated with legal bases') {
+                            errorMessage = 'Algunos aspectos de esta materia están vinculados a fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.';
+                        } else {
+                            errorMessage = 'La materia no puede ser eliminada debido a que tiene vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.';
+                        }
+                        break;
+                    }
                     case 404:
                         errorMessage = 'Materia no encontrada. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
@@ -245,16 +245,15 @@ export default function useSubjects() {
     }, [jwt]);
 
 
-
     /**
-  * Deletes multiple subjects by their IDs.
-  * @param {Array<number>} subjectIds - Array of subject IDs to delete.
-  * @returns {Promise<Object>} - Success status or error message.
-  */
+     * Deletes multiple subjects by their IDs.
+     * @param {Array<number>} subjectIds - Array of subject IDs to delete.
+     * @returns {Promise<Object>} - Success status or error message.
+     */
     const deleteSubjectsBatch = useCallback(async (subjectIds) => {
         try {
             const success = await deleteSubjects({ subjectIds, token: jwt });
-    
+
             if (success) {
                 setSubjects(prevSubjects => prevSubjects.filter(subject => !subjectIds.includes(subject.id)));
                 return { success: true };
@@ -262,6 +261,7 @@ export default function useSubjects() {
         } catch (error) {
             console.error('Error deleting subjects batch:', error);
             let errorMessage;
+
             if (error.response) {
                 switch (error.response.status) {
                     case 400:
@@ -270,23 +270,24 @@ export default function useSubjects() {
                     case 403:
                         errorMessage = 'No autorizado para eliminar materias. Verifique su sesión.';
                         break;
-                        case 409: {
-                            const { errors, message } = error.response.data
-                           const { associatedSubjects } = errors                    
-                           if (associatedSubjects && associatedSubjects.length > 0) {
+                    case 409: {
+                        const { errors, message } = error.response.data;
+                        const { associatedSubjects } = errors;
+                        if (associatedSubjects && associatedSubjects.length > 0) {
                             const associatedNames = associatedSubjects.map(subject => subject.name).join(', ');
-                           if (message === 'Subjects are associated with legal bases') {
-                                errorMessage = `Las materias ${associatedNames} están vinculadas a uno o más fundamentos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`;
+                            const plural = associatedSubjects.length > 1;
+                            if (message === 'Subjects are associated with legal bases') {
+                                errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} ${plural ? 'están' : 'está'} vinculada${plural ? 's' : ''} a ${plural ? 'uno o más' : 'un'} fundamento${plural ? 's' : ''} legal${plural ? 'es' : ''} y no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else if (message === 'Subjects have aspects associated with legal bases') {
-                                errorMessage = `Las materias ${associatedNames} tienen aspectos asociados a fundamentos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} ${plural ? 'tienen' : 'tiene'} aspectos asociados a fundamentos legales y no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else {
-                                errorMessage = `Las materias ${associatedNames} no pueden ser eliminadas debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''} debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
                             }
                         } else {
                             errorMessage = `Las materias no pueden ser eliminadas debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
                         }
-                            break;
-                        }
+                        break;
+                    }
                     case 404:
                         errorMessage = 'Una o más materias no encontradas. Verifique su existencia recargando la app e intente de nuevo.';
                         break;
@@ -301,11 +302,12 @@ export default function useSubjects() {
             } else {
                 errorMessage = 'Error inesperado al eliminar materias. Intente de nuevo.';
             }
-    
+
             return { success: false, error: errorMessage };
         }
     }, [jwt]);
-    
+
+
     useEffect(() => {
         fetchSubjects();
     }, [fetchSubjects]);

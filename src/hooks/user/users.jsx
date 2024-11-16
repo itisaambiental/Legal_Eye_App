@@ -128,14 +128,14 @@ const addUser = useCallback(async ({ name, email, role_id, profile_picture }) =>
   }
 }, [jwt]);
 
-  /**
+/**
  * Updates user details.
- * @param {Object} userData - User data including ID, name, email, role ID, and profile picture.
+ * @param {Object} userData - User data including ID, name, email, role ID, profile picture, and removePicture flag.
  * @returns {Promise<Object>} - Success status and updated user data or error message.
  */
-const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile_picture }) => {
+const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile_picture, removePicture }) => {
   try {
-    const { updatedUser, token } = await updateUser({ id, name, email, role_id, profile_picture, token: jwt });
+    const { updatedUser, token } = await updateUser({ id, name, email, role_id, profile_picture, token: jwt, removePicture });
     setUsers(prevUsers => prevUsers.map(user => (user.id === id ? updatedUser : user)));
     if (jwt && id === jwtDecode(jwt).userForToken.id && token) {
       updateUserContext(token);

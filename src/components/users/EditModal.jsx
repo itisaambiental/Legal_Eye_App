@@ -100,11 +100,9 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 name: formData.nombre,
                 email: formData.email,
                 role_id: formData.user_type,
-                profile_picture:
-                    formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file
-                        ? formData.profile_picture.file
-                        : formData.profile_picture || undefined
-            };
+                profile_picture: formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file ? formData.profile_picture.file : null,
+                removePicture: formData.profile_picture === null
+              };  
             const { success, error } = await updateUserDetails(userData);
             if (success) {
                 toast.info('El usuario ha sido actualizado correctamente', {

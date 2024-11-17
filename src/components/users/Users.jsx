@@ -192,7 +192,7 @@ export default function Users() {
   const handleDelete = useCallback(async (userId) => {
     try {
       const { success, error } = await deleteUser(userId);
-
+  
       if (success) {
         toast.success('Usuario eliminado con éxito', {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -208,7 +208,7 @@ export default function Users() {
       toast.error('Algo mal sucedió al eliminar el usuario. Intente de nuevo');
     }
   }, [deleteUser]);
-
+  
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
 
@@ -276,16 +276,22 @@ export default function Users() {
             >
               <DropdownTrigger>
                 <Button
-                  variant="bordered"
+                  variant="light"
+                  color="primary"
+                  size="sm"
+                  isIconOnly
+                  key="options"
+                  aria-label="Opciones"
+                 
                 >
-                  Open Menú
+                <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">
                 <DropdownItem
                   aria-label="Editar Usuario"
                   startContent={<img src={edit_user} alt="Edit Icon"
-                    className="w-4 h-4 flex-shrink-0" />}
+                  className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-primary/20"
                   key="edit"
                   onPress={() => openEditModal(user)}

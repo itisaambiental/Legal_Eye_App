@@ -189,7 +189,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                                     <Tooltip color='primary' content="Eliminar">
                                                         <Button
                                                             className="absolute top-2 right-2 bg-transparent z-10"
-                                                            onClick={handleRemoveImage}
+                                                            onPress={handleRemoveImage}
                                                             auto
                                                             size="sm"
                                                             isIconOnly
@@ -203,7 +203,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                                 <CardFooter className="flex flex-col items-center justify-center bg-primary/40 before:bg-primary/10 border-primary/20 border-1 overflow-hidden py-2 absolute bottom-0 w-full shadow-small rounded-b-lg z-10">
                                                     <p className="text-tiny text-white text-center">Foto de perfil actual</p>
                                                     <Button
-                                                        onClick={() => inputFileRef.current.click()}
+                                                        onPress={() => inputFileRef.current.click()}
                                                         className="text-tiny text-primary mt-2"
                                                         variant="solid"
                                                         color="default"

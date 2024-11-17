@@ -37,7 +37,7 @@ function TopContent({ onRowsPerPageChange, totalSubjects, openModalCreate, onFil
         />
 
         <div className="flex gap-3 ml-auto">
-          <Button color="primary" onClick={openModalCreate} endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
+          <Button color="primary" onPress={openModalCreate} endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
             Nueva Materia
           </Button>
         </div>

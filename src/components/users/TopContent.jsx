@@ -66,7 +66,7 @@ function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openMo
             </DropdownMenu>
           </Dropdown>
 
-          <Button color="primary" onClick={openModalCreate} endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
+          <Button color="primary" onPress={openModalCreate} endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}>
             Nuevo Usuario
           </Button>
         </div>

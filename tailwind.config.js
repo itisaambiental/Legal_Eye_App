@@ -17,10 +17,6 @@ export default {
         warning: '#2581cc',
         red: '#d1302b'
       },
-      fontFamily: {
-        roboto: ['Roboto', 'sans-serif'],
-        raleway: ['Raleway', 'sans-serif'],
-      },
     },
   },
   darkMode: "class",

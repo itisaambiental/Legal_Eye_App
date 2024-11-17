@@ -10,19 +10,6 @@ vi.mock('../hooks/user/profile.jsx', () => ({
   default: vi.fn(),
 }));
 
-vi.mock('@azure/msal-browser', () => {
-  return {
-    PublicClientApplication: vi.fn().mockImplementation(() => {
-      return {
-        acquireTokenSilent: vi.fn(),
-        acquireTokenPopup: vi.fn(),
-        loginPopup: vi.fn(),
-        logout: vi.fn(),
-      };
-    }),
-  };
-});
-
 describe("Dashboard Component", () => {
   const mockLogout = vi.fn();
 

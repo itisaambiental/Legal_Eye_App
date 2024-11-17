@@ -11,6 +11,10 @@
     "preview": "vite preview",
     "start": "serve dist -s -n -L -p $PORT"
   },
+  "engines": {
+    "node": "22.x", 
+    "npm": "10.x"   
+  },
   "dependencies": {
     "@azure/msal-browser": "^3.24.0",
     "@headlessui/react": "^2.1.9",
@@ -28,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",

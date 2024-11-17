@@ -3,12 +3,25 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 import { MemoryRouter } from 'react-router-dom';
 import Context from '../context/userContext.jsx';
-import useUserProfile from '../hooks/user/profile.jsx'; 
+import useUserProfile from '../hooks/user/profile.jsx';
 
 vi.mock('../hooks/user/profile.jsx', () => ({
   __esModule: true,
   default: vi.fn(),
 }));
+
+vi.mock('@azure/msal-browser', () => {
+  return {
+    PublicClientApplication: vi.fn().mockImplementation(() => {
+      return {
+        acquireTokenSilent: vi.fn(),
+        acquireTokenPopup: vi.fn(),
+        loginPopup: vi.fn(),
+        logout: vi.fn(),
+      };
+    }),
+  };
+});
 
 describe("Dashboard Component", () => {
   const mockLogout = vi.fn();

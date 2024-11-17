@@ -280,10 +280,11 @@ export default function Users() {
                   color="primary"
                   size="sm"
                   isIconOnly
+                  auto
                   aria-label="Opciones"
                  
                 >
-                Abrir
+                <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">

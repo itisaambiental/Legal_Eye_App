@@ -153,6 +153,7 @@ export default function Subjects() {
                                     color="primary"
                                     size="sm"
                                     isIconOnly
+                                    auto
                                     aria-label="Opciones"
                                 >
                                     <img src={menu_icon} alt="Menu" className="w-6 h-6" />

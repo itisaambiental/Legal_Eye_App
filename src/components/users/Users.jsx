@@ -283,7 +283,7 @@ export default function Users() {
                   aria-label="Opciones"
                  
                 >
-                <img src={menu_icon} alt="Menu" className="w-6 h-6" />
+                Abrir
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">

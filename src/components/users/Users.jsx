@@ -292,7 +292,7 @@ export default function Users() {
                 <DropdownItem
                   aria-label="Editar Usuario"
                   startContent={<img src={edit_user} alt="Edit Icon"
-                    className="w-4 h-4 flex-shrink-0" />}
+                  className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-primary/20"
                   key="edit"
                   onClick={() => openEditModal(user)}

@@ -279,8 +279,8 @@ export default function Users() {
                   variant="light"
                   color="primary"
                   size="sm"
-                  isIconOnly
-                  auto
+                  isIconOnly={false} // Prueba deshabilitarlo temporalmente
+                  auto={false} // Prueba deshabilitar esto también temporalmente
                   key="options"
                   aria-label="Opciones"
                  

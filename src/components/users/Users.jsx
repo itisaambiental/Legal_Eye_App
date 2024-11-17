@@ -273,7 +273,6 @@ export default function Users() {
         return (
           <div className="relative flex items-center justify-center gap-2">
             <Dropdown
-
             >
               <DropdownTrigger>
                 <Button
@@ -281,7 +280,6 @@ export default function Users() {
                   color="primary"
                   size="sm"
                   isIconOnly
-                  auto
                   aria-label="Opciones"
                  
                 >

@@ -166,7 +166,7 @@ export default function Subjects() {
                                     startContent={<img src={watch_icon} alt="Watch Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-primary/20"
                                     key="watch"
-                                    onClick={() => goToAspects(subject.id)}
+                                    onPress={() => goToAspects(subject.id)}
                                     textValue="Ver Aspectos"
                                 >
                                     <p className="font-normal text-primary">Ver Aspectos</p>
@@ -176,7 +176,7 @@ export default function Subjects() {
                                     startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-primary/20"
                                     key="edit"
-                                    onClick={() => openEditModal(subject)}
+                                    onPress={() => openEditModal(subject)}
                                     textValue="Editar Materia"
                                 >
                                     <p className="font-normal text-primary">Editar Materia</p>
@@ -186,7 +186,7 @@ export default function Subjects() {
                                     startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-red/20"
                                     key="delete"
-                                    onClick={() => handleDelete(subject.id)}
+                                    onPress={() => handleDelete(subject.id)}
                                     textValue="Eliminar Materia"
                                 >
                                     <p className="font-normal text-red">Eliminar Materia</p>
@@ -263,7 +263,7 @@ export default function Subjects() {
                             size="sm"
                             className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
                             aria-label="Eliminar seleccionados"
-                            onClick={openDeleteModal}
+                            onPress={openDeleteModal}
                         >
                             <img src={trash_icon} alt="delete" className="w-5 h-5" />
                         </Button>

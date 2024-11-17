@@ -295,7 +295,7 @@ export default function Users() {
                   className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-primary/20"
                   key="edit"
-                  onClick={() => openEditModal(user)}
+                  onPress={() => openEditModal(user)}
                   textValue="Editar Usuario"
                 >
 
@@ -306,7 +306,7 @@ export default function Users() {
                   startContent={<img src={delete_user} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
                   className="hover:bg-red/20"
                   key="delete"
-                  onClick={() => handleDelete(user.id)}
+                  onPress={() => handleDelete(user.id)}
                   textValue="Eliminar Usuario"
                 >
                   <p className="font-normal text-red">Eliminar Usuario</p>
@@ -394,7 +394,7 @@ export default function Users() {
               size="sm"
               className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
               aria-label="Eliminar seleccionados"
-              onClick={openDeleteModal}
+              onPress={openDeleteModal}
             >
               <img src={trash_icon} alt="delete" className="w-5 h-5" />
             </Button>

@@ -185,7 +185,7 @@ export default function Aspects() {
                                     startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-primary/20"
                                     key="edit"
-                                    onClick={() => openEditModal(aspect)}
+                                    onPress={() => openEditModal(aspect)}
                                     textValue="Editar Aspecto"
                                 >
                                     <p className="font-normal text-primary">Editar Aspecto</p>
@@ -195,7 +195,7 @@ export default function Aspects() {
                                     startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
                                     className="hover:bg-red/20"
                                     key="delete"
-                                    onClick={() => handleDelete(aspect.id)}
+                                    onPress={() => handleDelete(aspect.id)}
                                     textValue="Eliminar Aspecto"
                                 >
                                     <p className="font-normal text-red">Eliminar Aspecto</p>
@@ -275,7 +275,7 @@ export default function Aspects() {
                             size="sm"
                             className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
                             aria-label="Eliminar seleccionados"
-                            onClick={openDeleteModal}
+                            onPress={openDeleteModal}
                         >
                             <img src={trash_icon} alt="delete" className="w-5 h-5" />
                         </Button>

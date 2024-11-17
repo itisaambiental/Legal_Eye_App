@@ -278,7 +278,7 @@ export default function Users() {
                 <Button
                   variant="bordered"
                 >
-                  Open Menu
+                  Open Menú
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Opciones de usuario" variant="light">

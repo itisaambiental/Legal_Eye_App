@@ -281,6 +281,7 @@ export default function Users() {
                   size="sm"
                   isIconOnly
                   auto
+                  key="options"
                   aria-label="Opciones"
                  
                 >

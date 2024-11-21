@@ -232,7 +232,7 @@ export default function useAspects() {
                             const associatedNames = associatedAspects.map(aspect => aspect.name).join(', ');
                             const plural = associatedAspects.length > 1;
                             if (message === 'Aspects are associated with legal bases') {
-                                errorMessage = `${plural ? 'Los aspectos' : 'El aspecto'} ${associatedNames} ${plural ? 'están' : 'está'} vinculado${plural ? 's' : ''} a ${plural ? 'uno o más' : 'un'} fundamento${plural ? 's' : ''} legal${plural ? 'es' : ''} y no puede${plural ? 'n' : ''} ser eliminado${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Los aspectos' : 'El aspecto'} ${associatedNames} ${plural ? 'están' : 'está'} vinculado${plural ? 's' : ''} a uno o más  fundamentos legales y no puede${plural ? 'n' : ''} ser eliminado${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else {
                                 errorMessage = `${plural ? 'Los aspectos' : 'El aspecto'} ${associatedNames} no puede${plural ? 'n' : ''} ser eliminado${plural ? 's' : ''} debido a vinculaciones con otros módulos. Por favor, verifique e intente de nuevo.`;
                             }

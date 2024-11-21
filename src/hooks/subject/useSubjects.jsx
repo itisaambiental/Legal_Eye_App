@@ -277,7 +277,7 @@ export default function useSubjects() {
                             const associatedNames = associatedSubjects.map(subject => subject.name).join(', ');
                             const plural = associatedSubjects.length > 1;
                             if (message === 'Subjects are associated with legal bases') {
-                                errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} ${plural ? 'están' : 'está'} vinculada${plural ? 's' : ''} a ${plural ? 'uno o más' : 'un'} fundamento${plural ? 's' : ''} legal${plural ? 'es' : ''} y no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
+                                errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} ${plural ? 'están' : 'está'} vinculada${plural ? 's' : ''} a uno o más  fundamentos legales y no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else if (message === 'Subjects have aspects associated with legal bases') {
                                 errorMessage = `${plural ? 'Las materias' : 'La materia'} ${associatedNames} ${plural ? 'tienen' : 'tiene'} aspectos asociados a fundamentos legales y no puede${plural ? 'n' : ''} ser eliminada${plural ? 's' : ''}. Por favor, verifique e intente de nuevo.`;
                             } else {

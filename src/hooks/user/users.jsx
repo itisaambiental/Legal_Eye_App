@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
-import getUsers from '../../server/userService/getUsers.js';
-import registerNewUser from '../../server/userService/registerNewUser.js';
-import updateUser from '../../server/userService/updateUser.js';
-import deleteUserById from '../../server/userService/deleteUserById.js';
-import deleteUsers from '../../server/userService/deleteUsers.js';
-import getUserByRoleId from '../../server/userService/getUserByRole.js';
+import getUsers from '../../services/userService/getUsers.js';
+import registerNewUser from '../../services/userService/registerNewUser.js';
+import updateUser from '../../services/userService/updateUser.js';
+import deleteUserById from '../../services/userService/deleteUserById.js';
+import deleteUsers from '../../services/userService/deleteUsers.js';
+import getUserByRoleId from '../../services/userService/getUserByRole.js';
 import { jwtDecode } from 'jwt-decode';
 
 /**

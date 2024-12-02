@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, createContext, useCallback } from 'react'
 import { jwtDecode } from 'jwt-decode'
-import { msalInstance } from '../utils/msalConfig'
+import { msalInstance } from '../config/msalConfig'
 
 /**
  * User authentication and role management context.
@@ -61,10 +61,12 @@ export function UserContextProvider({ children }) {
      * Also clears the MSAL cache to reset authentication status.
      */
     const logout = useCallback(() => {
-        updateUserContext(null)
-        msalInstance.clearCache()
-    }, [updateUserContext])
-
+        updateUserContext(null);
+        msalInstance.clearCache().catch(error => {
+            console.error("Error durante el logout:", error);
+        });
+    }, [updateUserContext]);
+    
     /**
      * Effect that decodes the JWT to set role flags if a token exists.
      * If decoding fails, logs out the user to clear invalid token data.

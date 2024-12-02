@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
-import login_user from '../../server/userService/login.js';
-import verifyToken from '../../server/userService/verify_token.js';
-import resetPassword from '../../server/userService/reset_password.js';
-import { msalInstance } from '../../utils/msalConfig.js'; 
-import login_user_microsoft from '../../server/userService/login_microsoft.js';
-import sendNewPassword from '../../server/userService/sendNewPassword.js';
+import login_user from '../../services/userService/login.js';
+import verifyToken from '../../services/userService/verify_token.js';
+import resetPassword from '../../services/userService/reset_password.js';
+import { msalInstance } from '../../config/msalConfig.js'; 
+import login_user_microsoft from '../../services/userService/login_microsoft.js';
+import sendNewPassword from '../../services/userService/sendNewPassword.js';
 
 /**
  * Custom hook for managing user authentication and related operations.
@@ -47,13 +47,11 @@ export default function useUser() {
    */
   const login_microsoft = useCallback(() => {
     if (stateMicrosoft.loading) return;
-
     setStateMicrosoft({ loading: true, error: null });
-
     const loginRequest = {
-        scopes: ['openid', 'profile', 'User.Read']
+        scopes: ['openid', 'profile', 'User.Read'],
+        prompt: "select_account" 
     };
-
     return msalInstance.initialize()
       .then(() => {
         if (msalInstance.getActiveAccount()) {
@@ -72,7 +70,7 @@ export default function useUser() {
           updateUserContext(token);
           setStateMicrosoft({ loading: false, error: null });
         } else {
-          throw new Error('No se devolvió un token del backend');
+          setStateMicrosoft({ loading: false, error: "Error al iniciar sesión con Microsoft" });
         }
       })
       .catch(error => {
@@ -91,6 +89,7 @@ export default function useUser() {
         logout();
       });
   }, [updateUserContext, stateMicrosoft, logout]);
+
 
 
   /**

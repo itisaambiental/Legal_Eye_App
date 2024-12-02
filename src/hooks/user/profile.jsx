@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
-import getUserById from '../../server/userService/getUserById.js';
+import getUserById from '../../services/userService/getUserById.js';
 import { jwtDecode } from "jwt-decode";
 
 /**

@@ -1,10 +1,10 @@
 import { useContext, useState, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
-import getAspectsBySubject from '../../server/aspectService/getAspects.js';
-import createNewAspect from '../../server/aspectService/createAspect.js';
-import updateAspect from '../../server/aspectService/updateAspect.js';
-import deleteAspect from '../../server/aspectService/deleteAspect.js';
-import deleteAspects from '../../server/aspectService/deleteAspects.js';
+import getAspectsBySubject from '../../services/aspectService/getAspects.js';
+import createNewAspect from '../../services/aspectService/createAspect.js';
+import updateAspect from '../../services/aspectService/updateAspect.js';
+import deleteAspect from '../../services/aspectService/deleteAspect.js';
+import deleteAspects from '../../services/aspectService/deleteAspects.js';
 /**
  * Custom hook for managing aspects and retrieving them based on a specific subject.
  * @returns {Object} - Contains aspects list, loading state, error state, and functions for aspect operations.

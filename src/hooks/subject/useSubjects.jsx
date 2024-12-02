@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
-import getSubjects from '../../server/subjectService/getSubjects.js';
-import getSubjectById from '../../server/subjectService/getSubjectById.js';
-import createNewSubject from '../../server/subjectService/createSubject.js';
-import updateSubject from '../../server/subjectService/updateSubject.js';
-import deleteSubject from '../../server/subjectService/deleteSubject.js';
-import deleteSubjects from '../../server/subjectService/deleteSubjects.js';
+import getSubjects from '../../services/subjectService/getSubjects.js';
+import getSubjectById from '../../services/subjectService/getSubjectById.js';
+import createNewSubject from '../../services/subjectService/createSubject.js';
+import updateSubject from '../../services/subjectService/updateSubject.js';
+import deleteSubject from '../../services/subjectService/deleteSubject.js';
+import deleteSubjects from '../../services/subjectService/deleteSubjects.js';
 
 /**
  * Custom hook for managing subjects and performing CRUD operations.

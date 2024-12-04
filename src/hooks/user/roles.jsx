@@ -26,7 +26,7 @@ export default function useRoles() {
 
       let errorTitle;
       let errorMessage;
-      if (error.response && error.response.status === 403) {
+      if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         errorTitle = 'Acceso no autorizado';
         errorMessage = 'No tiene permisos para acceder a los roles. Verifique su sesión.';
       } else if (error.message === 'Network Error') {

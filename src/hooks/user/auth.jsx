@@ -81,7 +81,7 @@ export default function useUser() {
           errorMessage = null;
         } else if (error.message.includes('interaction_in_progress')) {
           errorMessage = 'Una interacción de inicio de sesión ya está en progreso.';
-        } else if (error.response && error.response.status === 401 && error.response.data.message === 'Invalid email') {
+        } else if (error.response && error.response.status === 401 && error.response.status === 403 && error.response.data.message === 'Invalid email') {
           errorMessage = 'Dirección de correo no válida';
         }
 

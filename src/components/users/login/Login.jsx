@@ -168,7 +168,7 @@ function Login({ onLogin }) {
                                     }`}
                             >
                                 <img
-                                    src={showPassword ? closed_eye : eye}
+                                    src={showPassword ? eye : closed_eye}
                                     alt={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                                     className="w-5 h-5"
                                 />

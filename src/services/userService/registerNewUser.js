@@ -23,11 +23,9 @@ export default async function registerNewUser({ name, email, role_id, profile_pi
         formData.append('name', name)
         formData.append('gmail', email)
         formData.append('roleId', role_id)
-        
         if (profile_picture) {
             formData.append('profilePicture', profile_picture)
         }
-
         const response = await server.post('/user/register', formData, {
             headers: {
                 'Authorization': `Bearer ${token}`, 

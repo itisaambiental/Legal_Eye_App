@@ -39,7 +39,7 @@ export default function useUserProfile() {
       if (error.response && error.response.status === 404) {
         errorTitle = 'Usuario no encontrado';
         errorMessage = 'Su informacion no fue encontrada en el sistema. Vuelva a iniciar sesión e intente de nuevo';
-      } else if (error.response && error.response.status === 403) {
+      } else if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         errorTitle = 'Acceso no autorizado';
         errorMessage = 'No tiene permiso para acceder a este perfil. Verifique su sesión.';
       } else if (error.message === 'Network Error') {

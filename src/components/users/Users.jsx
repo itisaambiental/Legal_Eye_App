@@ -1,14 +1,11 @@
 import { useCallback, useState, useMemo } from "react";
-import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Spinner, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Button } from "@nextui-org/react";
 import useUsers from "../../hooks/user/users.jsx";
 import TopContent from "./TopContent";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent";
+import UserCell from "./UsersCell.jsx";
 import Error from "../utils/Error.jsx";
-import defaultAvatar from "../../assets/usuario.png";
-import menu_icon from "../../assets/aplicaciones.png"
-import edit_user from "../../assets/editar_usuario.png";
-import delete_user from "../../assets/borrar-usuario.png";
 import useRoles from "../../hooks/user/roles.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
@@ -72,29 +69,6 @@ export default function Users() {
     profile_picture: null,
   });
 
-
-  const filteredUsers = useMemo(() => {
-    if (!filterValue) return users;
-
-    return users.filter(user =>
-      user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
-      user.gmail.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }, [users, filterValue]);
-
-
-  const totalPages = useMemo(() => Math.ceil(filteredUsers.length / rowsPerPage), [filteredUsers, rowsPerPage]);
-
-  const handleFilterChange = useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
-      setPage(1);
-    } else {
-      setFilterValue("");
-    }
-  }, []);
-
-
   const handleNameChange = (e) => {
     const { value } = e.target;
     setFormData(prevFormData => ({
@@ -129,7 +103,6 @@ export default function Users() {
   };
 
 
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     const validTypes = ["image/png", "image/jpeg", "image/webp"];
@@ -154,20 +127,12 @@ export default function Users() {
     }
   };
 
-
   const handleRemoveImage = () => {
     setFormData({
       ...formData,
       profile_picture: null
     });
   };
-
-
-
-  const onClear = useCallback(() => {
-    setFilterValue("")
-    setPage(1)
-  }, [])
 
   const handleRoleSelection = useCallback((selectedRole) => {
     if (selectedRole === "0" || !selectedRole) {
@@ -188,29 +153,30 @@ export default function Users() {
     setFilterValue("");
   };
 
+  const filteredUsers = useMemo(() => {
+    if (!filterValue) return users;
 
-  const handleDelete = useCallback(async (userId) => {
-    try {
-      const { success, error } = await deleteUser(userId);
-  
-      if (success) {
-        toast.success('Usuario eliminado con éxito', {
-          icon: () => <img src={check} alt="Success Icon" />,
-          progressStyle: {
-            background: '#113c53',
-          }
-        });
-      } else {
-        toast.error(error);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Algo mal sucedió al eliminar el usuario. Intente de nuevo');
+    return users.filter(user =>
+      user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
+      user.gmail.toLowerCase().includes(filterValue.toLowerCase())
+    );
+  }, [users, filterValue]);
+
+  const totalPages = useMemo(() => Math.ceil(filteredUsers.length / rowsPerPage), [filteredUsers, rowsPerPage]);
+
+  const handleFilterChange = useCallback((value) => {
+    if (value) {
+      setFilterValue(value);
+      setPage(1);
+    } else {
+      setFilterValue("");
     }
-  }, [deleteUser]);
-  
-  const openDeleteModal = () => setShowDeleteModal(true);
-  const closeDeleteModal = () => setShowDeleteModal(false);
+  }, []);
+
+  const onClear = useCallback(() => {
+    setFilterValue("")
+    setPage(1)
+  }, [])
 
   const openModalCreate = () => {
     setFormData({
@@ -222,7 +188,6 @@ export default function Users() {
     });
     setIsCreateModalOpen(true)
   }
-
 
   const closeModalCreate = () => {
     setIsCreateModalOpen(false)
@@ -246,83 +211,38 @@ export default function Users() {
     setusertypeError(null)
   };
 
-
-  const onPageChange = (newPage) => setPage(newPage);
-  const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
-  const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
-
-  const renderCell = useCallback((user, columnKey) => {
-    switch (columnKey) {
-      case "name":
-        return (
-          <User
-            avatarProps={{ radius: "lg", src: user.profile_picture || defaultAvatar }}
-            description={user.gmail}
-            name={user.name}
-          />
-        );
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {user.roleId === 1 ? "Admin" : user.roleId === 2 ? "Analista" : "Usuario"}
-            </p>
-          </div>
-        );
-      case "actions":
-        return (
-          <div className="relative flex items-center justify-center gap-2">
-            <Dropdown
-            >
-              <DropdownTrigger>
-                <Button
-                  variant="light"
-                  color="primary"
-                  size="sm"
-                  isIconOnly
-                  key="options"
-                  aria-label="Opciones"
-                 
-                >
-                <img src={menu_icon} alt="Menu" className="w-6 h-6" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Opciones de usuario" variant="light">
-                <DropdownItem
-                  aria-label="Editar Usuario"
-                  startContent={<img src={edit_user} alt="Edit Icon"
-                  className="w-4 h-4 flex-shrink-0" />}
-                  className="hover:bg-primary/20"
-                  key="edit"
-                  onPress={() => openEditModal(user)}
-                  textValue="Editar Usuario"
-                >
-
-                  <p className="font-normal text-primary">Editar Usuario</p>
-                </DropdownItem>
-                <DropdownItem
-                  aria-label="Eliminar Usuario"
-                  startContent={<img src={delete_user} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
-                  className="hover:bg-red/20"
-                  key="delete"
-                  onPress={() => handleDelete(user.id)}
-                  textValue="Eliminar Usuario"
-                >
-                  <p className="font-normal text-red">Eliminar Usuario</p>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return null;
-    }
-  }, [handleDelete]);
-
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
     setPage(1);
   }, []);
+
+  const openDeleteModal = () => setShowDeleteModal(true);
+  const closeDeleteModal = () => setShowDeleteModal(false);
+  const onPageChange = (newPage) => setPage(newPage);
+  const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
+  const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
+
+
+
+  const handleDelete = useCallback(async (userId) => {
+    try {
+      const { success, error } = await deleteUser(userId);
+
+      if (success) {
+        toast.success('Usuario eliminado con éxito', {
+          icon: () => <img src={check} alt="Success Icon" />,
+          progressStyle: {
+            background: '#113c53',
+          }
+        });
+      } else {
+        toast.error(error);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Algo mal sucedió al eliminar el usuario. Intente de nuevo');
+    }
+  }, [deleteUser]);
 
   if (loading || roles_loading) {
     return (
@@ -356,8 +276,6 @@ export default function Users() {
         translateRole={translateRole}
 
       />
-
-
       <Table
         aria-label="Tabla de usuarios"
         selectionMode="multiple"
@@ -379,7 +297,14 @@ export default function Users() {
           {(user) => (
             <TableRow key={user.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(user, columnKey)}</TableCell>
+                <TableCell>
+                  <UserCell
+                    user={user}
+                    columnKey={columnKey}
+                    openEditModal={openEditModal}
+                    handleDelete={handleDelete}
+                  />
+                </TableCell>
               )}
             </TableRow>
           )}

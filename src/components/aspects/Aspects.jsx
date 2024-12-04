@@ -1,15 +1,13 @@
 import { useCallback, useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Button } from "@nextui-org/react";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
-import menu_icon from "../../assets/aplicaciones.png"
-import update_icon from "../../assets/actualizar.png";
-import delete_icon from "../../assets/eliminar.png";
+import AspectCell from "./AspectsCell.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
@@ -20,7 +18,6 @@ const columns = [
     { name: "Aspecto", uid: "aspect_name" },
     { name: "Acciones", uid: "actions" }
 ];
-
 /**
  * Aspects component
  *
@@ -34,10 +31,10 @@ const columns = [
  */
 
 export default function Aspects() {
-    const { id } = useParams(); 
-    const [ subjectName, setSubjectName ] = useState(null); 
-    const { aspects, loading, error,  fetchAspects, addAspect, modifyAspect, removeAspect, deleteAspectsBatch } = useAspects();
-    const { fetchSubjectById, loading: subjectLoading, error: subjectError  } = useSubjects();
+    const { id } = useParams();
+    const [subjectName, setSubjectName] = useState(null);
+    const { aspects, loading, error, fetchAspects, addAspect, modifyAspect, removeAspect, deleteAspectsBatch } = useAspects();
+    const { fetchSubjectById, error: subjectError } = useSubjects();
     const [filterValue, setFilterValue] = useState("");
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(1);
@@ -63,14 +60,14 @@ export default function Aspects() {
                 if (success && data) {
                     setSubjectName(data.subject_name);
                 } else {
-                    setSubjectName(null); 
+                    setSubjectName(null);
                 }
             }
         };
-    
+
         fetchData();
     }, [id, fetchAspects, fetchSubjectById]);
-        
+
     const filteredAspects = useMemo(() => {
         if (!filterValue) return aspects;
         return aspects.filter(aspect =>
@@ -88,6 +85,7 @@ export default function Aspects() {
             setFilterValue("");
         }
     }, []);
+
     const handleNameChange = (e) => {
         const { value } = e.target;
         setFormData(prevFormData => ({
@@ -103,29 +101,6 @@ export default function Aspects() {
         setFilterValue("")
         setPage(1)
     }, [])
-
-
-    const handleDelete = useCallback(async (aspectId) => {
-        try {
-            const { success, error } = await removeAspect(aspectId);
-            if (success) {
-                toast.success('Aspecto eliminado con éxito', {
-                    icon: () => <img src={check} alt="Success Icon" />,
-                    progressStyle: {
-                        background: '#113c53',
-                    }
-                });
-            } else {
-               toast.error(error)
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error('Algo salió mal al eliminar el aspecto. Intente de nuevo');
-        }
-    }, [removeAspect]);
-
-    const openDeleteModal = () => setShowDeleteModal(true);
-    const closeDeleteModal = () => setShowDeleteModal(false);
 
     const openModalCreate = () => {
         setFormData({
@@ -154,73 +129,43 @@ export default function Aspects() {
         setNameError(null)
     };
 
-
-    const onPageChange = (newPage) => setPage(newPage);
-    const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
-    const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
-
-    const renderCell = useCallback((aspect, columnKey) => {
-        switch (columnKey) {
-            case "aspect_name":
-                return <p className="text-sm font-normal">{aspect.aspect_name}</p>;
-            case "actions":
-                return (
-                    <div className="relative flex items-center justify-center gap-2">
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Button
-                                    variant="light"
-                                    color="primary"
-                                    size="sm"
-                                    isIconOnly
-                                    aria-label="Opciones"
-                                >
-                                    <img src={menu_icon} alt="Menu" className="w-6 h-6" />
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu aria-label="Opciones de aspecto" variant="light">
-                                <DropdownItem
-                                    aria-label="Editar Aspecto"
-                                    startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-primary/20"
-                                    key="edit"
-                                    onPress={() => openEditModal(aspect)}
-                                    textValue="Editar Aspecto"
-                                >
-                                    <p className="font-normal text-primary">Editar Aspecto</p>
-                                </DropdownItem>
-                                <DropdownItem
-                                    aria-label="Eliminar Aspecto"
-                                    startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-red/20"
-                                    key="delete"
-                                    onPress={() => handleDelete(aspect.id)}
-                                    textValue="Eliminar Aspecto"
-                                >
-                                    <p className="font-normal text-red">Eliminar Aspecto</p>
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                );
-            default:
-                return null;
-        }
-    }, [handleDelete]);
-
     const onRowsPerPageChange = useCallback((e) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
     }, []);
 
-    if (loading || subjectLoading) {
+    const openDeleteModal = () => setShowDeleteModal(true);
+    const closeDeleteModal = () => setShowDeleteModal(false);
+    const onPageChange = (newPage) => setPage(newPage);
+    const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
+    const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
+
+    const handleDelete = useCallback(async (aspectId) => {
+        try {
+            const { success, error } = await removeAspect(aspectId);
+            if (success) {
+                toast.success('Aspecto eliminado con éxito', {
+                    icon: () => <img src={check} alt="Success Icon" />,
+                    progressStyle: {
+                        background: '#113c53',
+                    }
+                });
+            } else {
+                toast.error(error)
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Algo salió mal al eliminar el aspecto. Intente de nuevo');
+        }
+    }, [removeAspect]);
+
+    if (loading) {
         return (
             <div role="status" className="fixed inset-0 flex items-center justify-center">
                 <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
             </div>
         );
     }
-    
     if (error) {
         return <Error title={error.title} message={error.message} />;
     }
@@ -237,8 +182,6 @@ export default function Aspects() {
                 onFilterChange={handleFilterChange}
                 onClear={onClear}
             />
-
-
             <Table
                 aria-label="Tabla de Aspectos"
                 selectionMode="multiple"
@@ -260,10 +203,18 @@ export default function Aspects() {
                     {(aspect) => (
                         <TableRow key={aspect.id}>
                             {(columnKey) => (
-                                <TableCell>{renderCell(aspect, columnKey)}</TableCell>
+                                <TableCell>
+                                    <AspectCell
+                                        aspect={aspect}
+                                        columnKey={columnKey}
+                                        openEditModal={openEditModal}
+                                        handleDelete={handleDelete}
+                                    />
+                                </TableCell>
                             )}
                         </TableRow>
                     )}
+
                 </TableBody>
             </Table>
             <div className="relative w-full">
@@ -303,7 +254,7 @@ export default function Aspects() {
 
                 />
             )}
-             {isEditModalOpen && (
+            {isEditModalOpen && (
                 <EditModal
                     formData={formData}
                     setFormData={setFormData}
@@ -316,7 +267,7 @@ export default function Aspects() {
                     handleNameChange={handleNameChange}
                 />
             )}
- 
+
             {showDeleteModal && (
                 <DeleteModal
                     showDeleteModal={showDeleteModal}
@@ -331,7 +282,7 @@ export default function Aspects() {
                     check={check}
 
                 />
-            )}  
+            )}
         </div>
 
     );

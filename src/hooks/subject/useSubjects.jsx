@@ -27,8 +27,8 @@ export default function useSubjects() {
         setStateSubjects({ loading: true, error: null });
 
         try {
-            const subjectsList = await getSubjects(jwt);
-            setSubjects(subjectsList.reverse());
+            const subjects = await getSubjects(jwt);
+            setSubjects(subjects.reverse());
             setStateSubjects({ loading: false, error: null });
         } catch (error) {
             console.error('Error fetching subjects:', error);
@@ -36,7 +36,7 @@ export default function useSubjects() {
             let errorTitle;
             let errorMessage;
 
-            if (error.response && error.response.status === 403) {
+            if (error.response && (error.response.status === 403 || error.response.status === 401)) {
                 errorTitle = 'Acceso no autorizado';
                 errorMessage = 'No tiene permisos para ver las materias. Verifique su sesión.';
             } else if (error.message === 'Network Error') {
@@ -73,7 +73,7 @@ export default function useSubjects() {
             let errorTitle;
             let errorMessage;
 
-            if (error.response && error.response.status === 403) {
+            if (error.response && (error.response.status === 403 || error.response.status === 401)) {
                 errorTitle = 'Acceso no autorizado';
                 errorMessage = 'No tiene permisos para ver la materia. Verifique su sesión.';
             } else if (error.response && error.response.status === 404) {
@@ -107,7 +107,7 @@ export default function useSubjects() {
         try {
             const newSubject = await createNewSubject({ subjectName, token: jwt });
             setSubjects(prevSubjects => [newSubject, ...prevSubjects]);
-            return { success: true, subject: newSubject };
+            return { success: true };
         } catch (error) {
             console.error('Error creating subject:', error);
             let errorMessage;
@@ -116,6 +116,7 @@ export default function useSubjects() {
                     case 400:
                         errorMessage = 'Error de validación: revisa los datos introducidos.';
                         break;
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para crear una nueva materia. Verifique su sesión.';
                         break;
@@ -158,7 +159,7 @@ export default function useSubjects() {
                     subject.id === id ? formattedSubject : subject
                 )
             );
-            return { success: true, subject: formattedSubject };
+            return { success: true };
         } catch (error) {
             console.error('Error updating subject:', error);
             let errorMessage;
@@ -167,6 +168,7 @@ export default function useSubjects() {
                     case 400:
                         errorMessage = 'Error de validación: revisa los datos introducidos.';
                         break;
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para actualizar la materia. Verifique su sesión.';
                         break;
@@ -211,6 +213,7 @@ export default function useSubjects() {
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para eliminar esta materia. Verifique su sesión.';
                         break;
@@ -267,8 +270,9 @@ export default function useSubjects() {
                     case 400:
                         errorMessage = 'Faltan campos requeridos: subjectIds. Verifique los parámetros enviados.';
                         break;
+                    case 401:
                     case 403:
-                        errorMessage = 'No autorizado para eliminar materias. Verifique su sesión.';
+                        errorMessage = 'No autorizado para eliminar las materias. Verifique su sesión.';
                         break;
                     case 409: {
                         const { errors, message } = error.response.data;
@@ -322,6 +326,5 @@ export default function useSubjects() {
         modifySubject,
         removeSubject,
         deleteSubjectsBatch,
-        setSubjects,
     };
 }

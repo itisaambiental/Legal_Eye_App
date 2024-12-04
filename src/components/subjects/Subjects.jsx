@@ -1,14 +1,11 @@
 import { useCallback, useState, useMemo } from "react";
-import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Button } from "@nextui-org/react";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
-import menu_icon from "../../assets/aplicaciones.png"
-import update_icon from "../../assets/actualizar.png";
-import delete_icon from "../../assets/eliminar.png";
-import watch_icon from "../../assets/ver.png";
+import SubjectCell from "./SubjectCell.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png"
@@ -56,6 +53,7 @@ export default function Subjects() {
             subject.subject_name.toLowerCase().includes(filterValue.toLowerCase())
         );
     }, [subjects, filterValue]);
+
     const totalPages = useMemo(() => Math.ceil(filteredSubjects.length / rowsPerPage), [filteredSubjects, rowsPerPage]);
 
     const handleFilterChange = useCallback((value) => {
@@ -83,6 +81,47 @@ export default function Subjects() {
         setPage(1)
     }, [])
 
+    const openModalCreate = () => {
+        setFormData({
+            id: '',
+            nombre: '',
+        });
+        setIsCreateModalOpen(true)
+    }
+
+    const closeModalCreate = () => {
+        setIsCreateModalOpen(false)
+        setNameError(null)
+    }
+
+    const openEditModal = (subject) => {
+        setSelectedSubject(subject);
+        setIsEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedSubject(null);
+        setNameError(null)
+    };
+
+    const goToAspects = (subjectId) => { 
+        navigate(`/subjects/${subjectId}/aspects`);
+    };
+
+    const onRowsPerPageChange = useCallback((e) => {
+        setRowsPerPage(Number(e.target.value));
+        setPage(1);
+    }, []);
+
+
+    const openDeleteModal = () => setShowDeleteModal(true);
+    const closeDeleteModal = () => setShowDeleteModal(false);
+    const onPageChange = (newPage) => setPage(newPage);
+    const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
+    const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
+
+ 
 
     const handleDelete = useCallback(async (subjectId) => {
         try {
@@ -103,107 +142,6 @@ export default function Subjects() {
         }
     }, [removeSubject]);
 
-    const openDeleteModal = () => setShowDeleteModal(true);
-    const closeDeleteModal = () => setShowDeleteModal(false);
-
-    const openModalCreate = () => {
-        setFormData({
-            id: '',
-            nombre: '',
-        });
-        setIsCreateModalOpen(true)
-    }
-
-
-    const closeModalCreate = () => {
-        setIsCreateModalOpen(false)
-        setNameError(null)
-    }
-
-    const openEditModal = (subject) => {
-        setSelectedSubject(subject);
-        setIsEditModalOpen(true);
-    };
-
-    const closeEditModal = () => {
-        setIsEditModalOpen(false);
-        setSelectedSubject(null);
-        setNameError(null)
-    };
-
-
-    const onPageChange = (newPage) => setPage(newPage);
-    const onPreviousPage = () => setPage(prev => Math.max(prev - 1, 1));
-    const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
-
-    const renderCell = useCallback((subject, columnKey) => {
-        const goToAspects = (subjectId) => { 
-            navigate(`/subjects/${subjectId}/aspects`);
-        };
-        switch (columnKey) {
-            case "subject_name":
-                return <p className="text-sm font-normal">{subject.subject_name}</p>;
-            case "actions":
-                return (
-                    <div className="relative flex items-center justify-center gap-2">
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Button
-                                    variant="light"
-                                    color="primary"
-                                    size="sm"
-                                    isIconOnly
-                                    aria-label="Opciones"
-                                >
-                                    <img src={menu_icon} alt="Menu" className="w-6 h-6" />
-                                </Button>
-
-                            </DropdownTrigger>
-                            <DropdownMenu aria-label="Opciones de materia" variant="light">
-                                <DropdownItem
-                                    aria-label="Ver Aspectos"
-                                    startContent={<img src={watch_icon} alt="Watch Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-primary/20"
-                                    key="watch"
-                                    onPress={() => goToAspects(subject.id)}
-                                    textValue="Ver Aspectos"
-                                >
-                                    <p className="font-normal text-primary">Ver Aspectos</p>
-                                </DropdownItem>
-                                <DropdownItem
-                                    aria-label="Editar Materia"
-                                    startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-primary/20"
-                                    key="edit"
-                                    onPress={() => openEditModal(subject)}
-                                    textValue="Editar Materia"
-                                >
-                                    <p className="font-normal text-primary">Editar Materia</p>
-                                </DropdownItem>
-                                <DropdownItem
-                                    aria-label="Eliminar Materia"
-                                    startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
-                                    className="hover:bg-red/20"
-                                    key="delete"
-                                    onPress={() => handleDelete(subject.id)}
-                                    textValue="Eliminar Materia"
-                                >
-                                    <p className="font-normal text-red">Eliminar Materia</p>
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                );
-            default:
-                return null;
-        }
-    }, [handleDelete, navigate]);
-
-    const onRowsPerPageChange = useCallback((e) => {
-        setRowsPerPage(Number(e.target.value));
-        setPage(1);
-    }, []);
-
     if (loading) {
         return (
             <div role="status" className="fixed inset-0 flex items-center justify-center">
@@ -217,7 +155,6 @@ export default function Subjects() {
     }
     return (
         <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
-
             <TopContent
                 onRowsPerPageChange={onRowsPerPageChange}
                 totalSubjects={filteredSubjects.length}
@@ -225,8 +162,6 @@ export default function Subjects() {
                 onFilterChange={handleFilterChange}
                 onClear={onClear}
             />
-
-
             <Table
                 aria-label="Tabla de Materias"
                 selectionMode="multiple"
@@ -248,7 +183,15 @@ export default function Subjects() {
                     {(subject) => (
                         <TableRow key={subject.id}>
                             {(columnKey) => (
-                                <TableCell>{renderCell(subject, columnKey)}</TableCell>
+                                <TableCell>
+                                    <SubjectCell
+                                        subject={subject}
+                                        columnKey={columnKey}
+                                        goToAspects={goToAspects}
+                                        openEditModal={openEditModal}
+                                        handleDelete={handleDelete}
+                                    />
+                                </TableCell>
                             )}
                         </TableRow>
                     )}

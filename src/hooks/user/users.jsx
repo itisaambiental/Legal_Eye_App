@@ -24,16 +24,15 @@ export default function useUsers() {
     setStateUsers({ loading: true, error: null });
 
     try {
-      const usersList = await getUsers({ token: jwt });
-      setUsers(usersList.reverse());
+      const users = await getUsers({ token: jwt });
+      setUsers(users.reverse());
       setStateUsers({ loading: false, error: null });
     } catch (error) {
       console.error('Error fetching users:', error);
 
       let errorTitle;
       let errorMessage;
-
-      if (error.response && error.response.status === 403) {
+      if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         errorTitle = 'Acceso no autorizado';
         errorMessage = 'No tiene permisos para ver los usuarios. Verifique su sesión.';
       } else if (error.message === 'Network Error') {
@@ -59,8 +58,8 @@ export default function useUsers() {
     setStateUsers({ loading: true, error: null });
 
     try {
-      const usersList = await getUserByRoleId({ roleId, token: jwt });
-      setUsers(usersList.reverse());
+      const users = await getUserByRoleId({ roleId, token: jwt });
+      setUsers(users.reverse());
       setStateUsers({ loading: false, error: null });
     }  catch (error) {
       console.error('Error fetching users by Role:', error);
@@ -68,7 +67,7 @@ export default function useUsers() {
       let errorTitle;
       let errorMessage;
 
-      if (error.response && error.response.status === 403) {
+      if (error.response && (error.response.status === 403 || error.response.status === 401)) {
         errorTitle = 'Acceso no autorizado';
         errorMessage = 'No tiene permisos para ver los roles. Verifique su sesión.';
       } else if (error.message === 'Network Error') {
@@ -96,7 +95,7 @@ const addUser = useCallback(async ({ name, email, role_id, profile_picture }) =>
   try {
     const user = await registerNewUser({ name, email, role_id, profile_picture, token: jwt });
     setUsers(prevUsers => [user, ...prevUsers]);
-    return { success: true, user };
+    return { success: true };
   } catch (error) {
     console.error('Error registering new user:', error);
     let errorMessage;
@@ -105,6 +104,7 @@ const addUser = useCallback(async ({ name, email, role_id, profile_picture }) =>
         case 400:
           errorMessage = 'Error de validación: revisa los datos introducidos.';
           break;
+        case 401:
         case 403:
           errorMessage = 'No autorizado para registrar un nuevo usuario. Intente de nuevo.';
           break;
@@ -140,7 +140,7 @@ const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile
     if (jwt && id === jwtDecode(jwt).userForToken.id && token) {
       updateUserContext(token);
     }
-    return { success: true, updatedUser };
+    return { success: true };
   } catch (error) {
     console.error('Error updating user:', error);
     let errorMessage;
@@ -149,6 +149,7 @@ const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile
         case 400:
           errorMessage = 'Error de validación: revisa los datos introducidos.';
           break;
+        case 401:
         case 403:
           errorMessage = 'No autorizado para actualizar este usuario. Intente de nuevo.';
           break;
@@ -198,6 +199,7 @@ const deleteUser = useCallback(async (id) => {
         case 404:
           errorMessage = 'El usuario no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.';
           break;
+        case 401:
         case 403:
           errorMessage = 'No autorizado para eliminar este usuario. Intente de nuevo.';
           break;
@@ -242,6 +244,7 @@ const deleteUsersBatch = useCallback(async (userIds) => {
         case 400:
           errorMessage = 'Faltan campos requeridos: userIds. Verifique los parámetros enviados.';
           break;
+        case 401:
         case 403:
           errorMessage = 'No autorizado para eliminar usuarios. Intente de nuevo.';
           break;

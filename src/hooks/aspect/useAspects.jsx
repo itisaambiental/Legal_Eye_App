@@ -18,8 +18,8 @@ export default function useAspects() {
         setStateAspects({ loading: true, error: null });
 
         try {
-            const aspectsList = await getAspectsBySubject({ subjectId, token: jwt });
-            setAspects(aspectsList.reverse());
+            const aspects = await getAspectsBySubject({ subjectId, token: jwt });
+            setAspects(aspects.reverse());
             setStateAspects({ loading: false, error: null });
         } catch (error) {
             console.error('Error fetching aspects:', error);
@@ -27,7 +27,7 @@ export default function useAspects() {
             let errorTitle;
             let errorMessage;
 
-            if (error.response && error.response.status === 403) {
+             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
                 errorTitle = 'Acceso no autorizado';
                 errorMessage = 'No tiene permisos para ver los aspectos de esta materia. Verifique su sesión.';
             } else if (error.message === 'Network Error') {
@@ -58,7 +58,7 @@ export default function useAspects() {
         try {
             const newAspect = await createNewAspect({ subjectId, aspectName, token: jwt });
             setAspects(prevAspects => [newAspect, ...prevAspects]);
-            return { success: true, aspect: newAspect };
+            return { success: true };
         } catch (error) {
             console.error('Error creating aspect:', error);
             let errorMessage;
@@ -67,6 +67,7 @@ export default function useAspects() {
                     case 400:
                         errorMessage = 'Error de validación: revisa los datos introducidos.';
                         break;
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para crear un nuevo aspecto. Verifique su sesión.';
                         break;
@@ -115,7 +116,7 @@ export default function useAspects() {
                     aspect.id === aspectId ? formattedAspect : aspect
                 )
             );
-            return { success: true, aspect: formattedAspect };
+            return { success: true };
         } catch (error) {
             console.error('Error updating aspect:', error);
             let errorMessage;
@@ -124,6 +125,7 @@ export default function useAspects() {
                     case 400:
                         errorMessage = 'Error de validación: revisa los datos introducidos.';
                         break;
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para actualizar el aspecto. Verifique su sesión.';
                         break;
@@ -167,6 +169,7 @@ export default function useAspects() {
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
+                    case 401:
                     case 403:
                         errorMessage = 'No autorizado para eliminar el aspecto. Verifique su sesión.';
                         break;
@@ -222,8 +225,9 @@ export default function useAspects() {
                     case 400:
                         errorMessage = 'Faltan campos requeridos: aspectIds. Verifique los parámetros enviados.';
                         break;
+                    case 401:
                     case 403:
-                        errorMessage = 'No autorizado para eliminar aspectos. Verifique su sesión.';
+                        errorMessage = 'No autorizado para eliminar los aspectos. Verifique su sesión.';
                         break;
                     case 409: {
                         const { errors, message } = error.response.data;

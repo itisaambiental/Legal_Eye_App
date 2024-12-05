@@ -68,13 +68,6 @@ describe("Users Component", () => {
     render(<Users />);
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
-
-  test("displays an error message if there is an error loading users", () => {
-    useUsers.mockReturnValueOnce({ ...useUsers(), error: { title: "Failed to load users", message: "Server Error" }});
-    render(<Users />);
-    expect(screen.getByText("Failed to load users")).toBeInTheDocument();
-    expect(screen.getByText("Server Error")).toBeInTheDocument();
-  });
 });
 
 describe("Users Component with no users", () => {

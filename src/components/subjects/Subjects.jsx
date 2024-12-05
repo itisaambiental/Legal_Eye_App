@@ -150,9 +150,7 @@ export default function Subjects() {
         );
     }
 
-    if (error) {
-        return <Error title={error.title} message={error.message} />;
-    }
+    if (error) return <Error title={error.title} message={error.message} />;
     return (
         <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
             <TopContent

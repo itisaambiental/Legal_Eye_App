@@ -15,10 +15,13 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByName({ legalName, token }) {
     try {
-        const response = await server.get(`/legalBasis/name/${encodeURIComponent(legalName)}`, {
+        const response = await server.get('/legalBasis/name/name', {
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            }, 
+            params: {
+                name: legalName, 
+            },
         });
 
         if (response.status !== 200) {

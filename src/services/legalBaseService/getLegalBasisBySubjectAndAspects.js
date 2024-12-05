@@ -7,23 +7,23 @@ import server from "../../config/server.js";
  * @async
  * @function getLegalBasisBySubjectAndAspects
  * @param {Object} params - Parameters for the request.
- * @param {string} params.subjectId - The subjectId of the legal basis to retrieve (required).
- * @param {Array<string>} params.aspectIds - An array of aspect IDs to retrieve legal basis for (required).
+ * @param {number} params.subjectId - The subjectId of the legal basis to retrieve (required).
+ * @param {Array<number>} params.aspectsIds - An array of aspect IDs to retrieve legal basis for (required).
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Array>} The list of legal basis records matching the subjectId and aspects.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getLegalBasisBySubjectAndAspects({ subjectId, aspectIds, token }) {
+export default async function getLegalBasisBySubjectAndAspects({ subjectId, aspectsIds, token }) {
     try {
         const response = await server.get(`/legalBasis/aspects/subject`, {
-            params: {
-                subjectId: subjectId,
-                aspectIds: aspectIds
-            },
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            },
+            params: {
+                subjectId: subjectId,
+                aspectIds: aspectsIds
+            },
         });
 
         if (response.status !== 200) {

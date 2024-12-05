@@ -14,6 +14,25 @@ export default function useAspects() {
     const [aspects, setAspects] = useState([]);
     const [stateAspects, setStateAspects] = useState({ loading: false, error: null });
 
+        /**
+     * Clears the list of aspects from the state.
+     * 
+     * @function clearAspects
+     * @returns {void} - Resets the aspects list to an empty array.
+     */
+        const clearAspects = useCallback(() => {
+            setAspects([]);
+            setStateAspects((prevState) => ({ ...prevState, error: null }));
+        }, []);
+    /**
+ * Fetches aspects associated with a specific subject.
+ * 
+ * @async
+ * @function fetchAspects
+ * @param {number} subjectId - The ID of the subject to retrieve aspects for.
+ * @returns {Promise<void>} - Updates the state with the list of aspects or sets an error state in case of failure.
+ * @throws {Object} - Sets an error object in state if the fetch operation fails, containing a title and message.
+ */
     const fetchAspects = useCallback(async (subjectId) => {
         setStateAspects({ loading: true, error: null });
 
@@ -36,6 +55,9 @@ export default function useAspects() {
             } else if (error.response && error.response.status === 500) {
                 errorTitle = 'Error en el servidor';
                 errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
+            }  else if (error.response && error.response.status === 404) {
+                errorTitle = 'Materia no encontrada';
+                errorMessage = 'La materia solicitada no existe o ha sido eliminada.'  
             } else {
                 errorTitle = 'Error inesperado';
                 errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
@@ -264,10 +286,13 @@ export default function useAspects() {
         }
     }, [jwt]);
 
+
+
     return {
         aspects,
         loading: stateAspects.loading,
         error: stateAspects.error,
+        clearAspects,
         fetchAspects,
         addAspect,
         modifyAspect,

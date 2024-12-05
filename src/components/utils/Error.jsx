@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useLocation, useNavigate } from "react-router-dom";
 /**
  * Error component for displaying error messages based on specific error types.
  * Offers a user-friendly message and a button to reload the page.
@@ -11,14 +12,23 @@
  * @returns {JSX.Element} A styled error message component with a reload button.
  */
 function Error({ title, message }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const currentPath = location.pathname;
 
     /**
    * Reloads the page when the user clicks the "Retry" button.
    */
-  const handleReload = () => {
-    window.location.reload();
+    const handleReload = () => {
+      const aspectsPath = /^\/subjects\/[^/]+\/aspects$/;
+      if (aspectsPath.test(currentPath)) {
+        navigate("/subjects");
+        window.location.reload();
+      } else {
+        window.location.reload();
+      }
   };
-
   return (
     <div className="flex justify-center items-center h-screen -mt-24 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0">
       <div className="p-4 mb-4 text-red/80 border border-red/30 rounded-lg bg-red/10 max-w-md">

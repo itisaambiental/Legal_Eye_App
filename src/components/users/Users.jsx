@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import { Tooltip, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Button } from "@nextui-org/react";
 import useUsers from "../../hooks/user/users.jsx";
 import TopContent from "./TopContent";
@@ -46,12 +46,14 @@ function capitalize(str) {
 export default function Users() {
   const { users, loading, error, addUser, updateUserDetails, deleteUser, deleteUsersBatch, fetchUsersByRole, fetchUsers } = useUsers();
   const [filterValue, setFilterValue] = useState("");
-  const { roles, roles_loading, roles_error } = useRoles();
+  const { roles, roles_error } = useRoles();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [IsSearching, setIsSearching] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [usertypeError, setusertypeError] = useState(null);
   const [nameError, setNameError] = useState(null);
@@ -68,6 +70,12 @@ export default function Users() {
     email: '',
     profile_picture: null,
   });
+
+  useEffect(() => {
+    if (!loading && isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [loading, isFirstRender]);
 
   const handleNameChange = (e) => {
     const { value } = e.target;
@@ -139,9 +147,11 @@ export default function Users() {
       fetchUsers();
       setSelectedValue("Todos los Roles");
     } else {
+      setIsSearching(true)
       fetchUsersByRole(selectedRole);
       const roleName = roles.find(role => role.id.toString() === selectedRole)?.role || "Todos los Roles";
       setSelectedValue(capitalize(translateRole(roleName)));
+      setIsSearching(false)
     }
   }, [roles, fetchUsers, fetchUsersByRole]);
 
@@ -244,24 +254,21 @@ export default function Users() {
     }
   }, [deleteUser]);
 
-  if (loading || roles_loading) {
+    
+  if (loading && isFirstRender) {
     return (
       <div role="status" className="fixed inset-0 flex items-center justify-center">
         <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
       </div>
     );
   }
-
-  if (error) {
-    return <Error title={error.title} message={error.message} />;
-  }
-  if (roles_error) {
-    return <Error title={roles_error.message} message={roles_error.message} />;
-  }
-
+  
+  if (error) return <Error title={error.title} message={error.message} />;
+  if (roles_error) return <Error title={roles_error.title} message={roles_error.message} />;
+  
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
-
+  
       <TopContent
         roles={roles}
         onRowsPerPageChange={onRowsPerPageChange}
@@ -274,42 +281,51 @@ export default function Users() {
         selectedRoleKeys={selectedRoleKeys}
         onRoleChange={onRoleChange}
         translateRole={translateRole}
-
       />
-      <Table
-        aria-label="Tabla de usuarios"
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-        color="primary"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
-          emptyContent="No hay usuarios para mostrar"
-        >
-          {(user) => (
-            <TableRow key={user.id}>
-              {(columnKey) => (
-                <TableCell>
-                  <UserCell
-                    user={user}
-                    columnKey={columnKey}
-                    openEditModal={openEditModal}
-                    handleDelete={handleDelete}
-                  />
-                </TableCell>
+  
+      <>
+        {IsSearching || loading ? (
+          <div role="status" className="flex justify-center items-center w-full h-40">
+            <Spinner className="h-10 w-10" color="secondary" />
+          </div>
+        ) : (
+          <Table
+            aria-label="Tabla de usuarios"
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            color="primary"
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+                  {column.name}
+                </TableColumn>
               )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody
+              items={filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+              emptyContent="No hay usuarios para mostrar"
+            >
+              {(user) => (
+                <TableRow key={user.id}>
+                  {(columnKey) => (
+                    <TableCell>
+                      <UserCell
+                        user={user}
+                        columnKey={columnKey}
+                        openEditModal={openEditModal}
+                        handleDelete={handleDelete}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </>
+  
       <div className="relative w-full">
         {(selectedKeys.size > 0 || selectedKeys === "all") && (
           <Tooltip content="Eliminar" size="sm">
@@ -324,8 +340,8 @@ export default function Users() {
             </Button>
           </Tooltip>
         )}
-
       </div>
+  
       <BottomContent
         page={page}
         totalPages={totalPages}
@@ -335,6 +351,7 @@ export default function Users() {
         selectedKeys={selectedKeys}
         filteredItems={users}
       />
+  
       {isCreateModalOpen && (
         <CreateModal
           closeModalCreate={closeModalCreate}
@@ -357,8 +374,7 @@ export default function Users() {
           translateRole={translateRole}
         />
       )}
-
-
+  
       {isEditModalOpen && (
         <EditModal
           formData={formData}
@@ -383,7 +399,7 @@ export default function Users() {
           translateRole={translateRole}
         />
       )}
-
+  
       {showDeleteModal && (
         <DeleteModal
           showDeleteModal={showDeleteModal}
@@ -396,10 +412,8 @@ export default function Users() {
           setShowDeleteModal={setShowDeleteModal}
           setSelectedKeys={setSelectedKeys}
           check={check}
-
         />
       )}
     </div>
-
   );
-}
+}  

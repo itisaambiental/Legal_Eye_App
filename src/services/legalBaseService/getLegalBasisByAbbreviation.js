@@ -15,10 +15,13 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByAbbreviation({ abbreviation, token }) {
     try {
-        const response = await server.get(`/legalBasis/abbreviation/${encodeURIComponent(abbreviation)}`, {
+        const response = await server.get('/legalBasis/abbreviation/abbreviation', {
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            },
+            params: {
+                abbreviation: abbreviation, 
+            },
         });
 
         if (response.status !== 200) {

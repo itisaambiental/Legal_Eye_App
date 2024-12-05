@@ -15,7 +15,7 @@ import { jwtDecode } from 'jwt-decode';
 export default function useUsers() {
   const { jwt, logout, updateUserContext } = useContext(Context);
   const [users, setUsers] = useState([]);
-  const [stateUsers, setStateUsers] = useState({ loading: false, error: null });
+  const [stateUsers, setStateUsers] = useState({ loading: true, error: null });
 
   /**
    * Fetches the complete list of users.

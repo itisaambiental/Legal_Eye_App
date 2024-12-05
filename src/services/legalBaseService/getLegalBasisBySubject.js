@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @async
  * @function getLegalBasisBySubject
  * @param {Object} params - Parameters for the request.
- * @param {string} params.subjectId - The subjectId to retrieve legal basis for (required).
+ * @param {number} params.subjectId - The subjectId to retrieve legal basis.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Array>} The list of legal basis records matching the subjectId.

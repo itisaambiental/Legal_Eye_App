@@ -20,7 +20,7 @@ import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/ge
 export default function useLegalBasis() {
     const { jwt } = useContext(Context);
     const [legalBasis, setLegalBasis] = useState([]);
-    const [stateLegalBasis, setStateLegalBasis] = useState({ loading: false, error: null });
+    const [stateLegalBasis, setStateLegalBasis] = useState({ loading: true, error: null });
 
     /**
      * Creates a new Legal Basis by sending the request with the provided data.
@@ -112,7 +112,6 @@ export default function useLegalBasis() {
             setLegalBasis(legalBasis.reverse());
             setStateLegalBasis({ loading: false, error: null });
         } catch (error) {
-            console.error
             let errorTitle;
             let errorMessage;
             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -149,8 +148,6 @@ export default function useLegalBasis() {
             setStateLegalBasis({ loading: false, error: null });
             return { success: true, data: legalBasis };
         } catch (error) {
-            console.error('Error fetching legal basis by ID:', error);
-
             let errorTitle;
             let errorMessage;
 
@@ -191,7 +188,6 @@ export default function useLegalBasis() {
             setLegalBasis(legalBasis.reverse());
             setStateLegalBasis({ loading: false, error: null });
         } catch (error) {
-            console.error
             let errorTitle;
             let errorMessage;
             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -227,7 +223,6 @@ export default function useLegalBasis() {
             setLegalBasis(legalBasis.reverse());
             setStateLegalBasis({ loading: false, error: null });
         } catch (error) {
-            console.error
             let errorTitle;
             let errorMessage;
             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -264,7 +259,6 @@ export default function useLegalBasis() {
             setLegalBasis(legalBasis.reverse());
             setStateLegalBasis({ loading: false, error: null });
         } catch (error) {
-            console.error
             let errorTitle;
             let errorMessage;
             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -300,7 +294,6 @@ export default function useLegalBasis() {
             setLegalBasis(legalBasis.reverse());
             setStateLegalBasis({ loading: false, error: null });
         } catch (error) {
-            console.error
             let errorTitle;
             let errorMessage;
             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -336,7 +329,6 @@ const fetchLegalBasisByState = useCallback(async (state) => {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
     } catch (error) {
-        console.error
         let errorTitle;
         let errorMessage;
         if (error.response && (error.response.status === 403 || error.response.status === 401)) {
@@ -357,6 +349,90 @@ const fetchLegalBasisByState = useCallback(async (state) => {
     }
 }, [jwt]);
 
+     /**
+* Fetches the list of LegalBasis by Subject.
+* @async
+* @function fetchLegalBasisBySubject
+* @param {number} subjectId - The id of the subject of the legal basis to retrieve.
+* @returns {Promise<void>} - Updates the LegalBasis list and loading state.
+* @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+*/
+const fetchLegalBasisBySubject = useCallback(async (subjectId) => {
+    setStateLegalBasis({ loading: true, error: null });
+    try {
+        const legalBasis = await getLegalBasisBySubject({ subjectId, token: jwt });
+        setLegalBasis(legalBasis.reverse());
+        setStateLegalBasis({ loading: false, error: null });
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            setLegalBasis([]);
+            setStateLegalBasis({ loading: false, error: null });
+        } else {
+            let errorTitle;
+            let errorMessage;
+            if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+                errorTitle = 'Acceso no autorizado';
+                errorMessage = 'No tiene permisos para ver los fundamentos legales. Verifique su sesión.';
+            } else if (error.message === 'Network Error') {
+                errorTitle = 'Error de conexión';
+                errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
+            } else if (error.response && error.response.status === 500) {
+                errorTitle = 'Error en el servidor';
+                errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
+            } else {
+                errorTitle = 'Error inesperado';
+                errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
+            }
+            setStateLegalBasis({ loading: false, error: { title: errorTitle, message: errorMessage } });
+        }
+    }
+}, [jwt]);
+
+ /**
+* Fetches the list of LegalBasis by Subject and Aspects.
+* @async
+* @function fetchLegalBasisBySubjectAndAspects
+* @param {number} subjectId - The id of the subject of the legal basis to retrieve.
+* @param {Array<number>} aspectsIds - The ids of the aspects of the legal basis to retrieve
+* @returns {Promise<void>} - Updates the LegalBasis list and loading state.
+* @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+*/
+const fetchLegalBasisBySubjectAndAspects = useCallback(async (subjectId, aspects, aspectsIds) => {
+    setStateLegalBasis({ loading: true, error: null });
+    try {
+        const legalBasis = await getLegalBasisBySubjectAndAspects({ subjectId, aspectsIds, token: jwt });
+        setLegalBasis(legalBasis.reverse());
+        setStateLegalBasis({ loading: false, error: null });
+    } catch (error) {
+        console.log(error)
+        let errorTitle;
+        let errorMessage;
+        if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+            errorTitle = 'Acceso no autorizado';
+            errorMessage = 'No tiene permisos para ver los fundamentos legales. Verifique su sesión.';
+        } else if (error.response && error.response.status === 404 && error.response.data?.errors?.notFoundIds) {
+            const notFoundAspects = error.response.data.errors.notFoundIds
+                .map(id => aspects[id])
+                .filter(name => name !== undefined); 
+            errorTitle = 'Aspectos no encontrados';
+            errorMessage = `Los siguientes aspectos no fueron encontrados: ${notFoundAspects.join(', ')}`;
+        }
+         else if (error.message === 'Network Error') {
+            errorTitle = 'Error de conexión';
+            errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
+        } else if (error.response && error.response.status === 500) {
+            errorTitle = 'Error en el servidor';
+            errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
+        } else {
+            errorTitle = 'Error inesperado';
+            errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
+        }
+
+        setStateLegalBasis({ loading: false, error: { title: errorTitle, message: errorMessage } });
+    }
+}, [jwt]);
+
+
     useEffect(() => {
         fetchLegalBasis();
     }, [fetchLegalBasis]);
@@ -372,6 +448,8 @@ const fetchLegalBasisByState = useCallback(async (state) => {
         fetchLegalBasisByAbbreviation,
         fetchLegalBasisByClassification,
         fetchLegalBasisByJurisdiction,
-        fetchLegalBasisByState
+        fetchLegalBasisByState,
+        fetchLegalBasisBySubject,
+        fetchLegalBasisBySubjectAndAspects
     };
 }

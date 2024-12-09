@@ -383,7 +383,6 @@ export default function Users() {
           closeModalEdit={closeEditModal}
           isOpen={isEditModalOpen}
           updateUserDetails={updateUserDetails}
-          handleEmailChange={handleEmailChange}
           usertypeError={usertypeError}
           setusertypeError={setusertypeError}
           handleTypeChange={handleTypeChange}
@@ -393,8 +392,6 @@ export default function Users() {
           handleFileChange={handleFileChange}
           fileError={fileError}
           handleRemoveImage={handleRemoveImage}
-          setEmailError={setEmailError}
-          emailError={emailError}
           roles={roles}
           translateRole={translateRole}
         />

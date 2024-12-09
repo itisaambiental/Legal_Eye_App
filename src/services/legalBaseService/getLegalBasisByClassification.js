@@ -15,10 +15,13 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByClassification({ classification, token }) {
     try {
-        const response = await server.get(`/legalBasis/classification/${encodeURIComponent(classification)}`, {
+        const response = await server.get('/legalBasis/classification/classification', {
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            },
+            params: {
+                classification: classification, 
+            },
         });
 
         if (response.status !== 200) {

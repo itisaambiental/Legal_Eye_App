@@ -15,10 +15,13 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByJurisdiction({ jurisdiction, token }) {
     try {
-        const response = await server.get(`/legalBasis/jurisdiction/${encodeURIComponent(jurisdiction)}`, {
+        const response = await server.get('/legalBasis/jurisdiction/jurisdiction', {
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            },
+            params: {
+                jurisdiction: jurisdiction, 
+            },
         });
 
         if (response.status !== 200) {

@@ -17,15 +17,14 @@ import server from "../../config/server.js";
 export default async function getLegalBasisByStateAndMunicipalities({ state, municipalities, token }) {
     try {
         const response = await server.get(`/legalBasis/state/municipalities/query`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
             params: {
                 state: state,
                 municipalities: municipalities
-            },
-            headers: {
-                "Authorization": `Bearer ${token}`,
             }
         });
-
         if (response.status !== 200) {
             throw new Error("Failed to retrieve legal basis by state and municipalities");
         }

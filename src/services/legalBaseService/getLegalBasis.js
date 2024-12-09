@@ -14,7 +14,7 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasis({ token }) {
     try {
-        const response = await server.get("/legalBasis", {
+        const response = await server.get('/legalBasis', {
             headers: {
                 'Authorization': `Bearer ${token}`,
             }

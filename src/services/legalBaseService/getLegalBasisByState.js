@@ -15,10 +15,11 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByState({ state, token }) {
     try {
-        const response = await server.get(`/legalBasis/state/${encodeURIComponent(state)}`, {
+        const response = await server.get('/legalBasis/state/state', {
             headers: {
                 "Authorization": `Bearer ${token}`,
-            }
+            },
+            state: state
         });
 
         if (response.status !== 200) {

@@ -22,7 +22,6 @@ import cruz_icon from "../../assets/cruz.png"
  * @param {Function} props.updateUserDetails - Function to submit the updated user data.
  * @param {Function} props.closeModalEdit - Function to close the modal.
  * @param {Object} props.selectedUser - The user object selected for editing.
- * @param {Function} props.handleEmailChange - Function to handle changes in the email input.
  * @param {string} props.usertypeError - Error message for the user type field, if any.
  * @param {Function} props.setusertypeError - Function to set the user type error message.
  * @param {Function} props.handleTypeChange - Function to handle changes in the user type selection.
@@ -32,15 +31,13 @@ import cruz_icon from "../../assets/cruz.png"
  * @param {Function} props.handleFileChange - Function to handle changes in the profile picture input.
  * @param {string} props.fileError - Error message for the profile picture field, if any.
  * @param {Function} props.handleRemoveImage - Function to remove the profile picture.
- * @param {Function} props.setEmailError - Function to set the email error message.
- * @param {string} props.emailError - Error message for the email field, if any.
  * @param {Array} props.roles - Array of role options for user type selection.
  * @param {Function} props.translateRole - Function to translate the role name.
  * 
  * @returns {JSX.Element} Rendered EditModal component for editing user details.
  */
 
-function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, handleEmailChange, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, setEmailError, emailError, roles, translateRole }) {
+function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
 
@@ -73,19 +70,6 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
         } else {
             setNameError(null);
         }
-
-        if (formData.email === '') {
-            setEmailError('Este campo es obligatorio');
-            setIsLoading(false);
-            return;
-        } else if (!formData.email.endsWith('@isaambiental.com')) {
-            setEmailError('El correo debe terminar con @isaambiental.com');
-            setIsLoading(false);
-            return;
-        } else {
-            setEmailError(null);
-        }
-
         if (formData.user_type === '') {
             setusertypeError('Este campo es obligatorio');
             setIsLoading(false);
@@ -159,15 +143,15 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                     <div className="relative z-0 w-full mb-5 group">
                                         <input
                                             type="email"
+                                            readOnly
                                             name="email"
                                             id="floating_email"
                                             value={formData.email}
-                                            onChange={handleEmailChange}
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-primary peer"
                                             placeholder=" "
                                         />
                                         <label htmlFor="floating_email" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo Electrónico</label>
-                                        {emailError && <p className="mt-2 text-sm text-red">{emailError}</p>}
+                                       
                                     </div>
                                 </div>
 

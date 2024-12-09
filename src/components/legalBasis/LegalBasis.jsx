@@ -118,6 +118,9 @@ export default function LegalBasis() {
     setSelectedState(null)
     clearAspects();
     clearMunicipalities();
+    setLastReformRange(null)
+    setLastReformIsInvalid(false)
+    setLastReformError("")
     fetchLegalBasis();
   }, [fetchLegalBasis, clearAspects, clearMunicipalities]);
 
@@ -214,6 +217,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       handleFilter("name", value);
     },
     [
@@ -236,6 +242,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       handleFilter("abbreviation", value);
     },
     [
@@ -257,6 +266,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       setSelectedJurisdiction("");
       resetStatesAndMunicipalities();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       setSelectedSubject(selectedId);
       handleFilter("subject", selectedId);
     },
@@ -300,6 +312,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       setSelectedClassification(classification);
       handleFilter("classification", classification);
     },
@@ -322,6 +337,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       setSelectedJurisdiction(jurisdiction);
       handleFilter("jurisdiction", jurisdiction);
     },
@@ -344,6 +362,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
       setSelectedState(selectedId);
       handleFilter("state", selectedId);
     },

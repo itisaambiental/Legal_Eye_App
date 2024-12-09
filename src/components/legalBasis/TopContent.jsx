@@ -341,6 +341,7 @@ function TopContent({
         <I18nProvider locale="es">
           <DateRangePicker
             value={lastReformRange} 
+            showMonthAndYearPickers
             onChange={onFilterByLastReformRange} 
             size="sm"
             variant="faded"

@@ -16,7 +16,7 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisByLastReform({ from, to, token }) {
     try {
-        const response = await server.get('/legalBasis/jurisdiction/jurisdiction', {
+        const response = await server.get('/legalBasis/lastReform/lastReform', {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -24,13 +24,13 @@ export default async function getLegalBasisByLastReform({ from, to, token }) {
         });
 
         if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis by jurisdiction");
+            throw new Error("Failed to retrieve legal basis by lastReform");
         }
 
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by jurisdiction:", error);
+        console.error("Error retrieving legal basis by lastReform:", error);
         throw error;
     }
 }

@@ -93,7 +93,9 @@ export default function LegalBasis() {
   const [selectedJurisdiction, setSelectedJurisdiction] = useState("");
   const [selectedState, setSelectedState] = useState(null);
   const [selectedMunicipalities, setSelectedMunicipalities] = useState([]);
-  const [selectedLastReformRange, setSelectedLastReformRange] = useState(null);
+  const [lastReformRange, setLastReformRange] = useState(null);
+  const [lastReformIsInvalid, setLastReformIsInvalid] = useState(false);
+  const [lastReformError, setLastReformError] = useState("");
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [IsSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
@@ -134,6 +136,7 @@ export default function LegalBasis() {
       clearMunicipalities();
     }
   }, [selectedState, clearMunicipalities]);
+  
 
   const handleFilter = useCallback(
     (field, value) => {
@@ -195,7 +198,7 @@ export default function LegalBasis() {
       fetchLegalBasisByJurisdiction,
       fetchLegalBasisByState,
       fetchMunicipalities,
-      fetchLegalBasisByStateAndMunicipalities,
+      fetchLegalBasisByStateAndMunicipalities
     ]
   );
 
@@ -347,7 +350,6 @@ export default function LegalBasis() {
     [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
-  // ...
   const handleFilterByMunicipalities = useCallback(
     (selectedIds) => {
       setSelectedMunicipalities(selectedIds);
@@ -370,12 +372,29 @@ export default function LegalBasis() {
   );
 
 
+
   const handleFilterByLastReformRange = useCallback(
     (values) => {
-      console.log(values)
-      
+     if (values) {
+      if (values.start.compare(values.end) > 0) {
+        setLastReformIsInvalid(true)
+        setLastReformError("Fecha inicio debe ser antes que fecha fin.")
+      } else {
+        setLastReformIsInvalid(false)
+        setLastReformError("")
+      }
+    
+      const { start, end } =values
+      fetchLegalBasisByLastReform(start.toString(), end.toString())
+      setLastReformRange(values)
+     } else {
+      handleClear()
+      setLastReformRange(null)
+      setLastReformIsInvalid(false)
+      setLastReformError("")
+     }
     },
-    []
+    [fetchLegalBasisByLastReform, handleClear]
   );
 
   const totalPages = useMemo(
@@ -468,6 +487,10 @@ export default function LegalBasis() {
         selectedMunicipalities={selectedMunicipalities}
         municipalitiesLoading={loadingMunicipalities}
         onFilterByMunicipalities={handleFilterByMunicipalities}
+        lastReformRange={lastReformRange}
+        setLastReformRange={setLastReformRange}
+        lastReformIsInvalid={lastReformIsInvalid}
+        lastReformError={lastReformError}
         onFilterByLastReformRange={handleFilterByLastReformRange}
       />
       <>

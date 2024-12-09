@@ -13,50 +13,56 @@ import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";
 import {I18nProvider} from "@react-aria/i18n";
 
+
 /**
  * TopContent component
  *
  * This component renders the top section of the Legal Basis management interface.
- * It includes search filters by name, abbreviation, subject, classification, jurisdiction, state, and municipality,
- * as well as pagination controls and a button to add a new Legal Basis.
+ * It includes search filters for name, abbreviation, subject, classification, jurisdiction, state, and municipality,
+ * as well as controls for pagination and the ability to add new legal basis entries.
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {Function} props.onRowsPerPageChange - Function to change the number of displayed rows per page.
- * @param {number} props.totalLegalBasis - The total number of Legal Basis.
- * @param {Function} props.openModalCreate - Function to open the modal for creating a new Legal Basis.
- * @param {string} props.filterByName - Current value of the name search filter.
- * @param {Function} props.onFilterByName - Callback to update the name filter.
- * @param {string} props.filterByAbbreviation - Current value of the abbreviation search filter.
- * @param {Function} props.onFilterByAbbreviation - Callback to update the abbreviation filter.
- * @param {Function} props.onClear - Callback to clear all filters and reload the data.
- * @param {Array} props.subjects - Array of available subjects for filtering.
- * @param {boolean} props.subjectLoading - Indicates whether subjects are currently loading.
- * @param {string} props.selectedSubject - Currently selected subject.
- * @param {Function} props.onFilterBySubject - Callback to filter by subject.
- * @param {Array} props.aspects - Array of available aspects for filtering.
- * @param {boolean} props.aspectLoading - Indicates whether aspects are currently loading.
- * @param {Array<string>} props.selectedAspects - Currently selected aspects.
- * @param {Function} props.onFilterByAspects - Callback to filter by aspects.
- * @param {Array<{classification_name: string}>} props.classifications - Array of available classifications.
- * @param {string} props.selectedClassification - Currently selected classification.
- * @param {boolean} props.classificationsLoading - Indicates whether classifications are loading.
- * @param {Function} props.onFilterByClassification - Callback to filter by classification.
- * @param {Array<{jurisdiction_name: string}>} props.jurisdictions - Array of available jurisdictions.
- * @param {string} props.selectedJurisdiction - Currently selected jurisdiction.
- * @param {boolean} props.jurisdictionsLoading - Indicates whether jurisdictions are loading.
- * @param {Function} props.onFilterByJurisdiction - Callback to filter by jurisdiction.
- * @param {Array<string>} props.states - Array of available states.
- * @param {string} props.selectedState - Currently selected state.
- * @param {boolean} props.stateLoading - Indicates whether states are currently loading.
- * @param {Function} props.onFilterByState - Callback to filter by state.
- * @param {Array<string>} props.municipalities - Array of available municipalities.
- * @param {Set<string>} props.selectedMunicipalities - Currently selected municipalities.
- * @param {boolean} props.municipalitiesLoading - Indicates whether municipalities are currently loading.
- * @param {Function} props.onFilterByMunicipalities - Callback to filter by municipalities.
+ * @param {Function} props.onRowsPerPageChange - Callback to handle changes in the number of rows displayed per page.
+ * @param {number} props.totalLegalBasis - The total number of legal basis entries.
+ * @param {Function} props.openModalCreate - Callback to open the modal for creating a new legal basis.
+ * @param {string} props.filterByName - Current value of the name filter input.
+ * @param {Function} props.onFilterByName - Callback to handle changes in the name filter input.
+ * @param {string} props.filterByAbbreviation - Current value of the abbreviation filter input.
+ * @param {Function} props.onFilterByAbbreviation - Callback to handle changes in the abbreviation filter input.
+ * @param {Function} props.onClear - Callback to reset all filters and reload the data.
+ * @param {Array<Object>} props.subjects - List of available subjects for filtering.
+ * @param {boolean} props.subjectLoading - Indicates whether subjects are currently being loaded.
+ * @param {string} props.selectedSubject - The currently selected subject for filtering.
+ * @param {Function} props.onFilterBySubject - Callback to filter data by selected subject.
+ * @param {Array<Object>} props.aspects - List of available aspects for filtering.
+ * @param {boolean} props.aspectLoading - Indicates whether aspects are currently being loaded.
+ * @param {Array<string>} props.selectedAspects - The currently selected aspects for filtering.
+ * @param {Function} props.onFilterByAspects - Callback to filter data by selected aspects.
+ * @param {Array<Object>} props.classifications - List of available classifications for filtering.
+ * @param {string} props.selectedClassification - The currently selected classification for filtering.
+ * @param {boolean} props.classificationsLoading - Indicates whether classifications are currently being loaded.
+ * @param {Function} props.onFilterByClassification - Callback to filter data by selected classification.
+ * @param {Array<Object>} props.jurisdictions - List of available jurisdictions for filtering.
+ * @param {string} props.selectedJurisdiction - The currently selected jurisdiction for filtering.
+ * @param {boolean} props.jurisdictionsLoading - Indicates whether jurisdictions are currently being loaded.
+ * @param {Function} props.onFilterByJurisdiction - Callback to filter data by selected jurisdiction.
+ * @param {Array<string>} props.states - List of available states for filtering.
+ * @param {string} props.selectedState - The currently selected state for filtering.
+ * @param {boolean} props.stateLoading - Indicates whether states are currently being loaded.
+ * @param {Function} props.onFilterByState - Callback to filter data by selected state.
+ * @param {Array<string>} props.municipalities - List of available municipalities for filtering.
+ * @param {Set<string>} props.selectedMunicipalities - The currently selected municipalities for filtering.
+ * @param {boolean} props.municipalitiesLoading - Indicates whether municipalities are currently being loaded.
+ * @param {Function} props.onFilterByMunicipalities - Callback to filter data by selected municipalities.
+ * @param {Object} props.lastReformRange - Object containing the start and end dates of the reform range.
+ * @param {boolean} props.lastReformIsInvalid - Indicates whether the selected reform range is invalid.
+ * @param {string} props.lastReformError - Error message displayed for the reform range input.
+ * @param {Function} props.onFilterByLastReformRange - Callback to filter data by reform range.
  *
- * @returns {JSX.Element}
+ * @returns {JSX.Element} Rendered component displaying filters, controls, and pagination options.
  */
+
 function TopContent({
   onRowsPerPageChange,
   totalLegalBasis,
@@ -90,7 +96,9 @@ function TopContent({
   selectedMunicipalities,
   municipalitiesLoading,
   onFilterByMunicipalities,
-  selectedLastReformRange,
+  lastReformRange,
+  lastReformIsInvalid,
+  lastReformError,
   onFilterByLastReformRange
 }) {
   return (
@@ -331,15 +339,22 @@ function TopContent({
           </div>
         </Tooltip>
         <I18nProvider locale="es">
-        <DateRangePicker
-          showMonthAndYearPickers
-          size="sm"
-          variant="faded"
-          label="Buscar por última reforma..."
-          onChange={onFilterByLastReformRange}
-          errorMessage="La fecha de inicio debe ser anterior a la fecha de finalización."
-        />
-           </I18nProvider>
+          <DateRangePicker
+            value={lastReformRange} 
+            onChange={onFilterByLastReformRange} 
+            size="sm"
+            variant="faded"
+            isInvalid={lastReformIsInvalid}
+            errorMessage={lastReformIsInvalid ? lastReformError : " "}
+            label="Buscar por última reforma..."
+            classNames={{
+              base: "h-12 relative", 
+              input: "text-xs",
+              errorMessage: "absolute mt-1 text-xs", 
+             
+            }}
+          />
+        </I18nProvider>
       </div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <span className="text-default-400">

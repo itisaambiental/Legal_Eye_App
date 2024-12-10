@@ -27,25 +27,23 @@ function BottomContent({ page, totalPages, onPageChange, onPreviousPage, onNextP
     const allSelected = selectedKeys === "all" || selectedKeys.size === filteredItems.length;
 
     return (
-      <div className="py-2 px-2 flex justify-between gap-24 items-center">
-         <span className="w-[30%] text-small text-default-400">
+      <div className="py-2 px-2 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-24">
+        <div className="w-full sm:w-[30%] text-small text-default-400 text-center sm:text-left">
           {allSelected
             ? `${filteredItems.length} de ${filteredItems.length} seleccionados`
             : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
-        </span>
-
-  <div className="ml-4">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={totalPages}
-          onChange={onPageChange}
-        />
         </div>
-
+        <div className="w-full sm:w-auto flex justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={page}
+            total={totalPages}
+            onChange={onPageChange}
+          />
+        </div>
         <div className="hidden sm:flex w-[30%] justify-start gap-2 ">
           <Button isDisabled={page <= 1} size="sm" color="primary" variant="solid" onPress={onPreviousPage}>
             Anterior

@@ -33,14 +33,12 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
 
   return (
     <div>
-      {/* Display the subject name as a title, if provided */}
         <div className="text-center text-black text-xl font-normal -mt-12 mb-8">
           <div>
             Aspectos de la materia: {subjectName}
           </div>
         </div>
       <div className="ml-1 mb-12 xl:-ml-64 xl:mb-0">
-        {/* Back Button */}
         <Button
           color="primary"
           radius="md"
@@ -55,19 +53,16 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
 
       <div className="flex flex-col gap-4 mb-4 -mt-10">
         <div className="flex justify-between gap-16 items-end">
-          {/* Search Input */}
           <Input
             color="primary"
             variant="faded"
             isClearable
-            className="w-full sm:max-w-[44%] flex-grow"
+            className="w-full"
             placeholder="Buscar por nombre..."
             startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4 flex-shrink-0" />}
             onClear={onClear}
             onValueChange={onFilterChange}
           />
-
-          {/* Button to create a new aspect */}
           <div className="flex gap-3 ml-auto">
             <Button
               color="primary"
@@ -78,9 +73,7 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
             </Button>
           </div>
         </div>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <span className="text-default-400">Aspectos Totales: {totalAspects}</span>
           <label className="flex items-center text-default-400">
             Filas por página:

@@ -31,12 +31,12 @@ function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openMo
 
   return (
     <div className="flex flex-col gap-4 mb-4">
-      <div className="flex justify-between gap-16 items-end">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4">
         <Input
           color="primary"
           variant="faded"
           isClearable
-          className="w-full sm:max-w-[44%] flex-grow"
+          className="w-full"
           placeholder="Buscar por nombre o email..."
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4 flex-shrink-0" />}
           onClear={onClear}
@@ -72,7 +72,7 @@ function TopContent({ roles, onRowsPerPageChange, totalUsers, capitalize, openMo
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <span className="text-default-400">Usuarios totales: {totalUsers}</span>
         <label className="flex items-center text-default-400">
           Filas por página:

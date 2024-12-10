@@ -20,14 +20,14 @@ import CreateModal from "./CreateModal.jsx";
 
 const columns = [
   { name: "Fundamento Legal", uid: "legal_name" },
-  { name: "Materia", uid: "subject" },
-  { name: "Aspectos", uid: "aspects" },
   { name: "Abreviatura", uid: "abbreviation" },
   { name: "Clasificación", uid: "classification" },
   { name: "Jurisdicción", uid: "jurisdiction" },
   { name: "Estado", uid: "state" },
   { name: "Municipio", uid: "municipality" },
   { name: "Última Reforma", uid: "lastReform" },
+  { name: "Materia", uid: "subject" },
+  { name: "Aspectos", uid: "aspects" },
   { name: "Acciones", uid: "actions" },
 ];
 

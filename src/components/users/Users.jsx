@@ -113,7 +113,7 @@ export default function Users() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    const validTypes = ["image/png", "image/jpeg", "image/webp"];
+    const validTypes = ["image/png", "image/jpeg"];
 
     if (file && validTypes.includes(file.type)) {
       setFileError(null);
@@ -127,7 +127,7 @@ export default function Users() {
         }
       }));
     } else {
-      setFileError("Solo se permiten archivos PNG, JPG, o WEBP.");
+      setFileError("Solo se permiten archivos PNG y JPEG.");
       setFormData(prevFormData => ({
         ...prevFormData,
         profile_picture: null

@@ -16,6 +16,7 @@ import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
+import CreateModal from "./CreateModal.jsx";
 
 const columns = [
   { name: "Fundamento Legal", uid: "legal_name" },
@@ -99,9 +100,33 @@ export default function LegalBasis() {
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [IsSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [nameError, setNameError] = useState(null);
+  const [abbreviationInputError, setAbbreviationInputError] = useState(null);
+  const [subjectInputError, setSubjectInputError] = useState(null);
+  const [aspectsInputError, setAspectsInputError] = useState(null);
+  const [jurisdictionInputError, setJurisdictionInputError] = useState(null);
+  const [stateInputError, setStateInputError] = useState(null);
+  const [municipalitiesInputError, setMunicipalitiesInputError] = useState(null);
+  const [lastReformInputError, setLastReformInputError] = useState(null);
+  const [fileError, setFileError] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
+  const [formData, setFormData] = useState({
+    id: "",
+    nombre: "",
+    abbreviation: "",
+    subject: "",
+    aspects: [],
+    jurisdiction: "",
+    state: "",
+    municipalities: [],
+    lastReform: "",
+    document: null,
+    extractArticles: false, 
+    removeDocument: false
+  });
 
   useEffect(() => {
     if (!loading && isFirstRender) {
@@ -115,12 +140,12 @@ export default function LegalBasis() {
     setSelectedClassification("");
     setSelectedJurisdiction("");
     setSelectedSubject(null);
-    setSelectedState(null)
+    setSelectedState(null);
     clearAspects();
     clearMunicipalities();
-    setLastReformRange(null)
-    setLastReformIsInvalid(false)
-    setLastReformError("")
+    setLastReformRange(null);
+    setLastReformIsInvalid(false);
+    setLastReformError("");
     fetchLegalBasis();
   }, [fetchLegalBasis, clearAspects, clearMunicipalities]);
 
@@ -139,7 +164,6 @@ export default function LegalBasis() {
       clearMunicipalities();
     }
   }, [selectedState, clearMunicipalities]);
-  
 
   const handleFilter = useCallback(
     (field, value) => {
@@ -201,7 +225,7 @@ export default function LegalBasis() {
       fetchLegalBasisByJurisdiction,
       fetchLegalBasisByState,
       fetchMunicipalities,
-      fetchLegalBasisByStateAndMunicipalities
+      fetchLegalBasisByStateAndMunicipalities,
     ]
   );
 
@@ -217,9 +241,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       handleFilter("name", value);
     },
     [
@@ -242,9 +266,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       handleFilter("abbreviation", value);
     },
     [
@@ -266,9 +290,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       setSelectedJurisdiction("");
       resetStatesAndMunicipalities();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       setSelectedSubject(selectedId);
       handleFilter("subject", selectedId);
     },
@@ -312,9 +336,9 @@ export default function LegalBasis() {
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       setSelectedClassification(classification);
       handleFilter("classification", classification);
     },
@@ -337,9 +361,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       resetSubjectAndAspects();
       resetStatesAndMunicipalities();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       setSelectedJurisdiction(jurisdiction);
       handleFilter("jurisdiction", jurisdiction);
     },
@@ -362,9 +386,9 @@ export default function LegalBasis() {
       setSelectedClassification("");
       setSelectedJurisdiction("");
       resetSubjectAndAspects();
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
+      setLastReformRange(null);
+      setLastReformIsInvalid(false);
+      setLastReformError("");
       setSelectedState(selectedId);
       handleFilter("state", selectedId);
     },
@@ -392,31 +416,170 @@ export default function LegalBasis() {
     [handleFilter, handleClear, selectedState]
   );
 
-
-
   const handleFilterByLastReformRange = useCallback(
     (values) => {
-     if (values) {
-      if (values.start.compare(values.end) > 0) {
-        setLastReformIsInvalid(true)
-        setLastReformError("Fecha inicio debe ser antes que fecha fin.")
+      if (values) {
+        if (values.start.compare(values.end) > 0) {
+          setLastReformIsInvalid(true);
+          setLastReformError("Fecha inicio debe ser antes que fecha fin.");
+        } else {
+          setLastReformIsInvalid(false);
+          setLastReformError("");
+        }
+
+        const { start, end } = values;
+        fetchLegalBasisByLastReform(start.toString(), end.toString());
+        setLastReformRange(values);
       } else {
-        setLastReformIsInvalid(false)
-        setLastReformError("")
+        handleClear();
+        setLastReformRange(null);
+        setLastReformIsInvalid(false);
+        setLastReformError("");
       }
-    
-      const { start, end } =values
-      fetchLegalBasisByLastReform(start.toString(), end.toString())
-      setLastReformRange(values)
-     } else {
-      handleClear()
-      setLastReformRange(null)
-      setLastReformIsInvalid(false)
-      setLastReformError("")
-     }
     },
     [fetchLegalBasisByLastReform, handleClear]
   );
+
+  const openModalCreate = () => {
+    setFormData({
+      id: "",
+      nombre: "",
+      abbreviation: "",
+      subject: "",
+      aspects: [],
+      jurisdiction: "",
+      state: "",
+      municipalities: [],
+      lastReform: "",
+      document: null,
+      extractArticles: false,
+      removeDocument: false
+    });
+    setIsCreateModalOpen(true);
+  };
+
+  const closeModalCreate = () => {
+    setIsCreateModalOpen(false);
+    setNameError(null);
+  };
+
+  const handleNameChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      nombre: value,
+    }));
+    if (nameError && value.trim() !== "") {
+      setNameError(null);
+    }
+  };
+
+  const handleAbbreviationChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      abbreviation: value,
+    }));
+    if (abbreviationInputError && value.trim() !== "") {
+      setAbbreviationInputError(null);
+    }
+  };
+  
+  const handleSubjectChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      subject: value,
+    }));
+    if (subjectInputError && value.trim() !== "") {
+      setSubjectInputError(null);
+    }
+  };
+  
+  const handleAspectsChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      aspects: value,
+    }));
+    if (aspectsInputError && value.trim() !== "") {
+      setAspectsInputError(null);
+    }
+  };
+  
+  const handleJurisdictionChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      jurisdiction: value,
+    }));
+    if (jurisdictionInputError && value.trim() !== "") {
+      setJurisdictionInputError(null);
+    }
+  };
+  
+  const handleStateChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      state: value,
+    }));
+    if (stateInputError && value.trim() !== "") {
+      setStateInputError(null);
+    }
+  };
+  
+  const handleMunicipalitiesChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      municipalities: value,
+    }));
+    if (municipalitiesInputError && value.trim() !== "") {
+      setMunicipalitiesInputError(null);
+    }
+  };
+  
+  const handleLastReformChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      lastReform: value,
+    }));
+    if (lastReformIsInvalid && value.trim() !== "") {
+      setLastReformInputError(null);
+    }
+  };
+
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    const validTypes = ["application/pdf", "image/png", "image/jpeg"];
+  
+    if (file && validTypes.includes(file.type)) {
+      setFileError(null);
+  
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        document: file,
+      }));
+    } else {
+      setFileError("Solo se permiten archivos PDF, PNG o JPEG.");
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        document: null,
+      }));
+    }
+  };
+  
+
+  const handleRemoveDocument = () => {
+    setFormData({
+      ...formData,
+      document: null
+    });
+  };
+  
 
   const totalPages = useMemo(
     () => Math.ceil(legalBasis.length / rowsPerPage),
@@ -479,6 +642,7 @@ export default function LegalBasis() {
       <TopContent
         onRowsPerPageChange={onRowsPerPageChange}
         totalLegalBasis={legalBasis.length}
+        openModalCreate={openModalCreate}
         filterByName={filterByName}
         filterByAbbreviation={filterByAbbreviation}
         onFilterByName={handleFilterByName}
@@ -571,6 +735,16 @@ export default function LegalBasis() {
           selectedKeys={selectedKeys}
           filteredItems={legalBasis}
         />
+        {isCreateModalOpen && (
+          <CreateModal
+            closeModalCreate={closeModalCreate}
+            isOpen={isCreateModalOpen}
+            formData={formData}
+            nameError={nameError}
+            setNameError={setNameError}
+            handleNameChange={handleNameChange}
+          />
+        )}
       </>
     </div>
   );

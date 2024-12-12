@@ -101,15 +101,18 @@ export default function LegalBasis() {
   const [IsSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [nameError, setNameError] = useState(null);
+  const [nameInputError, setNameInputError] = useState(null);
   const [abbreviationInputError, setAbbreviationInputError] = useState(null);
-  const [subjectInputError, setSubjectInputError] = useState(null);
-  const [aspectsInputError, setAspectsInputError] = useState(null);
+  const [classificationInputError, setClassificationInputError] = useState(null);
   const [jurisdictionInputError, setJurisdictionInputError] = useState(null);
   const [stateInputError, setStateInputError] = useState(null);
-  const [municipalitiesInputError, setMunicipalitiesInputError] = useState(null);
+  const [municipalityInputError, setMunicipalityInputError] = useState(null);
+  const [subjectInputError, setSubjectInputError] = useState(null);
+  const [aspectInputError, setAspectInputError] = useState(null);
   const [lastReformInputError, setLastReformInputError] = useState(null);
-  const [fileError, setFileError] = useState(null);
+  const [isStateActive, setIsStateActive] = useState(false);
+  const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
+  const [isAspectsActive, setIsAspectsActive] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -117,15 +120,16 @@ export default function LegalBasis() {
     id: "",
     nombre: "",
     abbreviation: "",
-    subject: "",
-    aspects: [],
+    classification: "",
     jurisdiction: "",
     state: "",
-    municipalities: [],
-    lastReform: "",
+    municipality: "",
+    subject: "",
+    aspects: [],
+    lastReform: null,
     document: null,
-    extractArticles: false, 
-    removeDocument: false
+    extractArticles: false,
+    removeDocument: false,
   });
 
   useEffect(() => {
@@ -440,147 +444,316 @@ export default function LegalBasis() {
     [fetchLegalBasisByLastReform, handleClear]
   );
 
-  const openModalCreate = () => {
+  const openModalCreate = useCallback(() => {
     setFormData({
       id: "",
       nombre: "",
       abbreviation: "",
-      subject: "",
-      aspects: [],
+      classification: "",
       jurisdiction: "",
       state: "",
-      municipalities: [],
-      lastReform: "",
+      municipality: "",
+      subject: "",
+      aspects: [],
+      lastReform: null,
       document: null,
       extractArticles: false,
-      removeDocument: false
+      removeDocument: false,
     });
     setIsCreateModalOpen(true);
-  };
-
-  const closeModalCreate = () => {
+  }, [setFormData, setIsCreateModalOpen]);
+  
+  const closeModalCreate = useCallback(() => {
     setIsCreateModalOpen(false);
-    setNameError(null);
-  };
-
-  const handleNameChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      nombre: value,
-    }));
-    if (nameError && value.trim() !== "") {
-      setNameError(null);
-    }
-  };
-
-  const handleAbbreviationChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      abbreviation: value,
-    }));
-    if (abbreviationInputError && value.trim() !== "") {
-      setAbbreviationInputError(null);
-    }
-  };
+    setNameInputError(null);
+    setAbbreviationInputError(null);
+    setClassificationInputError(null);
+    setJurisdictionInputError(null);
+    setStateInputError(null);
+    setMunicipalityInputError(null);
+    setSubjectInputError(null);
+    setAspectInputError(null);
+    setIsStateActive(false);
+    setIsMunicipalityActive(false);
+    setIsAspectsActive(false);
+    clearMunicipalities();
+    clearAspects();
+  }, [
+    setIsCreateModalOpen,
+    setNameInputError,
+    setAbbreviationInputError,
+    setClassificationInputError,
+    setJurisdictionInputError,
+    setStateInputError,
+    setMunicipalityInputError,
+    setSubjectInputError,
+    setAspectInputError,
+    setIsStateActive,
+    setIsMunicipalityActive,
+    setIsAspectsActive,
+    clearMunicipalities,
+    clearAspects,
+  ]);
   
-  const handleSubjectChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      subject: value,
-    }));
-    if (subjectInputError && value.trim() !== "") {
-      setSubjectInputError(null);
-    }
-  };
+  const handleNameChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        nombre: value,
+      }));
+      if (nameInputError && value.trim() !== "") {
+        setNameInputError(null);
+      }
+    },
+    [nameInputError, setFormData, setNameInputError]
+  );
   
-  const handleAspectsChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      aspects: value,
-    }));
-    if (aspectsInputError && value.trim() !== "") {
-      setAspectsInputError(null);
-    }
-  };
+  const handleAbbreviationChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        abbreviation: value,
+      }));
+      if (abbreviationInputError && value.trim() !== "") {
+        setAbbreviationInputError(null);
+      }
+    },
+    [abbreviationInputError, setFormData, setAbbreviationInputError]
+  );
   
-  const handleJurisdictionChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      jurisdiction: value,
-    }));
-    if (jurisdictionInputError && value.trim() !== "") {
-      setJurisdictionInputError(null);
-    }
-  };
+  const handleClassificationChange = useCallback(
+    (value) => {
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          classification: "",
+        }));
+        if (classificationInputError) {
+          setClassificationInputError(null);
+        }
+        return;
+      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        classification: value,
+      }));
+      if (classificationInputError && value.trim() !== "") {
+        setClassificationInputError(null);
+      }
+    },
+    [classificationInputError, setFormData, setClassificationInputError]
+  );
   
-  const handleStateChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      state: value,
-    }));
-    if (stateInputError && value.trim() !== "") {
+  const handleJurisdictionChange = useCallback(
+    (value) => {
+      if (!value) {
+        setStateInputError(null);
+        setMunicipalityInputError(null);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          jurisdiction: "",
+          state: "",
+          municipality: "",
+        }));
+        setIsStateActive(false);
+        setIsMunicipalityActive(false);
+        clearMunicipalities();
+        if (jurisdictionInputError) {
+          setJurisdictionInputError(null);
+        }
+        return;
+      }
       setStateInputError(null);
-    }
-  };
-  
-  const handleMunicipalitiesChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      municipalities: value,
-    }));
-    if (municipalitiesInputError && value.trim() !== "") {
-      setMunicipalitiesInputError(null);
-    }
-  };
-  
-  const handleLastReformChange = (e) => {
-    const { value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      lastReform: value,
-    }));
-    if (lastReformIsInvalid && value.trim() !== "") {
-      setLastReformInputError(null);
-    }
-  };
-
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    const validTypes = ["application/pdf", "image/png", "image/jpeg"];
-  
-    if (file && validTypes.includes(file.type)) {
-      setFileError(null);
-  
+      setMunicipalityInputError(null);
       setFormData((prevFormData) => ({
         ...prevFormData,
-        document: file,
+        jurisdiction: value,
+        state: "",
+        municipality: "",
       }));
-    } else {
-      setFileError("Solo se permiten archivos PDF, PNG o JPEG.");
+      if (jurisdictionInputError && value.trim() !== "") {
+        setJurisdictionInputError(null);
+      }
+      switch (value) {
+        case "Federal":
+          setIsStateActive(false);
+          setIsMunicipalityActive(false);
+          clearMunicipalities();
+          break;
+        case "Estatal":
+          setIsStateActive(true);
+          setIsMunicipalityActive(false);
+          clearMunicipalities();
+          break;
+        case "Local":
+          setIsStateActive(true);
+          setIsMunicipalityActive(false);
+          clearMunicipalities();
+          break;
+        default:
+          setIsStateActive(false);
+          setIsMunicipalityActive(false);
+          clearMunicipalities();
+          break;
+      }
+    },
+    [
+      clearMunicipalities,
+      jurisdictionInputError,
+      setFormData,
+      setIsMunicipalityActive,
+      setIsStateActive,
+      setJurisdictionInputError,
+      setMunicipalityInputError,
+      setStateInputError,
+    ]
+  );
+  
+  const handleStateChange = useCallback(
+    async (value) => {
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          state: "",
+          municipality: "",
+        }));
+        if (stateInputError) {
+          setStateInputError(null);
+        }
+        if (municipalityInputError) {
+          setMunicipalityInputError(null);
+        }
+        clearMunicipalities();
+        setIsMunicipalityActive(false);
+        return;
+      }
       setFormData((prevFormData) => ({
         ...prevFormData,
-        document: null,
+        state: value,
+        municipality: "",
       }));
-    }
-  };
+      if (stateInputError && value.trim() !== "") {
+        setStateInputError(null);
+      }
+      if (formData.jurisdiction === "Local") {
+        setIsMunicipalityActive(true);
+        await fetchMunicipalities(value);
+      } else {
+        setIsMunicipalityActive(false);
+        clearMunicipalities();
+      }
+    },
+    [
+      clearMunicipalities,
+      fetchMunicipalities,
+      formData.jurisdiction,
+      municipalityInputError,
+      setFormData,
+      setIsMunicipalityActive,
+      setMunicipalityInputError,
+      setStateInputError,
+      stateInputError,
+    ]
+  );
   
-
-  const handleRemoveDocument = () => {
-    setFormData({
-      ...formData,
-      document: null
-    });
-  };
+  const handleMunicipalityChange = useCallback(
+    (value) => {
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          municipality: "",
+        }));
+        if (municipalityInputError) {
+          setMunicipalityInputError(null);
+        }
+        return;
+      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        municipality: value,
+      }));
   
-
+      if (municipalityInputError && value.trim() !== "") {
+        setMunicipalityInputError(null);
+      }
+    },
+    [municipalityInputError, setFormData, setMunicipalityInputError]
+  );
+  
+  const handleSubjectChange = useCallback(
+    async (value) => {
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          subject: "",
+          aspects: "",
+        }));
+        if (subjectInputError) {
+          setSubjectInputError(null);
+        }
+        clearAspects();
+        setIsAspectsActive(false);
+        setAspectInputError(null);
+        return;
+      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        subject: value,
+        aspects: "",
+      }));
+      if (subjectInputError && value.trim() !== "") {
+        setSubjectInputError(null);
+      }
+      setIsAspectsActive(true);
+      await fetchAspects(value);
+    },
+    [
+      clearAspects,
+      fetchAspects,
+      setAspectInputError,
+      setFormData,
+      setIsAspectsActive,
+      setSubjectInputError,
+      subjectInputError,
+    ]
+  );
+  
+  const handleAspectsChange = useCallback(
+    (selectedIds) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        aspects: Array.from(selectedIds),
+      }));
+      if (aspectInputError && selectedIds.size > 0) {
+        setAspectInputError(null);
+      }
+    },
+    [aspectInputError, setFormData, setAspectInputError]
+  );
+  
+  const handleLastReformChange = useCallback(
+    (value) => {
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          lastReform: null,
+        }));
+        return;
+      }
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        lastReform: value,
+      }));
+      if (lastReformInputError) {
+        setLastReformInputError(null);
+      }
+    },
+    [lastReformInputError, setFormData, setLastReformInputError]
+  );
+  
+  
   const totalPages = useMemo(
     () => Math.ceil(legalBasis.length / rowsPerPage),
     [legalBasis, rowsPerPage]
@@ -611,7 +784,7 @@ export default function LegalBasis() {
   if (error) return <Error title={error.title} message={error.message} />;
   if (subjectError)
     return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError)
+  if (aspectError && !isCreateModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
   if (classificationsError)
     return (
@@ -629,17 +802,20 @@ export default function LegalBasis() {
     );
   if (errorStates)
     return <Error title={errorStates.title} message={errorStates.message} />;
-  if (errorMunicipalities)
+
+  if (errorMunicipalities && !isCreateModalOpen) {
     return (
       <Error
         title={errorMunicipalities.title}
         message={errorMunicipalities.message}
       />
     );
+  }
 
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
+        isCreateModalOpen={isCreateModalOpen}
         onRowsPerPageChange={onRowsPerPageChange}
         totalLegalBasis={legalBasis.length}
         openModalCreate={openModalCreate}
@@ -740,9 +916,45 @@ export default function LegalBasis() {
             closeModalCreate={closeModalCreate}
             isOpen={isCreateModalOpen}
             formData={formData}
-            nameError={nameError}
-            setNameError={setNameError}
+            nameError={nameInputError}
+            setNameError={setNameInputError}
             handleNameChange={handleNameChange}
+            abbreviationError={abbreviationInputError}
+            setAbbreviationError={setAbbreviationInputError}
+            handleAbbreviationChange={handleAbbreviationChange}
+            classificationError={classificationInputError}
+            setClassificationError={setClassificationInputError}
+            handleClassificationChange={handleClassificationChange}
+            jurisdictionError={jurisdictionInputError}
+            setJurisdictionError={setJurisdictionInputError}
+            handleJurisdictionChange={handleJurisdictionChange}
+            states={states}
+            stateError={stateInputError}
+            setStateError={setStateInputError}
+            isStateActive={isStateActive}
+            handleStateChange={handleStateChange}
+            clearMunicipalities={clearMunicipalities}
+            municipalities={municipalities}
+            municipalityError={municipalityInputError}
+            setMunicipalityError={setMunicipalityInputError}
+            isMunicipalityActive={isMunicipalityActive}
+            loadingMunicipalities={loadingMunicipalities}
+            errorMunicipalities={errorMunicipalities}
+            handleMunicipalityChange={handleMunicipalityChange}
+            subjects={subjects}
+            subjectInputError={subjectInputError}
+            setSubjectError={setSubjectInputError}
+            handleSubjectChange={handleSubjectChange}
+            aspects={aspects}
+            aspectError={aspectInputError}
+            setAspectInputError={setAspectInputError}
+            isAspectsActive={isAspectsActive}
+            loadingAspects={aspectLoading}
+            errorAspects={aspectError}
+            handleAspectsChange={handleAspectsChange}
+            lastReformError={lastReformInputError}
+            setLastReformError={setLastReformInputError}
+            handleLastReformChange={handleLastReformChange}
           />
         )}
       </>

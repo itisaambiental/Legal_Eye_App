@@ -1,25 +1,194 @@
-import { useState, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
+  DatePicker,
   Select,
   SelectItem,
-  Checkbox,
-  DatePicker,
+  Autocomplete,
+  AutocompleteItem,
+  Tooltip,
+  Spinner
 } from "@nextui-org/react";
-import {I18nProvider} from "@react-aria/i18n";
+import { toast } from "react-toastify";
+import { I18nProvider } from "@react-aria/i18n";
+import check from "../../assets/check.png";
 
 function CreateModal({
   isOpen,
   closeModalCreate,
-  nameError,
-  handleNameChange,
   formData,
+  nameError,
+  setNameError,
+  handleNameChange,
+  abbreviationError,
+  setAbbreviationError,
+  handleAbbreviationChange,
+  classificationError,
+  setClassificationError,
+  handleClassificationChange,
+  jurisdictionError,
+  setJurisdictionError,
+  handleJurisdictionChange,
+  states,
+  stateError,
+  setStateError,
+  isStateActive,
+  handleStateChange,
+  clearMunicipalities,
+  municipalities,
+  municipalityError,
+  setMunicipalityError,
+  isMunicipalityActive,
+  loadingMunicipalities,
+  errorMunicipalities,
+  handleMunicipalityChange,
+  subjects,
+  subjectInputError,
+  setSubjectError,
+  handleSubjectChange,
+  aspects,
+  aspectError,
+  setAspectInputError,
+  isAspectsActive,
+  loadingAspects,
+  errorAspects,
+  handleAspectsChange,
+  lastReformError,
+  setLastReformError,
+  handleLastReformChange,
 }) {
+  console.log(formData);
   const [isLoading, setIsLoading] = useState(false);
-  const inputFileRef = useRef(null);
+
+  const getTooltipContentForState = () => {
+    if (formData.jurisdiction === "Federal") {
+      return "La jurisdicción debe ser estatal o local";
+    }
+    if (!formData.jurisdiction) {
+      return "Debes seleccionar una jurisdicción para habilitar este campo.";
+    }
+    return null;
+  };
+
+  const getTooltipContentForMunicipality = () => {
+    if (formData.jurisdiction === "Federal") {
+      return "La jurisdicción debe ser local para habilitar este campo.";
+    }
+    if (formData.jurisdiction === "Estatal") {
+      return "La jurisdicción debe ser local para habilitar este campo.";
+    }
+    if (formData.jurisdiction === "Local" && !formData.state) {
+      return "Debes seleccionar un estado para habilitar este campo.";
+    }
+    if (!formData.jurisdiction) {
+      return "Debes seleccionar una jurisdicción para habilitar este campo.";
+    }
+    return null;
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    console.log("Datos enviados:", formData);
+    if (formData.nombre === "") {
+      setNameError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setNameError(null);
+    }
+    if (formData.abbreviation === "") {
+      setAbbreviationError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setAbbreviationError(null);
+    }
+    if (formData.classification === "") {
+      setClassificationError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setClassificationError(null);
+    }
+    if (formData.jurisdiction === "") {
+      setJurisdictionError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setJurisdictionError(null);
+    }
+    if (formData.jurisdiction === "Estatal") {
+      if (formData.state === "") {
+        setStateError(
+          "Este campo es obligatorio para la jurisdicción Estatal."
+        );
+        setIsLoading(false);
+        return;
+      } else {
+        setStateError(null);
+      }
+    }
+
+    if (formData.jurisdiction === "Local") {
+      if (formData.state === "") {
+        setStateError("Este campo es obligatorio para la jurisdicción Local.");
+        setIsLoading(false);
+        return;
+      } else {
+        setStateError(null);
+      }
+      if (formData.municipality === "") {
+        setMunicipalityError(
+          "Este campo es obligatorio para la jurisdicción Local."
+        );
+        setIsLoading(false);
+        return;
+      } else {
+        setMunicipalityError(null);
+      }
+    }
+
+    if (formData.subject === "") {
+      setSubjectError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setSubjectError(null);
+    }
+    if (!formData.aspects || formData.aspects.length === 0) {
+      setAspectInputError("Debes seleccionar al menos un aspecto");
+      setIsLoading(false);
+      return;
+    } else {
+      setAspectInputError(null);
+    }
+
+    if (!formData.lastReform) {
+      setLastReformError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    } else {
+      setLastReformError(null);
+    }
+    try {
+      toast.info("El fundamento legal ha sido registrado correctamente", {
+        icon: () => <img src={check} alt="Success Icon" />,
+        progressStyle: {
+          background: "#113c53",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Algo mal sucedió al crear el fundamento. Intente de nuevo");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Modal
@@ -35,12 +204,11 @@ function CreateModal({
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Registrar Nueva Fundamento
+              Registrar Nuevo Fundamento
             </ModalHeader>
             <ModalBody>
-              <form>
+              <form onSubmit={handleCreate}>
                 <div className="grid grid-cols-2 gap-6">
-                  {/* Nombre */}
                   <div className="relative z-0 w-full group">
                     <input
                       type="text"
@@ -61,14 +229,13 @@ function CreateModal({
                       <p className="mt-2 text-sm text-red">{nameError}</p>
                     )}
                   </div>
-
-                  {/* Abbreviation */}
                   <div className="relative z-0 w-full group">
                     <input
                       type="text"
                       name="abbreviation"
                       id="floating_abbreviation"
                       value={formData.abbreviation}
+                      onChange={handleAbbreviationChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
                       placeholder=" "
                     />
@@ -78,120 +245,245 @@ function CreateModal({
                     >
                       Abreviatura
                     </label>
+                    {abbreviationError && (
+                      <p className="mt-2 text-sm text-red">
+                        {abbreviationError}
+                      </p>
+                    )}
                   </div>
-
-                  {/* Clasificación */}
                   <div className="w-full">
-                    <Select size="sm" variant="bordered" label="Clasificación">
-                      <SelectItem key="1">Clasificación 1</SelectItem>
-                      <SelectItem key="2">Clasificación 2</SelectItem>
-                    </Select>
-                  </div>
-
-                  {/* Jurisdicción */}
-                  <div className="w-full">
-                    <Select size="sm" variant="bordered" label="Jurisdicción">
-                      <SelectItem key="1">Jurisdicción 1</SelectItem>
-                      <SelectItem key="2">Jurisdicción 2</SelectItem>
-                    </Select>
-                  </div>
-
-                  {/* Estado */}
-                  <div className="w-full">
-                    <Select
+                    <Autocomplete
                       size="sm"
                       variant="bordered"
-                      label="Estado"
-                      isDisabled
+                      label="Clasificación"
+                      selectedKey={formData.classification}
+                      onSelectionChange={handleClassificationChange}
+                      listboxProps={{
+                        emptyContent: "Clasificación no encontrada",
+                      }}
+                      disabledKeys={[
+                        "Norma",
+                        "Acuerdos",
+                        "Código",
+                        "Decreto",
+                        "Lineamiento",
+                        "Aviso",
+                      ]}
                     >
-                      <SelectItem key="1">Estado 1</SelectItem>
-                      <SelectItem key="2">Estado 2</SelectItem>
-                    </Select>
+                      <AutocompleteItem key="Ley">Ley</AutocompleteItem>
+                      <AutocompleteItem key="Reglamento">
+                        Reglamento
+                      </AutocompleteItem>
+                      <AutocompleteItem key="Norma">Norma</AutocompleteItem>
+                      <AutocompleteItem key="Acuerdos">
+                        Acuerdos
+                      </AutocompleteItem>
+                      <AutocompleteItem key="Código">Código</AutocompleteItem>
+                      <AutocompleteItem key="Decreto">Decreto</AutocompleteItem>
+                      <AutocompleteItem key="Lineamiento">
+                        Lineamiento
+                      </AutocompleteItem>
+                      <AutocompleteItem key="Aviso">Aviso</AutocompleteItem>
+                    </Autocomplete>
+                    {classificationError && (
+                      <p className="mt-2 text-sm text-red">
+                        {classificationError}
+                      </p>
+                    )}
                   </div>
-
-                  {/* Municipios */}
                   <div className="w-full">
-                    <Select
+                    <Autocomplete
                       size="sm"
                       variant="bordered"
-                      label="Municipios"
-                      isDisabled
+                      label="Jurisdicción"
+                      selectedKey={formData.jurisdiction}
+                      onSelectionChange={handleJurisdictionChange}
+                      listboxProps={{
+                        emptyContent: "Jurisdicción no encontrada",
+                      }}
                     >
-                      <SelectItem key="1">Municipio 1</SelectItem>
-                      <SelectItem key="2">Municipio 2</SelectItem>
-                    </Select>
+                      <AutocompleteItem key="Federal">Federal</AutocompleteItem>
+                      <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
+                      <AutocompleteItem key="Local">Local</AutocompleteItem>
+                    </Autocomplete>
+                    {jurisdictionError && (
+                      <p className="mt-2 text-sm text-red">
+                        {jurisdictionError}
+                      </p>
+                    )}
                   </div>
+                  <Tooltip
+                    content={getTooltipContentForState()}
+                    isDisabled={isStateActive}
+                  >
+                    <div className="w-full">
+                      <Autocomplete
+                        size="sm"
+                        variant="bordered"
+                        label="Estado"
+                        placeholder="Buscar estado"
+                        isDisabled={!isStateActive}
+                        onClear={clearMunicipalities}
+                        className="max-w-xs"
+                        defaultItems={states.map((estado) => ({
+                          id: estado,
+                          name: estado,
+                        }))}
+                        selectedKey={formData.state}
+                        onSelectionChange={handleStateChange}
+                        listboxProps={{
+                          emptyContent: "Estados no encontrados",
+                        }}
+                      >
+                        {(estado) => (
+                          <AutocompleteItem key={estado.id} value={estado.id}>
+                            {estado.name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                      {stateError && (
+                        <p className="mt-2 text-sm text-red">{stateError}</p>
+                      )}
+                    </div>
+                  </Tooltip>
 
-                  {/* Materia */}
                   <div className="w-full">
-                    <Select size="sm" variant="bordered" label="Materia">
-                      <SelectItem key="1">Materia 1</SelectItem>
-                      <SelectItem key="2">Materia 2</SelectItem>
-                    </Select>
+                    <Tooltip
+                      content={getTooltipContentForMunicipality()}
+                      isDisabled={isMunicipalityActive || errorMunicipalities}
+                    >
+                      <div className="w-full">
+                        <Autocomplete
+                          size="sm"
+                          variant="bordered"
+                          label="Municipio"
+                          isLoading={loadingMunicipalities}
+                          selectedKey={formData.municipality}
+                          listboxProps={{
+                            emptyContent: "Municipios no encontrados",
+                          }}
+                          onSelectionChange={handleMunicipalityChange}
+                          isDisabled={
+                            !isMunicipalityActive || !!errorMunicipalities
+                          }
+                          defaultItems={municipalities.map((municipio) => ({
+                            id: municipio,
+                            name: municipio,
+                          }))}
+                        >
+                          {(municipio) => (
+                            <AutocompleteItem
+                              key={municipio.id}
+                              value={municipio.id}
+                            >
+                              {municipio.name}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                      </div>
+                    </Tooltip>
+
+                    {errorMunicipalities && (
+                      <p className="mt-2 text-sm text-red">
+                        {errorMunicipalities.message}
+                      </p>
+                    )}
+                    {!errorMunicipalities && municipalityError && (
+                      <p className="mt-2 text-sm text-red">
+                        {municipalityError}
+                      </p>
+                    )}
                   </div>
-
-                  {/* Aspectos */}
                   <div className="w-full">
-                    <Select
+                    <Autocomplete
                       size="sm"
                       variant="bordered"
-                      selectionMode="multiple"
-                      label="Aspectos"
-                      isDisabled
+                      label="Materia"
+                      selectedKeys={formData.subject}
+                      onSelectionChange={handleSubjectChange}
+                      listboxProps={{
+                        emptyContent: "Materia no encontrado",
+                      }}
+                      defaultItems={subjects}
                     >
-                      <SelectItem key="1">Aspecto 1</SelectItem>
-                      <SelectItem key="2">Aspecto 2</SelectItem>
-                    </Select>
+                      {(subject) => (
+                        <AutocompleteItem key={subject.id} value={subject.id}>
+                          {subject.subject_name}
+                        </AutocompleteItem>
+                      )}
+                    </Autocomplete>
+                    {subjectInputError && (
+                      <p className="mt-2 text-sm text-red">
+                        {subjectInputError}
+                      </p>
+                    )}
                   </div>
-
-                  {/* Última Reforma */}
-                  <div className="w-full col-span-2">
-                  <I18nProvider locale="es">
-                    <DatePicker
-                      size="sm"
-                      showMonthAndYearPickers
-                      label="Última Reforma"
-                      variant="bordered"
-                    />
-                    </I18nProvider>
-                  </div>
-
-                  {/* Documento */}
-                  <div className="w-full col-span-2">
-                    <button
-                      type="button"
-                      onClick={() => inputFileRef.current.click()}
-                      className="relative z-20 w-full appearance-none rounded-lg border border-stroke bg-transparent px-5 py-[10px] text-dark-6 outline-none transition focus:border-primary active:border-primary hover:border-primary cursor-pointer"
-                    >
-                      <span className="block truncate">Seleccionar Documento</span>
-                    </button>
-                    <input
-                      type="file"
-                      name="profile_picture"
-                      id="profile_picture"
-                      accept=".png, .jpg, .jpeg, .webp"
-                      className="hidden"
-                      ref={inputFileRef}
-                    />
-                  </div>
-
-                  {/* Extraer Artículos */}
                   <div className="w-full">
-                    <Checkbox
-                      defaultSelected={formData.extractArticles}
-                      radius="full"
+                    <Tooltip
+                      content="Debes seleccionar una materia para habilitar este campo."
+                      isDisabled={isAspectsActive || errorAspects}
                     >
-                      Extraer Artículos
-                    </Checkbox>
+                      <div className="w-full">
+                        <Select
+                          size="sm"
+                          variant="bordered"
+                          label="Aspectos"
+                          selectionMode="multiple"
+                          isLoading={loadingAspects}
+                          selectedKeys={formData.aspects}
+                          onSelectionChange={handleAspectsChange}
+                          isDisabled={!isAspectsActive || !!errorAspects}
+                          items={aspects}
+                          listboxProps={{
+                            emptyContent: "Aspectos no encontrados",
+                          }}
+                        >
+                          {(aspect) => (
+                            <SelectItem key={aspect.id} value={aspect.id}>
+                              {aspect.aspect_name}
+                            </SelectItem>
+                          )}
+                        </Select>
+                      </div>
+                    </Tooltip>
+
+                    {errorAspects && (
+                      <p className="mt-2 text-sm text-red">
+                        {errorAspects.message}
+                      </p>
+                    )}
+                    {!errorAspects && aspectError && (
+                      <p className="mt-2 text-sm text-red">{aspectError}</p>
+                    )}
                   </div>
                 </div>
-
-                <div className="w-full flex justify-center mt-4">
+                <div className="w-full mt-4">
+                  <I18nProvider locale="es">
+                    <DatePicker
+                      showMonthAndYearPickers
+                      value={formData.lastReform}
+                      size="sm"
+                      onChange={handleLastReformChange}
+                      variant="bordered"
+                      label="Última Reforma"
+                    />
+                  </I18nProvider>
+                  {lastReformError && (
+                    <p className="mt-2 text-sm text-red">{lastReformError}</p>
+                  )}
+                </div>
+                <div>
                   <button
                     type="submit"
-                    className="w-full max-w-lg rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                    className="w-full rounded border mb-4 mt-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                   >
-                    Registrar Fundamento
+                    {isLoading ? (
+                      <div role="status">
+                        <Spinner size="sm" color="white" />
+                      </div>
+                    ) : (
+                      "Registrar Fundamento"
+                    )}
                   </button>
                 </div>
               </form>

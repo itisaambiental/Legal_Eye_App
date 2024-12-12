@@ -64,6 +64,7 @@ import {I18nProvider} from "@react-aria/i18n";
  */
 
 function TopContent({
+  isCreateModalOpen,
   onRowsPerPageChange,
   totalLegalBasis,
   openModalCreate,
@@ -259,7 +260,7 @@ function TopContent({
           <div className="w-full">
             <Select
               color="primary"
-              items={municipalities.map((muni) => ({ id: muni, name: muni }))}
+              items={municipalities.map((municipio) => ({ id: municipio, name: municipio }))}
               onClear={onClear}
               variant="faded"
               placeholder="Buscar por municipio..."
@@ -271,7 +272,7 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={municipalitiesLoading}
+              isLoading={municipalitiesLoading && !isCreateModalOpen}
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
               listboxProps={{
@@ -314,7 +315,7 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={aspectLoading}
+              isLoading={aspectLoading && !isCreateModalOpen}
               selectionMode="multiple"
               selectedKeys={selectedAspects}
               listboxProps={{

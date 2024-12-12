@@ -51,16 +51,16 @@ export default function useAspects() {
                 errorMessage = 'No tiene permisos para ver los aspectos de esta materia. Verifique su sesión.';
             } else if (error.message === 'Network Error') {
                 errorTitle = 'Error de conexión';
-                errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
+                errorMessage = 'Hubo un problema de red al obtener los aspectos de la materia. Verifique su conexión a internet e intente nuevamente.';
             } else if (error.response && error.response.status === 500) {
                 errorTitle = 'Error en el servidor';
-                errorMessage = 'Hubo un error en el servidor. Espere un momento e intente nuevamente.';
+                errorMessage = 'Hubo un error en el servidor al obtener los aspectos de la materia. Espere un momento e intente nuevamente.';
             }  else if (error.response && error.response.status === 404) {
                 errorTitle = 'Materia no encontrada';
-                errorMessage = 'La materia solicitada no existe o ha sido eliminada.'  
+                errorMessage = 'La materia solicitada no existe o ha sido eliminada. Verifique e intente de nuevo'  
             } else {
                 errorTitle = 'Error inesperado';
-                errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
+                errorMessage = 'Ocurrió un error inesperado al obtener los aspectos de la materia. Por favor, intente nuevamente más tarde.';
             }
 
             setStateAspects({ loading: false, error: { title: errorTitle, message: errorMessage } });

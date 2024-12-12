@@ -612,7 +612,6 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        console.log(error);
         let errorTitle;
         let errorMessage;
         if (

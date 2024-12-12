@@ -48,11 +48,11 @@ export default function useCopomex() {
       console.error("Error fetching states:", error);
       let errorTitle = "Error inesperado";
       let errorMessage =
-        "Ha ocurrido un error inesperado. Por favor intente nuevamente más tarde.";
+        "Ha ocurrido un error inesperado al obtener los estados. Por favor intente nuevamente más tarde.";
       if (error.message === "Network Error") {
         errorTitle = "Error de conexión";
         errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+          "Hubo un problema de red al obtener los estados. Verifique su conexión a internet e intente nuevamente.";
       } else if (error.response) {
         const { status, data } = error.response;
         if (status === 400 && data && data.code_error) {
@@ -64,18 +64,18 @@ export default function useCopomex() {
             case 5:
               errorTitle = "Error obteniendo estados";
               errorMessage =
-                "Hubo un error al obtener los estados de méxico. Por favor, comuníquese con los administradores del sistema.";
+                "Hubo un error al obtener los estados. Por favor, comuníquese con los administradores del sistema.";
               break;
             default:
               errorTitle = "Error inesperado";
               errorMessage =
-                "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+                "Ocurrió un error inesperado al obtener los estados. Por favor, intente nuevamente más tarde.";
               break;
           }
         } else if (status >= 500) {
           errorTitle = "Error en el servidor";
           errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+            "Hubo un error en el servidor al obtener los estados. Espere un momento e intente nuevamente.";
         }
       }
 
@@ -104,12 +104,12 @@ export default function useCopomex() {
       console.error("Error fetching municipalities:", error);
       let errorTitle = "Error inesperado";
       let errorMessage =
-        "Ha ocurrido un error inesperado. Por favor intente nuevamente más tarde.";
+        "Ha ocurrido un error inesperado al obtener los municipios del estado. Por favor intente nuevamente más tarde.";
 
       if (error.message === "Network Error") {
         errorTitle = "Error de conexión";
         errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+          "Hubo un problema de red al obtener los municipios del estado. Verifique su conexión a internet e intente nuevamente.";
       } else if (error.response) {
         const { status, data } = error.response;
         if (status === 400 && data && data.code_error) {
@@ -126,13 +126,13 @@ export default function useCopomex() {
             default:
               errorTitle = "Error inesperado";
               errorMessage =
-                "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+                "Ocurrió un error inesperado al obtener los municipios del estado. Por favor, intente nuevamente más tarde.";
               break;
           }
         } else if (status >= 500) {
           errorTitle = "Error en el servidor";
           errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+            "Hubo un error en el servidor al obtener los municipios del estado. Espere un momento e intente nuevamente.";
         }
       }
 

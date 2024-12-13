@@ -113,6 +113,9 @@ export default function LegalBasis() {
   const [isStateActive, setIsStateActive] = useState(false);
   const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
+  const [fileError, setFileError] = useState(null);
+  const [checkboxInputError, setCheckboxInputError] = useState(null);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -478,6 +481,8 @@ export default function LegalBasis() {
     setIsAspectsActive(false);
     clearMunicipalities();
     clearAspects();
+    setLastReformInputError(null)
+    setFileError(null)
   }, [
     setIsCreateModalOpen,
     setNameInputError,
@@ -688,7 +693,7 @@ export default function LegalBasis() {
         setFormData((prevFormData) => ({
           ...prevFormData,
           subject: "",
-          aspects: "",
+          aspects: [],
         }));
         if (subjectInputError) {
           setSubjectInputError(null);
@@ -701,7 +706,7 @@ export default function LegalBasis() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         subject: value,
-        aspects: "",
+        aspects: [],
       }));
       if (subjectInputError && value.trim() !== "") {
         setSubjectInputError(null);
@@ -752,8 +757,55 @@ export default function LegalBasis() {
     },
     [lastReformInputError, setFormData, setLastReformInputError]
   );
+
+  const handleFileChange = useCallback((e) => {
+    const file = e.target.files[0];
+    const validTypes = ["application/pdf", "image/png", "image/jpeg"];
   
+    if (file && validTypes.includes(file.type)) {
+      setFileError(null);
+      const fileUrl = URL.createObjectURL(file);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        document: {
+          file: file,
+          previewUrl: fileUrl,
+        },
+      }));
+      setCheckboxInputError(null);
+
+    } else {
+      setFileError("Solo se permiten archivos PDF, PNG y JPEG.");
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        document: null,
+      }));
+    }
+  }, [setFormData, setFileError]);
   
+
+  const handleRemoveDocument = () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      document: null,
+    }));
+    setFileError(null);
+  };
+
+  const handleCheckboxChange = useCallback(
+    (isChecked) => {
+      setIsCheckboxChecked(isChecked);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        extractArticles: isChecked,
+      }));
+        setCheckboxInputError(null);
+      
+    },
+    [setIsCheckboxChecked, setFormData, setCheckboxInputError]
+  );
+  
+
   const totalPages = useMemo(
     () => Math.ceil(legalBasis.length / rowsPerPage),
     [legalBasis, rowsPerPage]
@@ -955,6 +1007,14 @@ export default function LegalBasis() {
             lastReformError={lastReformInputError}
             setLastReformError={setLastReformInputError}
             handleLastReformChange={handleLastReformChange}
+            handleFileChange={handleFileChange}
+            fileError={fileError}
+            handleRemoveDocument={handleRemoveDocument}
+            checkboxInputError={checkboxInputError}
+            setCheckboxInputError={setCheckboxInputError}
+            isCheckboxChecked={isCheckboxChecked}
+            handleCheckboxChange={handleCheckboxChange}
+            
           />
         )}
       </>

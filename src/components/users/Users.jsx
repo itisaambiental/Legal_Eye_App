@@ -140,6 +140,7 @@ export default function Users() {
       ...formData,
       profile_picture: null
     });
+    setFileError(null)
   };
 
   const handleRoleSelection = useCallback((selectedRole) => {

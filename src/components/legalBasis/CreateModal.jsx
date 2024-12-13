@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Modal,
   ModalContent,
@@ -11,11 +11,15 @@ import {
   Autocomplete,
   AutocompleteItem,
   Tooltip,
-  Spinner
+  Spinner,
+  Link,
+  Checkbox,
+  Button,
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
 import check from "../../assets/check.png";
+import cruz_icon from "../../assets/cruz.png";
 
 function CreateModal({
   isOpen,
@@ -60,9 +64,16 @@ function CreateModal({
   lastReformError,
   setLastReformError,
   handleLastReformChange,
+  handleFileChange,
+  fileError,
+  handleRemoveDocument,
+  checkboxInputError,
+  setCheckboxInputError,
+  isCheckboxChecked,
+  handleCheckboxChange,
 }) {
-  console.log(formData);
   const [isLoading, setIsLoading] = useState(false);
+  const inputFileRef = useRef(null);
 
   const getTooltipContentForState = () => {
     if (formData.jurisdiction === "Federal") {
@@ -175,6 +186,16 @@ function CreateModal({
     } else {
       setLastReformError(null);
     }
+    if (isCheckboxChecked && !formData.document) {
+      setCheckboxInputError(
+        "Debes cargar un documento si seleccionas 'Extraer documentos'."
+      );
+      setIsLoading(false);
+      return;
+    } else {
+      setCheckboxInputError(null);
+    }
+
     try {
       toast.info("El fundamento legal ha sido registrado correctamente", {
         icon: () => <img src={check} alt="Success Icon" />,
@@ -472,6 +493,75 @@ function CreateModal({
                     <p className="mt-2 text-sm text-red">{lastReformError}</p>
                   )}
                 </div>
+
+                <div className="w-full mt-4">
+                  <button
+                    type="button"
+                    onClick={() => inputFileRef.current.click()}
+                    className="w-full px-4 py-2 border rounded-md bg-gray-100 hover:bg-gray-200 hover:border-primary relative"
+                  >
+                    <span className="block truncate">
+                      {formData.document
+                        ? formData.document.file.name
+                        : "Selecciona un archivo"}
+                    </span>
+                    {formData.document && (
+                      <Tooltip content="Eliminar">
+                        <Button
+                          className="absolute -mt-7 right-2 bg-transparent z-10"
+                          onPress={handleRemoveDocument}
+                          auto
+                          size="sm"
+                          isIconOnly
+                          variant="light"
+                        >
+                          <img
+                            src={cruz_icon}
+                            alt="Remove Icon"
+                            className="w-3 h-3"
+                          />
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </button>
+                  <input
+                    type="file"
+                    ref={inputFileRef}
+                    onChange={handleFileChange}
+                    accept=".pdf, .png, .jpeg"
+                    className="hidden"
+                  />
+                  {fileError && (
+                    <p className="mt-2 text-sm text-red">{fileError}</p>
+                  )}
+                  {formData.document?.previewUrl && (
+                    <div className="flex items-center mt-2 gap-4">
+                      <p className="text-sm">
+                        Vista previa:{" "}
+                        <Link
+                          href={formData.document.previewUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          underline="always"
+                        >
+                          Abrir archivo
+                        </Link>
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="w-full mt-2 flex items-start">
+                  <Checkbox
+                    size="md"
+                    isSelected={isCheckboxChecked}
+                    onValueChange={(isChecked) => handleCheckboxChange(isChecked)}
+                  >
+                    Extraer Fundamentos
+                  </Checkbox>
+                </div>
+                {checkboxInputError && (
+                  <p className="mt-2 text-sm text-red">{checkboxInputError}</p>
+                )}
                 <div>
                   <button
                     type="submit"

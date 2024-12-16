@@ -21,6 +21,69 @@ import { I18nProvider } from "@react-aria/i18n";
 import check from "../../assets/check.png";
 import cruz_icon from "../../assets/cruz.png";
 
+/**
+ * CreateModal component
+ *
+ * This component allows users to register a new legal basis.
+ * It includes dynamic validations based on jurisdiction, management of
+ * aspects, states, and municipalities, and supports file uploads.
+ *
+ * @component
+ *
+ * @param {Object} props - Component properties.
+ * @param {boolean} props.isOpen - Indicates whether the modal is open.
+ * @param {Function} props.closeModalCreate - Function to close the modal.
+ * @param {Object} props.formData - Form data for the legal basis.
+ * @param {Function} props.addLegalBasis - Function to register a legal basis.
+ * @param {string|null} props.nameError - Error message for the "Name" field.
+ * @param {Function} props.setNameError - Function to set the "Name" field error message.
+ * @param {Function} props.handleNameChange - Function to handle changes in the "Name" field.
+ * @param {string|null} props.abbreviationError - Error message for the "Abbreviation" field.
+ * @param {Function} props.setAbbreviationError - Function to set the "Abbreviation" field error message.
+ * @param {Function} props.handleAbbreviationChange - Function to handle changes in the "Abbreviation" field.
+ * @param {string|null} props.classificationError - Error message for the "Classification" field.
+ * @param {Function} props.setClassificationError - Function to set the "Classification" field error message.
+ * @param {Function} props.handleClassificationChange - Function to handle changes in the "Classification" field.
+ * @param {string|null} props.jurisdictionError - Error message for the "Jurisdiction" field.
+ * @param {Function} props.setJurisdictionError - Function to set the "Jurisdiction" field error message.
+ * @param {Function} props.handleJurisdictionChange - Function to handle changes in the "Jurisdiction" field.
+ * @param {Array<string>} props.states - List of states available for selection.
+ * @param {string|null} props.stateError - Error message for the "State" field.
+ * @param {Function} props.setStateError - Function to set the "State" field error message.
+ * @param {boolean} props.isStateActive - Indicates whether the state field is active.
+ * @param {Function} props.handleStateChange - Function to handle changes in the "State" field.
+ * @param {Function} props.clearMunicipalities - Function to clear selected municipalities.
+ * @param {Array<string>} props.municipalities - List of municipalities available for selection.
+ * @param {string|null} props.municipalityError - Error message for the "Municipality" field.
+ * @param {Function} props.setMunicipalityError - Function to set the "Municipality" field error message.
+ * @param {boolean} props.isMunicipalityActive - Indicates whether the municipality field is active.
+ * @param {boolean} props.loadingMunicipalities - Indicates if municipalities are loading.
+ * @param {string|null} props.errorMunicipalities - Error message when municipalities cannot be loaded.
+ * @param {Function} props.handleMunicipalityChange - Function to handle changes in the "Municipality" field.
+ * @param {Array<Object>} props.subjects - List of subjects available for selection.
+ * @param {string|null} props.subjectInputError - Error message for the "Subject" field.
+ * @param {Function} props.setSubjectError - Function to set the "Subject" field error message.
+ * @param {Function} props.handleSubjectChange - Function to handle changes in the "Subject" field.
+ * @param {Array<Object>} props.aspects - List of aspects available for selection.
+ * @param {string|null} props.aspectError - Error message for the "Aspects" field.
+ * @param {Function} props.setAspectInputError - Function to set the "Aspects" field error message.
+ * @param {boolean} props.isAspectsActive - Indicates whether the aspects field is active.
+ * @param {boolean} props.loadingAspects - Indicates if aspects are loading.
+ * @param {string|null} props.errorAspects - Error message when aspects cannot be loaded.
+ * @param {Function} props.handleAspectsChange - Function to handle changes in the "Aspects" field.
+ * @param {string|null} props.lastReformError - Error message for the "Last Reform" field.
+ * @param {Function} props.setLastReformError - Function to set the "Last Reform" field error message.
+ * @param {Function} props.handleLastReformChange - Function to handle changes in the "Last Reform" field.
+ * @param {Function} props.handleFileChange - Function to handle file uploads.
+ * @param {string|null} props.fileError - Error message for the file upload field.
+ * @param {Function} props.handleRemoveDocument - Function to handle document removal.
+ * @param {string|null} props.checkboxInputError - Error message for the "Extract Articles" checkbox.
+ * @param {Function} props.setCheckboxInputError - Function to set the checkbox error message.
+ * @param {boolean} props.isCheckboxChecked - Indicates if the "Extract Articles" checkbox is checked.
+ * @param {Function} props.handleCheckboxChange - Function to handle changes in the checkbox.
+ *
+ * @returns {JSX.Element} - Rendered CreateModal component.
+ */
 function CreateModal({
   isOpen,
   closeModalCreate,

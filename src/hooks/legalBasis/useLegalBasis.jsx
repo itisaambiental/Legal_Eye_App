@@ -108,7 +108,7 @@ export default function useLegalBasis() {
                 error.response.data.message.includes("Invalid Aspects IDs")
               ) {
                 errorMessage =
-                  "Los aspectos especificados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
+                  "Los aspectos especificados no fueron encontrados. Verifique su existencia seleccionando de nuevo la materia e intente de nuevo.";
               }
               break;
             case 500:
@@ -574,7 +574,11 @@ export default function useLegalBasis() {
             errorTitle = "Error de conexión";
             errorMessage =
               "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-          } else if (error.response && error.response.status === 500) {
+          }  else if (error.response && error.response.status === 404) {
+            errorTitle = "Materia no encontrada";
+            errorMessage =
+              "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
+            } else if (error.response && error.response.status === 500) {
             errorTitle = "Error en el servidor";
             errorMessage =
               "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
@@ -593,70 +597,75 @@ export default function useLegalBasis() {
     [jwt]
   );
 
-  /**
-   * Fetches the list of LegalBasis by Subject and Aspects.
-   * @async
-   * @function fetchLegalBasisBySubjectAndAspects
-   * @param {number} subjectId - The id of the subject of the legal basis to retrieve.
-   * @param {Array<number>} aspectsIds - The ids of the aspects of the legal basis to retrieve
-   * @returns {Promise<void>} - Updates the LegalBasis list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
-  const fetchLegalBasisBySubjectAndAspects = useCallback(
-    async (subjectId, aspects, aspectsIds) => {
-      setStateLegalBasis({ loading: true, error: null });
-      try {
-        const legalBasis = await getLegalBasisBySubjectAndAspects({
-          subjectId,
-          aspectsIds,
-          token: jwt,
-        });
-        setLegalBasis(legalBasis.reverse());
-        setStateLegalBasis({ loading: false, error: null });
-      } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
+/**
+ * Fetches the list of LegalBasis by Subject and Aspects.
+ * @async
+ * @function fetchLegalBasisBySubjectAndAspects
+ * @param {number} subjectId - The id of the subject of the legal basis to retrieve.
+ * @param {Array<number>} aspectsIds - The ids of the aspects of the legal basis to retrieve
+ * @returns {Promise<void>} - Updates the LegalBasis list and loading state.
+ * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+ */
+const fetchLegalBasisBySubjectAndAspects = useCallback(
+  async (subjectId, aspectsIds) => {
+    setStateLegalBasis({ loading: true, error: null });
+
+    try {
+      const legalBasis = await getLegalBasisBySubjectAndAspects({
+        subjectId,
+        aspectsIds,
+        token: jwt,
+      });
+      setLegalBasis(legalBasis.reverse());
+      setStateLegalBasis({ loading: false, error: null });
+
+    } catch (error) {
+      let errorTitle;
+      let errorMessage;
+
+      if (error.response) {
+        if (error.response.status === 404 && error.response.data?.message?.includes("Subject not found")) {
+          errorTitle = "Materia no encontrada";
           errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (
-          error.response &&
+            "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
+        }
+        else if (
           error.response.status === 404 &&
           error.response.data?.errors?.notFoundIds
         ) {
-          const notFoundAspects = error.response.data.errors.notFoundIds
-            .map((id) => aspects[id])
-            .filter((name) => name !== undefined);
           errorTitle = "Aspectos no encontrados";
-          errorMessage = `Los siguientes aspectos no fueron encontrados: ${notFoundAspects.join(
-            ", "
-          )}`;
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
+          errorMessage = "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
+        }
+        else if (error.response.status === 403 || error.response.status === 401) {
+          errorTitle = "Acceso no autorizado";
           errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
+            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
+        }
+        else if (error.response.status === 500) {
           errorTitle = "Error en el servidor";
           errorMessage =
             "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
         }
-
-        setStateLegalBasis({
-          loading: false,
-          error: { title: errorTitle, message: errorMessage },
-        });
       }
-    },
-    [jwt]
-  );
+      else if (error.message === "Network Error") {
+        errorTitle = "Error de conexión";
+        errorMessage =
+          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+      } 
+      else {
+        errorTitle = "Error inesperado";
+        errorMessage =
+          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+      }
+      setStateLegalBasis({
+        loading: false,
+        error: { title: errorTitle, message: errorMessage },
+      });
+    }
+  },
+  [jwt]
+);
+
 
   /**
    * Fetches legal basis records filtered by a date range and updates the state.

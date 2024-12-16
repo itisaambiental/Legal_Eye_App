@@ -191,10 +191,9 @@ export default function LegalBasis() {
             await fetchAspects(value);
             break;
           case "subjectAndAspects": {
-            const { subjectId, aspects, aspectsIds } = value;
+            const { subjectId, aspectsIds } = value;
             await fetchLegalBasisBySubjectAndAspects(
               subjectId,
-              aspects,
               aspectsIds
             );
             break;
@@ -318,19 +317,13 @@ export default function LegalBasis() {
         }
         return;
       }
-      const aspectsMap = aspects.reduce((map, aspect) => {
-        map[aspect.id] = aspect.aspect_name;
-        return map;
-      }, {});
-
       const value = {
         subjectId: selectedSubject,
-        aspects: aspectsMap,
         aspectsIds: Array.from(selectedIds),
       };
       handleFilter("subjectAndAspects", value);
     },
-    [handleFilter, handleClear, selectedSubject, aspects]
+    [handleFilter, handleClear, selectedSubject]
   );
 
   const handleFilterByClassification = useCallback(

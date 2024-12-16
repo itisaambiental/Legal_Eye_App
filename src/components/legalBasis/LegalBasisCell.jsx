@@ -1,30 +1,66 @@
 import { useCallback } from "react";
-import { Dropdown, DropdownItem, Button, DropdownTrigger, DropdownMenu } from "@nextui-org/react";
+import {
+  Dropdown,
+  DropdownItem,
+  Button,
+  DropdownTrigger,
+  DropdownMenu,
+} from "@nextui-org/react";
 import download_icon from "../../assets/descargar.png";
-import menu_icon from "../../assets/aplicaciones.png"
+import menu_icon from "../../assets/aplicaciones.png";
 import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
-
+import { toast } from "react-toastify";
+import fetchDocument from "../../services/legalBaseService/getDocumentByUrl";
 
 /**
  * LegalBasisCell component
- * 
+ *
  * Functional component used for rendering table cells based on column keys.
- * It handles various types of data in the table, including legal name, abbreviation, classification, jurisdiction, 
- * state, municipality, last reform, subject, aspects, and actions. 
+ * It handles various types of data in the table, including legal name, abbreviation, classification, jurisdiction,
+ * state, municipality, last reform, subject, aspects, and actions.
  * Each case checks for the corresponding column key and returns the appropriate JSX to display the cell's content.
- * 
+ *
  * @component
- * 
+ *
  * @param {Object} props - The component's props.
  * @param {Object} props.legalBase - The legal basis data object containing all relevant details for a row.
  * @param {string} props.columnKey - The column key that determines which data should be rendered in the cell.
- * 
+ *
  * @returns {JSX.Element|null} - Returns the JSX element for the cell content based on the column key, or null if no match is found.
  */
 
 const LegalBasisCell = ({ legalBase, columnKey }) => {
+  const openLegalBasisDocument = (url) => {
+    if (!url) {
+      toast.error("No hay Documento disponible para este fundamento.");
+      return;
+    }
+    fetchDocument(url)
+      .then((fileUrl) => {
+        const newWindow = window.open(fileUrl, "_blank");
+        if (
+          !newWindow ||
+          newWindow.closed ||
+          typeof newWindow.closed === "undefined"
+        ) {
+          toast.error(
+            "Las ventanas emergentes están bloqueadas. Por favor, habilítelas para abrir el documento."
+          );
+        }
+        newWindow?.addEventListener("load", () => {
+          URL.revokeObjectURL(fileUrl);
+        });
+      })
+      .catch((error) => {
+        console.error("Error opening document:", error);
+        toast.error(
+          "No se pudo abrir el documento. Por favor, inténtelo nuevamente."
+        );
+      });
+  };
+
   const renderCell = useCallback(() => {
     switch (columnKey) {
       case "legal_name":
@@ -105,7 +141,8 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
             <p className="text-bold text-sm capitalize">
               {legalBase.aspects?.map((aspect, index) => (
                 <span key={aspect.aspect_id}>
-                  {aspect.aspect_name}{index < legalBase.aspects.length - 1 ? ", " : ""}
+                  {aspect.aspect_name}
+                  {index < legalBase.aspects.length - 1 ? ", " : ""}
                 </span>
               )) || "N/A"}
             </p>
@@ -128,10 +165,19 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
                   <img src={menu_icon} alt="Menu" className="w-6 h-6" />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu aria-label="Opciones de fundamento legal" variant="light">
+              <DropdownMenu
+                aria-label="Opciones de fundamento legal"
+                variant="light"
+              >
                 <DropdownItem
                   aria-label="Ver Articulos"
-                  startContent={<img src={watch_icon} alt="Watch Icon" className="w-4 h-4 flex-shrink-0" />}
+                  startContent={
+                    <img
+                      src={watch_icon}
+                      alt="Watch Icon"
+                      className="w-4 h-4 flex-shrink-0"
+                    />
+                  }
                   className="hover:bg-primary/20"
                   key="watch"
                   textValue="Ver Articulos"
@@ -140,25 +186,48 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
                 </DropdownItem>
                 <DropdownItem
                   aria-label="Descargar Documento"
-                  startContent={<img src={download_icon} alt="Download Icon" className="w-4 h-4 flex-shrink-0" />}
+                  startContent={
+                    <img
+                      src={download_icon}
+                      alt="Download Icon"
+                      className="w-4 h-4 flex-shrink-0"
+                    />
+                  }
                   className="hover:bg-primary/20"
                   key="download"
                   textValue="Descargar Documento"
+                  onPress={() => openLegalBasisDocument(legalBase.url)}
                 >
-                  <p className="font-normal text-primary">Descargar Documento</p>
+                  <p className="font-normal text-primary">
+                    Descargar Documento
+                  </p>
                 </DropdownItem>
                 <DropdownItem
                   aria-label="Actualizar Fundamento"
-                  startContent={<img src={update_icon} alt="Edit Icon" className="w-4 h-4 flex-shrink-0" />}
+                  startContent={
+                    <img
+                      src={update_icon}
+                      alt="Edit Icon"
+                      className="w-4 h-4 flex-shrink-0"
+                    />
+                  }
                   className="hover:bg-primary/20"
                   key="update"
                   textValue="Actualizar Fundamento"
                 >
-                  <p className="font-normal text-primary">Actualizar Fundamento</p>
+                  <p className="font-normal text-primary">
+                    Actualizar Fundamento
+                  </p>
                 </DropdownItem>
                 <DropdownItem
                   aria-label="Eliminar Fundamento"
-                  startContent={<img src={delete_icon} alt="Delete Icon" className="w-4 h-4 flex-shrink-0" />}
+                  startContent={
+                    <img
+                      src={delete_icon}
+                      alt="Delete Icon"
+                      className="w-4 h-4 flex-shrink-0"
+                    />
+                  }
                   className="hover:bg-red/20"
                   key="delete"
                   textValue="Eliminar Fundamento"

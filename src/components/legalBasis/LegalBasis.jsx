@@ -377,8 +377,8 @@ export default function LegalBasis() {
   );
 
   const handleFilterByState = useCallback(
-    (selectedId) => {
-      if (!selectedId) {
+    (state) => {
+      if (!state) {
         handleClear();
         return;
       }
@@ -390,8 +390,8 @@ export default function LegalBasis() {
       setLastReformRange(null);
       setLastReformIsInvalid(false);
       setLastReformError("");
-      setSelectedState(selectedId);
-      handleFilter("state", selectedId);
+      setSelectedState(state);
+      handleFilter("state", state);
     },
     [handleFilter, handleClear, resetSubjectAndAspects]
   );
@@ -755,7 +755,6 @@ export default function LegalBasis() {
   const handleFileChange = useCallback((e) => {
     const file = e.target.files[0];
     const validTypes = ["application/pdf", "image/png", "image/jpeg"];
-  
     if (file && validTypes.includes(file.type)) {
       setFileError(null);
       const fileUrl = URL.createObjectURL(file);

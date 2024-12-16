@@ -52,6 +52,8 @@ export default function useLegalBasis() {
       aspectsIds,
       classification,
       jurisdiction,
+      state = null,
+      municipality = null,
       lastReform,
       extractArticles = false,
       document = null,
@@ -64,17 +66,18 @@ export default function useLegalBasis() {
           aspectsIds,
           classification,
           jurisdiction,
+          state,
+          municipality,
           lastReform,
           extractArticles,
           document,
           token: jwt,
         });
         setLegalBasis((prevLegalBasis) => [legalBasis, ...prevLegalBasis]);
-        return { success: true, jobId: jobId };
+        return { success: true, jobId };
       } catch (error) {
         console.error("Error creating legal basis:", error);
         let errorMessage;
-
         if (error.response) {
           switch (error.response.status) {
             case 400:
@@ -85,8 +88,7 @@ export default function useLegalBasis() {
                 errorMessage =
                   "Debe proporcionarse un documento si se desea extraer artículos.";
               } else {
-                errorMessage =
-                  "Error de validación: revisa los datos introducidos.";
+                errorMessage = "Error de validación: revisa los datos introducidos.";
               }
               break;
             case 401:
@@ -101,11 +103,12 @@ export default function useLegalBasis() {
             case 404:
               if (error.response.data.message.includes("Invalid Subject ID")) {
                 errorMessage =
-                  "La materia especificada no fue encontrada. Verifique su existencia e intente de nuevo.";
+                  "La materia especificada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.";
               } else if (
                 error.response.data.message.includes("Invalid Aspects IDs")
               ) {
-                errorMessage = `Los aspectos especificados no fueron encontrados. Verifique su existencia e intente de nuevo.`;
+                errorMessage =
+                  "Los aspectos especificados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
               }
               break;
             case 500:
@@ -123,13 +126,12 @@ export default function useLegalBasis() {
           errorMessage =
             "Error inesperado durante la creación del fundamento legal. Intente de nuevo.";
         }
-
+  
         return { success: false, error: errorMessage };
       }
     },
     [jwt]
   );
-
   /**
    * Fetches the complete list of LegalBasis.
    * @async

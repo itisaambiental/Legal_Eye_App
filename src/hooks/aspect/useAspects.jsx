@@ -57,7 +57,7 @@ export default function useAspects() {
                 errorMessage = 'Hubo un error en el servidor al obtener los aspectos de la materia. Espere un momento e intente nuevamente.';
             }  else if (error.response && error.response.status === 404) {
                 errorTitle = 'Materia no encontrada';
-                errorMessage = 'La materia solicitada no existe o ha sido eliminada. Verifique e intente de nuevo'  
+                errorMessage = 'La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo'  
             } else {
                 errorTitle = 'Error inesperado';
                 errorMessage = 'Ocurrió un error inesperado al obtener los aspectos de la materia. Por favor, intente nuevamente más tarde.';
@@ -94,7 +94,7 @@ export default function useAspects() {
                         errorMessage = 'No autorizado para crear un nuevo aspecto. Verifique su sesión.';
                         break;
                     case 404:
-                        errorMessage = 'La materia no existe. Verifique la existencia de la materia e intente de nuevo';
+                        errorMessage = 'La materia no existe. Verifique su existencia recargando la app e intente de nuevo';
                         break;
                     case 409:
                         errorMessage = 'El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.';

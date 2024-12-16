@@ -53,6 +53,7 @@ export default function LegalBasis() {
     jurisdictions,
     jurisdictionsLoading,
     jurisdictionsError,
+    addLegalBasis,
     fetchLegalBasis,
     fetchLegalBasisByName,
     fetchLegalBasisByAbbreviation,
@@ -968,6 +969,7 @@ export default function LegalBasis() {
             closeModalCreate={closeModalCreate}
             isOpen={isCreateModalOpen}
             formData={formData}
+            addLegalBasis={addLegalBasis}
             nameError={nameInputError}
             setNameError={setNameInputError}
             handleNameChange={handleNameChange}

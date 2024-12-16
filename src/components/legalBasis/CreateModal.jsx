@@ -25,6 +25,7 @@ function CreateModal({
   isOpen,
   closeModalCreate,
   formData,
+  addLegalBasis,
   nameError,
   setNameError,
   handleNameChange,
@@ -99,12 +100,10 @@ function CreateModal({
       return "Debes seleccionar una jurisdicción para habilitar este campo.";
     }
     return null;
-  };
-
-  const handleCreate = async (e) => {
+  };const handleCreate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("Datos enviados:", formData);
+  
     if (formData.nombre === "") {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
@@ -112,6 +111,7 @@ function CreateModal({
     } else {
       setNameError(null);
     }
+  
     if (formData.abbreviation === "") {
       setAbbreviationError("Este campo es obligatorio");
       setIsLoading(false);
@@ -119,6 +119,7 @@ function CreateModal({
     } else {
       setAbbreviationError(null);
     }
+  
     if (formData.classification === "") {
       setClassificationError("Este campo es obligatorio");
       setIsLoading(false);
@@ -126,6 +127,7 @@ function CreateModal({
     } else {
       setClassificationError(null);
     }
+  
     if (formData.jurisdiction === "") {
       setJurisdictionError("Este campo es obligatorio");
       setIsLoading(false);
@@ -133,18 +135,17 @@ function CreateModal({
     } else {
       setJurisdictionError(null);
     }
+  
     if (formData.jurisdiction === "Estatal") {
       if (formData.state === "") {
-        setStateError(
-          "Este campo es obligatorio para la jurisdicción Estatal."
-        );
+        setStateError("Este campo es obligatorio para la jurisdicción Estatal.");
         setIsLoading(false);
         return;
       } else {
         setStateError(null);
       }
     }
-
+  
     if (formData.jurisdiction === "Local") {
       if (formData.state === "") {
         setStateError("Este campo es obligatorio para la jurisdicción Local.");
@@ -154,16 +155,13 @@ function CreateModal({
         setStateError(null);
       }
       if (formData.municipality === "") {
-        setMunicipalityError(
-          "Este campo es obligatorio para la jurisdicción Local."
-        );
+        setMunicipalityError("Este campo es obligatorio para la jurisdicción Local.");
         setIsLoading(false);
         return;
       } else {
         setMunicipalityError(null);
       }
     }
-
     if (formData.subject === "") {
       setSubjectError("Este campo es obligatorio");
       setIsLoading(false);
@@ -178,39 +176,77 @@ function CreateModal({
     } else {
       setAspectInputError(null);
     }
-
     if (!formData.lastReform) {
       setLastReformError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    }
+    if (!formData.lastReform) {
+      setLastReformError("Este campo es obligatorio");
+      setIsLoading(false);
+      return;
+    }
+    const reformDate = formData.lastReform.toDate();
+    if (
+      isNaN(reformDate.getTime()) ||
+      reformDate.getFullYear() < 1900 ||
+      reformDate.getFullYear() > 2099
+    ) {
+      setLastReformError("La fecha de la última reforma está fuera del rango permitido (1900-2099)");
       setIsLoading(false);
       return;
     } else {
       setLastReformError(null);
     }
     if (isCheckboxChecked && !formData.document) {
-      setCheckboxInputError(
-        "Debes cargar un documento si seleccionas 'Extraer documentos'."
-      );
+      setCheckboxInputError("Debes cargar un documento si seleccionas 'Extraer Fundamentos'.");
       setIsLoading(false);
       return;
     } else {
       setCheckboxInputError(null);
     }
-
+  
     try {
-      toast.info("El fundamento legal ha sido registrado correctamente", {
-        icon: () => <img src={check} alt="Success Icon" />,
-        progressStyle: {
-          background: "#113c53",
-        },
-      });
+      const legalBasisData = {
+        legalName: formData.nombre,
+        abbreviation: formData.abbreviation,
+        subjectId: formData.subject,
+        aspectsIds: formData.aspects,
+        classification: formData.classification,
+        jurisdiction: formData.jurisdiction,
+        state: formData.state,
+        municipality: formData.municipality,
+        lastReform: formData.lastReform.toDate().toISOString().split("T")[0],
+        extractArticles: formData.extractArticles,
+        ...(formData.document && { document: formData.document.file }),
+      };
+  
+      const { success, error, jobId } = await addLegalBasis(legalBasisData);
+  
+      if (success) {
+        toast.info("El fundamento legal ha sido registrado correctamente", {
+          icon: () => <img src={check} alt="Success Icon" />,
+          progressStyle: {
+            background: "#113c53",
+          },
+        });
+  
+        if (!jobId) {
+          closeModalCreate();
+        } else {
+          console.log("Lógica cuando hay job", jobId);
+        }
+      } else {
+        toast.error(error);
+      }
     } catch (error) {
-      console.error(error);
-      toast.error("Algo mal sucedió al crear el fundamento. Intente de nuevo");
+      console.error("Error al crear el fundamento legal:", error);
+      toast.error("Algo mal sucedió al crear el fundamento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
     <Modal
       isOpen={isOpen}

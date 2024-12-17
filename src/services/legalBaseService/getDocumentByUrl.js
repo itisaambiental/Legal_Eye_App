@@ -6,7 +6,7 @@ import axios from "axios";
  * @param {string} url - The URL to fetch the document.
  * @returns {Promise<Blob>} - A promise resolving to the fetched Blob.
  */
-export default async function fetchDocument(url) {
+export default async function getDocumentByUrl(url) {
     try {
       const response = await axios.get(url, {
         responseType: "blob",

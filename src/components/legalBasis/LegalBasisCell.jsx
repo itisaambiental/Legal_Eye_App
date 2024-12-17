@@ -11,10 +11,6 @@ import menu_icon from "../../assets/aplicaciones.png";
 import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
-import { toast } from "react-toastify";
-import fetchDocument from "../../services/legalBaseService/getDocumentByUrl";
-import { saveAs } from 'file-saver';
-
 /**
  * LegalBasisCell component
  *
@@ -28,35 +24,13 @@ import { saveAs } from 'file-saver';
  * @param {Object} props - The component's props.
  * @param {Object} props.legalBase - The legal basis data object containing all relevant details for a row.
  * @param {string} props.columnKey - The column key that determines which data should be rendered in the cell.
- *
+ * @param {Function} props.handleDelete - Function to handle deletion of the legal basis.
+ * @param {Function} props.handleDownloadDocument - Function to handle the download of the legal base document.
+ * 
  * @returns {JSX.Element|null} - Returns the JSX element for the cell content based on the column key, or null if no match is found.
  */
 
-const LegalBasisCell = ({ legalBase, columnKey }) => {
-
-  const openLegalBasisDocument = (url, fileName) => {
-    if (!url) {
-      toast.error("No hay Documento disponible para este fundamento.");
-      return;
-    }
-    fetchDocument(url)
-      .then((fileBlob) => {
-        const mimeType = fileBlob.type; 
-        const extension = mimeType.split("/")[1];
-        if (!extension) {
-          toast.error("No se pudo determinar el tipo de archivo. Por favor, inténtelo nuevamente.");
-          return;
-        }
-        saveAs(fileBlob, fileName);
-      })
-      .catch((error) => {
-        console.error("Error opening or downloading document:", error);
-        toast.error(
-          "No se pudo descargar el documento. Por favor, inténtelo nuevamente."
-        );
-      });
-  };
-
+const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocument }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
       case "legal_name":
@@ -192,7 +166,7 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
                   className="hover:bg-primary/20"
                   key="download"
                   textValue="Descargar Documento"
-                  onPress={() => openLegalBasisDocument(legalBase.url, legalBase.legal_name)}
+                  onPress={() => handleDownloadDocument(legalBase.url, legalBase.legal_name)}
                 >
                   <p className="font-normal text-primary">
                     Descargar Documento
@@ -227,6 +201,7 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
                   className="hover:bg-red/20"
                   key="delete"
                   textValue="Eliminar Fundamento"
+                  onPress={() => handleDelete(legalBase.id)}
                 >
                   <p className="font-normal text-red">Eliminar Fundamento</p>
                 </DropdownItem>
@@ -238,7 +213,7 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
       default:
         return null;
     }
-  }, [legalBase, columnKey]);
+  }, [legalBase, columnKey, handleDelete]);
 
   return renderCell();
 };

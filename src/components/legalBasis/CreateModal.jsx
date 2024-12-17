@@ -655,7 +655,7 @@ function CreateModal({
                     isSelected={isCheckboxChecked}
                     onValueChange={(isChecked) => handleCheckboxChange(isChecked)}
                   >
-                    Extraer Fundamentos
+                    Extraer Articulos
                   </Checkbox>
                 </div>
                 {checkboxInputError && (

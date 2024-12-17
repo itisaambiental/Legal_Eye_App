@@ -141,23 +141,48 @@ export default function Aspects() {
     const onNextPage = () => setPage(prev => Math.min(prev + 1, totalPages));
 
     const handleDelete = useCallback(async (aspectId) => {
+        const toastId = toast.loading("Eliminando aspecto...", {
+          icon: <Spinner size="sm" />,
+          progressStyle: {
+            background: "#113c53",
+          },
+        });
         try {
-            const { success, error } = await removeAspect(aspectId);
-            if (success) {
-                toast.success('Aspecto eliminado con éxito', {
-                    icon: () => <img src={check} alt="Success Icon" />,
-                    progressStyle: {
-                        background: '#113c53',
-                    }
-                });
-            } else {
-                toast.error(error)
-            }
+          const { success, error } = await removeAspect(aspectId);
+          if (success) {
+            toast.update(toastId, {
+              render: "Aspecto eliminado con éxito",
+              type: "info",
+              icon: <img src={check} alt="Success Icon" />,
+              progressStyle: {
+                background: "#113c53",
+              },
+              isLoading: false,
+              autoClose: 3000,
+            });
+          } else {
+            toast.update(toastId, {
+              render: error,
+              type: "error",
+              icon: null,
+              progressStyle: {},
+              isLoading: false,
+              autoClose: 5000,
+            });
+          }
         } catch (error) {
-            console.error(error);
-            toast.error('Algo salió mal al eliminar el aspecto. Intente de nuevo');
+          console.error("Error al eliminar el aspecto:", error);
+          toast.update(toastId, {
+            render: "Algo salió mal al eliminar el aspecto. Intente de nuevo.",
+            type: "error",
+            icon: null, 
+            progressStyle: {},
+            isLoading: false,
+            autoClose: 5000,
+          });
         }
-    }, [removeAspect]);
+      }, [removeAspect]);
+      
 
     if (loading) {
         return (

@@ -12,11 +12,15 @@ import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
 import useCopomex from "../../hooks/copomex/useCopomex.jsx";
+import { useFiles } from "../../hooks/files/useFiles.jsx";
 import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
+import { toast } from "react-toastify";
+import check from "../../assets/check.png";
+import { saveAs } from "file-saver";
 
 const columns = [
   { name: "Fundamento Legal", uid: "legal_name" },
@@ -64,6 +68,7 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    removeLegalBasis
   } = useLegalBasis();
   const {
     subjects,
@@ -87,6 +92,9 @@ export default function LegalBasis() {
     errorMunicipalities,
     clearMunicipalities,
   } = useCopomex();
+  const {
+     downloadFile
+  } = useFiles();
   const [filterByName, setFilterByName] = useState("");
   const [filterByAbbreviation, setFilterByAbbreviation] = useState("");
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -477,6 +485,8 @@ export default function LegalBasis() {
     clearAspects();
     setLastReformInputError(null)
     setFileError(null)
+    setCheckboxInputError(null)
+    setIsCheckboxChecked(false)
   }, [
     setIsCreateModalOpen,
     setNameInputError,
@@ -705,6 +715,7 @@ export default function LegalBasis() {
       if (subjectInputError && value.trim() !== "") {
         setSubjectInputError(null);
       }
+      setAspectInputError(null);
       setIsAspectsActive(true);
       await fetchAspects(value);
     },
@@ -812,6 +823,114 @@ export default function LegalBasis() {
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
+
+  const handleDelete = useCallback(
+    async (legalBasisId) => {
+      const toastId = toast.loading("Eliminando fundamento legal...", {
+        icon: <Spinner size="sm" />,
+        progressStyle: {
+          background: "#113c53",
+        },
+      });
+      try {
+        const { success, error } = await removeLegalBasis(legalBasisId);
+        if (success) {
+          toast.update(toastId, {
+            render: "Fundamento legal eliminado con éxito",
+            type: "info",
+            icon: <img src={check} alt="Success Icon" />,
+            progressStyle: {
+              background: "#113c53",
+            },
+            isLoading: false,
+            autoClose: 3000,
+          });
+        } else {
+          toast.update(toastId, {
+            render: error,
+            type: "error",
+            icon: null,
+            progressStyle: {},
+            isLoading: false,
+            autoClose: 5000,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        toast.update(toastId, {
+          render:
+            "Algo mal sucedió al eliminar el fundamento legal. Intente de nuevo.",
+          type: "error",
+          icon: null,
+          progressStyle: {},
+          isLoading: false,
+          autoClose: 5000,
+        });
+      }
+    },
+    [removeLegalBasis]
+  );
+
+  const handleDownloadDocument = async (url, fileName) => {
+    if (!url) {
+      toast.error("No hay Documento disponible para este fundamento.");
+      return;
+    }
+    const toastId = toast.loading("Descargando archivo...", {
+      icon: <Spinner size="sm" />,
+      progressStyle: {
+        background: "#113c53",
+      },
+    });
+    try {
+      const { success, fileBlob, error } = await downloadFile(url);
+      if (success) {
+        const mimeType = fileBlob.type;
+        const extension = mimeType.split("/")[1]; 
+  
+        if (!extension) {
+          toast.update(toastId, {
+            render: "No se pudo determinar el tipo de archivo. Inténtelo nuevamente.",
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          return;
+        }
+        saveAs(fileBlob, fileName);
+        toast.update(toastId, {
+          render: "Documento descargado con éxito.",
+          type: "info",
+          icon: <img src={check} alt="Success Icon" />,
+          progressStyle: {
+            background: "#113c53",
+          },
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else {
+        toast.update(toastId, {
+          render: error,
+          type: "error",
+          icon: null,
+          progressStyle: {},
+          isLoading: false,
+          autoClose: 5000,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.update(toastId, {
+        render: "Ocurrió un error inesperado. Inténtelo nuevamente.",
+        type: "error",
+        icon: null,
+        progressStyle: {},
+        isLoading: false,
+        autoClose: 5000,
+      });
+    }
+  };
+  
 
   if (loading && isFirstRender) {
     return (
@@ -939,6 +1058,8 @@ export default function LegalBasis() {
                       <LegalBasisCell
                         legalBase={legalBase}
                         columnKey={columnKey}
+                        handleDelete={handleDelete}
+                        handleDownloadDocument={handleDownloadDocument}
                       />
                     </TableCell>
                   )}

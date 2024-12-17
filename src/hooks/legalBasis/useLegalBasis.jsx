@@ -14,7 +14,7 @@ import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/ge
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
 import getClassifications from "../../services/legalBaseService/getClassifications";
 import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
-
+import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
  * @returns {Object} - Contains LegalBasis list, loading state, error state, and functions for LegalBasis operations.
@@ -812,6 +812,60 @@ const fetchLegalBasisBySubjectAndAspects = useCallback(
     }
   }, [jwt]);
 
+  /**
+ * Deletes an existing legal basis by ID.
+ * @async
+ * @function removeLegalBasis
+ * @param {string} id - The ID of the legal basis to delete.
+ * @returns {Promise<Object>} - Result of the operation with success status or error message.
+ * @throws {Object} - Returns an error message if the deletion fails.
+ */
+const removeLegalBasis = useCallback(async (id) => {
+  try {
+    await deleteLegalBasis({ id, token: jwt });
+    setLegalBasis((prevLegalBasis) =>
+      prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
+    );
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting legal basis:", error);
+    let errorMessage;
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+        case 403:
+          errorMessage =
+            "No autorizado para eliminar este fundamento legal. Verifique su sesión.";
+          break;
+        case 409:
+          errorMessage =
+            "El fundamento legal no puede ser eliminado porque en este momento se estan extrayendo articulos de su documento asociado.";
+          break;
+        case 404:
+          errorMessage =
+            "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
+          break;
+        case 500:
+          errorMessage =
+            "Error interno del servidor. Por favor, intente más tarde.";
+          break;
+        default:
+          errorMessage =
+            "Error inesperado durante la eliminación. Intente de nuevo.";
+      }
+    } else if (error.message === "Network Error") {
+      errorMessage =
+        "Error de conexión durante la eliminación. Verifique su conexión a internet.";
+    } else {
+      errorMessage =
+        "Error inesperado durante la eliminación. Intente de nuevo.";
+    }
+
+    return { success: false, error: errorMessage };
+  }
+}, [jwt]);
+
+
   useEffect(() => {
     fetchLegalBasis();
     fetchClassifications();
@@ -840,5 +894,6 @@ const fetchLegalBasisBySubjectAndAspects = useCallback(
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    removeLegalBasis
   };
 }

@@ -213,7 +213,7 @@ const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocu
       default:
         return null;
     }
-  }, [legalBase, columnKey, handleDelete]);
+  }, [legalBase, columnKey, handleDelete, handleDownloadDocument]);
 
   return renderCell();
 };

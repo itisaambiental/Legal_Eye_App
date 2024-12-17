@@ -14,7 +14,6 @@ import server from "../../config/server.js";
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasisByState({ state, token }) {
-    console.log(state)
     try {
         const response = await server.get('/legalBasis/state/state', {
             headers: {

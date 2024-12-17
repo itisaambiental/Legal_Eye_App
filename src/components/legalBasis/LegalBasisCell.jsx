@@ -13,6 +13,7 @@ import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
 import { toast } from "react-toastify";
 import fetchDocument from "../../services/legalBaseService/getDocumentByUrl";
+import { saveAs } from 'file-saver';
 
 /**
  * LegalBasisCell component
@@ -32,31 +33,26 @@ import fetchDocument from "../../services/legalBaseService/getDocumentByUrl";
  */
 
 const LegalBasisCell = ({ legalBase, columnKey }) => {
-  const openLegalBasisDocument = (url) => {
+
+  const openLegalBasisDocument = (url, fileName) => {
     if (!url) {
       toast.error("No hay Documento disponible para este fundamento.");
       return;
     }
     fetchDocument(url)
-      .then((fileUrl) => {
-        const newWindow = window.open(fileUrl, "_blank");
-        if (
-          !newWindow ||
-          newWindow.closed ||
-          typeof newWindow.closed === "undefined"
-        ) {
-          toast.error(
-            "Las ventanas emergentes están bloqueadas. Por favor, habilítelas para abrir el documento."
-          );
+      .then((fileBlob) => {
+        const mimeType = fileBlob.type; 
+        const extension = mimeType.split("/")[1];
+        if (!extension) {
+          toast.error("No se pudo determinar el tipo de archivo. Por favor, inténtelo nuevamente.");
+          return;
         }
-        newWindow?.addEventListener("load", () => {
-          URL.revokeObjectURL(fileUrl);
-        });
+        saveAs(fileBlob, fileName);
       })
       .catch((error) => {
-        console.error("Error opening document:", error);
+        console.error("Error opening or downloading document:", error);
         toast.error(
-          "No se pudo abrir el documento. Por favor, inténtelo nuevamente."
+          "No se pudo descargar el documento. Por favor, inténtelo nuevamente."
         );
       });
   };
@@ -196,7 +192,7 @@ const LegalBasisCell = ({ legalBase, columnKey }) => {
                   className="hover:bg-primary/20"
                   key="download"
                   textValue="Descargar Documento"
-                  onPress={() => openLegalBasisDocument(legalBase.url)}
+                  onPress={() => openLegalBasisDocument(legalBase.url, legalBase.legal_name)}
                 >
                   <p className="font-normal text-primary">
                     Descargar Documento

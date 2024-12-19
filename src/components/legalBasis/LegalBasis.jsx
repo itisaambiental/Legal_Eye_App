@@ -779,7 +779,7 @@ export default function LegalBasis() {
       setCheckboxInputError(null);
 
     } else {
-      setFileError("Solo se permiten archivos PDF, PNG y JPEG.");
+      setFileError("Solo se permiten documentos en formatos PDF, PNG y JPEG.");
       setFormData((prevFormData) => ({
         ...prevFormData,
         document: null,
@@ -876,7 +876,7 @@ export default function LegalBasis() {
       toast.error("No hay Documento disponible para este fundamento.");
       return;
     }
-    const toastId = toast.loading("Descargando archivo...", {
+    const toastId = toast.loading("Descargando documento...", {
       icon: <Spinner size="sm" />,
       progressStyle: {
         background: "#113c53",
@@ -887,10 +887,9 @@ export default function LegalBasis() {
       if (success) {
         const mimeType = fileBlob.type;
         const extension = mimeType.split("/")[1]; 
-  
         if (!extension) {
           toast.update(toastId, {
-            render: "No se pudo determinar el tipo de archivo. Inténtelo nuevamente.",
+            render: "No se pudo determinar el tipo de documento. Inténtelo nuevamente.",
             type: "error",
             isLoading: false,
             autoClose: 5000,

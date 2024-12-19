@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
 import check from "../../assets/check.png";
 import cruz_icon from "../../assets/cruz.png";
-
+import Progress from "./Progress";
 /**
  * CreateModal component
  *
@@ -137,6 +137,8 @@ function CreateModal({
   handleCheckboxChange,
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [jobId, setJobId] = useState(null);
   const inputFileRef = useRef(null);
 
   const getTooltipContentForState = () => {
@@ -163,10 +165,11 @@ function CreateModal({
       return "Debes seleccionar una jurisdicción para habilitar este campo.";
     }
     return null;
-  };const handleCreate = async (e) => {
+  };
+  const handleCreate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     if (formData.nombre === "") {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
@@ -174,7 +177,7 @@ function CreateModal({
     } else {
       setNameError(null);
     }
-  
+
     if (formData.abbreviation === "") {
       setAbbreviationError("Este campo es obligatorio");
       setIsLoading(false);
@@ -182,7 +185,7 @@ function CreateModal({
     } else {
       setAbbreviationError(null);
     }
-  
+
     if (formData.classification === "") {
       setClassificationError("Este campo es obligatorio");
       setIsLoading(false);
@@ -190,7 +193,7 @@ function CreateModal({
     } else {
       setClassificationError(null);
     }
-  
+
     if (formData.jurisdiction === "") {
       setJurisdictionError("Este campo es obligatorio");
       setIsLoading(false);
@@ -198,17 +201,19 @@ function CreateModal({
     } else {
       setJurisdictionError(null);
     }
-  
+
     if (formData.jurisdiction === "Estatal") {
       if (formData.state === "") {
-        setStateError("Este campo es obligatorio para la jurisdicción Estatal.");
+        setStateError(
+          "Este campo es obligatorio para la jurisdicción Estatal."
+        );
         setIsLoading(false);
         return;
       } else {
         setStateError(null);
       }
     }
-  
+
     if (formData.jurisdiction === "Local") {
       if (formData.state === "") {
         setStateError("Este campo es obligatorio para la jurisdicción Local.");
@@ -218,7 +223,9 @@ function CreateModal({
         setStateError(null);
       }
       if (formData.municipality === "") {
-        setMunicipalityError("Este campo es obligatorio para la jurisdicción Local.");
+        setMunicipalityError(
+          "Este campo es obligatorio para la jurisdicción Local."
+        );
         setIsLoading(false);
         return;
       } else {
@@ -255,20 +262,24 @@ function CreateModal({
       reformDate.getFullYear() < 1900 ||
       reformDate.getFullYear() > 2099
     ) {
-      setLastReformError("La fecha de la última reforma está fuera del rango permitido (1900-2099)");
+      setLastReformError(
+        "La fecha de la última reforma está fuera del rango permitido (1900-2099)"
+      );
       setIsLoading(false);
       return;
     } else {
       setLastReformError(null);
     }
     if (isCheckboxChecked && !formData.document) {
-      setCheckboxInputError("Debes cargar un documento si seleccionas 'Extraer Fundamentos'.");
+      setCheckboxInputError(
+        "Debes cargar un documento si seleccionas 'Extraer Articulos'."
+      );
       setIsLoading(false);
       return;
     } else {
       setCheckboxInputError(null);
     }
-  
+
     try {
       const legalBasisData = {
         legalName: formData.nombre,
@@ -279,13 +290,13 @@ function CreateModal({
         jurisdiction: formData.jurisdiction,
         state: formData.state,
         municipality: formData.municipality,
-        lastReform: formData.lastReform.toDate().toISOString().split("T")[0],
+        lastReform: formData.lastReform.toString(),
         extractArticles: formData.extractArticles,
         ...(formData.document && { document: formData.document.file }),
       };
-  
+
       const { success, error, jobId } = await addLegalBasis(legalBasisData);
-  
+
       if (success) {
         toast.info("El fundamento legal ha sido registrado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -293,11 +304,12 @@ function CreateModal({
             background: "#113c53",
           },
         });
-  
+
         if (!jobId) {
           closeModalCreate();
         } else {
-          console.log("Lógica cuando hay job", jobId);
+          setJobId(jobId)
+          setShowProgress(true);
         }
       } else {
         toast.error(error);
@@ -309,19 +321,38 @@ function CreateModal({
       setIsLoading(false);
     }
   };
+
+  const handleProgressComplete = () => {
+    setJobId(null)
+    setShowProgress(false);
+    closeModalCreate();
+  };
   
+
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={closeModalCreate}
+      onOpenChange={() => {
+        if (showProgress) {
+          handleProgressComplete();
+        } else {
+          closeModalCreate();
+        }
+      }}
+      
       backdrop="opaque"
       placement="center"
+      hideCloseButton={showProgress}
+      isDismissable={false}
+      isKeyboardDismissDisabled={showProgress}
       classNames={{
         closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
       }}
     >
       <ModalContent>
-        {() => (
+      {showProgress ? (
+          <Progress jobId={jobId} onComplete={handleProgressComplete} />
+        ) : (
           <>
             <ModalHeader className="flex flex-col gap-1">
               Registrar Nuevo Fundamento
@@ -602,7 +633,7 @@ function CreateModal({
                     <span className="block truncate">
                       {formData.document
                         ? formData.document.file.name
-                        : "Selecciona un archivo"}
+                        : "Selecciona un Documento"}
                     </span>
                     {formData.document && (
                       <Tooltip content="Eliminar">
@@ -643,7 +674,7 @@ function CreateModal({
                           rel="noopener noreferrer"
                           underline="always"
                         >
-                          Abrir archivo
+                          Abrir documento
                         </Link>
                       </p>
                     </div>
@@ -653,7 +684,9 @@ function CreateModal({
                   <Checkbox
                     size="md"
                     isSelected={isCheckboxChecked}
-                    onValueChange={(isChecked) => handleCheckboxChange(isChecked)}
+                    onValueChange={(isChecked) =>
+                      handleCheckboxChange(isChecked)
+                    }
                   >
                     Extraer Articulos
                   </Checkbox>

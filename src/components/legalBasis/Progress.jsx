@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   CircularProgress,
   Card,
@@ -10,6 +10,13 @@ import {
 } from "@nextui-org/react";
 import useWorker from "../../hooks/worker/useWorker";
 
+const HTTP_ERRORS = [
+  "Solicitud inválida",
+  "No autorizado",
+  "Proceso no encontrado",
+  "Error interno del servidor",
+  "Error de conexión",
+];
 /**
  * Progress component to display the progress of a job.
  *
@@ -19,38 +26,64 @@ import useWorker from "../../hooks/worker/useWorker";
  * @param {Function} props.onComplete - Callback function to be called when the job is complete.
  * @returns {JSX.Element} The rendered Progress component.
  */
+
+
 const Progress = ({ jobId, onComplete }) => {
   const { progress, message, error, fetchJobStatus, clearError } = useWorker();
   const [isActive, setIsActive] = useState(true);
+  const intervalRef = useRef(null);
 
-  const isHttpError = (errorTitle) => {
-    return [
-      "Solicitud inválida",
-      "No autorizado",
-      "Trabajo no encontrado",
-      "Error interno",
-      "Error de conexión",
-    ].includes(errorTitle);
-  };
+  const isHttpError = (errorTitle) => HTTP_ERRORS.includes(errorTitle);
 
   useEffect(() => {
     if (jobId && isActive) {
-      const intervalId = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         fetchJobStatus(jobId);
       }, 5000);
-      return () => clearInterval(intervalId);
+      return () => clearInterval(intervalRef.current);
     }
   }, [jobId, fetchJobStatus, isActive]);
 
   useEffect(() => {
     if (error) {
       setIsActive(false);
+      clearInterval(intervalRef.current);
     }
   }, [error]);
 
   const handleRetry = () => {
     clearError();
     setIsActive(true);
+  };
+
+  const renderEndContent = () => {
+    if (error) {
+      return (
+        <Button
+          color="danger"
+          size="sm"
+          variant="faded"
+          className="mt-1"
+          onPress={isHttpError(error?.title) ? handleRetry : onComplete}
+        >
+          {isHttpError(error?.title) ? "Reintentar" : "Finalizar"}
+        </Button>
+      );
+    }
+    if (progress === 100) {
+      return (
+        <Button
+          color="primary"
+          size="md"
+          variant="faded"
+          aria-label="Ver artículos extraídos"
+          className="mt-1"
+        >
+         <span className="text-xs">Ver articulos</span>
+        </Button>
+      );
+    }
+    return null;
   };
 
   return (
@@ -94,15 +127,7 @@ const Progress = ({ jobId, onComplete }) => {
               iconWrapper: "bg-primary/20",
               alertIcon: "text-primary",
             }}
-            endContent={
-              <Button
-                color="primary"
-                size="sm"
-                variant="faded"
-              >
-                Ver Articulos
-              </Button>
-            }
+            endContent={renderEndContent()}
           />
         )}
         {message && !error && (progress === undefined || progress < 100) && (
@@ -134,16 +159,7 @@ const Progress = ({ jobId, onComplete }) => {
               iconWrapper: "bg-red/20",
               alertIcon: "text-red",
             }}
-            endContent={
-              <Button
-                color="danger"
-                size="sm"
-                variant="faded"
-                onPress={isHttpError(error?.title) ? handleRetry : onComplete}
-              >
-                {isHttpError(error?.title) ? "Reintentar" : "Finalizar"}
-              </Button>
-            }
+            endContent={renderEndContent()}
           />
         )}
       </CardFooter>

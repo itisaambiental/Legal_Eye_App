@@ -23,21 +23,21 @@ const useWorker = () => {
   const mapMessageToLocalized = (message) => {
     switch (message) {
       case "The job is waiting to be processed":
-        return "Se está esperando para empezar la extracción de artículos.";
+        return "El proceso de extracción de artículos está en espera para comenzar.";
       case "Job is still processing":
-        return "Procesando artículos...";
+        return "El proceso de extracción de artículos está en curso...";
       case "Job completed successfully":
-        return "Extracción de artículos completada.";
+        return "El proceso de extracción de artículos se completó con éxito.";
       case "Job is delayed and will be processed later":
-        return "La extracción de artículos está retrasada y será realizada más tarde.";
+        return "El proceso de extracción de artículos está retrasado y se procesará más tarde.";
       case "Job is paused and will be resumed once unpaused":
-        return "La extracción de artículos está en pausa. Comuníquese con los administradores del sistema.";
+        return "El proceso de extracción de artículos está en pausa. Comuníquese con los administradores del sistema para continuar.";
       case "Job is stuck and cannot proceed":
-        return "El trabajo está atascado y no puede continuar. Comuníquese con los administradores del sistema.";
+        return "El proceso de extracción de artículos está atascado y no puede continuar. Comuníquese con los administradores del sistema.";
       case "Job is in an unknown state":
-        return "El trabajo está en un estado desconocido. Comuníquese con los administradores del sistema.";
+        return "El proceso de extracción de artículos está en un estado desconocido. Comuníquese con los administradores del sistema.";
       default:
-        return "Estado del trabajo no reconocido. Comuníquese con los administradores del sistema.";
+        return "Estado del proceso no reconocido. Comuníquese con los administradores del sistema.";
     }
   };
 
@@ -53,19 +53,19 @@ const useWorker = () => {
           return {
             title: "Base legal no encontrada",
             description:
-              "No se encontró la base legal especificada. Verifique la información proporcionada e intente nuevamente.",
+              "No se encontró el fundamento legal especificado. Verifique la información proporcionada e intente nuevamente.",
           };
         case "Invalid document: missing buffer or mimetype":
           return {
             title: "Documento inválido",
             description:
-              "El documento proporcionado no es válido o está incompleto. Asegúrese de que el archivo subido sea correcto.",
+              "El documento proporcionado no es válido o está incompleto. Asegúrese de cargar un archivo válido.",
           };
         case "Document Processing Error":
           return {
             title: "Error al procesar el documento",
             description:
-              "Hubo un problema al procesar el documento. Por favor, revise el archivo e intente nuevamente.",
+              "Hubo un problema procesando el documento. Por favor, revise el archivo y vuelva a intentarlo.",
           };
         case "Invalid Classification":
           return {
@@ -75,21 +75,21 @@ const useWorker = () => {
           };
         case "Article Processing Error":
           return {
-            title: "Error al procesar artículos",
+            title: "Error al procesar los artículos",
             description:
               "No se pudieron extraer los artículos del documento. Verifique el archivo proporcionado e intente nuevamente.",
           };
         case "Failed to insert articles":
           return {
-            title: "Error al insertar artículos",
+            title: "Error al guardar los artículos",
             description:
-              "Ocurrió un problema al intentar guardar los artículos extraídos. Intente nuevamente.",
+              "Hubo un problema al intentar guardar los artículos extraídos. Por favor, intente nuevamente.",
           };
         case "Unexpected error during article processing":
           return {
             title: "Error inesperado",
             description:
-              "Se produjo un error inesperado durante el procesamiento del documento. Intente nuevamente o contacte al soporte técnico.",
+              "Se produjo un error inesperado durante el procesamiento de los artículos. Intente nuevamente o contacte al soporte técnico.",
           };
         default:
           return {
@@ -106,26 +106,26 @@ const useWorker = () => {
           return {
             title: "Solicitud inválida",
             description:
-              "La solicitud es inválida. Por favor, Recargue la pagina e intente nuevamente.",
+              "La solicitud es inválida. Por favor, recargue la página e intente nuevamente.",
           };
         case 401:
         case 403:
           return {
             title: "No autorizado",
             description:
-              "No autorizado. Verifique su sesión.",
+              "No tiene autorización para realizar esta acción. Verifique su sesión e intente nuevamente.",
           };
         case 404:
           return {
-            title: "Trabajo no encontrado",
+            title: "Proceso no encontrado",
             description:
-              "Extracción de articulos no encontrada. Es posible que haya expirado o sea inválida.",
+              "El proceso solicitado no fue encontrado. Es posible que haya expirado o el ID sea incorrecto.",
           };
         case 500:
           return {
-            title: "Error interno",
+            title: "Error interno del servidor",
             description:
-              "Error interno del servidor. Por favor, intente de nuevo más tarde.",
+              "Se produjo un error interno en el servidor. Por favor, intente nuevamente más tarde.",
           };
         default:
           return {
@@ -142,7 +142,7 @@ const useWorker = () => {
       return {
         title: "Error inesperado",
         description:
-          "Error inesperado. Intente nuevamente o contacte al soporte técnico.",
+          "Ocurrió un error inesperado. Intente nuevamente o contacte al soporte técnico.",
       };
     }
   };
@@ -190,13 +190,12 @@ const useWorker = () => {
     setJobStatus((prev) => ({ ...prev, error: null }));
   };
 
-
   return {
     progress: jobStatus.progress,
     message: jobStatus.message,
     error: jobStatus.error,
     fetchJobStatus,
-    clearError
+    clearError,
   };
 };
 

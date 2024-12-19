@@ -23,7 +23,7 @@ const useWorker = () => {
   const mapMessageToLocalized = (message) => {
     switch (message) {
       case "The job is waiting to be processed":
-        return "El proceso de extracción de artículos está en espera para comenzar.";
+        return "El proceso de extracción de artículos comenzará en un momento.";
       case "Job is still processing":
         return "El proceso de extracción de artículos está en curso...";
       case "Job completed successfully":

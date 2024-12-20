@@ -171,7 +171,7 @@ export default function Aspects() {
             });
           }
         } catch (error) {
-          console.error("Error al eliminar el aspecto:", error);
+          console.error(error);
           toast.update(toastId, {
             render: "Algo salió mal al eliminar el aspecto. Intente de nuevo.",
             type: "error",
@@ -244,7 +244,7 @@ export default function Aspects() {
                         <Button
                             isIconOnly
                             size="sm"
-                            className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                            className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
                             aria-label="Eliminar seleccionados"
                             onPress={openDeleteModal}
                         >
@@ -261,7 +261,7 @@ export default function Aspects() {
                 onPreviousPage={onPreviousPage}
                 onNextPage={onNextPage}
                 selectedKeys={selectedKeys}
-                filteredItems={aspects}
+                filteredItems={filteredAspects}
             />
             {isCreateModalOpen && (
                 <CreateModal
@@ -296,9 +296,8 @@ export default function Aspects() {
                     setIsDeletingBatch={setIsDeletingBatch}
                     isDeletingBatch={isDeletingBatch}
                     selectedKeys={selectedKeys}
-                    aspects={aspects}
+                    aspects={filteredAspects}
                     deleteAspectsBatch={deleteAspectsBatch}
-                    setShowDeleteModal={setShowDeleteModal}
                     setSelectedKeys={setSelectedKeys}
                     check={check}
 

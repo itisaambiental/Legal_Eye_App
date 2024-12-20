@@ -20,14 +20,13 @@ import { toast } from 'react-toastify';
  * @param {Set|string} props.selectedKeys - Set of selected user IDs for deletion or "all" for all users.
  * @param {Array} props.users - Array of all user objects.
  * @param {Function} props.deleteUsersBatch - Function to delete multiple users by their IDs.
- * @param {Function} props.setShowDeleteModal - Function to control the visibility of the modal.
  * @param {Function} props.setSelectedKeys - Function to reset selected users after deletion.
  * @param {string} props.check - URL or path for the success icon displayed on toast notifications.
  * 
  * @returns {JSX.Element} Rendered DeleteModal component with deletion confirmation and feedback.
  */
 
-function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, users, deleteUsersBatch, setShowDeleteModal, setSelectedKeys, check }) {
+function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, users, deleteUsersBatch, setSelectedKeys, check }) {
 
   const handleDeleteBatch = useCallback(async () => {
     setIsDeletingBatch(true);
@@ -47,7 +46,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
           }
         );
         setSelectedKeys(new Set());
-        setShowDeleteModal(false);
+        closeDeleteModal();
       } else {
         toast.error(error);
       }
@@ -57,7 +56,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
     } finally {
       setIsDeletingBatch(false);
     }
-  }, [selectedKeys, deleteUsersBatch, users, setIsDeletingBatch, setSelectedKeys, setShowDeleteModal, check]);
+  }, [selectedKeys, deleteUsersBatch, users, setIsDeletingBatch, setSelectedKeys, closeDeleteModal, check]);
 
 
   return (

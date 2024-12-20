@@ -4,9 +4,9 @@ import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 /**
- * DeleteModal component for Aspects
+ * DeleteModal component
  * 
- * This component displays a modal dialog to confirm the deletion of one or multiple aspects.
+ * This component displays a modal dialog to confirm the deletion of one or multiple legal basis.
  * It includes options to proceed with deletion or cancel the action, with appropriate feedback 
  * displayed to the user upon success or failure.
  * 
@@ -16,29 +16,29 @@ import { toast } from 'react-toastify';
  * @param {Function} props.closeDeleteModal - Function to close the modal.
  * @param {Function} props.setIsDeletingBatch - Function to set the loading state for batch deletion.
  * @param {boolean} props.isDeletingBatch - Indicates whether the deletion process is ongoing.
- * @param {Set|string} props.selectedKeys - Set of selected aspect IDs for deletion or "all" for all aspects.
- * @param {Array} props.aspects - Array of all aspect objects.
- * @param {Function} props.deleteAspectsBatch - Function to delete multiple aspects by their IDs.
- * @param {Function} props.setSelectedKeys - Function to reset selected aspects after deletion.
+ * @param {Set|string} props.selectedKeys - Set of selected legalBasis IDs for deletion or "all" for all legalBasis.
+ * @param {Array} props.legalBasis - Array of all legalBasis objects.
+ * @param {Function} props.deleteLegalBasisBatch - Function to delete multiple legalBasis by their IDs.
+ * @param {Function} props.setSelectedKeys - Function to reset selected legalBasis after deletion.
  * @param {string} props.check - URL or path for the success icon displayed on toast notifications.
  * 
  * @returns {JSX.Element} Rendered DeleteModal component with deletion confirmation and feedback.
  */
 
-function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, aspects, deleteAspectsBatch, setSelectedKeys, check }) {
+function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, legalBasis, deleteLegalBasisBatch, setSelectedKeys, check }) {
 
     const handleDeleteBatch = useCallback(async () => {
         setIsDeletingBatch(true);
-        const aspectIds = selectedKeys === "all"
-            ? aspects.map(aspect => aspect.id)
+        const legalBasisIds = selectedKeys === "all"
+            ? legalBasis.map(legalBase => legalBase.id)
             : Array.from(selectedKeys).map(id => Number(id));
 
         try {
-            const { success, error } = await deleteAspectsBatch(aspectIds);
+            const { success, error } = await deleteLegalBasisBatch(legalBasisIds);
 
             if (success) {
                 toast.success(
-                    aspectIds.length <= 1 ? 'Aspecto eliminado con éxito' : 'Aspectos eliminados con éxito',
+                    legalBasisIds.length <= 1 ? 'Fundamento legal eliminado con éxito' : 'Fundamentos legales eliminados con éxito',
                     {
                         icon: () => <img src={check} alt="Success Icon" />,
                         progressStyle: { background: '#113c53' },
@@ -51,11 +51,11 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
             }
         } catch (error) {
             console.error(error);
-            toast.error('Algo salió mal al eliminar los aspectos. Intente de nuevo');
+            toast.error('Algo salió mal al eliminar los fundamentos legales. Intente de nuevo');
         } finally {
             setIsDeletingBatch(false);
         }
-    }, [selectedKeys, deleteAspectsBatch, aspects, setIsDeletingBatch, setSelectedKeys, closeDeleteModal, check]);
+    }, [selectedKeys, deleteLegalBasisBatch, legalBasis, setIsDeletingBatch, setSelectedKeys, closeDeleteModal, check]);
 
     return (
         <Modal
@@ -72,10 +72,10 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
                     <>
                         <ModalHeader className="text-center">
                             {selectedKeys === "all"
-                                ? "¿Estás seguro de que deseas eliminar TODOS los aspectos?"
+                                ? "¿Estás seguro de que deseas eliminar TODos los Fundamentos Legales?"
                                 : selectedKeys.size <= 1
-                                    ? "¿Estás seguro de que deseas eliminar este aspecto?"
-                                    : "¿Estás seguro de que deseas eliminar estos aspectos?"}
+                                    ? "¿Estás seguro de que deseas eliminar este Fundamento Legal?"
+                                    : "¿Estás seguro de que deseas eliminar estos Fundamentos Legales?"}
                         </ModalHeader>
                         <ModalBody className="text-center">
                             <p className="mb-5 text-lg font-normal text-primary">

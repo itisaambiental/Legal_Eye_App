@@ -13,7 +13,7 @@ import server from "../../config/server.js";
  * @returns {Promise<Object>} The job status object containing hasPendingJobs, progress, or error details.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getLegalBasisJobStatus({ legalBasisId, token }) {
+export default async function getLegalBasisJob({ legalBasisId, token }) {
   try {
     const response = await server.get(`/jobs/articles/legalBasis/${legalBasisId}`, {
       headers: {
@@ -24,13 +24,13 @@ export default async function getLegalBasisJobStatus({ legalBasisId, token }) {
     if (response.status !== 200) {
       throw new Error('Failed to retrieve job status');
     }
-    const { hasPendingJobs, progress } = response.data;
+    const { hasPendingJobs, jobId } = response.data;
     return {
       hasPendingJobs,
-      progress,
+      jobId
     };
   } catch (error) {
-    console.error(`Error retrieving job status for legalBasisId ${legalBasisId}:`, error.message);
+    console.error(error);
     throw error;
   }
 }

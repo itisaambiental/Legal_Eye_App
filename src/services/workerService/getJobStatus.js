@@ -31,7 +31,7 @@ export default async function getJobStatus({ id, token }) {
       ...(error !== undefined && { error }),
     };
   } catch (error) {
-    console.error("Error retrieving job status", error);
+    console.error(error);
     throw error;
   }
 }

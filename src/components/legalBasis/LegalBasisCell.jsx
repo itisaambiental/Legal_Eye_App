@@ -11,6 +11,7 @@ import menu_icon from "../../assets/aplicaciones.png";
 import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
+import send_icon from "../../assets/enviar_blue.png";
 /**
  * LegalBasisCell component
  *
@@ -171,6 +172,21 @@ const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocu
                   <p className="font-normal text-primary">
                     Descargar Documento
                   </p>
+                </DropdownItem>
+                <DropdownItem
+                  aria-label="Enviar Fundamento"
+                  startContent={
+                    <img
+                      src={send_icon}
+                      alt="Send Icon"
+                      className="w-4 h-4 flex-shrink-0"
+                    />
+                  }
+                  className="hover:bg-primary/20"
+                  key="delete"
+                  textValue="Enviar Fundamento"
+                >
+                  <p className="font-normal text-primary">Enviar Fundamento</p>
                 </DropdownItem>
                 <DropdownItem
                   aria-label="Actualizar Fundamento"

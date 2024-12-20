@@ -99,7 +99,6 @@ const useWorker = () => {
           };
       }
     }
-
     if (error.response) {
       switch (error.response.status) {
         case 400:

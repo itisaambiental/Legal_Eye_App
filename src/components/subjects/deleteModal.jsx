@@ -19,14 +19,13 @@ import { toast } from 'react-toastify';
  * @param {Set|string} props.selectedKeys - Set of selected subjects IDs for deletion or "all" for all subjects.
  * @param {Array} props.subjects - Array of all subjects objects.
  * @param {Function} props.deleteSubjectsBatch - Function to delete multiple subjects by their IDs.
- * @param {Function} props.setShowDeleteModal - Function to control the visibility of the modal.
  * @param {Function} props.setSelectedKeys - Function to reset selected subjects after deletion.
  * @param {string} props.check - URL or path for the success icon displayed on toast notifications.
  * 
  * @returns {JSX.Element} Rendered DeleteModal component with deletion confirmation and feedback.
  */
 
-function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, subjects, deleteSubjectsBatch, setShowDeleteModal, setSelectedKeys, check }) {
+function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, isDeletingBatch, selectedKeys, subjects, deleteSubjectsBatch, setSelectedKeys, check }) {
 
     const handleDeleteBatch = useCallback(async () => {
         setIsDeletingBatch(true);
@@ -46,7 +45,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
                     }
                 );
                 setSelectedKeys(new Set());
-                setShowDeleteModal(false);
+                closeDeleteModal();
             } else {
                 toast.error(error)
             }
@@ -56,7 +55,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
         } finally {
             setIsDeletingBatch(false);
         }
-    }, [selectedKeys, deleteSubjectsBatch, subjects, setIsDeletingBatch, setSelectedKeys, setShowDeleteModal, check]);
+    }, [selectedKeys, deleteSubjectsBatch, subjects, setIsDeletingBatch, setSelectedKeys, closeDeleteModal, check]);
 
     return (
         <Modal

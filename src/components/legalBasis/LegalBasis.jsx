@@ -7,6 +7,8 @@ import {
   TableRow,
   TableCell,
   Spinner,
+  Button,
+  Tooltip,
 } from "@nextui-org/react";
 import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
@@ -18,9 +20,12 @@ import LegalBasisCell from "./LegalBasisCell.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
+import DeleteModal from "./deleteModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import { saveAs } from "file-saver";
+import trash_icon from "../../assets/papelera-mas.png";
+import send_icon from "../../assets/enviar.png";
 
 const columns = [
   { name: "Fundamento Legal", uid: "legal_name" },
@@ -68,7 +73,8 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
-    removeLegalBasis
+    removeLegalBasis,
+    removeLegalBasisBatch
   } = useLegalBasis();
   const {
     subjects,
@@ -92,9 +98,7 @@ export default function LegalBasis() {
     errorMunicipalities,
     clearMunicipalities,
   } = useCopomex();
-  const {
-     downloadFile
-  } = useFiles();
+  const { downloadFile } = useFiles();
   const [filterByName, setFilterByName] = useState("");
   const [filterByAbbreviation, setFilterByAbbreviation] = useState("");
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -112,7 +116,8 @@ export default function LegalBasis() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [nameInputError, setNameInputError] = useState(null);
   const [abbreviationInputError, setAbbreviationInputError] = useState(null);
-  const [classificationInputError, setClassificationInputError] = useState(null);
+  const [classificationInputError, setClassificationInputError] =
+    useState(null);
   const [jurisdictionInputError, setJurisdictionInputError] = useState(null);
   const [stateInputError, setStateInputError] = useState(null);
   const [municipalityInputError, setMunicipalityInputError] = useState(null);
@@ -128,6 +133,8 @@ export default function LegalBasis() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     nombre: "",
@@ -200,10 +207,7 @@ export default function LegalBasis() {
             break;
           case "subjectAndAspects": {
             const { subjectId, aspectsIds } = value;
-            await fetchLegalBasisBySubjectAndAspects(
-              subjectId,
-              aspectsIds
-            );
+            await fetchLegalBasisBySubjectAndAspects(subjectId, aspectsIds);
             break;
           }
           case "classification":
@@ -467,7 +471,7 @@ export default function LegalBasis() {
     });
     setIsCreateModalOpen(true);
   }, [setFormData, setIsCreateModalOpen]);
-  
+
   const closeModalCreate = useCallback(() => {
     setIsCreateModalOpen(false);
     setNameInputError(null);
@@ -483,10 +487,10 @@ export default function LegalBasis() {
     setIsAspectsActive(false);
     clearMunicipalities();
     clearAspects();
-    setLastReformInputError(null)
-    setFileError(null)
-    setCheckboxInputError(null)
-    setIsCheckboxChecked(false)
+    setLastReformInputError(null);
+    setFileError(null);
+    setCheckboxInputError(null);
+    setIsCheckboxChecked(false);
   }, [
     setIsCreateModalOpen,
     setNameInputError,
@@ -503,7 +507,7 @@ export default function LegalBasis() {
     clearMunicipalities,
     clearAspects,
   ]);
-  
+
   const handleNameChange = useCallback(
     (e) => {
       const { value } = e.target;
@@ -517,7 +521,7 @@ export default function LegalBasis() {
     },
     [nameInputError, setFormData, setNameInputError]
   );
-  
+
   const handleAbbreviationChange = useCallback(
     (e) => {
       const { value } = e.target;
@@ -531,7 +535,7 @@ export default function LegalBasis() {
     },
     [abbreviationInputError, setFormData, setAbbreviationInputError]
   );
-  
+
   const handleClassificationChange = useCallback(
     (value) => {
       if (!value) {
@@ -554,7 +558,7 @@ export default function LegalBasis() {
     },
     [classificationInputError, setFormData, setClassificationInputError]
   );
-  
+
   const handleJurisdictionChange = useCallback(
     (value) => {
       if (!value) {
@@ -619,7 +623,7 @@ export default function LegalBasis() {
       setStateInputError,
     ]
   );
-  
+
   const handleStateChange = useCallback(
     async (value) => {
       if (!value) {
@@ -666,7 +670,7 @@ export default function LegalBasis() {
       stateInputError,
     ]
   );
-  
+
   const handleMunicipalityChange = useCallback(
     (value) => {
       if (!value) {
@@ -683,14 +687,14 @@ export default function LegalBasis() {
         ...prevFormData,
         municipality: value,
       }));
-  
+
       if (municipalityInputError && value.trim() !== "") {
         setMunicipalityInputError(null);
       }
     },
     [municipalityInputError, setFormData, setMunicipalityInputError]
   );
-  
+
   const handleSubjectChange = useCallback(
     async (value) => {
       if (!value) {
@@ -729,7 +733,7 @@ export default function LegalBasis() {
       subjectInputError,
     ]
   );
-  
+
   const handleAspectsChange = useCallback(
     (selectedIds) => {
       setFormData((prevFormData) => ({
@@ -742,7 +746,7 @@ export default function LegalBasis() {
     },
     [aspectInputError, setFormData, setAspectInputError]
   );
-  
+
   const handleLastReformChange = useCallback(
     (value) => {
       if (!value) {
@@ -763,30 +767,33 @@ export default function LegalBasis() {
     [lastReformInputError, setFormData, setLastReformInputError]
   );
 
-  const handleFileChange = useCallback((e) => {
-    const file = e.target.files[0];
-    const validTypes = ["application/pdf", "image/png", "image/jpeg"];
-    if (file && validTypes.includes(file.type)) {
-      setFileError(null);
-      const fileUrl = URL.createObjectURL(file);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        document: {
-          file: file,
-          previewUrl: fileUrl,
-        },
-      }));
-      setCheckboxInputError(null);
-
-    } else {
-      setFileError("Solo se permiten documentos en formatos PDF, PNG y JPEG.");
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        document: null,
-      }));
-    }
-  }, [setFormData, setFileError]);
-  
+  const handleFileChange = useCallback(
+    (e) => {
+      const file = e.target.files[0];
+      const validTypes = ["application/pdf", "image/png", "image/jpeg"];
+      if (file && validTypes.includes(file.type)) {
+        setFileError(null);
+        const fileUrl = URL.createObjectURL(file);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          document: {
+            file: file,
+            previewUrl: fileUrl,
+          },
+        }));
+        setCheckboxInputError(null);
+      } else {
+        setFileError(
+          "Solo se permiten documentos en formatos PDF, PNG y JPEG."
+        );
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          document: null,
+        }));
+      }
+    },
+    [setFormData, setFileError]
+  );
 
   const handleRemoveDocument = () => {
     setFormData((prevFormData) => ({
@@ -803,12 +810,10 @@ export default function LegalBasis() {
         ...prevFormData,
         extractArticles: isChecked,
       }));
-        setCheckboxInputError(null);
-      
+      setCheckboxInputError(null);
     },
     [setIsCheckboxChecked, setFormData, setCheckboxInputError]
   );
-  
 
   const totalPages = useMemo(
     () => Math.ceil(legalBasis.length / rowsPerPage),
@@ -820,6 +825,8 @@ export default function LegalBasis() {
     setPage(1);
   }, []);
 
+  const openDeleteModal = () => setShowDeleteModal(true);
+  const closeDeleteModal = () => setShowDeleteModal(false);
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -886,10 +893,11 @@ export default function LegalBasis() {
       const { success, fileBlob, error } = await downloadFile(url);
       if (success) {
         const mimeType = fileBlob.type;
-        const extension = mimeType.split("/")[1]; 
+        const extension = mimeType.split("/")[1];
         if (!extension) {
           toast.update(toastId, {
-            render: "No se pudo determinar el tipo de documento. Inténtelo nuevamente.",
+            render:
+              "No se pudo determinar el tipo de documento. Inténtelo nuevamente.",
             type: "error",
             isLoading: false,
             autoClose: 5000,
@@ -929,7 +937,6 @@ export default function LegalBasis() {
       });
     }
   };
-  
 
   if (loading && isFirstRender) {
     return (
@@ -1067,6 +1074,35 @@ export default function LegalBasis() {
             </TableBody>
           </Table>
         )}
+        <div className="relative w-full">
+          {(selectedKeys.size > 0 || selectedKeys === "all") && (
+            <>
+              <Tooltip content="Eliminar" size="sm">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                  aria-label="Eliminar seleccionados"
+                  onPress={openDeleteModal}
+                >
+                  <img src={trash_icon} alt="delete" className="w-5 h-5" />
+                </Button>
+              </Tooltip>
+
+              <Tooltip content="Enviar a ACM Suite" size="sm">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute left-12 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                  aria-label="Enviar a ACM Suite"
+                >
+                  <img src={send_icon} alt="send" className="w-5 h-5" />
+                </Button>
+              </Tooltip>
+            </>
+          )}
+        </div>
+
         <BottomContent
           page={page}
           totalPages={totalPages}
@@ -1128,10 +1164,22 @@ export default function LegalBasis() {
             setCheckboxInputError={setCheckboxInputError}
             isCheckboxChecked={isCheckboxChecked}
             handleCheckboxChange={handleCheckboxChange}
-            
           />
         )}
       </>
+      {showDeleteModal && (
+        <DeleteModal
+          showDeleteModal={showDeleteModal}
+          closeDeleteModal={closeDeleteModal}
+          setIsDeletingBatch={setIsDeletingBatch}
+          isDeletingBatch={isDeletingBatch}
+          selectedKeys={selectedKeys}
+          legalBasis={legalBasis}
+          deleteLegalBasisBatch={removeLegalBasisBatch}
+          setSelectedKeys={setSelectedKeys}
+          check={check}
+        />
+      )}
     </div>
   );
 }

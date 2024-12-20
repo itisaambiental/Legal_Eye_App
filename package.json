@@ -12,13 +12,13 @@
     "start": "serve dist -s -n -L -p $PORT"
   },
   "engines": {
-    "node": "22.x",
+    "node": "20.x",
     "npm": "10.x"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.24.0",
     "@headlessui/react": "^2.1.9",
-    "@nextui-org/react": "^2.6.5",
+    "@nextui-org/react": "^2.5.0",
     "@react-aria/i18n": "^3.12.4",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",

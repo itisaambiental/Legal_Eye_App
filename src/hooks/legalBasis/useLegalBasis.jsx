@@ -15,6 +15,7 @@ import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalB
 import getClassifications from "../../services/legalBaseService/getClassifications";
 import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
+import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
  * @returns {Object} - Contains LegalBasis list, loading state, error state, and functions for LegalBasis operations.
@@ -866,6 +867,73 @@ const removeLegalBasis = useCallback(async (id) => {
 }, [jwt]);
 
 
+/**
+ * Deletes multiple legal bases by their IDs.
+ * @async
+ * @function removeLegalBasisBatch
+ * @param {Array<string>} legalBasisIds - The IDs of the legal bases to delete.
+ * @returns {Promise<Object>} - Result of the operation with success status or error message.
+ * @throws {Object} - Returns an error message if the deletion fails.
+ */
+const removeLegalBasisBatch = useCallback(async (legalBasisIds) => {
+  try {
+    await deleteLegalBasisBatch({ legalBasisIds, token: jwt });
+    setLegalBasis((prevLegalBases) =>
+      prevLegalBases.filter((legalBasis) => !legalBasisIds.includes(legalBasis.id))
+    );
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting legal bases batch:", error);
+    let errorMessage;
+    if (error.response) {
+      const { status, data } = error.response;
+      switch (status) {
+        case 400:
+          errorMessage = "Faltan campos requeridos: legalBasisIds. Verifique los parámetros enviados.";
+          break;
+        case 401:
+        case 403:
+          errorMessage = "No autorizado para eliminar fundamentos legales. Verifique su sesión.";
+          break;
+        case 404:
+          errorMessage = "Uno o más fundamentos legales no existen. Verifique su existencia recargando la app e intente de nuevo.";
+          break;
+        case 409: {
+          const { errors, message } = data;
+          const { LegalBases } = errors;
+          if (LegalBases && LegalBases.length > 0) {
+            const errorDetails = LegalBases.map((legalBase) => legalBase.name).join(", ");
+            const plural = LegalBases.length > 1;
+            if (message === "Cannot delete Legal Bases with pending jobs") {
+              errorMessage = `${plural ? "Los fundamentos legales" : "El fundamento legal"} ${errorDetails} ${plural ? "no pueden" : "no puede"} ser eliminados porque en este momento se están extrayendo artículos de ${plural ? "sus documentos asociados" : "su documento asociado"}.`;
+            } else {
+              errorMessage = `Uno o más fundamentos legales no pueden ser eliminados debido a problemas desconocidos. Verifique e intente nuevamente.`;
+            }
+          } else {
+            errorMessage =
+              "Uno o más fundamentos legales no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados. Intente nuevamente más tarde.";
+          }
+          break;                
+        }
+
+        case 500:
+          errorMessage = "Error interno del servidor. Por favor, intente más tarde.";
+          break;
+
+        default:
+          errorMessage = "Error inesperado durante la eliminación. Intente nuevamente.";
+      }
+    } else if (error.message === "Network Error") {
+      errorMessage = "Error de conexión al eliminar fundamentos legales. Verifique su conexión a internet.";
+    } else {
+      errorMessage = "Error inesperado al eliminar fundamentos legales. Intente nuevamente.";
+    }
+
+    return { success: false, error: errorMessage };
+  }
+}, [jwt]);
+
+
   useEffect(() => {
     fetchLegalBasis();
     fetchClassifications();
@@ -894,6 +962,7 @@ const removeLegalBasis = useCallback(async (id) => {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
-    removeLegalBasis
+    removeLegalBasis,
+    removeLegalBasisBatch
   };
 }

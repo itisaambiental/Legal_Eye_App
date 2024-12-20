@@ -17,17 +17,17 @@ const HTTP_ERRORS = [
   "Error interno del servidor",
   "Error de conexión",
 ];
+
 /**
- * Progress component to display the progress of a job.
+ * Progress component that tracks the progress of a job and displays status messages.
  *
  * @component
  * @param {Object} props - Component props.
- * @param {string} props.jobId - The ID of the job to track progress.
+ * @param {string} props.jobId - The ID of the job to track.
  * @param {Function} props.onComplete - Callback function to be called when the job is complete.
- * @returns {JSX.Element} The rendered Progress component.
+ * @returns {JSX.Element} The rendered component.
+ *
  */
-
-
 const Progress = ({ jobId, onComplete }) => {
   const { progress, message, error, fetchJobStatus, clearError } = useWorker();
   const [isActive, setIsActive] = useState(true);
@@ -43,6 +43,13 @@ const Progress = ({ jobId, onComplete }) => {
       return () => clearInterval(intervalRef.current);
     }
   }, [jobId, fetchJobStatus, isActive]);
+
+  useEffect(() => {
+    if (progress === 100 && !error) {
+      setIsActive(false);
+      clearInterval(intervalRef.current);
+    }
+  }, [progress, error]);
 
   useEffect(() => {
     if (error) {
@@ -79,7 +86,7 @@ const Progress = ({ jobId, onComplete }) => {
           aria-label="Ver artículos extraídos"
           className="mt-1"
         >
-         <span className="text-xs">Ver articulos</span>
+          <span className="text-xs">Ver artículos</span>
         </Button>
       );
     }

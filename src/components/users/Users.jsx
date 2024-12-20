@@ -188,7 +188,6 @@ export default function Users() {
 
   const filteredUsers = useMemo(() => {
     if (!filterValue) return users;
-
     return users.filter(
       (user) =>
         user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
@@ -397,7 +396,7 @@ export default function Users() {
             <Button
               isIconOnly
               size="sm"
-              className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+              className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
               aria-label="Eliminar seleccionados"
               onPress={openDeleteModal}
             >
@@ -414,7 +413,7 @@ export default function Users() {
         onPreviousPage={onPreviousPage}
         onNextPage={onNextPage}
         selectedKeys={selectedKeys}
-        filteredItems={users}
+        filteredItems={filteredUsers}
       />
 
       {isCreateModalOpen && (
@@ -469,9 +468,8 @@ export default function Users() {
           setIsDeletingBatch={setIsDeletingBatch}
           isDeletingBatch={isDeletingBatch}
           selectedKeys={selectedKeys}
-          users={users}
+          users={filteredUsers}
           deleteUsersBatch={deleteUsersBatch}
-          setShowDeleteModal={setShowDeleteModal}
           setSelectedKeys={setSelectedKeys}
           check={check}
         />

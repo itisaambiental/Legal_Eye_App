@@ -66,7 +66,6 @@ export default function Subjects() {
   });
   const filteredSubjects = useMemo(() => {
     if (!filterValue) return subjects;
-
     return subjects.filter((subject) =>
       subject.subject_name.toLowerCase().includes(filterValue.toLowerCase())
     );
@@ -258,7 +257,7 @@ export default function Subjects() {
             <Button
               isIconOnly
               size="sm"
-              className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+              className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
               aria-label="Eliminar seleccionados"
               onPress={openDeleteModal}
             >
@@ -274,7 +273,7 @@ export default function Subjects() {
         onPreviousPage={onPreviousPage}
         onNextPage={onNextPage}
         selectedKeys={selectedKeys}
-        filteredItems={subjects}
+        filteredItems={filteredSubjects}
       />
       {isCreateModalOpen && (
         <CreateModal
@@ -308,9 +307,8 @@ export default function Subjects() {
           setIsDeletingBatch={setIsDeletingBatch}
           isDeletingBatch={isDeletingBatch}
           selectedKeys={selectedKeys}
-          subjects={subjects}
+          subjects={filteredSubjects}
           deleteSubjectsBatch={deleteSubjectsBatch}
-          setShowDeleteModal={setShowDeleteModal}
           setSelectedKeys={setSelectedKeys}
           check={check}
         />

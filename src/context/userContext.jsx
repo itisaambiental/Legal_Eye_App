@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useCallback } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { msalInstance } from '../config/msalConfig'
+import verifyToken from '../services/userService/verify_token'
 
 /**
  * User authentication and role management context.
@@ -63,26 +64,37 @@ export function UserContextProvider({ children }) {
     const logout = useCallback(() => {
         updateUserContext(null);
         msalInstance.clearCache().catch(error => {
-            console.error("Error durante el logout:", error);
+            console.error(error);
         });
     }, [updateUserContext]);
     
     /**
-     * Effect that decodes the JWT to set role flags if a token exists.
+     * Effect that decodes and verify the JWT to set role flags if a token exists.
      * If decoding fails, logs out the user to clear invalid token data.
      */
     useEffect(() => {
-        if (jwt) {
-            try {
-                const decodedToken = jwtDecode(jwt)
-                setRoleFlags(decodedToken.userForToken.userType)
-            } catch (error) {
-                console.error("Error decoding token:", error)
-                logout()
+        const handleJwtValidation = async () => {
+            if (jwt && jwt !== '' && jwt !== 'null') {
+                try {
+                    const isValid = await verifyToken(jwt);
+                    if (!isValid) {
+                        logout();
+                        return;
+                    }
+                    const decodedToken = jwtDecode(jwt);
+                    setRoleFlags(decodedToken.userForToken.userType);
+                } catch (error) {
+                    console.error(error);
+                    logout();
+                }
+            } else {
+                setIsAdmin(false);
+                setIsAnalyst(false);
             }
-        }
-        setIsLoading(false)
-    }, [jwt, logout])
+            setIsLoading(false);
+        };
+        handleJwtValidation();
+    }, [jwt, logout]);
 
     return (
         <Context.Provider value={{ jwt, isAdmin, isAnalyst, isLoading, updateUserContext, logout }}>

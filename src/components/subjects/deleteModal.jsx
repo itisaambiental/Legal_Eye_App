@@ -32,12 +32,10 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
         const subjectIds = selectedKeys === "all"
             ? subjects.map(subject => subject.id)
             : Array.from(selectedKeys).map(id => Number(id));
-
         try {
             const { success, error } = await deleteSubjectsBatch(subjectIds);
-
             if (success) {
-                toast.success(
+                toast.info(
                     subjectIds.length <= 1 ? 'Materia eliminada con éxito' : 'Materias eliminadas con éxito',
                     {
                         icon: () => <img src={check} alt="Success Icon" />,

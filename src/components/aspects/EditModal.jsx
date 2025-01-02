@@ -51,12 +51,10 @@ function EditModal({ formData, setFormData, isOpen, updateAspect, closeModalEdit
         } else {
             setNameError(null);
         }
-
         try {
             const { success, error } = await updateAspect(formData.id, formData.nombre);
-
             if (success) {
-                toast.success('El aspecto ha sido actualizado correctamente', {
+                toast.info('El aspecto ha sido actualizado correctamente', {
                     icon: () => <img src={check} alt="Success Icon" />,
                     progressStyle: { background: '#113c53' }
                 });

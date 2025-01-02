@@ -36,9 +36,8 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
 
     try {
       const { success, error } = await deleteUsersBatch(userIds);
-
       if (success) {
-        toast.success(
+        toast.info(
           userIds.length <= 1 ? 'Usuario eliminado con éxito' : 'Usuarios eliminados con éxito',
           {
             icon: () => <img src={check} alt="Success Icon" />,

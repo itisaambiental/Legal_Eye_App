@@ -41,7 +41,6 @@ function EditModal({ formData, setFormData, isOpen, updateSubject, closeModalEdi
     const handleEdit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
         if (formData.nombre === '') {
             setNameError('Este campo es obligatorio');
             setIsLoading(false);
@@ -49,12 +48,10 @@ function EditModal({ formData, setFormData, isOpen, updateSubject, closeModalEdi
         } else {
             setNameError(null);
         }
-
         try {
             const { success, error } = await updateSubject(formData.id, formData.nombre);
-
             if (success) {
-                toast.success('La materia ha sido actualizada correctamente', {
+                toast.info('La materia ha sido actualizada correctamente', {
                     icon: () => <img src={check} alt="Success Icon" />,
                     progressStyle: { background: '#113c53' }
                 });

@@ -32,12 +32,10 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
         const legalBasisIds = selectedKeys === "all"
             ? legalBasis.map(legalBase => legalBase.id)
             : Array.from(selectedKeys).map(id => Number(id));
-
         try {
             const { success, error } = await deleteLegalBasisBatch(legalBasisIds);
-
             if (success) {
-                toast.success(
+                toast.info(
                     legalBasisIds.length <= 1 ? 'Fundamento legal eliminado con éxito' : 'Fundamentos legales eliminados con éxito',
                     {
                         icon: () => <img src={check} alt="Success Icon" />,

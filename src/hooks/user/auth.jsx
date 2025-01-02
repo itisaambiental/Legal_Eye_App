@@ -1,7 +1,6 @@
-import { useContext, useState, useEffect, useCallback } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
 import login_user from '../../services/userService/login.js';
-import verifyToken from '../../services/userService/verify_token.js';
 import resetPassword from '../../services/userService/reset_password.js';
 import { msalInstance } from '../../config/msalConfig.js'; 
 import login_user_microsoft from '../../services/userService/login_microsoft.js';
@@ -153,19 +152,6 @@ export default function useUser() {
     }
   }, []);
   
-  useEffect(() => {
-    const checkToken = async () => {
-      if (jwt && jwt !== '' && jwt !== 'null') {
-        const isValid = await verifyToken(jwt);
-        if (!isValid) {
-          logout();
-        }
-      }
-    };
-
-    checkToken();
-  }, [jwt, logout]);
-
   return {
     isLogged: Boolean(jwt) && jwt !== '' && jwt !== 'null',
     isLoginLoading: stateLogin.loading,

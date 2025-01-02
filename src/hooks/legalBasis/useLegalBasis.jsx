@@ -39,6 +39,96 @@ export default function useLegalBasis() {
   });
 
   /**
+  * Fetches the list of classifications.
+  * @async
+  * @function fetchClassifications
+  * @returns {Promise<void>} - Updates the classifications list and loading state.
+  * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+  */
+  const fetchClassifications = useCallback(async () => {
+    setStateClassifications({ loading: true, error: null });
+    try {
+      const classificationsData = await getClassifications({ token: jwt });
+      setClassifications(classificationsData);
+      setStateClassifications({ loading: false, error: null });
+    } catch (error) {
+      let errorTitle;
+      let errorMessage;
+
+      if (
+        error.response &&
+        (error.response.status === 403 || error.response.status === 401)
+      ) {
+        errorTitle = "Acceso no autorizado";
+        errorMessage =
+          "No tiene permisos para ver las clasificaciones. Verifique su sesión.";
+      } else if (error.message === "Network Error") {
+        errorTitle = "Error de conexión";
+        errorMessage =
+          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+      } else if (error.response && error.response.status === 500) {
+        errorTitle = "Error en el servidor";
+        errorMessage =
+          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+      } else {
+        errorTitle = "Error inesperado";
+        errorMessage =
+          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+      }
+
+      setStateClassifications({
+        loading: false,
+        error: { title: errorTitle, message: errorMessage },
+      });
+    }
+  }, [jwt]);
+
+  /**
+   * Fetches the list of jurisdictions.
+   * @async
+   * @function fetchJurisdictions
+   * @returns {Promise<void>} - Updates the jurisdictions list and loading state.
+   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+   */
+  const fetchJurisdictions = useCallback(async () => {
+    setStateJurisdictions({ loading: true, error: null });
+    try {
+      const jurisdictionsData = await getJurisdictions({ token: jwt });
+      setJurisdictions(jurisdictionsData);
+      setStateJurisdictions({ loading: false, error: null });
+    } catch (error) {
+      let errorTitle;
+      let errorMessage;
+
+      if (
+        error.response &&
+        (error.response.status === 403 || error.response.status === 401)
+      ) {
+        errorTitle = "Acceso no autorizado";
+        errorMessage =
+          "No tiene permisos para ver las jurisdicciones. Verifique su sesión.";
+      } else if (error.message === "Network Error") {
+        errorTitle = "Error de conexión";
+        errorMessage =
+          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+      } else if (error.response && error.response.status === 500) {
+        errorTitle = "Error en el servidor";
+        errorMessage =
+          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+      } else {
+        errorTitle = "Error inesperado";
+        errorMessage =
+          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+      }
+
+      setStateJurisdictions({
+        loading: false,
+        error: { title: errorTitle, message: errorMessage },
+      });
+    }
+  }, [jwt]);
+
+  /**
    * Creates a new Legal Basis by sending the request with the provided data.
    * @async
    * @function addLegalBasis
@@ -75,6 +165,8 @@ export default function useLegalBasis() {
           token: jwt,
         });
         setLegalBasis((prevLegalBasis) => [legalBasis, ...prevLegalBasis]);
+        fetchClassifications();
+        fetchJurisdictions();
         return { success: true, jobId };
       } catch (error) {
         console.error("Error creating legal basis:", error);
@@ -127,11 +219,11 @@ export default function useLegalBasis() {
           errorMessage =
             "Error inesperado durante la creación del fundamento legal. Intente de nuevo.";
         }
-  
+
         return { success: false, error: errorMessage };
       }
     },
-    [jwt]
+    [jwt, fetchClassifications, fetchJurisdictions]
   );
   /**
    * Fetches the complete list of LegalBasis.
@@ -575,11 +667,11 @@ export default function useLegalBasis() {
             errorTitle = "Error de conexión";
             errorMessage =
               "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-          }  else if (error.response && error.response.status === 404) {
+          } else if (error.response && error.response.status === 404) {
             errorTitle = "Materia no encontrada";
             errorMessage =
               "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
-            } else if (error.response && error.response.status === 500) {
+          } else if (error.response && error.response.status === 500) {
             errorTitle = "Error en el servidor";
             errorMessage =
               "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
@@ -598,74 +690,74 @@ export default function useLegalBasis() {
     [jwt]
   );
 
-/**
- * Fetches the list of LegalBasis by Subject and Aspects.
- * @async
- * @function fetchLegalBasisBySubjectAndAspects
- * @param {number} subjectId - The id of the subject of the legal basis to retrieve.
- * @param {Array<number>} aspectsIds - The ids of the aspects of the legal basis to retrieve
- * @returns {Promise<void>} - Updates the LegalBasis list and loading state.
- * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
- */
-const fetchLegalBasisBySubjectAndAspects = useCallback(
-  async (subjectId, aspectsIds) => {
-    setStateLegalBasis({ loading: true, error: null });
+  /**
+   * Fetches the list of LegalBasis by Subject and Aspects.
+   * @async
+   * @function fetchLegalBasisBySubjectAndAspects
+   * @param {number} subjectId - The id of the subject of the legal basis to retrieve.
+   * @param {Array<number>} aspectsIds - The ids of the aspects of the legal basis to retrieve
+   * @returns {Promise<void>} - Updates the LegalBasis list and loading state.
+   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+   */
+  const fetchLegalBasisBySubjectAndAspects = useCallback(
+    async (subjectId, aspectsIds) => {
+      setStateLegalBasis({ loading: true, error: null });
 
-    try {
-      const legalBasis = await getLegalBasisBySubjectAndAspects({
-        subjectId,
-        aspectsIds,
-        token: jwt,
-      });
-      setLegalBasis(legalBasis.reverse());
-      setStateLegalBasis({ loading: false, error: null });
+      try {
+        const legalBasis = await getLegalBasisBySubjectAndAspects({
+          subjectId,
+          aspectsIds,
+          token: jwt,
+        });
+        setLegalBasis(legalBasis.reverse());
+        setStateLegalBasis({ loading: false, error: null });
 
-    } catch (error) {
-      let errorTitle;
-      let errorMessage;
+      } catch (error) {
+        let errorTitle;
+        let errorMessage;
 
-      if (error.response) {
-        if (error.response.status === 404 && error.response.data?.message?.includes("Subject not found")) {
-          errorTitle = "Materia no encontrada";
+        if (error.response) {
+          if (error.response.status === 404 && error.response.data?.message?.includes("Subject not found")) {
+            errorTitle = "Materia no encontrada";
+            errorMessage =
+              "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
+          }
+          else if (
+            error.response.status === 404 &&
+            error.response.data?.errors?.notFoundIds
+          ) {
+            errorTitle = "Aspectos no encontrados";
+            errorMessage = "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
+          }
+          else if (error.response.status === 403 || error.response.status === 401) {
+            errorTitle = "Acceso no autorizado";
+            errorMessage =
+              "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
+          }
+          else if (error.response.status === 500) {
+            errorTitle = "Error en el servidor";
+            errorMessage =
+              "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+          }
+        }
+        else if (error.message === "Network Error") {
+          errorTitle = "Error de conexión";
           errorMessage =
-            "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
+            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
         }
-        else if (
-          error.response.status === 404 &&
-          error.response.data?.errors?.notFoundIds
-        ) {
-          errorTitle = "Aspectos no encontrados";
-          errorMessage = "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
-        }
-        else if (error.response.status === 403 || error.response.status === 401) {
-          errorTitle = "Acceso no autorizado";
+        else {
+          errorTitle = "Error inesperado";
           errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
+            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
         }
-        else if (error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        }
+        setStateLegalBasis({
+          loading: false,
+          error: { title: errorTitle, message: errorMessage },
+        });
       }
-      else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } 
-      else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-      setStateLegalBasis({
-        loading: false,
-        error: { title: errorTitle, message: errorMessage },
-      });
-    }
-  },
-  [jwt]
-);
+    },
+    [jwt]
+  );
 
 
   /**
@@ -724,96 +816,6 @@ const fetchLegalBasisBySubjectAndAspects = useCallback(
   );
 
   /**
-   * Fetches the list of classifications.
-   * @async
-   * @function fetchClassifications
-   * @returns {Promise<void>} - Updates the classifications list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
-  const fetchClassifications = useCallback(async () => {
-    setStateClassifications({ loading: true, error: null });
-    try {
-      const classificationsData = await getClassifications({ token: jwt });
-      setClassifications(classificationsData);
-      setStateClassifications({ loading: false, error: null });
-    } catch (error) {
-      let errorTitle;
-      let errorMessage;
-
-      if (
-        error.response &&
-        (error.response.status === 403 || error.response.status === 401)
-      ) {
-        errorTitle = "Acceso no autorizado";
-        errorMessage =
-          "No tiene permisos para ver las clasificaciones. Verifique su sesión.";
-      } else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } else if (error.response && error.response.status === 500) {
-        errorTitle = "Error en el servidor";
-        errorMessage =
-          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-      } else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-
-      setStateClassifications({
-        loading: false,
-        error: { title: errorTitle, message: errorMessage },
-      });
-    }
-  }, [jwt]);
-
-  /**
-   * Fetches the list of jurisdictions.
-   * @async
-   * @function fetchJurisdictions
-   * @returns {Promise<void>} - Updates the jurisdictions list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
-  const fetchJurisdictions = useCallback(async () => {
-    setStateJurisdictions({ loading: true, error: null });
-    try {
-      const jurisdictionsData = await getJurisdictions({ token: jwt });
-      setJurisdictions(jurisdictionsData);
-      setStateJurisdictions({ loading: false, error: null });
-    } catch (error) {
-      let errorTitle;
-      let errorMessage;
-
-      if (
-        error.response &&
-        (error.response.status === 403 || error.response.status === 401)
-      ) {
-        errorTitle = "Acceso no autorizado";
-        errorMessage =
-          "No tiene permisos para ver las jurisdicciones. Verifique su sesión.";
-      } else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } else if (error.response && error.response.status === 500) {
-        errorTitle = "Error en el servidor";
-        errorMessage =
-          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-      } else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-
-      setStateJurisdictions({
-        loading: false,
-        error: { title: errorTitle, message: errorMessage },
-      });
-    }
-  }, [jwt]);
-
-  /**
  * Deletes an existing legal basis by ID.
  * @async
  * @function removeLegalBasis
@@ -821,117 +823,121 @@ const fetchLegalBasisBySubjectAndAspects = useCallback(
  * @returns {Promise<Object>} - Result of the operation with success status or error message.
  * @throws {Object} - Returns an error message if the deletion fails.
  */
-const removeLegalBasis = useCallback(async (id) => {
-  try {
-    await deleteLegalBasis({ id, token: jwt });
-    setLegalBasis((prevLegalBasis) =>
-      prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
-    );
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting legal basis:", error);
-    let errorMessage;
-    if (error.response) {
-      switch (error.response.status) {
-        case 401:
-        case 403:
-          errorMessage =
-            "No autorizado para eliminar este fundamento legal. Verifique su sesión.";
-          break;
-        case 409:
-          errorMessage =
-            "El fundamento legal no puede ser eliminado porque en este momento se estan extrayendo articulos de su documento asociado.";
-          break;
-        case 404:
-          errorMessage =
-            "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
-          break;
-        case 500:
-          errorMessage =
-            "Error interno del servidor. Por favor, intente más tarde.";
-          break;
-        default:
-          errorMessage =
-            "Error inesperado durante la eliminación. Intente de nuevo.";
-      }
-    } else if (error.message === "Network Error") {
-      errorMessage =
-        "Error de conexión durante la eliminación. Verifique su conexión a internet.";
-    } else {
-      errorMessage =
-        "Error inesperado durante la eliminación. Intente de nuevo.";
-    }
-
-    return { success: false, error: errorMessage };
-  }
-}, [jwt]);
-
-
-/**
- * Deletes multiple legal bases by their IDs.
- * @async
- * @function removeLegalBasisBatch
- * @param {Array<string>} legalBasisIds - The IDs of the legal bases to delete.
- * @returns {Promise<Object>} - Result of the operation with success status or error message.
- * @throws {Object} - Returns an error message if the deletion fails.
- */
-const removeLegalBasisBatch = useCallback(async (legalBasisIds) => {
-  try {
-    await deleteLegalBasisBatch({ legalBasisIds, token: jwt });
-    setLegalBasis((prevLegalBases) =>
-      prevLegalBases.filter((legalBasis) => !legalBasisIds.includes(legalBasis.id))
-    );
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting legal bases batch:", error);
-    let errorMessage;
-    if (error.response) {
-      const { status, data } = error.response;
-      switch (status) {
-        case 400:
-          errorMessage = "Faltan campos requeridos: legalBasisIds. Verifique los parámetros enviados.";
-          break;
-        case 401:
-        case 403:
-          errorMessage = "No autorizado para eliminar fundamentos legales. Verifique su sesión.";
-          break;
-        case 404:
-          errorMessage = "Uno o más fundamentos legales no existen. Verifique su existencia recargando la app e intente de nuevo.";
-          break;
-        case 409: {
-          const { errors, message } = data;
-          const { LegalBases } = errors;
-          if (LegalBases && LegalBases.length > 0) {
-            const errorDetails = LegalBases.map((legalBase) => legalBase.name).join(", ");
-            const plural = LegalBases.length > 1;
-            if (message === "Cannot delete Legal Bases with pending jobs") {
-              errorMessage = `${plural ? "Los fundamentos legales" : "El fundamento legal"} ${errorDetails} ${plural ? "no pueden" : "no puede"} ser eliminados porque en este momento se están extrayendo artículos de ${plural ? "sus documentos asociados" : "su documento asociado"}.`;
-            } else {
-              errorMessage = `Uno o más fundamentos legales no pueden ser eliminados debido a problemas desconocidos. Verifique e intente nuevamente.`;
-            }
-          } else {
+  const removeLegalBasis = useCallback(async (id) => {
+    try {
+      await deleteLegalBasis({ id, token: jwt });
+      setLegalBasis((prevLegalBasis) =>
+        prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
+      );
+      fetchClassifications();
+      fetchJurisdictions();
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting legal basis:", error);
+      let errorMessage;
+      if (error.response) {
+        switch (error.response.status) {
+          case 401:
+          case 403:
             errorMessage =
-              "Uno o más fundamentos legales no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados. Intente nuevamente más tarde.";
-          }
-          break;                
+              "No autorizado para eliminar este fundamento legal. Verifique su sesión.";
+            break;
+          case 409:
+            errorMessage =
+              "El fundamento legal no puede ser eliminado porque en este momento se estan extrayendo articulos de su documento asociado.";
+            break;
+          case 404:
+            errorMessage =
+              "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
+            break;
+          case 500:
+            errorMessage =
+              "Error interno del servidor. Por favor, intente más tarde.";
+            break;
+          default:
+            errorMessage =
+              "Error inesperado durante la eliminación. Intente de nuevo.";
         }
-
-        case 500:
-          errorMessage = "Error interno del servidor. Por favor, intente más tarde.";
-          break;
-
-        default:
-          errorMessage = "Error inesperado durante la eliminación. Intente nuevamente.";
+      } else if (error.message === "Network Error") {
+        errorMessage =
+          "Error de conexión durante la eliminación. Verifique su conexión a internet.";
+      } else {
+        errorMessage =
+          "Error inesperado durante la eliminación. Intente de nuevo.";
       }
-    } else if (error.message === "Network Error") {
-      errorMessage = "Error de conexión al eliminar fundamentos legales. Verifique su conexión a internet.";
-    } else {
-      errorMessage = "Error inesperado al eliminar fundamentos legales. Intente nuevamente.";
-    }
 
-    return { success: false, error: errorMessage };
-  }
-}, [jwt]);
+      return { success: false, error: errorMessage };
+    }
+  }, [jwt, fetchClassifications, fetchJurisdictions]);
+
+
+  /**
+   * Deletes multiple legal bases by their IDs.
+   * @async
+   * @function removeLegalBasisBatch
+   * @param {Array<string>} legalBasisIds - The IDs of the legal bases to delete.
+   * @returns {Promise<Object>} - Result of the operation with success status or error message.
+   * @throws {Object} - Returns an error message if the deletion fails.
+   */
+  const removeLegalBasisBatch = useCallback(async (legalBasisIds) => {
+    try {
+      await deleteLegalBasisBatch({ legalBasisIds, token: jwt });
+      setLegalBasis((prevLegalBases) =>
+        prevLegalBases.filter((legalBasis) => !legalBasisIds.includes(legalBasis.id))
+      );
+      fetchClassifications();
+      fetchJurisdictions();
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting legal bases batch:", error);
+      let errorMessage;
+      if (error.response) {
+        const { status, data } = error.response;
+        switch (status) {
+          case 400:
+            errorMessage = "Faltan campos requeridos: legalBasisIds. Verifique los parámetros enviados.";
+            break;
+          case 401:
+          case 403:
+            errorMessage = "No autorizado para eliminar fundamentos legales. Verifique su sesión.";
+            break;
+          case 404:
+            errorMessage = "Uno o más fundamentos legales no existen. Verifique su existencia recargando la app e intente de nuevo.";
+            break;
+          case 409: {
+            const { errors, message } = data;
+            const { LegalBases } = errors;
+            if (LegalBases && LegalBases.length > 0) {
+              const errorDetails = LegalBases.map((legalBase) => legalBase.name).join(", ");
+              const plural = LegalBases.length > 1;
+              if (message === "Cannot delete Legal Bases with pending jobs") {
+                errorMessage = `${plural ? "Los fundamentos legales" : "El fundamento legal"} ${errorDetails} ${plural ? "no pueden" : "no puede"} ser eliminados porque en este momento se están extrayendo artículos de ${plural ? "sus documentos asociados" : "su documento asociado"}.`;
+              } else {
+                errorMessage = `Uno o más fundamentos legales no pueden ser eliminados debido a problemas desconocidos. Verifique e intente nuevamente.`;
+              }
+            } else {
+              errorMessage =
+                "Uno o más fundamentos legales no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados. Intente nuevamente más tarde.";
+            }
+            break;
+          }
+
+          case 500:
+            errorMessage = "Error interno del servidor. Por favor, intente más tarde.";
+            break;
+
+          default:
+            errorMessage = "Error inesperado durante la eliminación. Intente nuevamente.";
+        }
+      } else if (error.message === "Network Error") {
+        errorMessage = "Error de conexión al eliminar fundamentos legales. Verifique su conexión a internet.";
+      } else {
+        errorMessage = "Error inesperado al eliminar fundamentos legales. Intente nuevamente.";
+      }
+
+      return { success: false, error: errorMessage };
+    }
+  }, [jwt, fetchClassifications, fetchJurisdictions]);
 
 
   useEffect(() => {

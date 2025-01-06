@@ -373,7 +373,7 @@ function CreateModal({
                       value={formData.nombre}
                       onChange={handleNameChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
-                      placeholder="Nombre"
+                      placeholder=""
                     />
                     <label
                       htmlFor="floating_nombre"
@@ -388,7 +388,7 @@ function CreateModal({
                   <div className="relative z-0 w-full group">
                     <input
                       type="text"
-                      name="abbreviation"
+                      name=""
                       id="floating_abbreviation"
                       value={formData.abbreviation}
                       onChange={handleAbbreviationChange}

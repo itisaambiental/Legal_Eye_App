@@ -71,7 +71,7 @@ export default async function createLegalBasis({
     const { jobId, legalBasis } = response.data;
     return { jobId, legalBasis };
   } catch (error) {
-    console.error("Error creating legal basis:", error);
+    console.error(error);
     throw error;
   }
 }

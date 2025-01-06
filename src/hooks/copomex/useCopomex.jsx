@@ -19,25 +19,24 @@ export default function useCopomex() {
     error: null,
   });
 
-
-        /**
-     * Clears the list of municipalities from the state.
-     * 
-     * @function clearMunicipalities
-     * @returns {void} - Resets the aspects list to an empty array.
-     */
-        const clearMunicipalities = useCallback(() => {
-            setMunicipalities([]);
-            setStateMunicipalities((prevState) => ({ ...prevState, error: null }));
-        }, []);
-    /**
   /**
-   * Fetches the complete list of states.
-   * @async
-   * @function fetchStates
-   * @returns {Promise<void>} - Updates the states list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
+* Clears the list of municipalities from the state.
+* 
+* @function clearMunicipalities
+* @returns {void} - Resets the aspects list to an empty array.
+*/
+  const clearMunicipalities = useCallback(() => {
+    setMunicipalities([]);
+    setStateMunicipalities((prevState) => ({ ...prevState, error: null }));
+  }, []);
+  /**
+/**
+ * Fetches the complete list of states.
+ * @async
+ * @function fetchStates
+ * @returns {Promise<void>} - Updates the states list and loading state.
+ * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+ */
   const fetchStates = useCallback(async () => {
     setStateStates({ loading: true, error: null });
     try {
@@ -45,7 +44,7 @@ export default function useCopomex() {
       setStates(data);
       setStateStates({ loading: false, error: null });
     } catch (error) {
-      console.error("Error fetching states:", error);
+      console.error(error);
       let errorTitle = "Error inesperado";
       let errorMessage =
         "Ha ocurrido un error inesperado al obtener los estados. Por favor intente nuevamente más tarde.";
@@ -101,7 +100,7 @@ export default function useCopomex() {
       setMunicipalities(data);
       setStateMunicipalities({ loading: false, error: null });
     } catch (error) {
-      console.error("Error fetching municipalities:", error);
+      console.error(error);
       let errorTitle = "Error inesperado";
       let errorMessage =
         "Ha ocurrido un error inesperado al obtener los municipios del estado. Por favor intente nuevamente más tarde.";

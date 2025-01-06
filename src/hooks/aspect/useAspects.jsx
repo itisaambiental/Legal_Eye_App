@@ -14,16 +14,16 @@ export default function useAspects() {
     const [aspects, setAspects] = useState([]);
     const [stateAspects, setStateAspects] = useState({ loading: false, error: null });
 
-        /**
-     * Clears the list of aspects from the state.
-     * 
-     * @function clearAspects
-     * @returns {void} - Resets the aspects list to an empty array.
-     */
-        const clearAspects = useCallback(() => {
-            setAspects([]);
-            setStateAspects((prevState) => ({ ...prevState, error: null }));
-        }, []);
+    /**
+ * Clears the list of aspects from the state.
+ * 
+ * @function clearAspects
+ * @returns {void} - Resets the aspects list to an empty array.
+ */
+    const clearAspects = useCallback(() => {
+        setAspects([]);
+        setStateAspects((prevState) => ({ ...prevState, error: null }));
+    }, []);
     /**
  * Fetches aspects associated with a specific subject.
  * 
@@ -41,12 +41,12 @@ export default function useAspects() {
             setAspects(aspects.reverse());
             setStateAspects({ loading: false, error: null });
         } catch (error) {
-            console.error('Error fetching aspects:', error);
+            console.error(error);
 
             let errorTitle;
             let errorMessage;
 
-             if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+            if (error.response && (error.response.status === 403 || error.response.status === 401)) {
                 errorTitle = 'Acceso no autorizado';
                 errorMessage = 'No tiene permisos para ver los aspectos de esta materia. Verifique su sesión.';
             } else if (error.message === 'Network Error') {
@@ -55,9 +55,9 @@ export default function useAspects() {
             } else if (error.response && error.response.status === 500) {
                 errorTitle = 'Error en el servidor';
                 errorMessage = 'Hubo un error en el servidor al obtener los aspectos de la materia. Espere un momento e intente nuevamente.';
-            }  else if (error.response && error.response.status === 404) {
+            } else if (error.response && error.response.status === 404) {
                 errorTitle = 'Materia no encontrada';
-                errorMessage = 'La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo'  
+                errorMessage = 'La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo'
             } else {
                 errorTitle = 'Error inesperado';
                 errorMessage = 'Ocurrió un error inesperado al obtener los aspectos de la materia. Por favor, intente nuevamente más tarde.';
@@ -82,7 +82,7 @@ export default function useAspects() {
             setAspects(prevAspects => [newAspect, ...prevAspects]);
             return { success: true };
         } catch (error) {
-            console.error('Error creating aspect:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -140,7 +140,7 @@ export default function useAspects() {
             );
             return { success: true };
         } catch (error) {
-            console.error('Error updating aspect:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -187,7 +187,7 @@ export default function useAspects() {
             setAspects(prevAspects => prevAspects.filter(aspect => aspect.id !== aspectId));
             return { success: true };
         } catch (error) {
-            console.error('Error deleting aspect:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -239,9 +239,8 @@ export default function useAspects() {
                 return { success: true };
             }
         } catch (error) {
-            console.error('Error deleting aspects batch:', error);
+            console.error(error);
             let errorMessage;
-
             if (error.response) {
                 switch (error.response.status) {
                     case 400:

@@ -31,7 +31,7 @@ export default async function getLegalBasisByClassification({ classification, to
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by classification:", error);
+        console.error(error);
         throw error;
     }
 }

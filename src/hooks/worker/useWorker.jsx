@@ -1,5 +1,6 @@
 import { useState, useCallback, useContext } from "react";
 import getJobStatus from "../../services/workerService/getJobStatus.js";
+import getJobByLegalBasis from "../../services/workerService/getJobByLegalBasis.js";
 import Context from "../../context/userContext.jsx";
 
 /**
@@ -12,6 +13,10 @@ const useWorker = () => {
   const [jobStatus, setJobStatus] = useState({
     progress: null,
     message: null,
+    error: null,
+  });
+  const [legalBasisJob, setLegalBasisJob] = useState({
+    isLoading: false,
     error: null,
   });
 
@@ -118,7 +123,7 @@ const useWorker = () => {
           return {
             title: "Proceso no encontrado",
             description:
-              "El proceso solicitado no fue encontrado. Es posible que haya expirado o el ID sea incorrecto.",
+              "El proceso de extracción de artículos no fue encontrado. Es posible que haya expirado o sea incorrecto.",
           };
         case 500:
           return {
@@ -175,6 +180,7 @@ const useWorker = () => {
           error: null,
         });
       } catch (err) {
+        console.error(err);
         setJobStatus({
           progress: null,
           message: null,
@@ -189,12 +195,58 @@ const useWorker = () => {
     setJobStatus((prev) => ({ ...prev, error: null }));
   };
 
+    /**
+   * Fetches the job using the provided legalBasisId.
+   *
+   * @async
+   * @function fetchJobByLegalBasis
+   * @param {string} legalBasisId - The ID of the legal Basis to retrieve job.
+   */
+  const fetchJobByLegalBasis = useCallback(async (legalBasisId) => {
+    setLegalBasisJob({ isLoading: true, error: null });
+    try {
+      const { hasPendingJobs, jobId } = await getJobByLegalBasis({ legalBasisId, token: jwt });
+      setLegalBasisJob({ isLoading: false, error: null });
+      return { hasPendingJobs, jobId}
+    } catch (error) {
+      console.error(error);
+      let errorTitle;
+      let errorMessage;
+      if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+        errorTitle = "Acceso no autorizado";
+        errorMessage = "No tiene permisos para realizar esta acción. Verifique su sesión.";
+      } else if (error.response && error.response.status === 400) {
+        errorTitle = "Solicitud inválida";
+        errorMessage = "La solicitud es inválida. Por favor, recargue la página e intente nuevamente.";
+      } else if (error.response && error.response.status === 404) {
+        errorTitle = "Fundamento legal no encontrado";
+        errorMessage = "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
+      }  else if (error.message === "Network Error") {
+        errorTitle = "Error de conexión";
+        errorMessage = "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
+      } else if (error.response && error.response.status === 500) {
+        errorTitle = "Error interno del servidor";
+        errorMessage = "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
+      } else {
+        errorTitle = "Error inesperado";
+        errorMessage = "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
+      }
+
+      setLegalBasisJob({ isLoading: false, error: { title: errorTitle, message: errorMessage } });
+      return { success: false, error: { title: errorTitle, message: errorMessage } };
+    }
+  }, [jwt]);
+
+
   return {
     progress: jobStatus.progress,
     message: jobStatus.message,
     error: jobStatus.error,
+    legalBasisJobLoading: legalBasisJob.isLoading,
+    legalBasisJobError: legalBasisJob.error,
     fetchJobStatus,
     clearError,
+    fetchJobByLegalBasis
   };
 };
 

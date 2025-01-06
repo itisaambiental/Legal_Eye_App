@@ -24,7 +24,7 @@ export default async function deleteLegalBasis({ id, token }) {
       throw new Error("Failed to delete legal basis");
     }
   } catch (error) {
-    console.error("Error deleting legal basis", error);
+    console.error(error);
     throw error;
   }
 }

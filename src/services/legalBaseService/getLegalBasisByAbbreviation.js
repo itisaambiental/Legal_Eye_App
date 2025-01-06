@@ -31,7 +31,7 @@ export default async function getLegalBasisByAbbreviation({ abbreviation, token 
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by abbreviation:", error);
+        console.error(error);
         throw error;
     }
 }

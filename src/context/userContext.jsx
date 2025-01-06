@@ -75,12 +75,12 @@ export function UserContextProvider({ children }) {
     useEffect(() => {
         const handleJwtValidation = async () => {
             if (jwt && jwt !== '' && jwt !== 'null') {
-                try {
-                    const isValid = await verifyToken(jwt);
+                const isValid = await verifyToken(jwt);
                     if (!isValid) {
                         logout();
                         return;
                     }
+                try {
                     const decodedToken = jwtDecode(jwt);
                     setRoleFlags(decodedToken.userForToken.userType);
                 } catch (error) {

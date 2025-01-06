@@ -22,7 +22,7 @@ export default function useRoles() {
       setRoles(rolesList);
       setStateRoles({ loading: false, error: null });
     } catch (error) {
-      console.error('Error fetching roles:', error);
+      console.error(error);
 
       let errorTitle;
       let errorMessage;

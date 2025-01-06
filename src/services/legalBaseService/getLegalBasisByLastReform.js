@@ -30,7 +30,7 @@ export default async function getLegalBasisByLastReform({ from, to, token }) {
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by lastReform:", error);
+        console.error(error);
         throw error;
     }
 }

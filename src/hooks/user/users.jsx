@@ -28,7 +28,7 @@ export default function useUsers() {
       setUsers(users.reverse());
       setStateUsers({ loading: false, error: null });
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error(error);
 
       let errorTitle;
       let errorMessage;
@@ -62,7 +62,7 @@ export default function useUsers() {
       setUsers(users.reverse());
       setStateUsers({ loading: false, error: null });
     }  catch (error) {
-      console.error('Error fetching users by Role:', error);
+      console.error(error);
 
       let errorTitle;
       let errorMessage;
@@ -97,7 +97,7 @@ const addUser = useCallback(async ({ name, email, role_id, profile_picture }) =>
     setUsers(prevUsers => [user, ...prevUsers]);
     return { success: true };
   } catch (error) {
-    console.error('Error registering new user:', error);
+    console.error(error);
     let errorMessage;
     if (error.response) {
       switch (error.response.status) {
@@ -142,7 +142,7 @@ const updateUserDetails = useCallback(async ({ id, name, email, role_id, profile
     }
     return { success: true };
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error(error);
     let errorMessage;
     if (error.response) {
       switch (error.response.status) {
@@ -192,7 +192,7 @@ const deleteUser = useCallback(async (id) => {
       return { success: true };
     }
   } catch (error) {
-    console.error('Error deleting user:', error);
+    console.error(error);
     let errorMessage;
     if (error.response) {
       switch (error.response.status) {
@@ -237,7 +237,7 @@ const deleteUsersBatch = useCallback(async (userIds) => {
       return { success: true };
     }
   } catch (error) {
-    console.error('Error deleting users batch:', error);
+    console.error(error);
     let errorMessage;
     if (error.response) {
       switch (error.response.status) {

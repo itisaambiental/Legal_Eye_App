@@ -15,7 +15,8 @@ export default {
         primary: '#113c53',
         green: '#4eaf8f',
         warning: '#2581cc',
-        red: '#d1302b'
+        red: '#d1302b',
+        danger: '#d1302b'
       },
     },
   },

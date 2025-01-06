@@ -143,7 +143,7 @@ function CreateModal({
 
   const getTooltipContentForState = () => {
     if (formData.jurisdiction === "Federal") {
-      return "La jurisdicción debe ser estatal o local";
+      return "La jurisdicción debe ser estatal o local para habilitar este campo";
     }
     if (!formData.jurisdiction) {
       return "Debes seleccionar una jurisdicción para habilitar este campo.";
@@ -315,31 +315,29 @@ function CreateModal({
         toast.error(error);
       }
     } catch (error) {
-      console.error("Error al crear el fundamento legal:", error);
+      console.error(error);
       toast.error("Algo mal sucedió al crear el fundamento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleProgressComplete = () => {
+  const onClose = () => {
     setJobId(null)
     setShowProgress(false);
     closeModalCreate();
   };
   
-
+  const onComplete = () => {
+    setJobId(null)
+    setShowProgress(false);
+    closeModalCreate();
+  };
+  
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={() => {
-        if (showProgress) {
-          handleProgressComplete();
-        } else {
-          closeModalCreate();
-        }
-      }}
-      
+      onOpenChange={onClose}
       backdrop="opaque"
       placement="center"
       hideCloseButton={showProgress}
@@ -351,11 +349,16 @@ function CreateModal({
     >
       <ModalContent>
       {showProgress ? (
-          <Progress jobId={jobId} onComplete={handleProgressComplete} />
+          <Progress 
+          jobId={jobId} 
+          onComplete={onComplete}   
+          onClose={onClose}
+          labelTop="Podrás ver los artículos del fundamento cuando se hayan extraído del documento."
+          labelButton="Ver artículos" />
         ) : (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Registrar Nuevo Fundamento
+              Registrar Fundamento
             </ModalHeader>
             <ModalBody>
               <form onSubmit={handleCreate}>
@@ -550,7 +553,7 @@ function CreateModal({
                       size="sm"
                       variant="bordered"
                       label="Materia"
-                      selectedKeys={formData.subject}
+                      selectedKey={formData.subject}
                       onSelectionChange={handleSubjectChange}
                       listboxProps={{
                         emptyContent: "Materia no encontrado",

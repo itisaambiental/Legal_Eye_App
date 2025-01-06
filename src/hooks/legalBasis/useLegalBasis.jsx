@@ -169,7 +169,7 @@ export default function useLegalBasis() {
         fetchJurisdictions();
         return { success: true, jobId };
       } catch (error) {
-        console.error("Error creating legal basis:", error);
+        console.error(error);
         let errorMessage;
         if (error.response) {
           switch (error.response.status) {
@@ -833,7 +833,7 @@ export default function useLegalBasis() {
       fetchJurisdictions();
       return { success: true };
     } catch (error) {
-      console.error("Error deleting legal basis:", error);
+      console.error(error);
       let errorMessage;
       if (error.response) {
         switch (error.response.status) {
@@ -889,7 +889,7 @@ export default function useLegalBasis() {
       fetchJurisdictions();
       return { success: true };
     } catch (error) {
-      console.error("Error deleting legal bases batch:", error);
+      console.error(error);
       let errorMessage;
       if (error.response) {
         const { status, data } = error.response;

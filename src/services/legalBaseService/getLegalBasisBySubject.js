@@ -28,7 +28,7 @@ export default async function getLegalBasisBySubject({ subjectId, token }) {
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by subject:", error);
+        console.error(error);
         throw error;
     }
 }

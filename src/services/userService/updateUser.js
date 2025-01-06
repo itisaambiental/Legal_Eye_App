@@ -44,7 +44,7 @@ export default async function updateUser({ id, name, email, role_id, profile_pic
         token: response.data.token || null 
       };
     } catch (error) {
-      console.error('Error updating user:', error);
+      console.error(error);
       throw error;
     }
 }

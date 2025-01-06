@@ -18,7 +18,7 @@ export const useFiles = () => {
       const fileBlob = await getDocumentByUrl(url);
       return { success: true, fileBlob };
     } catch (error) {
-      console.error("Error downloading file:", error);
+      console.error(error);
       let errorMessage;
       if (error.response) {
         switch (error.response.status) {
@@ -28,7 +28,7 @@ export const useFiles = () => {
             break;
           case 403:
               errorMessage =
-                "El enlace ha expirado o no tienes permisos para descargar el documento. Contacte a los administradores del sistema..";
+                "El enlace ha expirado o no tienes permisos para descargar el documento. Intente de nuevo";
             break;
           case 404:
             errorMessage =

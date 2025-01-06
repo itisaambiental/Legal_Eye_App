@@ -2,7 +2,7 @@ import server from "../../config/server.js"
 
 /**
  * Verifies the validity of a provided JWT token.
- * Sends a GET request to validate the token on the server.
+ * Sends a POST request with the token in the request body to validate it on the server.
  * 
  * @async
  * @function verifyToken
@@ -13,15 +13,15 @@ import server from "../../config/server.js"
  */
 export default async function verifyToken(token) {
     try {
-        const response = await server.get(`/user/verify/${token}`)
+        const response = await server.post('/user/verify/token', { token });
 
         if (response.status !== 200) {
-            throw new Error('Response is NOT ok')
+            throw new Error('Response is NOT ok');
         }
-        return response.data.valid
 
+        return response.data.valid;
     } catch (error) {
-        console.error(error)
-        throw error
+        console.error(error);
+        throw error;
     }
 }

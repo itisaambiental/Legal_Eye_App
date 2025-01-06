@@ -31,7 +31,7 @@ export default async function getLegalBasisByJurisdiction({ jurisdiction, token 
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by jurisdiction:", error);
+        console.error(error);
         throw error;
     }
 }

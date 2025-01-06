@@ -20,7 +20,7 @@ export default async function getMunicipalitiesByState( state ) {
     const { municipios } = response.data.response;
     return municipios;
   } catch (error) {
-    console.error("Error retrieving municipalities:", error);
+    console.error(error);
     throw error;
   }
 }

@@ -32,7 +32,7 @@ export default async function getLegalBasisByStateAndMunicipalities({ state, mun
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by state and municipalities:", error);
+        console.error(error);
         throw error;
     }
 }

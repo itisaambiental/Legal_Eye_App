@@ -29,7 +29,7 @@ export default async function getSubjectById({ subjectId, token }) {
         return response.data.subject;
 
     } catch (error) {
-        console.error('Error fetching subject by ID:', error);
+        console.error(error);
         throw error;
     }
 }

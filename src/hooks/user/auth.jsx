@@ -73,7 +73,7 @@ export default function useUser() {
         }
       })
       .catch(error => {
-        console.error('Error durante el inicio de sesión con Microsoft:', error);
+        console.error(error);
         let errorMessage = 'Error al iniciar sesión con Microsoft';
 
         if (error.errorCode === 'user_cancelled') {
@@ -107,7 +107,7 @@ export default function useUser() {
         return true;
       }
     } catch (error) {
-      console.error('Error al restablecer contraseña:', error);
+      console.error(error);
   
       const errorMessage = isResend
         ? 'Error al reenviar el código de verificación'

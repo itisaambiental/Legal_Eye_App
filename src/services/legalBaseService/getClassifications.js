@@ -29,7 +29,7 @@ export default async function getClassifications({ token }) {
 
     return response.data.classifications;
   } catch (error) {
-    console.error("Error retrieving classifications:", error);
+    console.error(error);
     throw error;
   }
 }

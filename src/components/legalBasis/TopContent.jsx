@@ -23,6 +23,8 @@ import {I18nProvider} from "@react-aria/i18n";
  *
  * @component
  * @param {Object} props - Component properties.
+ * @param {boolean} props.isCreateModalOpen - Indicates whether the create modal is open.
+ * @param {boolean} props.isEditModalOpen - Indicates whether the edit modal is open.
  * @param {Function} props.onRowsPerPageChange - Callback to handle changes in the number of rows displayed per page.
  * @param {number} props.totalLegalBasis - The total number of legal basis entries.
  * @param {Function} props.openModalCreate - Callback to open the modal for creating a new legal basis.
@@ -65,6 +67,7 @@ import {I18nProvider} from "@react-aria/i18n";
 
 function TopContent({
   isCreateModalOpen,
+  isEditModalOpen,
   onRowsPerPageChange,
   totalLegalBasis,
   openModalCreate,
@@ -272,7 +275,7 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={municipalitiesLoading && !isCreateModalOpen}
+              isLoading={municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen}
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
               listboxProps={{
@@ -315,7 +318,7 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={aspectLoading && !isCreateModalOpen}
+              isLoading={aspectLoading && !isCreateModalOpen && !isEditModalOpen}
               selectionMode="multiple"
               selectedKeys={selectedAspects}
               listboxProps={{

@@ -25,13 +25,14 @@ import send_icon from "../../assets/enviar_blue.png";
  * @param {Object} props - The component's props.
  * @param {Object} props.legalBase - The legal basis data object containing all relevant details for a row.
  * @param {string} props.columnKey - The column key that determines which data should be rendered in the cell.
+ *  * @param {Function} props.openEditModal - Function to open the edit modal for the legal Base.
  * @param {Function} props.handleDelete - Function to handle deletion of the legal basis.
  * @param {Function} props.handleDownloadDocument - Function to handle the download of the legal base document.
  * 
  * @returns {JSX.Element|null} - Returns the JSX element for the cell content based on the column key, or null if no match is found.
  */
 
-const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocument }) => {
+const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, handleDownloadDocument }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
       case "legal_name":
@@ -183,7 +184,7 @@ const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocu
                     />
                   }
                   className="hover:bg-primary/20"
-                  key="delete"
+                  key="send"
                   textValue="Enviar Fundamento"
                 >
                   <p className="font-normal text-primary">Enviar Fundamento</p>
@@ -200,6 +201,7 @@ const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocu
                   className="hover:bg-primary/20"
                   key="update"
                   textValue="Actualizar Fundamento"
+                  onPress={() => openEditModal(legalBase)}
                 >
                   <p className="font-normal text-primary">
                     Actualizar Fundamento
@@ -229,7 +231,7 @@ const LegalBasisCell = ({ legalBase, columnKey, handleDelete, handleDownloadDocu
       default:
         return null;
     }
-  }, [legalBase, columnKey, handleDelete, handleDownloadDocument]);
+  }, [legalBase, columnKey, openEditModal, handleDelete, handleDownloadDocument]);
 
   return renderCell();
 };

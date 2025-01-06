@@ -31,7 +31,7 @@ export default function useSubjects() {
             setSubjects(subjects.reverse());
             setStateSubjects({ loading: false, error: null });
         } catch (error) {
-            console.error('Error fetching subjects:', error);
+            console.error(error);
 
             let errorTitle;
             let errorMessage;
@@ -68,7 +68,7 @@ export default function useSubjects() {
             setStateSubjects({ loading: false, error: null });
             return { success: true, data: subject };
         } catch (error) {
-            console.error('Error fetching subject by ID:', error);
+            console.error(error);
 
             let errorTitle;
             let errorMessage;
@@ -109,7 +109,7 @@ export default function useSubjects() {
             setSubjects(prevSubjects => [newSubject, ...prevSubjects]);
             return { success: true };
         } catch (error) {
-            console.error('Error creating subject:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -161,7 +161,7 @@ export default function useSubjects() {
             );
             return { success: true };
         } catch (error) {
-            console.error('Error updating subject:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -209,7 +209,7 @@ export default function useSubjects() {
             setSubjects(prevSubjects => prevSubjects.filter(subject => subject.id !== id));
             return { success: true };
         } catch (error) {
-            console.error('Error deleting subject:', error);
+            console.error(error);
             let errorMessage;
             if (error.response) {
                 switch (error.response.status) {
@@ -262,7 +262,7 @@ export default function useSubjects() {
                 return { success: true };
             }
         } catch (error) {
-            console.error('Error deleting subjects batch:', error);
+            console.error(error);
             let errorMessage;
 
             if (error.response) {

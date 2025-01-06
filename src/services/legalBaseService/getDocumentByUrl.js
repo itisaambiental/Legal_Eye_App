@@ -13,7 +13,7 @@ export default async function getDocumentByUrl(url) {
       });
       return response.data;
     } catch (error) {
-      console.error("Error getting document:", error);
+      console.error(error);
       throw error;
     }
   }

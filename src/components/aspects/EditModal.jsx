@@ -28,9 +28,7 @@ import check from "../../assets/check.png";
 
 function EditModal({ formData, setFormData, isOpen, updateAspect, closeModalEdit, selectedAspect, nameError, setNameError, handleNameChange }) {
     const [isLoading, setIsLoading] = useState(false);
-
-    selectedAspect
-
+    
     useEffect(() => {
         if (selectedAspect) {
             setFormData({
@@ -63,7 +61,7 @@ function EditModal({ formData, setFormData, isOpen, updateAspect, closeModalEdit
                 toast.error(error)
             }
         } catch (error) {
-            console.error('Error al actualizar el aspecto:', error);
+            console.error(error);
             toast.error('Algo mal sucedió al actualizar el aspecto. Intente de nuevo');
         } finally {
             setIsLoading(false);

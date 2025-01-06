@@ -40,8 +40,7 @@ import cruz_icon from "../../assets/cruz.png"
 function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModalEdit, selectedUser, usertypeError, setusertypeError, handleTypeChange, nameError, setNameError, handleNameChange, handleFileChange, fileError, handleRemoveImage, roles, translateRole }) {
     const [isLoading, setIsLoading] = useState(false);
     const inputFileRef = useRef(null);
-
-
+    
     useEffect(() => {
         if (selectedUser) {
             setFormData({
@@ -53,7 +52,6 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
             });
         }
     }, [selectedUser, setFormData]);
-
 
     const getRoleName = (value, roles) => {
         const selectedRole = roles.find(option => option.id === value);
@@ -100,7 +98,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 toast.error(error)
             }
         } catch (error) {
-            console.error('Error al actualizar el usuario:', error);
+            console.error(error);
             toast.error('Algo mal sucedió al actualizar el usuario. Intente de nuevo');
         } finally {
             setIsLoading(false);

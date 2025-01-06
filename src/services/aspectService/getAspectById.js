@@ -28,7 +28,7 @@ export default async function getAspectById({ aspectId, token }) {
         return response.data.aspect;
 
     } catch (error) {
-        console.error('Error fetching aspect by ID:', error);
+        console.error(error);
         throw error;
     }
 }

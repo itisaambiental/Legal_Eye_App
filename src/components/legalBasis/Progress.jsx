@@ -3,12 +3,15 @@ import { useEffect, useState, useRef } from "react";
 import {
   CircularProgress,
   Card,
+  CardHeader,
   CardBody,
   CardFooter,
   Alert,
   Button,
+  Divider 
 } from "@nextui-org/react";
 import useWorker from "../../hooks/worker/useWorker";
+import cruz_icon from "../../assets/cruz.png"
 
 const HTTP_ERRORS = [
   "Solicitud inválida",
@@ -25,10 +28,13 @@ const HTTP_ERRORS = [
  * @param {Object} props - Component props.
  * @param {string} props.jobId - The ID of the job to track.
  * @param {Function} props.onComplete - Callback function to be called when the job is complete.
+ * @param {Function} props.onClose - Callback function to be called when the parent component is closed.
+  * @param {string} props.labelTop - Dynamic text displayed on the top.
+ * @param {string} props.labelButton - Dynamic text displayed on the button.
  * @returns {JSX.Element} The rendered component.
  *
  */
-const Progress = ({ jobId, onComplete }) => {
+const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
   const { progress, message, error, fetchJobStatus, clearError } = useWorker();
   const [isActive, setIsActive] = useState(true);
   const intervalRef = useRef(null);
@@ -70,10 +76,10 @@ const Progress = ({ jobId, onComplete }) => {
           color="danger"
           size="sm"
           variant="faded"
-          className="mt-1"
+          className="mt-4"
           onPress={isHttpError(error?.title) ? handleRetry : onComplete}
         >
-          {isHttpError(error?.title) ? "Reintentar" : "Finalizar"}
+          {isHttpError(error?.title) ? "Reintentar" : "Finalizar e intentar de nuevo"}
         </Button>
       );
     }
@@ -83,10 +89,11 @@ const Progress = ({ jobId, onComplete }) => {
           color="primary"
           size="md"
           variant="faded"
-          aria-label="Ver artículos extraídos"
-          className="mt-1"
+          aria-label={labelButton}
+          onPress={onComplete}
+          className={`${error ? "mt-4" : "mt-2"}`}
         >
-          <span className="text-xs">Ver artículos</span>
+          <span className="text-xs">{labelButton}</span>
         </Button>
       );
     }
@@ -95,15 +102,31 @@ const Progress = ({ jobId, onComplete }) => {
 
   return (
     <Card className="w-full h-full border-none">
+      <CardHeader className="flex">
+        <p className={`text-md ${error ? "text-red" : "text-primary"}`}>{labelTop}</p>
+        <Button
+            className={`hover:${error ? "bg-danger/20" : "bg-primary/20"} 
+              text-${error ? "text-red" : "text-primary"} 
+              active:${error ? "bg-red/10" : "bg-primary/10"} 
+              -mt-6`}
+          color="white"
+          radius="full"
+          size="sm"
+          onPress={onClose}
+          isIconOnly
+        >
+            <img src={cruz_icon} alt="Menu" className="w-3 h-3" />
+        </Button>
+      </CardHeader>
+      <Divider />
       <CardBody className="justify-center items-center">
         <CircularProgress
           classNames={{
             svg: `w-36 h-36 drop-shadow-md`,
             indicator: error ? "stroke-red" : "stroke-primary",
             track: error ? "stroke-red/10" : "stroke-primary/10",
-            value: `text-3xl font-semibold ${
-              error ? "text-red" : "text-primary"
-            }`,
+            value: `text-3xl font-semibold ${error ? "text-red" : "text-primary"
+              }`,
           }}
           showValueLabel={true}
           value={progress || 0}
@@ -126,7 +149,7 @@ const Progress = ({ jobId, onComplete }) => {
         {progress === 100 && !error && (
           <Alert
             color="primary"
-            title={message || "Extracción de artículos completada."}
+            title={message}
             variant="faded"
             classNames={{
               base: "bg-primary/10 border-primary",
@@ -139,7 +162,7 @@ const Progress = ({ jobId, onComplete }) => {
         )}
         {message && !error && (progress === undefined || progress < 100) && (
           <Alert
-            title={message || "Procesando..."}
+            title={message}
             variant="faded"
             classNames={{
               base: "bg-primary/10",
@@ -153,10 +176,9 @@ const Progress = ({ jobId, onComplete }) => {
         {error && (
           <Alert
             color="warning"
-            title={error?.title || "Error Desconocido"}
+            title={error.title}
             description={
-              error?.description ||
-              "Error desconocido, comuníquese con los administradores del sistema."
+              error.description
             }
             variant="faded"
             classNames={{

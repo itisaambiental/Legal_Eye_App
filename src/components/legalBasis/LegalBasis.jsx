@@ -20,6 +20,7 @@ import LegalBasisCell from "./LegalBasisCell.jsx";
 import BottomContent from "./BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
+import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
@@ -114,6 +115,8 @@ export default function LegalBasis() {
   const [IsSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedLegalBase, setSelectedLegalBase] = useState(null);
   const [nameInputError, setNameInputError] = useState(null);
   const [abbreviationInputError, setAbbreviationInputError] = useState(null);
   const [classificationInputError, setClassificationInputError] =
@@ -453,7 +456,7 @@ export default function LegalBasis() {
     [fetchLegalBasisByLastReform, handleClear]
   );
 
-  const openModalCreate = useCallback(() => {
+  const openModalCreate = () => {
     setFormData({
       id: "",
       nombre: "",
@@ -470,9 +473,9 @@ export default function LegalBasis() {
       removeDocument: false,
     });
     setIsCreateModalOpen(true);
-  }, [setFormData, setIsCreateModalOpen]);
+  };
 
-  const closeModalCreate = useCallback(() => {
+  const closeModalCreate = () => {
     setIsCreateModalOpen(false);
     setNameInputError(null);
     setAbbreviationInputError(null);
@@ -491,22 +494,34 @@ export default function LegalBasis() {
     setFileError(null);
     setCheckboxInputError(null);
     setIsCheckboxChecked(false);
-  }, [
-    setIsCreateModalOpen,
-    setNameInputError,
-    setAbbreviationInputError,
-    setClassificationInputError,
-    setJurisdictionInputError,
-    setStateInputError,
-    setMunicipalityInputError,
-    setSubjectInputError,
-    setAspectInputError,
-    setIsStateActive,
-    setIsMunicipalityActive,
-    setIsAspectsActive,
-    clearMunicipalities,
-    clearAspects,
-  ]);
+  };
+
+  const openEditModal = (legalBase) => {
+    setSelectedLegalBase(legalBase);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedLegalBase(null);
+    setNameInputError(null);
+    setAbbreviationInputError(null);
+    setClassificationInputError(null);
+    setJurisdictionInputError(null);
+    setStateInputError(null);
+    setMunicipalityInputError(null);
+    setSubjectInputError(null);
+    setAspectInputError(null);
+    setIsStateActive(false);
+    setIsMunicipalityActive(false);
+    setIsAspectsActive(false);
+    clearMunicipalities();
+    clearAspects();
+    setLastReformInputError(null);
+    setFileError(null);
+    setCheckboxInputError(null);
+    setIsCheckboxChecked(false);
+  };
 
   const handleNameChange = useCallback(
     (e) => {
@@ -897,7 +912,7 @@ export default function LegalBasis() {
         if (!extension) {
           toast.update(toastId, {
             render:
-              "No se pudo determinar el tipo de documento. Inténtelo nuevamente.",
+              "No se pudo determinar el tipo de documento. Contacte a los administradores del sistema.",
             type: "error",
             isLoading: false,
             autoClose: 5000,
@@ -954,7 +969,7 @@ export default function LegalBasis() {
   if (error) return <Error title={error.title} message={error.message} />;
   if (subjectError)
     return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError && !isCreateModalOpen)
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
   if (classificationsError)
     return (
@@ -973,7 +988,7 @@ export default function LegalBasis() {
   if (errorStates)
     return <Error title={errorStates.title} message={errorStates.message} />;
 
-  if (errorMunicipalities && !isCreateModalOpen) {
+  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
     return (
       <Error
         title={errorMunicipalities.title}
@@ -986,6 +1001,7 @@ export default function LegalBasis() {
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
         isCreateModalOpen={isCreateModalOpen}
+        isEditModalOpen={isEditModalOpen}
         onRowsPerPageChange={onRowsPerPageChange}
         totalLegalBasis={legalBasis.length}
         openModalCreate={openModalCreate}
@@ -1064,6 +1080,7 @@ export default function LegalBasis() {
                       <LegalBasisCell
                         legalBase={legalBase}
                         columnKey={columnKey}
+                        openEditModal={openEditModal}
                         handleDelete={handleDelete}
                         handleDownloadDocument={handleDownloadDocument}
                       />
@@ -1164,6 +1181,67 @@ export default function LegalBasis() {
             setCheckboxInputError={setCheckboxInputError}
             isCheckboxChecked={isCheckboxChecked}
             handleCheckboxChange={handleCheckboxChange}
+          />
+        )}
+        {isEditModalOpen && (
+          <EditModal
+            isOpen={isEditModalOpen}
+            closeModalEdit={closeEditModal}
+            formData={formData}
+            setFormData={setFormData}
+            selectedLegalBase={selectedLegalBase}
+            nameError={nameInputError}
+            setNameError={setNameInputError}
+            handleNameChange={handleNameChange}
+            abbreviationError={abbreviationInputError}
+            setAbbreviationError={setAbbreviationInputError}
+            handleAbbreviationChange={handleAbbreviationChange}
+            classificationError={classificationInputError}
+            setClassificationError={setClassificationInputError}
+            handleClassificationChange={handleClassificationChange}
+            jurisdictionError={jurisdictionInputError}
+            setJurisdictionError={setJurisdictionInputError}
+            handleJurisdictionChange={handleJurisdictionChange}
+            states={states}
+            stateError={stateInputError}
+            setStateError={setStateInputError}
+            isStateActive={isStateActive}
+            handleStateChange={handleStateChange}
+            clearMunicipalities={clearMunicipalities}
+            municipalities={municipalities}
+            municipalityError={municipalityInputError}
+            setMunicipalityError={setMunicipalityInputError}
+            isMunicipalityActive={isMunicipalityActive}
+            loadingMunicipalities={loadingMunicipalities}
+            errorMunicipalities={errorMunicipalities}
+            handleMunicipalityChange={handleMunicipalityChange}
+            subjects={subjects}
+            subjectInputError={subjectInputError}
+            setSubjectError={setSubjectInputError}
+            handleSubjectChange={handleSubjectChange}
+            aspects={aspects}
+            aspectError={aspectInputError}
+            setAspectInputError={setAspectInputError}
+            isAspectsActive={isAspectsActive}
+            loadingAspects={aspectLoading}
+            errorAspects={aspectError}
+            handleAspectsChange={handleAspectsChange}
+            lastReformError={lastReformInputError}
+            setLastReformError={setLastReformInputError}
+            handleLastReformChange={handleLastReformChange}
+            handleFileChange={handleFileChange}
+            fileError={fileError}
+            handleRemoveDocument={handleRemoveDocument}
+            checkboxInputError={checkboxInputError}
+            setCheckboxInputError={setCheckboxInputError}
+            isCheckboxChecked={isCheckboxChecked}
+            handleCheckboxChange={handleCheckboxChange}
+            setIsStateActive={setIsStateActive}
+            setIsMunicipalityActive={setIsMunicipalityActive}
+            setIsAspectsActive={setIsAspectsActive}
+            clearAspects={clearAspects}
+            fetchMunicipalities={fetchMunicipalities}
+            fetchAspects={fetchAspects}
           />
         )}
       </>

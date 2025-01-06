@@ -33,7 +33,7 @@ export default async function getLegalBasisBySubjectAndAspects({ subjectId, aspe
         return response.data.legalBasis;
 
     } catch (error) {
-        console.error("Error retrieving legal basis by subject and aspects:", error);
+        console.error(error);
         throw error;
     }
 }

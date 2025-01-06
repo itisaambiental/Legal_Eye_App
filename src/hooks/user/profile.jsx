@@ -31,7 +31,7 @@ export default function useUserProfile() {
         setStateProfile({ loading: false, error: null });
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error(error);
 
       let errorTitle;
       let errorMessage;

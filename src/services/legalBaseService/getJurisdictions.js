@@ -29,7 +29,7 @@ export default async function getJurisdictions({ token }) {
 
     return response.data.jurisdictions;
   } catch (error) {
-    console.error("Error retrieving jurisdictions:", error);
+    console.error(error);
     throw error;
   }
 }

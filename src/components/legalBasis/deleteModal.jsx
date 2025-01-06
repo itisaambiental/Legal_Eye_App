@@ -70,7 +70,7 @@ function DeleteModal({ showDeleteModal, closeDeleteModal, setIsDeletingBatch, is
                     <>
                         <ModalHeader className="text-center">
                             {selectedKeys === "all"
-                                ? "¿Estás seguro de que deseas eliminar TODos los Fundamentos Legales?"
+                                ? "¿Estás seguro de que deseas eliminar TODOS los Fundamentos Legales?"
                                 : selectedKeys.size <= 1
                                     ? "¿Estás seguro de que deseas eliminar este Fundamento Legal?"
                                     : "¿Estás seguro de que deseas eliminar estos Fundamentos Legales?"}

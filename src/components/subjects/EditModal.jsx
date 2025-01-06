@@ -60,7 +60,7 @@ function EditModal({ formData, setFormData, isOpen, updateSubject, closeModalEdi
                 toast.error(error)
             }
         } catch (error) {
-            console.error('Error al actualizar la materia:', error);
+            console.error(error);
             toast.error('Algo mal sucedió al actualizar la materia. Intente de nuevo');
         } finally {
             setIsLoading(false);

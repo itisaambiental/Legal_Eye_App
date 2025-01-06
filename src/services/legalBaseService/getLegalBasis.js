@@ -27,7 +27,7 @@ export default async function getLegalBasis({ token }) {
         return response.data.legalBasis; 
 
     } catch (error) {
-        console.error("Error retrieving legal basis:", error);
+        console.error(error);
         throw error;
     }
 }

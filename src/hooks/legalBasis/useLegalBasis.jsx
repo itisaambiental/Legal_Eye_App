@@ -14,6 +14,7 @@ import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/ge
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
 import getClassifications from "../../services/legalBaseService/getClassifications";
 import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
+import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
 /**
@@ -39,12 +40,12 @@ export default function useLegalBasis() {
   });
 
   /**
-  * Fetches the list of classifications.
-  * @async
-  * @function fetchClassifications
-  * @returns {Promise<void>} - Updates the classifications list and loading state.
-  * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-  */
+   * Fetches the list of classifications.
+   * @async
+   * @function fetchClassifications
+   * @returns {Promise<void>} - Updates the classifications list and loading state.
+   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+   */
   const fetchClassifications = useCallback(async () => {
     setStateClassifications({ loading: true, error: null });
     try {
@@ -181,7 +182,8 @@ export default function useLegalBasis() {
                 errorMessage =
                   "Debe proporcionarse un documento si se desea extraer artículos.";
               } else {
-                errorMessage = "Error de validación: revisa los datos introducidos.";
+                errorMessage =
+                  "Error de validación: revisa los datos introducidos.";
               }
               break;
             case 401:
@@ -711,41 +713,42 @@ export default function useLegalBasis() {
         });
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
-
       } catch (error) {
         let errorTitle;
         let errorMessage;
 
         if (error.response) {
-          if (error.response.status === 404 && error.response.data?.message?.includes("Subject not found")) {
+          if (
+            error.response.status === 404 &&
+            error.response.data?.message?.includes("Subject not found")
+          ) {
             errorTitle = "Materia no encontrada";
             errorMessage =
               "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
-          }
-          else if (
+          } else if (
             error.response.status === 404 &&
             error.response.data?.errors?.notFoundIds
           ) {
             errorTitle = "Aspectos no encontrados";
-            errorMessage = "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
-          }
-          else if (error.response.status === 403 || error.response.status === 401) {
+            errorMessage =
+              "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
+          } else if (
+            error.response.status === 403 ||
+            error.response.status === 401
+          ) {
             errorTitle = "Acceso no autorizado";
             errorMessage =
               "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-          }
-          else if (error.response.status === 500) {
+          } else if (error.response.status === 500) {
             errorTitle = "Error en el servidor";
             errorMessage =
               "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
           }
-        }
-        else if (error.message === "Network Error") {
+        } else if (error.message === "Network Error") {
           errorTitle = "Error de conexión";
           errorMessage =
             "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        }
-        else {
+        } else {
           errorTitle = "Error inesperado";
           errorMessage =
             "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
@@ -758,7 +761,6 @@ export default function useLegalBasis() {
     },
     [jwt]
   );
-
 
   /**
    * Fetches legal basis records filtered by a date range and updates the state.
@@ -816,60 +818,191 @@ export default function useLegalBasis() {
   );
 
   /**
- * Deletes an existing legal basis by ID.
- * @async
- * @function removeLegalBasis
- * @param {string} id - The ID of the legal basis to delete.
- * @returns {Promise<Object>} - Result of the operation with success status or error message.
- * @throws {Object} - Returns an error message if the deletion fails.
- */
-  const removeLegalBasis = useCallback(async (id) => {
-    try {
-      await deleteLegalBasis({ id, token: jwt });
-      setLegalBasis((prevLegalBasis) =>
-        prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
-      );
-      fetchClassifications();
-      fetchJurisdictions();
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      let errorMessage;
-      if (error.response) {
-        switch (error.response.status) {
-          case 401:
-          case 403:
-            errorMessage =
-              "No autorizado para eliminar este fundamento legal. Verifique su sesión.";
-            break;
-          case 409:
-            errorMessage =
-              "El fundamento legal no puede ser eliminado porque en este momento se estan extrayendo articulos de su documento asociado.";
-            break;
-          case 404:
-            errorMessage =
-              "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
-            break;
-          case 500:
-            errorMessage =
-              "Error interno del servidor. Por favor, intente más tarde.";
-            break;
-          default:
-            errorMessage =
-              "Error inesperado durante la eliminación. Intente de nuevo.";
+   * Updates an existing Legal Basis by ID.
+   * @async
+   * @function modifyLegalBasis
+   * @param {Object} params - The data to update an existing Legal Base
+   * @returns {Promise<Object>} - Result of the operation with success status and updated Legal Base or error message.
+   * @throws {Object} - Returns an error message if the update fails.
+   */
+  const modifyLegalBasis = useCallback(
+    async ({
+      id,
+      legalName,
+      abbreviation,
+      subjectId,
+      aspectsIds,
+      classification,
+      jurisdiction,
+      state,
+      municipality,
+      lastReform,
+      extractArticles,
+      removeDocument,
+      document,
+    }) => {
+      try {
+        const { jobId, legalBasis } = await updateLegalBasis({
+          id,
+          legalName,
+          abbreviation,
+          subjectId,
+          aspectsIds,
+          classification,
+          jurisdiction,
+          state,
+          municipality,
+          lastReform,
+          extractArticles,
+          removeDocument,
+          document,
+          token: jwt,
+        });
+        setLegalBasis((prevLegalBases) =>
+          prevLegalBases.map((prevLegalBasis) =>
+            prevLegalBasis.id === legalBasis.id ? legalBasis : prevLegalBasis
+          )
+        );
+        fetchClassifications();
+        fetchJurisdictions();
+        return { success: true, jobId };
+      } catch (error) {
+        console.error(error);
+        let errorMessage;
+        if (error.response) {
+          const { status, data } = error.response;
+          switch (status) {
+            case 400:
+              if (
+                data.message ===
+                "A document must be provided if extractArticles is true"
+              ) {
+                errorMessage =
+                  "Debe proporcionarse un documento si se desea extraer artículos.";
+              } else if (
+                data.message ===
+                "Cannot provide a document if removeDocument is true"
+              ) {
+                errorMessage =
+                  "No se puede proporcionar un documento si se solicita eliminarlo.";
+              } else {
+                errorMessage =
+                  "Error de validación: revisa los datos introducidos.";
+              }
+              break;
+            case 401:
+            case 403:
+              errorMessage =
+                "No autorizado para editar el fundamento legal. Verifique su sesión.";
+              break;
+            case 404:
+              if (data.message.includes("LegalBasis not found")) {
+                errorMessage =
+                  "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
+              } else if (data.message.includes("Invalid Subject ID")) {
+                errorMessage =
+                  "La materia especificada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.";
+              } else if (data.message.includes("Invalid Aspects IDs")) {
+                errorMessage =
+                  "Los aspectos especificados no fueron encontrados. Verifique su existencia seleccionando de nuevo la materia e intente de nuevo.";
+              }
+              break;
+            case 409:
+              if (data.message === "LegalBasis already exists") {
+                errorMessage =
+                  "Ya existe un fundamento legal con el mismo nombre. Por favor, utiliza otro.";
+              } else if (
+                data.message ===
+                "The document cannot be removed because there are pending jobs for this Legal Basis"
+              ) {
+                errorMessage =
+                  "El documento no puede ser eliminado porque en este momento se estan extrayendo articulos.";
+              } else if (
+                data.message ===
+                "Articles cannot be extracted because there is already a process that does so."
+              ) {
+                errorMessage =
+                  "El fundamento legal no puede modificarse porque en este momento se estan extrayendo articulos de su documento asociado.";
+              }
+              break;
+
+            case 500:
+              errorMessage =
+                "Error interno del servidor. Intente nuevamente más tarde.";
+              break;
+
+            default:
+              errorMessage = "Error inesperado al actualizar la base legal.";
+          }
+        } else if (error.message === "Network Error") {
+          errorMessage = "Error de conexión. Verifique su conexión a internet.";
+        } else {
+          errorMessage = "Error inesperado. Intente de nuevo.";
         }
-      } else if (error.message === "Network Error") {
-        errorMessage =
-          "Error de conexión durante la eliminación. Verifique su conexión a internet.";
-      } else {
-        errorMessage =
-          "Error inesperado durante la eliminación. Intente de nuevo.";
+
+        return { success: false, error: errorMessage };
       }
+    },
+    [jwt, fetchClassifications, fetchJurisdictions]
+  );
 
-      return { success: false, error: errorMessage };
-    }
-  }, [jwt, fetchClassifications, fetchJurisdictions]);
+  /**
+   * Deletes an existing legal basis by ID.
+   * @async
+   * @function removeLegalBasis
+   * @param {string} id - The ID of the legal basis to delete.
+   * @returns {Promise<Object>} - Result of the operation with success status or error message.
+   * @throws {Object} - Returns an error message if the deletion fails.
+   */
+  const removeLegalBasis = useCallback(
+    async (id) => {
+      try {
+        await deleteLegalBasis({ id, token: jwt });
+        setLegalBasis((prevLegalBasis) =>
+          prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
+        );
+        fetchClassifications();
+        fetchJurisdictions();
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        let errorMessage;
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+            case 403:
+              errorMessage =
+                "No autorizado para eliminar este fundamento legal. Verifique su sesión.";
+              break;
+            case 409:
+              errorMessage =
+                "El fundamento legal no puede ser eliminado porque en este momento se estan extrayendo articulos de su documento asociado.";
+              break;
+            case 404:
+              errorMessage =
+                "Fundamento legal no encontrado. Verifique su existencia recargando la app e intente de nuevo.";
+              break;
+            case 500:
+              errorMessage =
+                "Error interno del servidor. Por favor, intente más tarde.";
+              break;
+            default:
+              errorMessage =
+                "Error inesperado durante la eliminación. Intente de nuevo.";
+          }
+        } else if (error.message === "Network Error") {
+          errorMessage =
+            "Error de conexión durante la eliminación. Verifique su conexión a internet.";
+        } else {
+          errorMessage =
+            "Error inesperado durante la eliminación. Intente de nuevo.";
+        }
 
+        return { success: false, error: errorMessage };
+      }
+    },
+    [jwt, fetchClassifications, fetchJurisdictions]
+  );
 
   /**
    * Deletes multiple legal bases by their IDs.
@@ -879,66 +1012,87 @@ export default function useLegalBasis() {
    * @returns {Promise<Object>} - Result of the operation with success status or error message.
    * @throws {Object} - Returns an error message if the deletion fails.
    */
-  const removeLegalBasisBatch = useCallback(async (legalBasisIds) => {
-    try {
-      await deleteLegalBasisBatch({ legalBasisIds, token: jwt });
-      setLegalBasis((prevLegalBases) =>
-        prevLegalBases.filter((legalBasis) => !legalBasisIds.includes(legalBasis.id))
-      );
-      fetchClassifications();
-      fetchJurisdictions();
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      let errorMessage;
-      if (error.response) {
-        const { status, data } = error.response;
-        switch (status) {
-          case 400:
-            errorMessage = "Faltan campos requeridos: legalBasisIds. Verifique los parámetros enviados.";
-            break;
-          case 401:
-          case 403:
-            errorMessage = "No autorizado para eliminar fundamentos legales. Verifique su sesión.";
-            break;
-          case 404:
-            errorMessage = "Uno o más fundamentos legales no existen. Verifique su existencia recargando la app e intente de nuevo.";
-            break;
-          case 409: {
-            const { errors, message } = data;
-            const { LegalBases } = errors;
-            if (LegalBases && LegalBases.length > 0) {
-              const errorDetails = LegalBases.map((legalBase) => legalBase.name).join(", ");
-              const plural = LegalBases.length > 1;
-              if (message === "Cannot delete Legal Bases with pending jobs") {
-                errorMessage = `${plural ? "Los fundamentos legales" : "El fundamento legal"} ${errorDetails} ${plural ? "no pueden" : "no puede"} ser eliminados porque en este momento se están extrayendo artículos de ${plural ? "sus documentos asociados" : "su documento asociado"}.`;
-              } else {
-                errorMessage = `Uno o más fundamentos legales no pueden ser eliminados debido a problemas desconocidos. Verifique e intente nuevamente.`;
-              }
-            } else {
+  const removeLegalBasisBatch = useCallback(
+    async (legalBasisIds) => {
+      try {
+        await deleteLegalBasisBatch({ legalBasisIds, token: jwt });
+        setLegalBasis((prevLegalBases) =>
+          prevLegalBases.filter(
+            (legalBasis) => !legalBasisIds.includes(legalBasis.id)
+          )
+        );
+        fetchClassifications();
+        fetchJurisdictions();
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        let errorMessage;
+        if (error.response) {
+          const { status, data } = error.response;
+          switch (status) {
+            case 400:
               errorMessage =
-                "Uno o más fundamentos legales no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados. Intente nuevamente más tarde.";
+                "Faltan campos requeridos: legalBasisIds. Verifique los parámetros enviados.";
+              break;
+            case 401:
+            case 403:
+              errorMessage =
+                "No autorizado para eliminar fundamentos legales. Verifique su sesión.";
+              break;
+            case 404:
+              errorMessage =
+                "Uno o más fundamentos legales no existen. Verifique su existencia recargando la app e intente de nuevo.";
+              break;
+            case 409: {
+              const { errors, message } = data;
+              const { LegalBases } = errors;
+              if (LegalBases && LegalBases.length > 0) {
+                const errorDetails = LegalBases.map(
+                  (legalBase) => legalBase.name
+                ).join(", ");
+                const plural = LegalBases.length > 1;
+                if (message === "Cannot delete Legal Bases with pending jobs") {
+                  errorMessage = `${
+                    plural ? "Los fundamentos legales" : "El fundamento legal"
+                  } ${errorDetails} ${
+                    plural ? "no pueden" : "no puede"
+                  } ser eliminados porque en este momento se están extrayendo artículos de ${
+                    plural
+                      ? "sus documentos asociados"
+                      : "su documento asociado"
+                  }.`;
+                } else {
+                  errorMessage = `Uno o más fundamentos legales no pueden ser eliminados debido a problemas desconocidos. Verifique e intente nuevamente.`;
+                }
+              } else {
+                errorMessage =
+                  "Uno o más fundamentos legales no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados. Intente nuevamente más tarde.";
+              }
+              break;
             }
-            break;
+
+            case 500:
+              errorMessage =
+                "Error interno del servidor. Por favor, intente más tarde.";
+              break;
+
+            default:
+              errorMessage =
+                "Error inesperado durante la eliminación. Intente nuevamente.";
           }
-
-          case 500:
-            errorMessage = "Error interno del servidor. Por favor, intente más tarde.";
-            break;
-
-          default:
-            errorMessage = "Error inesperado durante la eliminación. Intente nuevamente.";
+        } else if (error.message === "Network Error") {
+          errorMessage =
+            "Error de conexión al eliminar fundamentos legales. Verifique su conexión a internet.";
+        } else {
+          errorMessage =
+            "Error inesperado al eliminar fundamentos legales. Intente nuevamente.";
         }
-      } else if (error.message === "Network Error") {
-        errorMessage = "Error de conexión al eliminar fundamentos legales. Verifique su conexión a internet.";
-      } else {
-        errorMessage = "Error inesperado al eliminar fundamentos legales. Intente nuevamente.";
+
+        return { success: false, error: errorMessage };
       }
-
-      return { success: false, error: errorMessage };
-    }
-  }, [jwt, fetchClassifications, fetchJurisdictions]);
-
+    },
+    [jwt, fetchClassifications, fetchJurisdictions]
+  );
 
   useEffect(() => {
     fetchLegalBasis();
@@ -968,7 +1122,8 @@ export default function useLegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    modifyLegalBasis,
     removeLegalBasis,
-    removeLegalBasisBatch
+    removeLegalBasisBatch,
   };
 }

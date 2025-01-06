@@ -190,7 +190,7 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
                   <p className="font-normal text-primary">Enviar Fundamento</p>
                 </DropdownItem>
                 <DropdownItem
-                  aria-label="Actualizar Fundamento"
+                  aria-label="Editar Fundamento"
                   startContent={
                     <img
                       src={update_icon}
@@ -200,11 +200,11 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
                   }
                   className="hover:bg-primary/20"
                   key="update"
-                  textValue="Actualizar Fundamento"
+                  textValue="Editar Fundamento"
                   onPress={() => openEditModal(legalBase)}
                 >
                   <p className="font-normal text-primary">
-                    Actualizar Fundamento
+                    Editar Fundamento
                   </p>
                 </DropdownItem>
                 <DropdownItem

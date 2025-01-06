@@ -74,6 +74,7 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch
   } = useLegalBasis();
@@ -1189,6 +1190,7 @@ export default function LegalBasis() {
             closeModalEdit={closeEditModal}
             formData={formData}
             setFormData={setFormData}
+            editLegalBasis={modifyLegalBasis}
             selectedLegalBase={selectedLegalBase}
             nameError={nameInputError}
             setNameError={setNameInputError}

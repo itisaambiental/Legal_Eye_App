@@ -14,7 +14,7 @@ function Home() {
   const navigate = useNavigate();
 
   
-  const handleDynamicClick = () => {
+  const handleClick = () => {
     navigate('/legal_basis');
   };
 
@@ -38,7 +38,7 @@ function Home() {
         <form className="w-full max-w-md mx-auto sm:w-full md:w-3/4 lg:w-1/2">
           <div className="relative">
             <button
-              onClick={handleDynamicClick}
+              onClick={handleClick}
               className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary hover:bg-primary/80 sm:text-sm md:text-base"
             >
               Comenzar ahora

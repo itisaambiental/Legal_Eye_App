@@ -166,6 +166,20 @@ function CreateModal({
     }
     return null;
   };
+
+
+  const onClose = () => {
+    setJobId(null)
+    setShowProgress(false);
+    closeModalCreate();
+  };
+  
+  const onComplete = () => {
+    setJobId(null)
+    setShowProgress(false);
+    closeModalCreate();
+  };
+  
   const handleCreate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -306,7 +320,7 @@ function CreateModal({
         });
 
         if (!jobId) {
-          closeModalCreate();
+          onClose();
         } else {
           setJobId(jobId)
           setShowProgress(true);
@@ -322,18 +336,6 @@ function CreateModal({
     }
   };
 
-  const onClose = () => {
-    setJobId(null)
-    setShowProgress(false);
-    closeModalCreate();
-  };
-  
-  const onComplete = () => {
-    setJobId(null)
-    setShowProgress(false);
-    closeModalCreate();
-  };
-  
   return (
     <Modal
       isOpen={isOpen}
@@ -371,7 +373,7 @@ function CreateModal({
                       value={formData.nombre}
                       onChange={handleNameChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
-                      placeholder=" "
+                      placeholder="Nombre"
                     />
                     <label
                       htmlFor="floating_nombre"
@@ -391,7 +393,7 @@ function CreateModal({
                       value={formData.abbreviation}
                       onChange={handleAbbreviationChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
-                      placeholder=" "
+                      placeholder="Abreviatura"
                     />
                     <label
                       htmlFor="floating_abbreviation"

@@ -77,9 +77,9 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
           size="sm"
           variant="faded"
           className="mt-4"
-          onPress={isHttpError(error?.title) ? handleRetry : onComplete}
+          onPress={isHttpError(error?.title) ? handleRetry : onClose}
         >
-          {isHttpError(error?.title) ? "Reintentar" : "Finalizar e intentar de nuevo"}
+          {isHttpError(error?.title) ? "Reintentar" : "Cerrar"}
         </Button>
       );
     }

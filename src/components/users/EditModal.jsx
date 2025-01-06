@@ -82,9 +82,11 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                 name: formData.nombre,
                 email: formData.email,
                 role_id: formData.user_type,
-                profile_picture: formData.profile_picture && typeof formData.profile_picture === 'object' && formData.profile_picture.file ? formData.profile_picture.file : null,
-                removePicture: formData.profile_picture === null
-              };  
+                profile_picture: formData.profile_picture && formData.profile_picture.file instanceof File
+                  ? formData.profile_picture.file
+                  : null,
+                removePicture: formData.profile_picture === null,
+              };
             const { success, error } = await updateUserDetails(userData);
             if (success) {
                 toast.info('El usuario ha sido actualizado correctamente', {
@@ -152,10 +154,7 @@ function EditModal({ formData, setFormData, isOpen, updateUserDetails, closeModa
                                        
                                     </div>
                                 </div>
-
                                 <div className="relative z-20 mb-6">
-
-
                                     {formData.profile_picture ? (
                                         <div className="flex justify-center items-center h-full">
                                             <Card isFooterBlurred radius="sm" className="border-none relative z-20 mb-6 w-full max-w-lg h-auto">

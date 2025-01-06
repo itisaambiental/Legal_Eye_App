@@ -344,7 +344,7 @@ function EditModal({
                                 jobId={jobId}
                                 onComplete={onCompleteFinishJob}
                                 onClose={onClose}
-                                labelTop="Podrás editar el fundamento cuando los artículos se hayan extraído del documento"
+                                labelTop="Podrás editar el fundamento cuando los artículos se hayan extraído del documento."
                                 labelButton="Editar ahora"
                             />
                         ) : (

@@ -1,7 +1,3 @@
-/**
- * Class for managing and mapping errors related to authentication services.
- * Centralizes error handling, mapping error codes and messages to user-friendly messages.
- */
 class AuthErrors {
     static NETWORK_ERROR = "NETWORK_ERROR";
     static INVALID_EMAIL = "INVALID_EMAIL";
@@ -13,9 +9,6 @@ class AuthErrors {
 
     /**
      * A map of error constants to user-friendly error objects.
-     * Each object contains:
-     * - `title`: A short, descriptive title for the error.
-     * - `message`: A detailed explanation of the error.
      */
     static errorMap = {
         [AuthErrors.NETWORK_ERROR]: {
@@ -28,7 +21,7 @@ class AuthErrors {
         },
         [AuthErrors.INVALID_CODE]: {
             title: "Código inválido",
-            message: "El código ingresado no es válido. Verifique e intente nuevamente.",
+            message: "Código inválido. Intente nuevamente.",
         },
         [AuthErrors.USER_CANCELLED]: {
             title: "Operación cancelada",
@@ -48,14 +41,11 @@ class AuthErrors {
         [AuthErrors.UNEXPECTED_ERROR]: {
             title: "Error inesperado",
             message: "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
-        },
+          },
     };
 
     /**
      * A map of specific error messages to their corresponding error constants.
-     * This map is used to translate error messages from the server or HTTP errors into standardized error types.
-     *
-     * @type {Object.<string, AuthErrors>}
      */
     static ErrorMessagesMap = {
         "Network Error": AuthErrors.NETWORK_ERROR,
@@ -66,41 +56,41 @@ class AuthErrors {
         "Failed to send verification code": AuthErrors.SEND_ERROR,
     };
 
-    /**
-     * Handles errors by mapping error codes or messages to a user-friendly error object.
-     *
-     * @param {Object} params - Parameters for handling the error.
-     * @param {number} params.code - The HTTP status code.
-     * @param {string} [params.error] - The server error message.
-     * @param {string} [params.httpError] - The HTTP error message.
-     * @param {boolean} [params.isResend] - Whether this is a resend request.
-     * @returns {Object} - A user-friendly error object containing a title and message.
-     */
-    static handleError({ code, error, httpError, isResend }) {
-        const message = error || httpError;
-        if (message && AuthErrors.ErrorMessagesMap[message]) {
-            const key = AuthErrors.ErrorMessagesMap[message];
-            const errorConfig = AuthErrors.errorMap[key];
-            if (key === AuthErrors.SEND_ERROR) {
-                return {
-                    title: errorConfig.title,
-                    message: errorConfig.message({ isResend }),
-                };
-            }
-
-            return errorConfig;
+  /**
+ * Handles errors by mapping error codes or messages to a user-friendly error object.
+ *
+ * @param {Object} params - Parameters for handling the error.
+ * @param {number} params.code - The HTTP status code.
+ * @param {string} [params.error] - The server error message.
+ * @param {string} [params.httpError] - The HTTP error message.
+ * @param {boolean} [params.isResend] - Whether this is a resend request.
+ * @returns {Object} - A user-friendly error object containing a title and message.
+ */
+static handleError({ code, error, httpError, isResend }) {
+    const message = error || httpError;
+    if (message && AuthErrors.ErrorMessagesMap[message]) {
+        const key = AuthErrors.ErrorMessagesMap[message];
+        const errorConfig = AuthErrors.errorMap[key];
+        if (key === AuthErrors.SEND_ERROR) {
+            return {
+                title: errorConfig.title,
+                message: errorConfig.message({ isResend }),
+            };
         }
-        switch (code) {
-            case 400:
-                return AuthErrors.errorMap[AuthErrors.INVALID_CODE];
-            case 401:
-                return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
-            case 403:
-                return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
-            default:
-                return AuthErrors.errorMap[AuthErrors.UNEXPECTED_ERROR];
-        }
+        return errorConfig;
     }
+    switch (code) {
+        case 400:
+            return AuthErrors.errorMap[AuthErrors.INVALID_CODE];
+        case 401:
+            return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
+        case 403:
+            return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
+        default:
+            AuthErrors.errorMap[AuthErrors.UNEXPECTED_ERROR];
+    }
+}
+
 }
 
 export default AuthErrors;

@@ -9,7 +9,7 @@ import server from "../../config/server.js"
  * @param {string} gmail - The user's email address associated with the password reset.
  * @param {string} code - The verification code for resetting the password.
  * 
- * @returns {Promise<number>} The response status code (200 if successful).
+ * @returns {Promise<boolean>} True if the response status is 200.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function sendNewPassword(gmail, code) {
@@ -23,8 +23,7 @@ export default async function sendNewPassword(gmail, code) {
             throw new Error('Response is NOT ok')
         }
 
-        return response.status
-
+        return true
     } catch (error) {
         console.error(error)
         throw error

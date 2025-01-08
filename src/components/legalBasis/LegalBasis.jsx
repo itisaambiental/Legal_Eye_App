@@ -18,7 +18,7 @@ import { useFiles } from "../../hooks/files/useFiles.jsx";
 import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
 import BottomContent from "./BottomContent.jsx";
-import Error from "../utils/Error.jsx";
+import Error from "../Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";

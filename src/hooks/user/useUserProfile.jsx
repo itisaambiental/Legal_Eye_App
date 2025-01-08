@@ -2,7 +2,7 @@ import { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../../context/userContext.jsx';
 import getUserById from '../../services/userService/getUserById.js';
 import { jwtDecode } from "jwt-decode";
-
+import UserErrors from '../../errors/UserErrors.js';
 /**
  * Custom hook for fetching and managing user profile data.
  * @returns {Object} - Contains user's profile information and loading/error states.
@@ -31,26 +31,15 @@ export default function useUserProfile() {
         setStateProfile({ loading: false, error: null });
       }
     } catch (error) {
-      console.error(error);
-
-      let errorTitle;
-      let errorMessage;
-
-      if (error.response && error.response.status === 404) {
-        errorTitle = 'Usuario no encontrado';
-        errorMessage = 'Su informacion no fue encontrada en el sistema. Vuelva a iniciar sesión e intente de nuevo';
-      } else if (error.response && (error.response.status === 403 || error.response.status === 401)) {
-        errorTitle = 'Acceso no autorizado';
-        errorMessage = 'No tiene permiso para acceder a este perfil. Verifique su sesión.';
-      } else if (error.message === 'Network Error') {
-        errorTitle = 'Error de conexión';
-        errorMessage = 'Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.';
-      } else {
-        errorTitle = 'Error inesperado';
-        errorMessage = 'Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.';
-      }
-
-      setStateProfile({ loading: false, error: { title: errorTitle, message: errorMessage } });
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = UserErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
+      setStateProfile({ loading: false, error: handledError });
     }
   }, [jwt]);
 

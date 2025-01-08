@@ -7,7 +7,7 @@ import server from "../../config/server.js"
  * @async
  * @function updateSubject
  * @param {Object} params - Parameters for updating a subject.
- * @param {string} params.id - The ID of the subject to update.
+ * @param {number} params.id - The ID of the subject to update.
  * @param {string} params.subjectName - The new name of the subject.
  * @param {string} params.token - The authorization token for the request.
  * 

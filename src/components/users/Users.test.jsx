@@ -1,16 +1,16 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent } from "@testing-library/react";
 import Users from "./Users.jsx";
-import useUsers from "../../hooks/user/users.jsx";
-import useRoles from "../../hooks/user/roles.jsx";
+import useUsers from "../../hooks/user/useUsers.jsx";
+import useRoles from "../../hooks/user/useRoles.jsx";
 
 // Mock global de useUsers y useRoles
-vi.mock("../../hooks/user/users.jsx", () => ({
+vi.mock("../../hooks/user/useUsers.jsx", () => ({
   __esModule: true,
   default: vi.fn(),
 }));
 
-vi.mock("../../hooks/user/roles.jsx", () => ({
+vi.mock("../../hooks/user/useRoles.jsx", () => ({
   __esModule: true,
   default: vi.fn(() => ({
     roles: [

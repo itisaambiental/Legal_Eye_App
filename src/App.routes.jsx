@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
-import NotFound from './components/utils/NotFound.jsx'
-import Unauthorized from './components/utils/Unauthorized.jsx'
+import NotFound from './components/NotFound.jsx'
+import Unauthorized from './components/Unauthorized.jsx'
 import Login from "./components/users/login/Login.jsx"
 import ResetPassword from './components/users/login/ResetPassword.jsx'
 import VerifyCode from './components/users/login/VerifyCode.jsx'

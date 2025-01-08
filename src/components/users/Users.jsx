@@ -10,13 +10,13 @@ import {
   Spinner,
   Button,
 } from "@nextui-org/react";
-import useUsers from "../../hooks/user/users.jsx";
+import useUsers from "../../hooks/user/useUsers.jsx";
 import TopContent from "./TopContent";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent";
 import UserCell from "./UsersCell.jsx";
-import Error from "../utils/Error.jsx";
-import useRoles from "../../hooks/user/roles.jsx";
+import Error from "../Error.jsx";
+import useRoles from "../../hooks/user/useRoles.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
 import check from "../../assets/check.png";

@@ -7,7 +7,7 @@ import server from "../../config/server.js"
  * @async
  * @function deleteSubject
  * @param {Object} params - Parameters for deleting a subject.
- * @param {string} params.id - The ID of the subject to delete.
+ * @param {number} params.id - The ID of the subject to delete.
  * @param {string} params.token - The authorization token for the request.
  * 
  * @returns {Promise<void>} Resolves if deletion was successful.

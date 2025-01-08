@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import VerifyCode from "./VerifyCode";
-import useUser from "../../../hooks/user/auth.jsx";
+import useUser from "../../../hooks/user/useAuth.jsx";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 // Mocking hooks and dependencies
-vi.mock("../../../hooks/user/auth.jsx", () => ({
+vi.mock("../../../hooks/user/useAuth.jsx", () => ({
     __esModule: true,
     default: vi.fn(),
 }));

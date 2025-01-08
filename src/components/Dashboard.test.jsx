@@ -3,9 +3,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 import { MemoryRouter } from 'react-router-dom';
 import Context from '../context/userContext.jsx';
-import useUserProfile from '../hooks/user/profile.jsx';
+import useUserProfile from '../hooks/user/useUserProfile.jsx';
 
-vi.mock('../hooks/user/profile.jsx', () => ({
+vi.mock('../hooks/user/useUserProfile.jsx', () => ({
   __esModule: true,
   default: vi.fn(),
 }));

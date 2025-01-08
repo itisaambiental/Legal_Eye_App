@@ -10,7 +10,7 @@ import sendNewPassword from '../../services/userService/sendNewPassword.js';
  * Custom hook for managing user authentication and related operations.
  * @returns {Object} - Contains functions and states for user authentication, Microsoft login, password reset, and verification.
  */
-export default function useUser() {
+export default function useAuth() {
   const { jwt, updateUserContext, logout } = useContext(Context);
   const [stateLogin, setStateLogin] = useState({ loading: false, error: false });
   const [stateMicrosoft, setStateMicrosoft] = useState({ loading: false, error: false });

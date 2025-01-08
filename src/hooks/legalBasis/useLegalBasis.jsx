@@ -919,7 +919,7 @@ export default function useLegalBasis() {
                   "El documento no puede ser eliminado porque en este momento se estan extrayendo articulos.";
               } else if (
                 data.message ===
-                "Articles cannot be extracted because there is already a process that does so."
+                "Articles cannot be extracted because there is already a process that does so"
               ) {
                 errorMessage =
                   "El fundamento legal no puede modificarse porque en este momento se estan extrayendo articulos de su documento asociado.";

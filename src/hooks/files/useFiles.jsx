@@ -1,64 +1,35 @@
 import { useCallback } from "react";
 import getDocumentByUrl from "../../services/legalBaseService/getDocumentByUrl";
+import FileErrors from "../../errors/FileErrors";
 
 /**
  * Custom hook for managing file downloads and errors.
  *
- * @returns {Object} - Contains downloadFile function, and error.
+ * @returns {Object} - Contains downloadFile function.
  */
 export const useFiles = () => {
-  /**
-   * Downloads a file from a given URL.
-   *
-   * @param {string} url - The signed URL to fetch the file.
-   * @returns {Promise<Blob|null>} - Resolves with the file Blob or null on error.
-   */
-  const downloadFile = useCallback(async (url) => {
-    try {
-      const fileBlob = await getDocumentByUrl(url);
-      return { success: true, fileBlob };
-    } catch (error) {
-      console.error(error);
-      let errorMessage;
-      if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            errorMessage =
-              "El enlace de descarga es incorrecto. Recargue la página e intente de nuevo.";
-            break;
-          case 403:
-              errorMessage =
-                "El enlace ha expirado o no tienes permisos para descargar el documento. Intente de nuevo";
-            break;
-          case 404:
-            errorMessage =
-              "El documento solicitado no existe. Recargue la página e intente de nuevo.";
-            break;
-          case 408:
-            errorMessage =
-              "La descarga tardó demasiado en completarse. Intente nuevamente.";
-            break;
-          case 413:
-            errorMessage =
-              "El documento excede el tamaño permitido. Contacte a los administradores del sistema.";
-            break;
-          case 500:
-            errorMessage = "Hubo un problema en el servidor. Intente más tarde nuevamente.";
-            break;
-          default:
-            errorMessage = "Ocurrió un problema inesperado. Intente más tarde nuevamente.";
+    /**
+     * Downloads a file from a given URL.
+     *
+     * @param {string} url - The signed URL to fetch the file.
+     * @returns {Promise<Object>} - Resolves with an object containing success status and fileBlob or error message.
+     */
+    const downloadFile = useCallback(async (url) => {
+        try {
+            const fileBlob = await getDocumentByUrl(url);
+            return { success: true, fileBlob };
+        } catch (error) {
+            const errorCode = error.response?.status;
+            const serverMessage = error.response?.data?.message;
+            const clientMessage = error.message;
+            const handledError = FileErrors.handleError({
+                code: errorCode,
+                error: serverMessage,
+                httpError: clientMessage,
+            });
+            return { success: false, error: handledError.message };
         }
-      } else if (error.message === "Network Error") {
-        errorMessage = "Error de conexión durante la descarga. Verifique su conexión a internet.";
-      } else {
-        errorMessage = "Ocurrió un error inesperado. Intente nuevamente.";
-      }
-  
-      return { success: false, error: errorMessage };
-    }
-  }, []);
-  
-  
+    }, []);
 
-  return { downloadFile };
+    return { downloadFile };
 };

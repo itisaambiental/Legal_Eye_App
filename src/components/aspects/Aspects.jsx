@@ -6,7 +6,7 @@ import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent.jsx";
-import Error from "../utils/Error.jsx";
+import Error from "../Error.jsx";
 import AspectCell from "./AspectsCell.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
@@ -55,9 +55,9 @@ export default function Aspects() {
     useEffect(() => {
         const fetchData = async () => {
             if (id) {
-                await fetchAspects(id);
                 const { success, data } = await fetchSubjectById(id);
                 if (success && data) {
+                    await fetchAspects(id);
                     setSubjectName(data.subject_name);
                 } else {
                     setSubjectName(null);

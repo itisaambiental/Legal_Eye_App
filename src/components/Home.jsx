@@ -1,6 +1,6 @@
-import useUserProfile from '../hooks/user/profile.jsx';
+import useUserProfile from '../hooks/user/useUserProfile.jsx';
 import { useNavigate } from 'react-router-dom';
-import Error from './utils/Error.jsx';
+import Error from './Error.jsx';
 import { Spinner } from '@nextui-org/react';
 
 /**

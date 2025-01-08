@@ -14,7 +14,7 @@ import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import BottomContent from "./BottomContent.jsx";
-import Error from "../utils/Error.jsx";
+import Error from "../Error.jsx";
 import SubjectCell from "./SubjectCell.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";

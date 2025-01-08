@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import Context from '../context/userContext.jsx';
-import useUserProfile from '../hooks/user/profile.jsx';
+import useUserProfile from '../hooks/user/useUserProfile.jsx';
 import menu_hamburguesa from "../assets/menu-hamburguesa.png";
 import logo from "../assets/logo2.png";
 import hogar from "../assets/hogar.png";

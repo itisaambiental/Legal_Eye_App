@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useUser from "../../../hooks/user/auth.jsx";
+import useAuth from "../../../hooks/user/useAuth.jsx";
 import { Spinner } from "@nextui-org/react";
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import logo from "../../../assets/logo.png";
@@ -31,7 +31,7 @@ function VerifyCode() {
         verify_code,
         isVerifyCodeLoading,
         hasVerifyCodeError
-    } = useUser();
+    } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();

@@ -35,7 +35,6 @@ const useExtractArticles = () => {
           id: jobId,
           token: jwt,
         });
-        console.log(message, jobProgress, error);
         if (error) {
           setJobStatus({
             progress: null,

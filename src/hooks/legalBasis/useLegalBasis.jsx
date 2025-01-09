@@ -17,6 +17,7 @@ import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
+import LegalBasisErrors from "../../errors/LegalBasisErrors";
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
  * @returns {Object} - Contains LegalBasis list, loading state, error state, and functions for LegalBasis operations.
@@ -53,33 +54,17 @@ export default function useLegalBasis() {
       setClassifications(classificationsData);
       setStateClassifications({ loading: false, error: null });
     } catch (error) {
-      let errorTitle;
-      let errorMessage;
-
-      if (
-        error.response &&
-        (error.response.status === 403 || error.response.status === 401)
-      ) {
-        errorTitle = "Acceso no autorizado";
-        errorMessage =
-          "No tiene permisos para ver las clasificaciones. Verifique su sesión.";
-      } else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } else if (error.response && error.response.status === 500) {
-        errorTitle = "Error en el servidor";
-        errorMessage =
-          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-      } else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = LegalBasisErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
       setStateClassifications({
         loading: false,
-        error: { title: errorTitle, message: errorMessage },
+        error: handledError,
       });
     }
   }, [jwt]);
@@ -98,33 +83,17 @@ export default function useLegalBasis() {
       setJurisdictions(jurisdictionsData);
       setStateJurisdictions({ loading: false, error: null });
     } catch (error) {
-      let errorTitle;
-      let errorMessage;
-
-      if (
-        error.response &&
-        (error.response.status === 403 || error.response.status === 401)
-      ) {
-        errorTitle = "Acceso no autorizado";
-        errorMessage =
-          "No tiene permisos para ver las jurisdicciones. Verifique su sesión.";
-      } else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } else if (error.response && error.response.status === 500) {
-        errorTitle = "Error en el servidor";
-        errorMessage =
-          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-      } else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = LegalBasisErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
       setStateJurisdictions({
         loading: false,
-        error: { title: errorTitle, message: errorMessage },
+        error: handledError,
       });
     }
   }, [jwt]);
@@ -241,32 +210,17 @@ export default function useLegalBasis() {
       setLegalBasis(legalBasis.reverse());
       setStateLegalBasis({ loading: false, error: null });
     } catch (error) {
-      let errorTitle;
-      let errorMessage;
-      if (
-        error.response &&
-        (error.response.status === 403 || error.response.status === 401)
-      ) {
-        errorTitle = "Acceso no autorizado";
-        errorMessage =
-          "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-      } else if (error.message === "Network Error") {
-        errorTitle = "Error de conexión";
-        errorMessage =
-          "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-      } else if (error.response && error.response.status === 500) {
-        errorTitle = "Error en el servidor";
-        errorMessage =
-          "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-      } else {
-        errorTitle = "Error inesperado";
-        errorMessage =
-          "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-      }
-
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = LegalBasisErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
       setStateLegalBasis({
         loading: false,
-        error: { title: errorTitle, message: errorMessage },
+        error: handledError,
       });
     }
   }, [jwt]);
@@ -281,7 +235,6 @@ export default function useLegalBasis() {
   const fetchLegalBasisById = useCallback(
     async (legalBasisId) => {
       setStateLegalBasis({ loading: true, error: null });
-
       try {
         const legalBasis = await getLegalBasisById({
           legalBasisId,
@@ -290,41 +243,22 @@ export default function useLegalBasis() {
         setStateLegalBasis({ loading: false, error: null });
         return { success: true, data: legalBasis };
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver el fundamento legal. Verifique su sesión.";
-        } else if (error.response && error.response.status === 404) {
-          errorTitle = "Fundamento legal no encontrado";
-          errorMessage =
-            "El fundamento legal solicitado no existe o ha sido eliminado.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error interno del servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [legalBasisId],
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
         return {
           success: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         };
       }
     },
@@ -332,7 +266,7 @@ export default function useLegalBasis() {
   );
 
   /**
-   * Fetches the list of LegalBasis by name.
+   * Fetches the list of LegalBasis by name.getJurisdictions
    * @async
    * @function fetchLegalBasisByName
    * @param {string} legalName - The name or part of the name of the legal basis to retrieve.
@@ -347,32 +281,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -398,32 +317,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -449,32 +353,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -500,32 +389,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -548,32 +422,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -600,33 +459,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasisData.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -652,42 +495,19 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setLegalBasis([]);
-          setStateLegalBasis({ loading: false, error: null });
-        } else {
-          let errorTitle;
-          let errorMessage;
-          if (
-            error.response &&
-            (error.response.status === 403 || error.response.status === 401)
-          ) {
-            errorTitle = "Acceso no autorizado";
-            errorMessage =
-              "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-          } else if (error.message === "Network Error") {
-            errorTitle = "Error de conexión";
-            errorMessage =
-              "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-          } else if (error.response && error.response.status === 404) {
-            errorTitle = "Materia no encontrada";
-            errorMessage =
-              "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
-          } else if (error.response && error.response.status === 500) {
-            errorTitle = "Error en el servidor";
-            errorMessage =
-              "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-          } else {
-            errorTitle = "Error inesperado";
-            errorMessage =
-              "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-          }
-          setStateLegalBasis({
-            loading: false,
-            error: { title: errorTitle, message: errorMessage },
-          });
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateLegalBasis({
+          loading: false,
+          error: handledError,
+        });
         }
-      }
     },
     [jwt]
   );
@@ -704,7 +524,6 @@ export default function useLegalBasis() {
   const fetchLegalBasisBySubjectAndAspects = useCallback(
     async (subjectId, aspectsIds) => {
       setStateLegalBasis({ loading: true, error: null });
-
       try {
         const legalBasis = await getLegalBasisBySubjectAndAspects({
           subjectId,
@@ -714,48 +533,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasis.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-
-        if (error.response) {
-          if (
-            error.response.status === 404 &&
-            error.response.data?.message?.includes("Subject not found")
-          ) {
-            errorTitle = "Materia no encontrada";
-            errorMessage =
-              "La materia solicitada no existe o ha sido eliminada. Verifique su existencia recargando la app e intente de nuevo.";
-          } else if (
-            error.response.status === 404 &&
-            error.response.data?.errors?.notFoundIds
-          ) {
-            errorTitle = "Aspectos no encontrados";
-            errorMessage =
-              "Algunos aspectos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.";
-          } else if (
-            error.response.status === 403 ||
-            error.response.status === 401
-          ) {
-            errorTitle = "Acceso no autorizado";
-            errorMessage =
-              "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-          } else if (error.response.status === 500) {
-            errorTitle = "Error en el servidor";
-            errorMessage =
-              "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-          }
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },
@@ -784,33 +572,17 @@ export default function useLegalBasis() {
         setLegalBasis(legalBasisData.reverse());
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
-        let errorTitle;
-        let errorMessage;
-
-        if (
-          error.response &&
-          (error.response.status === 403 || error.response.status === 401)
-        ) {
-          errorTitle = "Acceso no autorizado";
-          errorMessage =
-            "No tiene permisos para ver los fundamentos legales. Verifique su sesión.";
-        } else if (error.message === "Network Error") {
-          errorTitle = "Error de conexión";
-          errorMessage =
-            "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.";
-        } else if (error.response && error.response.status === 500) {
-          errorTitle = "Error en el servidor";
-          errorMessage =
-            "Hubo un error en el servidor. Espere un momento e intente nuevamente.";
-        } else {
-          errorTitle = "Error inesperado";
-          errorMessage =
-            "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.";
-        }
-
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
         setStateLegalBasis({
           loading: false,
-          error: { title: errorTitle, message: errorMessage },
+          error: handledError,
         });
       }
     },

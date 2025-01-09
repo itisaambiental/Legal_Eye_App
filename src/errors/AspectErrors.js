@@ -44,7 +44,7 @@ class AspectErrors {
         },
         [AspectErrors.SUBJECT_NOT_FOUND]: {
             title: "Materia no encontrada",
-            message: "La materia asociada a el aspecto a crear acaba de ser eliminada. Verifique su existencia recargando la app e intente de nuevo.",
+            message: "La materia asociada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
         },
         [AspectErrors.SERVER_ERROR]: {
             title: "Error interno del servidor",
@@ -56,7 +56,7 @@ class AspectErrors {
         },
         [AspectErrors.DUPLICATED_NAME]: {
             title: "Nombre duplicado",
-            message: "El nombre del aspecto ya está en uso. Por favor, utilice otro.",
+            message: "El nombre ya está en uso. Por favor, utilice otro.",
         },
         [AspectErrors.ASSOCIATED_BASES]: {
             title: "Asociación con Fundamentos legales",

@@ -23,7 +23,7 @@ import { parseDate } from "@internationalized/date";
 import check from "../../assets/check.png";
 import cruz_icon from "../../assets/cruz.png";
 import Progress from "./Progress";
-import useWorker from "../../hooks/worker/useWorker";
+import useExtractArticles from "../../hooks/extractArticles/useExtractArticles.jsx";
 
 /**
  * Edit Modal component
@@ -155,7 +155,7 @@ function EditModal({
   fetchAspects,
 }) {
   const { legalBasisJobLoading, legalBasisJobError, fetchJobByLegalBasis } =
-    useWorker();
+    useExtractArticles();
   const [isLoading, setIsLoading] = useState(false);
   const [hasProgressJobs, setHasProgressJobs] = useState(false);
   const [showProgress, setShowProgress] = useState(false);

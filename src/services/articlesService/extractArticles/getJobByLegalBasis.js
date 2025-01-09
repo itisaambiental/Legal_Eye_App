@@ -1,4 +1,4 @@
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Retrieves the job status for a specific Legal Basis ID.

@@ -55,9 +55,9 @@ export default function Aspects() {
     useEffect(() => {
         const fetchData = async () => {
             if (id) {
+                await fetchAspects(id);
                 const { success, data } = await fetchSubjectById(id);
                 if (success && data) {
-                    await fetchAspects(id);
                     setSubjectName(data.subject_name);
                 } else {
                     setSubjectName(null);

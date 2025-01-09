@@ -24,13 +24,10 @@ export default async function updateAspect({ aspectId, aspectName, token }) {
                 }
             }
         )
-
         if (response.status !== 200) {
             throw new Error('Failed to update aspect')
         }
-
         return response.data.updatedAspect
-
     } catch (error) {
         console.error(error)
         throw error

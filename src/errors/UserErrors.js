@@ -61,6 +61,7 @@ class UserErrors {
      */
     static ErrorMessagesMap = {
       "Network Error": UserErrors.NETWORK_ERROR,
+      "Gmail already exists": UserErrors.DUPLICATED_EMAIL,
     };
   
     /**

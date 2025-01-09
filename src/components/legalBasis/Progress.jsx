@@ -10,7 +10,7 @@ import {
   Button,
   Divider 
 } from "@nextui-org/react";
-import useWorker from "../../hooks/worker/useWorker";
+import useExtractArticles from "../../hooks/extractArticles/useExtractArticles.jsx";
 import cruz_icon from "../../assets/cruz.png"
 
 const HTTP_ERRORS = [
@@ -35,7 +35,7 @@ const HTTP_ERRORS = [
  *
  */
 const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
-  const { progress, message, error, fetchJobStatus, clearError } = useWorker();
+  const { progress, message, error, fetchJobStatus, clearError } = useExtractArticles();
   const [isActive, setIsActive] = useState(true);
   const intervalRef = useRef(null);
 
@@ -49,13 +49,6 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
       return () => clearInterval(intervalRef.current);
     }
   }, [jobId, fetchJobStatus, isActive]);
-
-  useEffect(() => {
-    if (progress === 100 && !error) {
-      setIsActive(false);
-      clearInterval(intervalRef.current);
-    }
-  }, [progress, error]);
 
   useEffect(() => {
     if (error) {
@@ -178,7 +171,7 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
             color="warning"
             title={error.title}
             description={
-              error.description
+              error.message
             }
             variant="faded"
             classNames={{

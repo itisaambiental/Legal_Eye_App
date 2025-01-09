@@ -29,7 +29,7 @@ class AuthErrors {
         },
         [AuthErrors.INTERACTION_IN_PROGRESS]: {
             title: "Interacción en progreso",
-            message: "Ya hay una interacción de inicio de sesión en progreso.",
+            message: "Ya hay una interacción de inicio de sesión en progreso. Espere un momento.",
         },
         [AuthErrors.SEND_ERROR]: {
             title: "Error al enviar",

@@ -1,15 +1,14 @@
 /**
- * Class for managing and mapping errors related to authentication services.
+ * Class for managing and mapping errors related to Copomex services.
  * Centralizes error handling, mapping error codes and messages to user-friendly messages.
  */
-class AuthErrors {
+class CopomexErrors {
     static NETWORK_ERROR = "NETWORK_ERROR";
-    static INVALID_EMAIL = "INVALID_EMAIL";
-    static INVALID_CODE = "INVALID_CODE";
-    static USER_CANCELLED = "USER_CANCELLED";
-    static INTERACTION_IN_PROGRESS = "INTERACTION_IN_PROGRESS";
-    static SEND_ERROR = "SEND_ERROR";
+    static SERVER_ERROR = "SERVER_ERROR";
     static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
+    static FETCH_STATES_ERROR = "FETCH_STATES_ERROR";
+    static FETCH_MUNICIPALITIES_ERROR = "FETCH_MUNICIPALITIES_ERROR";
+    static GENERIC_ERROR = "GENERIC_ERROR";
 
     /**
      * A map of error constants to user-friendly error objects.
@@ -18,36 +17,29 @@ class AuthErrors {
      * - `message`: A detailed explanation of the error.
      */
     static errorMap = {
-        [AuthErrors.NETWORK_ERROR]: {
+        [CopomexErrors.NETWORK_ERROR]: {
             title: "Error de conexión",
             message: "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.",
         },
-        [AuthErrors.INVALID_EMAIL]: {
-            title: "Correo no válido",
-            message: "Dirección de correo no válida",
+        [CopomexErrors.SERVER_ERROR]: {
+            title: "Error en el servidor",
+            message: "Hubo un error en el servidor. Espere un momento e intente nuevamente.",
         },
-        [AuthErrors.INVALID_CODE]: {
-            title: "Código inválido",
-            message: "El código ingresado no es válido. Verifique e intente nuevamente.",
-        },
-        [AuthErrors.USER_CANCELLED]: {
-            title: "Operación cancelada",
-            message: null,
-        },
-        [AuthErrors.INTERACTION_IN_PROGRESS]: {
-            title: "Interacción en progreso",
-            message: "Ya hay una interacción de inicio de sesión en progreso.",
-        },
-        [AuthErrors.SEND_ERROR]: {
-            title: "Error al enviar",
-            message: ({ isResend }) =>
-                isResend
-                    ? "Error al reenviar el código de verificación. Intente nuevamente."
-                    : "Error al enviar el código de verificación. Intente nuevamente.",
-        },
-        [AuthErrors.UNEXPECTED_ERROR]: {
+        [CopomexErrors.UNEXPECTED_ERROR]: {
             title: "Error inesperado",
             message: "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
+        },
+        [CopomexErrors.FETCH_STATES_ERROR]: {
+            title: "Error obteniendo estados",
+            message: "Hubo un error al obtener los estados. Por favor, comuníquese con los administradores del sistema.",
+        },
+        [CopomexErrors.FETCH_MUNICIPALITIES_ERROR]: {
+            title: "Error obteniendo municipios",
+            message: "Hubo un error al obtener los municipios del estado. Por favor, comuníquese con los administradores del sistema.",
+        },
+        [CopomexErrors.GENERIC_ERROR]: {
+            title: "Error",
+            message: "Hubo un error al obtener los estados y municipios. Por favor, comuníquese con los administradores del sistema.",
         },
     };
 
@@ -55,15 +47,10 @@ class AuthErrors {
      * A map of specific error messages to their corresponding error constants.
      * This map is used to translate error messages from the server or HTTP errors into standardized error types.
      *
-     * @type {Object.<string, AuthErrors>}
+     * @type {Object.<string, CopomexErrors>}
      */
     static ErrorMessagesMap = {
-        "Network Error": AuthErrors.NETWORK_ERROR,
-        "Invalid or expired code": AuthErrors.INVALID_CODE,
-        "user_cancelled": AuthErrors.USER_CANCELLED,
-        "interaction_in_progress": AuthErrors.INTERACTION_IN_PROGRESS,
-        "Invalid email": AuthErrors.INVALID_EMAIL,
-        "Failed to send verification code": AuthErrors.SEND_ERROR,
+        "Network Error": CopomexErrors.NETWORK_ERROR,
     };
 
     /**
@@ -73,34 +60,23 @@ class AuthErrors {
      * @param {number} params.code - The HTTP status code.
      * @param {string} [params.error] - The server error message.
      * @param {string} [params.httpError] - The HTTP error message.
-     * @param {boolean} [params.isResend] - Whether this is a resend request.
      * @returns {Object} - A user-friendly error object containing a title and message.
      */
-    static handleError({ code, error, httpError, isResend }) {
+    static handleError({ code, error, httpError }) {
         const message = error || httpError;
-        if (message && AuthErrors.ErrorMessagesMap[message]) {
-            const key = AuthErrors.ErrorMessagesMap[message];
-            const errorConfig = AuthErrors.errorMap[key];
-            if (key === AuthErrors.SEND_ERROR) {
-                return {
-                    title: errorConfig.title,
-                    message: errorConfig.message({ isResend }),
-                };
-            }
-
-            return errorConfig;
+        if (message && CopomexErrors.ErrorMessagesMap[message]) {
+            return CopomexErrors.errorMap[CopomexErrors.ErrorMessagesMap[message]];
         }
         switch (code) {
             case 400:
-                return AuthErrors.errorMap[AuthErrors.INVALID_CODE];
-            case 401:
-                return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
-            case 403:
-                return AuthErrors.errorMap[AuthErrors.INVALID_EMAIL];
+                return CopomexErrors.errorMap[CopomexErrors.GENERIC_ERROR];
+            case 500:
+            case 503:
+                return CopomexErrors.errorMap[CopomexErrors.SERVER_ERROR];
             default:
-                return AuthErrors.errorMap[AuthErrors.UNEXPECTED_ERROR];
+                return CopomexErrors.errorMap[CopomexErrors.UNEXPECTED_ERROR];
         }
     }
 }
 
-export default AuthErrors;
+export default CopomexErrors;

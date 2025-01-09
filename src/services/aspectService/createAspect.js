@@ -25,13 +25,10 @@ export default async function createNewAspect({ subjectId, aspectName, token }) 
                 }
             }
         )
-
         if (response.status !== 201) {
             throw new Error('Failed to create aspect')
         }
-
         return response.data.aspect
-
     } catch (error) {
         console.error(error)
         throw error

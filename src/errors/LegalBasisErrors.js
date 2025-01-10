@@ -88,6 +88,7 @@ class LegalBasisErrors {
     "A document must be provided if extractArticles is true": LegalBasisErrors.DOCUMENT_REQUIRED,
     "Subject not found": LegalBasisErrors.SUBJECT_NOT_FOUND,
     "Aspects not found for IDs": LegalBasisErrors.ASPECTS_NOT_FOUND,
+    "Cannot delete LegalBasis with pending jobs": LegalBasisErrors.PENDING_JOBS_CONFLICT,
     "Cannot delete Legal Bases with pending jobs": LegalBasisErrors.MULTIPLE_PENDING_JOBS_CONFLICT,
   };
 

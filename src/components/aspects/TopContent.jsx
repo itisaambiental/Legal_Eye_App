@@ -45,7 +45,7 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
           variant="solid"
           className="flex w-auto items-center h-9 flex-shrink-0"
           startContent={<img src={flecha_icon} alt="Back Icon" className="w-6 h-6 flex-shrink-0" />}
-          onClick={handleBack}
+          onPress={handleBack}
         >
           Volver
         </Button>
@@ -66,7 +66,7 @@ function TopContent({ subjectName, onRowsPerPageChange, totalAspects, openModalC
           <div className="flex gap-3 ml-auto">
             <Button
               color="primary"
-              onClick={openModalCreate}
+              onPress={openModalCreate}
               endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4 flex-shrink-0" />}
             >
               Nuevo Aspecto

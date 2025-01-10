@@ -4,7 +4,7 @@ import Unauthorized from './components/Unauthorized.jsx'
 import Login from "./components/users/auth/Login.jsx"
 import ResetPassword from './components/users/auth/ResetPassword.jsx'
 import VerifyCode from './components/users/auth/VerifyCode.jsx'
-import CompleteReset from './components/users/auth/CompleteReset.js'
+import CompleteReset from './components/users/auth/CompleteReset.jsx'
 import AccessUser from './middleware/access_user.jsx'
 import AccessAdmin from './middleware/access_admin.jsx'
 import Dashboard from "./components/Dashboard.jsx"

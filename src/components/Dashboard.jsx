@@ -90,7 +90,7 @@ function Dashboard() {
                                             </p>
                                             <p className="font-normal mb-1 text-secondary">{email || "example@isaambiental.com"}</p>
                                         </DropdownItem>
-                                        <DropdownItem textValue='Cerrar Sesión'  startContent={<img src={logout_icon} alt="Logout Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onClick={handleLogout}>
+                                        <DropdownItem textValue='Cerrar Sesión'  startContent={<img src={logout_icon} alt="Logout Icon" className="w-4 h-4 flex-shrink-0" />} className='mt-1 hover:bg-red/20' key="logout" onPress={handleLogout}>
                                             <p className="font-normal text-red ml-20">Cerrar Sesión</p>
                                         </DropdownItem>
                                     </DropdownMenu>

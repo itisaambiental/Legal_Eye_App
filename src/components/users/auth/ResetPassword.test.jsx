@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
-import ResetPassword from "./ResetPassword";
+import ResetPassword from "./ResetPassword.jsx";
 import useUser from "../../../hooks/user/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 

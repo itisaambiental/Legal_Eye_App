@@ -17,7 +17,7 @@ import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
-import LegalBasisErrors from "../../errors/LegalBasisErrors";
+import LegalBasisErrors from "../../errors/legalBasis/LegalBasisErrors";
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
  * @returns {Object} - Contains LegalBasis list, loading state, error state, and functions for LegalBasis operations.
@@ -672,7 +672,6 @@ export default function useLegalBasis() {
           error.response?.data?.errors?.LegalBases?.map(
             (legalBase) => legalBase.name
           ) || legalBasisIds;
-
         const handledError = LegalBasisErrors.handleError({
           code: errorCode,
           error: serverMessage,

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
-import Login from "./Login";
+import Login from "./Login.jsx";
 import useUser from "../../../hooks/user/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 

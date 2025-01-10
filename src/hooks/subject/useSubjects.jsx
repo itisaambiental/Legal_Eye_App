@@ -6,7 +6,7 @@ import createNewSubject from "../../services/subjectService/createSubject.js";
 import updateSubject from "../../services/subjectService/updateSubject.js";
 import deleteSubject from "../../services/subjectService/deleteSubject.js";
 import deleteSubjects from "../../services/subjectService/deleteSubjects.js";
-import SubjectErrors from "../../errors/SubjectErrors.js";
+import SubjectErrors from "../../errors/subjects/SubjectErrors.js";
 
 /**
  * Custom hook for managing subjects and performing CRUD operations.

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import getStates from "../../services/copomexService/getStates";
 import getMunicipalitiesByState from "../../services/copomexService/getMunicipalitiesByState";
-import CopomexErrors from "../../errors/CopomexErrors";
+import CopomexErrors from "../../errors/copomex/CopomexErrors";
 
 /**
  * Custom hook for managing States and Municipalities.

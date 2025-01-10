@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import getDocumentByUrl from "../../services/legalBaseService/getDocumentByUrl";
-import FileErrors from "../../errors/FileErrors";
+import FileErrors from "../../errors/files/FileErrors";
 
 /**
  * Custom hook for managing file downloads and errors.

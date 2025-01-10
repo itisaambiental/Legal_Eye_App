@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getRoles from "../../services/userService/getRoles.js";
-import UserErrors from "../../errors/UserErrors.js";
+import UserErrors from "../../errors/users/UserErrors.js";
 
 /**
  * Custom hook for fetching and managing user roles data.

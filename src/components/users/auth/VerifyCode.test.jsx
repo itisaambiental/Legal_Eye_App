@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
-import VerifyCode from "./VerifyCode";
+import VerifyCode from "./VerifyCode.jsx";
 import useUser from "../../../hooks/user/useAuth.jsx";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 

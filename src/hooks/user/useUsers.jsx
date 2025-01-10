@@ -7,7 +7,7 @@ import deleteUserById from "../../services/userService/deleteUserById.js";
 import deleteUsers from "../../services/userService/deleteUsers.js";
 import getUserByRoleId from "../../services/userService/getUserByRole.js";
 import { jwtDecode } from "jwt-decode";
-import UserErrors from "../../errors/UserErrors.js";
+import UserErrors from "../../errors/users/UserErrors.js";
 
 /**
  * Custom hook for managing users and performing CRUD operations.

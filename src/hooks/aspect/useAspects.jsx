@@ -5,7 +5,7 @@ import createNewAspect from '../../services/aspectService/createAspect.js';
 import updateAspect from '../../services/aspectService/updateAspect.js';
 import deleteAspect from '../../services/aspectService/deleteAspect.js';
 import deleteAspects from '../../services/aspectService/deleteAspects.js';
-import AspectErrors from '../../errors/AspectErrors.js';
+import AspectErrors from '../../errors/aspects/AspectErrors.js';
 
 /**
  * Custom hook for managing aspects and retrieving them based on a specific subject.

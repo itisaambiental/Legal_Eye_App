@@ -330,6 +330,7 @@ export default function Users() {
         totalUsers={filteredUsers.length}
         capitalize={capitalize}
         openModalCreate={openModalCreate}
+        value={filterValue}
         onFilterChange={handleFilterChange}
         onClear={onClear}
         selectedValue={selectedValue}

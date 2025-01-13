@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import VerifyCode from "./VerifyCode.jsx";
-import useUser from "../../../hooks/user/useAuth.jsx";
+import useAuth from "../../../hooks/user/auth/useAuth.jsx";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 // Mocking hooks and dependencies
@@ -26,7 +26,7 @@ describe("VerifyCode Component", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers();
-        useUser.mockReturnValue({
+        useAuth.mockReturnValue({
             verify_code: mockVerifyCode,
             reset_password: mockResetPassword,
             isVerifyCodeLoading: false,
@@ -97,8 +97,8 @@ describe("VerifyCode Component", () => {
     });
 
     test("displays error message on verify code error", async () => {
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             hasVerifyCodeError: "Código incorrecto",
         });
 
@@ -120,8 +120,8 @@ describe("VerifyCode Component", () => {
     });
 
     test("displays error message when resending code fails", async () => {
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             hasResetPasswordError: "Error al reenviar el código",
         });
 

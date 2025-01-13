@@ -1,11 +1,11 @@
 import { useContext, useState, useCallback } from "react";
-import Context from "../../context/userContext.jsx";
-import login_user from "../../services/userService/login.js";
-import resetPassword from "../../services/userService/reset_password.js";
-import { msalInstance } from "../../config/msalConfig.js";
-import login_user_microsoft from "../../services/userService/login_microsoft.js";
-import sendNewPassword from "../../services/userService/sendNewPassword.js";
-import AuthErrors from "../../errors/users/auth/AuthErrors.js";
+import Context from "../../../context/userContext.jsx";
+import login_user from "../../../services/userService/login.js";
+import resetPassword from "../../../services/userService/reset_password.js";
+import { msalInstance } from "../../../config/msalConfig.js";
+import login_user_microsoft from "../../../services/userService/login_microsoft.js";
+import sendNewPassword from "../../../services/userService/sendNewPassword.js";
+import AuthErrors from "../../../errors/users/auth/AuthErrors.js";
 
 const loginRequest = {
   scopes: ["openid", "profile", "User.Read"],

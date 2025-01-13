@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import ResetPassword from "./ResetPassword.jsx";
-import useUser from "../../../hooks/user/useAuth.jsx";
+import useAuth from "../../../hooks/user/auth/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // Mocking hooks and dependencies
@@ -25,7 +25,7 @@ describe("ResetPassword Component", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers();
-        useUser.mockReturnValue({
+        useAuth.mockReturnValue({
             reset_password: mockResetPassword,
             isResetPasswordLoading: false,
             hasResetPasswordError: null,
@@ -92,8 +92,8 @@ describe("ResetPassword Component", () => {
     });
 
     test("displays error message on reset password error", async () => {
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             reset_password: mockResetPassword,
             hasResetPasswordError: "Error al enviar el correo",
         });

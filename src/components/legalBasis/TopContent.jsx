@@ -112,7 +112,6 @@ function TopContent({
           color="primary"
           variant="faded"
           isClearable
-          label="Buscar por nombre..."
           value={filterByName}
           className="w-full"
           placeholder="Buscar por nombre..."
@@ -130,7 +129,6 @@ function TopContent({
           color="primary"
           variant="faded"
           isClearable
-          label="Buscar por abreviatura..."
           value={filterByAbbreviation}
           className="w-full"
           placeholder="Buscar por abreviatura..."
@@ -147,7 +145,6 @@ function TopContent({
         <Autocomplete
           color="primary"
           variant="faded"
-          label="Buscar por materia..."
           defaultItems={subjects}
           isLoading={subjectLoading}
           onClear={onClear}
@@ -175,7 +172,6 @@ function TopContent({
         <Autocomplete
           color="primary"
           variant="faded"
-          label="Buscar por clasificación..."
           defaultItems={classifications}
           isLoading={classificationsLoading}
           onClear={onClear}
@@ -206,7 +202,6 @@ function TopContent({
         <Autocomplete
           color="primary"
           variant="faded"
-          label="Buscar por jurisdicción..."
           defaultItems={jurisdictions}
           isLoading={jurisdictionsLoading}
           onClear={onClear}
@@ -237,7 +232,6 @@ function TopContent({
         <Autocomplete
           color="primary"
           variant="faded"
-          label="Buscar por estado..."
           defaultItems={states.map((estado) => ({ id: estado, name: estado }))}
           isLoading={stateLoading}
           onClear={onClear}
@@ -272,7 +266,6 @@ function TopContent({
               items={municipalities.map((municipio) => ({ id: municipio, name: municipio }))}
               onClear={onClear}
               variant="faded"
-              label="Buscar por municipio..."
               placeholder="Buscar por municipio..."
               startContent={
                 <img
@@ -316,7 +309,6 @@ function TopContent({
               items={aspects}
               onClear={onClear}
               variant="faded"
-              label="Buscar por aspecto..."
               placeholder="Buscar por aspecto..."
               startContent={
                 <img
@@ -355,12 +347,12 @@ function TopContent({
             value={lastReformRange} 
             showMonthAndYearPickers
             onChange={onFilterByLastReformRange} 
-            size="sm"
+            radius="sm"
             variant="faded"
-            aria-label="Buscar por última reforma"
+            aria-label="Buscar por última reforma..."
+            label="Buscar por última reforma..."
             isInvalid={lastReformIsInvalid}
             errorMessage={lastReformIsInvalid ? lastReformError : " "}
-            label="Buscar por última reforma..."
             classNames={{
               base: "h-12 relative", 
               input: "text-xs",

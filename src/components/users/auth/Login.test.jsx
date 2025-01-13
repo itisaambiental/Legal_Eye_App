@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import Login from "./Login.jsx";
-import useUser from "../../../hooks/user/useAuth.jsx";
+import useAuth from "../../../hooks/user/auth/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
 // Mocking the hooks and dependencies
@@ -23,7 +23,7 @@ describe("Login Component", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers(); 
-        useUser.mockReturnValue({
+        useAuth.mockReturnValue({
             isLoginLoading: false,
             hasLoginError: false,
             login: mockLogin,
@@ -100,8 +100,8 @@ describe("Login Component", () => {
     });
 
     test("calls login function and onLogin callback on successful login", async () => {
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             isLogged: true,
         });
     
@@ -125,8 +125,8 @@ describe("Login Component", () => {
         expect(mockNavigate).toHaveBeenCalledWith("/");
     });
     test("displays error message on login error", async () => {
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             hasLoginError: true,
         });
     
@@ -182,10 +182,10 @@ describe("Login Component", () => {
     
     test("displays error message when Microsoft login fails", async () => {
         const errorMessage = "Error al iniciar sesión con Microsoft";
-        useUser.mockReturnValue({
-            ...useUser(),
+        useAuth.mockReturnValue({
+            ...useAuth(),
             login_microsoft: vi.fn(() => {
-                useUser().setStateMicrosoft({ loading: false, error: errorMessage });
+                useAuth().setStateMicrosoft({ loading: false, error: errorMessage });
             }),
             stateMicrosoft: { loading: false, error: errorMessage }
         });

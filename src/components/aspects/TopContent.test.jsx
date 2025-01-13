@@ -2,7 +2,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TopContent from "./TopContent";
-import { vi } from "vitest";
 import { useNavigate } from "react-router-dom";
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -37,7 +36,7 @@ describe("TopContent Component", () => {
     );
 
     expect(screen.getByText("Aspectos de la materia: Mathematics")).toBeInTheDocument();
-    expect(screen.getByText("Aspectos Totales: 10")).toBeInTheDocument();
+    expect(screen.getByText("Aspectos totales: 10")).toBeInTheDocument();
   });
 
   test("navigates back to subjects when back button is clicked", () => {

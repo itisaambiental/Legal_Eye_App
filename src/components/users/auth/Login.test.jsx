@@ -5,7 +5,7 @@ import useAuth from "../../../hooks/user/auth/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
 // Mocking the hooks and dependencies
-vi.mock("../../../hooks/user/useAuth.jsx", () => ({
+vi.mock("../../../hooks/user/auth/useAuth.jsx", () => ({
     __esModule: true,
     default: vi.fn(),
 }));

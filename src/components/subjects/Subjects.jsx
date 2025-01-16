@@ -13,8 +13,8 @@ import {
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";
-import BottomContent from "./BottomContent.jsx";
-import Error from "../Error.jsx";
+import BottomContent from "../utils/BottomContent.jsx";
+import Error from "../utils/Error.jsx";
 import SubjectCell from "./SubjectCell.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
@@ -24,8 +24,8 @@ import EditModal from "./EditModal.jsx";
 import { useNavigate } from "react-router-dom";
 
 const columns = [
-  { name: "Materia", uid: "subject_name" },
-  { name: "Acciones", uid: "actions" },
+  { name: "Materia", uid: "subject_name", align: "start" },
+  { name: "Acciones", uid: "actions", align: "center" },
 ];
 
 /**
@@ -62,7 +62,7 @@ export default function Subjects() {
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    nombre: "",
+    name: "",
   });
   const filteredSubjects = useMemo(() => {
     if (!filterValue) return subjects;
@@ -89,7 +89,7 @@ export default function Subjects() {
     const { value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      nombre: value,
+      name: value,
     }));
     if (nameError && value.trim() !== "") {
       setNameError(null);
@@ -104,7 +104,7 @@ export default function Subjects() {
   const openModalCreate = () => {
     setFormData({
       id: "",
-      nombre: "",
+      name: "",
     });
     setIsCreateModalOpen(true);
   };
@@ -140,6 +140,8 @@ export default function Subjects() {
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
 
+  console.log(subjects)
+
   const handleDelete = useCallback(
     async (subjectId) => {
       const toastId = toast.loading("Eliminando materia...", {
@@ -156,7 +158,7 @@ export default function Subjects() {
             type: "info",
             icon: <img src={check} alt="Success Icon" />,
             progressStyle: {
-                background: '#113c53',
+              background: "#113c53",
             },
             isLoading: false,
             autoClose: 3000,
@@ -165,8 +167,8 @@ export default function Subjects() {
           toast.update(toastId, {
             render: error,
             type: "error",
-            icon: null, 
-            progressStyle: {}, 
+            icon: null,
+            progressStyle: {},
             isLoading: false,
             autoClose: 5000,
           });
@@ -204,11 +206,13 @@ export default function Subjects() {
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
-        onRowsPerPageChange={onRowsPerPageChange}
-        totalSubjects={filteredSubjects.length}
-        openModalCreate={openModalCreate}
-        onFilterChange={handleFilterChange}
-        onClear={onClear}
+        config={{
+          onRowsPerPageChange: onRowsPerPageChange,
+          totalSubjects: filteredSubjects.length,
+          openModalCreate: openModalCreate,
+          onFilterChange: handleFilterChange,
+          onClear: onClear,
+        }}
       />
       <Table
         aria-label="Tabla de Materias"
@@ -219,10 +223,7 @@ export default function Subjects() {
       >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
+            <TableColumn key={column.uid} align={column.align}>
               {column.name}
             </TableColumn>
           )}
@@ -267,50 +268,57 @@ export default function Subjects() {
         )}
       </div>
       <BottomContent
-        page={page}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-        onPreviousPage={onPreviousPage}
-        onNextPage={onNextPage}
-        selectedKeys={selectedKeys}
-        filteredItems={filteredSubjects}
+        config={{
+          page: page,
+          totalPages: totalPages,
+          onPageChange: onPageChange,
+          onPreviousPage: onPreviousPage,
+          onNextPage: onNextPage,
+          selectedKeys: selectedKeys,
+          filteredItems: filteredSubjects,
+        }}
       />
       {isCreateModalOpen && (
         <CreateModal
-          closeModalCreate={closeModalCreate}
-          isOpen={isCreateModalOpen}
-          addSubject={addSubject}
-          formData={formData}
-          nameError={nameError}
-          setNameError={setNameError}
-          handleNameChange={handleNameChange}
+          config={{
+            isOpen: isCreateModalOpen,
+            closeModalCreate: closeModalCreate,
+            addSubject: addSubject,
+            formData: formData,
+            nameError: nameError,
+            setNameError: setNameError,
+            handleNameChange: handleNameChange,
+          }}
         />
       )}
       {isEditModalOpen && (
         <EditModal
-          formData={formData}
-          setFormData={setFormData}
-          selectedSubject={selectedSubject}
-          closeModalEdit={closeEditModal}
-          isOpen={isEditModalOpen}
-          updateSubject={modifySubject}
-          nameError={nameError}
-          setNameError={setNameError}
-          handleNameChange={handleNameChange}
+          config={{
+            formData: formData,
+            setFormData: setFormData,
+            isOpen: isEditModalOpen,
+            updateSubject: modifySubject,
+            closeModalEdit: closeEditModal,
+            selectedSubject: selectedSubject,
+            nameError: nameError,
+            setNameError: setNameError,
+            handleNameChange: handleNameChange,
+          }}
         />
       )}
-
       {showDeleteModal && (
         <DeleteModal
-          showDeleteModal={showDeleteModal}
-          closeDeleteModal={closeDeleteModal}
-          setIsDeletingBatch={setIsDeletingBatch}
-          isDeletingBatch={isDeletingBatch}
-          selectedKeys={selectedKeys}
-          subjects={filteredSubjects}
-          deleteSubjectsBatch={deleteSubjectsBatch}
-          setSelectedKeys={setSelectedKeys}
-          check={check}
+          config={{
+            showDeleteModal: showDeleteModal,
+            closeDeleteModal: closeDeleteModal,
+            setIsDeletingBatch: setIsDeletingBatch,
+            isDeletingBatch: isDeletingBatch,
+            selectedKeys: selectedKeys,
+            subjects: filteredSubjects,
+            deleteSubjectsBatch: deleteSubjectsBatch,
+            setSelectedKeys: setSelectedKeys,
+            check: check,
+          }}
         />
       )}
     </div>

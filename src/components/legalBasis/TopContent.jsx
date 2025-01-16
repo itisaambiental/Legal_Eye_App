@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from "prop-types";
 import {
   Input,
   Button,
@@ -11,100 +11,101 @@ import {
 } from "@nextui-org/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";
-import {I18nProvider} from "@react-aria/i18n";
-
+import { I18nProvider } from "@react-aria/i18n";
 
 /**
  * TopContent component
  *
  * This component renders the top section of the Legal Basis management interface.
- * It includes search filters for name, abbreviation, subject, classification, jurisdiction, state, and municipality,
- * as well as controls for pagination and the ability to add new legal basis entries.
+ * It includes search filters for various parameters, pagination controls, and
+ * the ability to add new legal basis entries.
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {boolean} props.isCreateModalOpen - Indicates whether the create modal is open.
- * @param {boolean} props.isEditModalOpen - Indicates whether the edit modal is open.
- * @param {Function} props.onRowsPerPageChange - Callback to handle changes in the number of rows displayed per page.
- * @param {number} props.totalLegalBasis - The total number of legal basis entries.
- * @param {Function} props.openModalCreate - Callback to open the modal for creating a new legal basis.
- * @param {string} props.filterByName - Current value of the name filter input.
- * @param {Function} props.onFilterByName - Callback to handle changes in the name filter input.
- * @param {string} props.filterByAbbreviation - Current value of the abbreviation filter input.
- * @param {Function} props.onFilterByAbbreviation - Callback to handle changes in the abbreviation filter input.
- * @param {Function} props.onClear - Callback to reset all filters and reload the data.
- * @param {Array<Object>} props.subjects - List of available subjects for filtering.
- * @param {boolean} props.subjectLoading - Indicates whether subjects are currently being loaded.
- * @param {string} props.selectedSubject - The currently selected subject for filtering.
- * @param {Function} props.onFilterBySubject - Callback to filter data by selected subject.
- * @param {Array<Object>} props.aspects - List of available aspects for filtering.
- * @param {boolean} props.aspectLoading - Indicates whether aspects are currently being loaded.
- * @param {Array<string>} props.selectedAspects - The currently selected aspects for filtering.
- * @param {Function} props.onFilterByAspects - Callback to filter data by selected aspects.
- * @param {Array<Object>} props.classifications - List of available classifications for filtering.
- * @param {string} props.selectedClassification - The currently selected classification for filtering.
- * @param {boolean} props.classificationsLoading - Indicates whether classifications are currently being loaded.
- * @param {Function} props.onFilterByClassification - Callback to filter data by selected classification.
- * @param {Array<Object>} props.jurisdictions - List of available jurisdictions for filtering.
- * @param {string} props.selectedJurisdiction - The currently selected jurisdiction for filtering.
- * @param {boolean} props.jurisdictionsLoading - Indicates whether jurisdictions are currently being loaded.
- * @param {Function} props.onFilterByJurisdiction - Callback to filter data by selected jurisdiction.
- * @param {Array<string>} props.states - List of available states for filtering.
- * @param {string} props.selectedState - The currently selected state for filtering.
- * @param {boolean} props.stateLoading - Indicates whether states are currently being loaded.
- * @param {Function} props.onFilterByState - Callback to filter data by selected state.
- * @param {Array<string>} props.municipalities - List of available municipalities for filtering.
- * @param {Set<string>} props.selectedMunicipalities - The currently selected municipalities for filtering.
- * @param {boolean} props.municipalitiesLoading - Indicates whether municipalities are currently being loaded.
- * @param {Function} props.onFilterByMunicipalities - Callback to filter data by selected municipalities.
- * @param {Object} props.lastReformRange - Object containing the start and end dates of the reform range.
- * @param {boolean} props.lastReformIsInvalid - Indicates whether the selected reform range is invalid.
- * @param {string} props.lastReformError - Error message displayed for the reform range input.
- * @param {Function} props.onFilterByLastReformRange - Callback to filter data by reform range.
+ * @param {Object} props.config - Configuration object for the component.
+ * @param {boolean} props.config.isCreateModalOpen - Indicates whether the create modal is open.
+ * @param {boolean} props.config.isEditModalOpen - Indicates whether the edit modal is open.
+ * @param {Function} props.config.onRowsPerPageChange - Callback to handle changes in rows per page.
+ * @param {number} props.config.totalLegalBasis - Total number of legal basis entries.
+ * @param {Function} props.config.openModalCreate - Function to open the create modal.
+ * @param {string} props.config.filterByName - Current value of the name filter.
+ * @param {Function} props.config.onFilterByName - Callback for name filter changes.
+ * @param {string} props.config.filterByAbbreviation - Current value of the abbreviation filter.
+ * @param {Function} props.config.onFilterByAbbreviation - Callback for abbreviation filter changes.
+ * @param {Function} props.config.onClear - Callback to reset all filters.
+ * @param {Array<Object>} props.config.subjects - List of subjects for filtering.
+ * @param {string} props.config.selectedSubject - Currently selected subject.
+ * @param {boolean} props.config.subjectLoading - Indicates if subjects are loading.
+ * @param {Function} props.config.onFilterBySubject - Callback for subject filter changes.
+ * @param {Array<Object>} props.config.aspects - List of aspects for filtering.
+ * @param {Array<string>} props.config.selectedAspects - Selected aspects.
+ * @param {boolean} props.config.aspectLoading - Indicates if aspects are loading.
+ * @param {Function} props.config.onFilterByAspects - Callback for aspect filter changes.
+ * @param {Array<Object>} props.config.classifications - List of classifications for filtering.
+ * @param {string} props.config.selectedClassification - Selected classification.
+ * @param {boolean} props.config.classificationsLoading - Indicates if classifications are loading.
+ * @param {Function} props.config.onFilterByClassification - Callback for classification changes.
+ * @param {Array<Object>} props.config.jurisdictions - List of jurisdictions for filtering.
+ * @param {string} props.config.selectedJurisdiction - Selected jurisdiction.
+ * @param {boolean} props.config.jurisdictionsLoading - Indicates if jurisdictions are loading.
+ * @param {Function} props.config.onFilterByJurisdiction - Callback for jurisdiction changes.
+ * @param {Array<string>} props.config.states - List of states for filtering.
+ * @param {string} props.config.selectedState - Selected state.
+ * @param {boolean} props.config.stateLoading - Indicates if states are loading.
+ * @param {Function} props.config.onFilterByState - Callback for state filter changes.
+ * @param {Array<string>} props.config.municipalities - List of municipalities for filtering.
+ * @param {Set<string>} props.config.selectedMunicipalities - Selected municipalities.
+ * @param {boolean} props.config.municipalitiesLoading - Indicates if municipalities are loading.
+ * @param {Function} props.config.onFilterByMunicipalities - Callback for municipality filter changes.
+ * @param {Object} props.config.lastReformRange - Object with start and end dates for the reform range.
+ * @param {boolean} props.config.lastReformIsInvalid - Indicates if the reform range is invalid.
+ * @param {string} props.config.lastReformError - Error message for the reform range.
+ * @param {Function} props.config.onFilterByLastReformRange - Callback for reform range filter changes.
  *
  * @returns {JSX.Element} Rendered component displaying filters, controls, and pagination options.
  */
+function TopContent({ config }) {
+  const {
+    isCreateModalOpen,
+    isEditModalOpen,
+    onRowsPerPageChange,
+    totalLegalBasis,
+    openModalCreate,
+    filterByName,
+    filterByAbbreviation,
+    onFilterByName,
+    onFilterByAbbreviation,
+    onClear,
+    subjects,
+    selectedSubject,
+    subjectLoading,
+    onFilterBySubject,
+    aspects,
+    selectedAspects,
+    aspectLoading,
+    onFilterByAspects,
+    classifications,
+    selectedClassification,
+    classificationsLoading,
+    onFilterByClassification,
+    jurisdictions,
+    selectedJurisdiction,
+    jurisdictionsLoading,
+    onFilterByJurisdiction,
+    states,
+    selectedState,
+    stateLoading,
+    onFilterByState,
+    municipalities,
+    selectedMunicipalities,
+    municipalitiesLoading,
+    onFilterByMunicipalities,
+    lastReformRange,
+    lastReformIsInvalid,
+    lastReformError,
+    onFilterByLastReformRange,
+  } = config;
 
-function TopContent({
-  isCreateModalOpen,
-  isEditModalOpen,
-  onRowsPerPageChange,
-  totalLegalBasis,
-  openModalCreate,
-  filterByName,
-  filterByAbbreviation,
-  onFilterByName,
-  onFilterByAbbreviation,
-  onClear,
-  subjects,
-  selectedSubject,
-  subjectLoading,
-  onFilterBySubject,
-  aspects,
-  selectedAspects,
-  aspectLoading,
-  onFilterByAspects,
-  classifications,
-  selectedClassification,
-  classificationsLoading,
-  onFilterByClassification,
-  jurisdictions,
-  selectedJurisdiction,
-  jurisdictionsLoading,
-  onFilterByJurisdiction,
-  states,
-  selectedState,
-  stateLoading,
-  onFilterByState,
-  municipalities,
-  selectedMunicipalities,
-  municipalitiesLoading,
-  onFilterByMunicipalities,
-  lastReformRange,
-  lastReformIsInvalid,
-  lastReformError,
-  onFilterByLastReformRange
-}) {
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -263,7 +264,10 @@ function TopContent({
           <div className="w-full">
             <Select
               color="primary"
-              items={municipalities.map((municipio) => ({ id: municipio, name: municipio }))}
+              items={municipalities.map((municipio) => ({
+                id: municipio,
+                name: municipio,
+              }))}
               onClear={onClear}
               variant="faded"
               placeholder="Buscar por municipio..."
@@ -275,7 +279,9 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen}
+              isLoading={
+                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen
+              }
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
               listboxProps={{
@@ -318,7 +324,9 @@ function TopContent({
                 />
               }
               className="w-full"
-              isLoading={aspectLoading && !isCreateModalOpen && !isEditModalOpen}
+              isLoading={
+                aspectLoading && !isCreateModalOpen && !isEditModalOpen
+              }
               selectionMode="multiple"
               selectedKeys={selectedAspects}
               listboxProps={{
@@ -344,9 +352,9 @@ function TopContent({
         </Tooltip>
         <I18nProvider locale="es">
           <DateRangePicker
-            value={lastReformRange} 
+            value={lastReformRange}
             showMonthAndYearPickers
-            onChange={onFilterByLastReformRange} 
+            onChange={onFilterByLastReformRange}
             radius="sm"
             variant="faded"
             aria-label="Buscar por última reforma..."
@@ -354,10 +362,9 @@ function TopContent({
             isInvalid={lastReformIsInvalid}
             errorMessage={lastReformIsInvalid ? lastReformError : " "}
             classNames={{
-              base: "h-12 relative", 
+              base: "h-12 relative",
               input: "text-xs",
-              errorMessage: "absolute mt-1 text-xs", 
-             
+              errorMessage: "absolute mt-1 text-xs",
             }}
           />
         </I18nProvider>
@@ -396,5 +403,69 @@ function TopContent({
     </div>
   );
 }
+
+TopContent.propTypes = {
+  config: PropTypes.shape({
+    isCreateModalOpen: PropTypes.bool.isRequired,
+    isEditModalOpen: PropTypes.bool.isRequired,
+    onRowsPerPageChange: PropTypes.func.isRequired,
+    totalLegalBasis: PropTypes.number.isRequired,
+    openModalCreate: PropTypes.func.isRequired,
+    filterByName: PropTypes.string.isRequired,
+    onFilterByName: PropTypes.func.isRequired,
+    filterByAbbreviation: PropTypes.string.isRequired,
+    onFilterByAbbreviation: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
+    subjects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        subject_name: PropTypes.string,
+      })
+    ).isRequired,
+    selectedSubject: PropTypes.string,
+    subjectLoading: PropTypes.bool.isRequired,
+    onFilterBySubject: PropTypes.func.isRequired,
+    aspects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        aspect_name: PropTypes.string,
+      })
+    ).isRequired,
+    selectedAspects: PropTypes.arrayOf(PropTypes.string),
+    aspectLoading: PropTypes.bool.isRequired,
+    onFilterByAspects: PropTypes.func.isRequired,
+    classifications: PropTypes.arrayOf(
+      PropTypes.shape({
+        classification_name: PropTypes.string,
+      })
+    ).isRequired,
+    selectedClassification: PropTypes.string,
+    classificationsLoading: PropTypes.bool.isRequired,
+    onFilterByClassification: PropTypes.func.isRequired,
+    jurisdictions: PropTypes.arrayOf(
+      PropTypes.shape({
+        jurisdiction_name: PropTypes.string,
+      })
+    ).isRequired,
+    selectedJurisdiction: PropTypes.string,
+    jurisdictionsLoading: PropTypes.bool.isRequired,
+    onFilterByJurisdiction: PropTypes.func.isRequired,
+    states: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedState: PropTypes.string,
+    stateLoading: PropTypes.bool.isRequired,
+    onFilterByState: PropTypes.func.isRequired,
+    municipalities: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedMunicipalities: PropTypes.instanceOf(Set),
+    municipalitiesLoading: PropTypes.bool.isRequired,
+    onFilterByMunicipalities: PropTypes.func.isRequired,
+    lastReformRange: PropTypes.shape({
+      start: PropTypes.string,
+      end: PropTypes.string,
+    }).isRequired,
+    lastReformIsInvalid: PropTypes.bool.isRequired,
+    lastReformError: PropTypes.string,
+    onFilterByLastReformRange: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default TopContent;

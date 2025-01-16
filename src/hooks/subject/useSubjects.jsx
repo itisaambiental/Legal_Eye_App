@@ -129,13 +129,9 @@ export default function useSubjects() {
           subjectName,
           token: jwt,
         });
-        const formattedSubject = {
-          id: updatedSubject.id,
-          subject_name: updatedSubject.subjectName,
-        };
         setSubjects((prevSubjects) =>
           prevSubjects.map((subject) =>
-            subject.id === id ? formattedSubject : subject
+            subject.id === id ? updatedSubject : subject
           )
         );
         return { success: true };

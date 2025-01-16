@@ -13,9 +13,9 @@ import {
 import useUsers from "../../hooks/user/useUsers.jsx";
 import TopContent from "./TopContent";
 import DeleteModal from "./deleteModal.jsx";
-import BottomContent from "./BottomContent";
+import BottomContent from "../utils/BottomContent.jsx";
 import UserCell from "./UsersCell.jsx";
-import Error from "../Error.jsx";
+import Error from "../utils/Error.jsx";
 import useRoles from "../../hooks/user/useRoles.jsx";
 import trash_icon from "../../assets/papelera-mas.png";
 import CreateModal from "./CreateModal.jsx";
@@ -24,9 +24,9 @@ import { toast } from "react-toastify";
 import EditModal from "./EditModal.jsx";
 
 const columns = [
-  { name: "Nombre", uid: "name" },
-  { name: "Rol", uid: "role" },
-  { name: "Acciones", uid: "actions" },
+  { name: "Nombre", uid: "name", align: "start" },
+  { name: "Rol", uid: "role", align: "start" },
+  { name: "Acciones", uid: "actions", align: "center" },
 ];
 
 function translateRole(role) {
@@ -85,7 +85,7 @@ export default function Users() {
   const [formData, setFormData] = useState({
     id: "",
     user_type: "",
-    nombre: "",
+    name: "",
     email: "",
     profile_picture: null,
   });
@@ -100,7 +100,7 @@ export default function Users() {
     const { value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      nombre: value,
+      name: value,
     }));
     if (nameError && value.trim() !== "") {
       setNameError(null);
@@ -218,7 +218,7 @@ export default function Users() {
     setFormData({
       id: "",
       user_type: "",
-      nombre: "",
+      name: "",
       email: "",
       profile_picture: null,
     });
@@ -274,7 +274,7 @@ export default function Users() {
             type: "info",
             icon: <img src={check} alt="Success Icon" />,
             progressStyle: {
-              background: '#113c53',
+              background: "#113c53",
             },
             isLoading: false,
             autoClose: 3000,
@@ -284,7 +284,7 @@ export default function Users() {
             render: error,
             type: "error",
             icon: null,
-            progressStyle: {}, 
+            progressStyle: {},
             isLoading: false,
             autoClose: 5000,
           });
@@ -325,20 +325,21 @@ export default function Users() {
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
-        roles={roles}
-        onRowsPerPageChange={onRowsPerPageChange}
-        totalUsers={filteredUsers.length}
-        capitalize={capitalize}
-        openModalCreate={openModalCreate}
-        value={filterValue}
-        onFilterChange={handleFilterChange}
-        onClear={onClear}
-        selectedValue={selectedValue}
-        selectedRoleKeys={selectedRoleKeys}
-        onRoleChange={onRoleChange}
-        translateRole={translateRole}
+        config={{
+          roles: roles,
+          onRowsPerPageChange: onRowsPerPageChange,
+          totalUsers: filteredUsers.length,
+          capitalize: capitalize,
+          openModalCreate: openModalCreate,
+          value: filterValue,
+          onFilterChange: handleFilterChange,
+          onClear: onClear,
+          selectedValue: selectedValue,
+          selectedRoleKeys: selectedRoleKeys,
+          onRoleChange: onRoleChange,
+          translateRole: translateRole,
+        }}
       />
-
       <>
         {IsSearching || loading ? (
           <div
@@ -357,10 +358,7 @@ export default function Users() {
           >
             <TableHeader columns={columns}>
               {(column) => (
-                <TableColumn
-                  key={column.uid}
-                  align={column.uid === "actions" ? "center" : "start"}
-                >
+                <TableColumn key={column.uid} align={column.align}>
                   {column.name}
                 </TableColumn>
               )}
@@ -390,7 +388,6 @@ export default function Users() {
           </Table>
         )}
       </>
-
       <div className="relative w-full">
         {(selectedKeys.size > 0 || selectedKeys === "all") && (
           <Tooltip content="Eliminar" size="sm">
@@ -406,75 +403,78 @@ export default function Users() {
           </Tooltip>
         )}
       </div>
-
       <BottomContent
-        page={page}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-        onPreviousPage={onPreviousPage}
-        onNextPage={onNextPage}
-        selectedKeys={selectedKeys}
-        filteredItems={filteredUsers}
+        config={{
+          page: page,
+          totalPages: totalPages,
+          onPageChange: onPageChange,
+          onPreviousPage: onPreviousPage,
+          onNextPage: onNextPage,
+          selectedKeys: selectedKeys,
+          filteredItems: filteredUsers,
+        }}
       />
-
       {isCreateModalOpen && (
         <CreateModal
-          closeModalCreate={closeModalCreate}
-          isOpen={isCreateModalOpen}
-          addUser={addUser}
-          handleEmailChange={handleEmailChange}
-          formData={formData}
-          usertypeError={usertypeError}
-          setusertypeError={setusertypeError}
-          handleTypeChange={handleTypeChange}
-          nameError={nameError}
-          setNameError={setNameError}
-          handleNameChange={handleNameChange}
-          handleFileChange={handleFileChange}
-          fileError={fileError}
-          handleRemoveImage={handleRemoveImage}
-          setEmailError={setEmailError}
-          emailError={emailError}
-          roles={roles}
-          translateRole={translateRole}
+          config={{
+            isOpen: isCreateModalOpen,
+            closeModalCreate: closeModalCreate,
+            addUser: addUser,
+            handleEmailChange: handleEmailChange,
+            formData: formData,
+            usertypeError: usertypeError,
+            setusertypeError: setusertypeError,
+            handleTypeChange: handleTypeChange,
+            nameError: nameError,
+            setNameError: setNameError,
+            handleNameChange: handleNameChange,
+            handleFileChange: handleFileChange,
+            fileError: fileError,
+            handleRemoveImage: handleRemoveImage,
+            setEmailError: setEmailError,
+            emailError: emailError,
+            roles: roles,
+            translateRole: translateRole,
+          }}
         />
       )}
-
       {isEditModalOpen && (
         <EditModal
-          formData={formData}
-          setFormData={setFormData}
-          selectedUser={selectedUser}
-          closeModalEdit={closeEditModal}
-          isOpen={isEditModalOpen}
-          updateUserDetails={updateUserDetails}
-          usertypeError={usertypeError}
-          setusertypeError={setusertypeError}
-          handleTypeChange={handleTypeChange}
-          nameError={nameError}
-          setNameError={setNameError}
-          handleNameChange={handleNameChange}
-          handleFileChange={handleFileChange}
-          fileError={fileError}
-          handleRemoveImage={handleRemoveImage}
-          roles={roles}
-          translateRole={translateRole}
+          config={{
+            formData: formData,
+            setFormData: setFormData,
+            selectedUser: selectedUser,
+            closeModalEdit: closeEditModal,
+            isOpen: isEditModalOpen,
+            updateUserDetails: updateUserDetails,
+            usertypeError: usertypeError,
+            setusertypeError: setusertypeError,
+            handleTypeChange: handleTypeChange,
+            nameError: nameError,
+            setNameError: setNameError,
+            handleNameChange: handleNameChange,
+            handleFileChange: handleFileChange,
+            fileError: fileError,
+            handleRemoveImage: handleRemoveImage,
+            roles: roles,
+            translateRole: translateRole,
+          }}
         />
       )}
-
-      {showDeleteModal && (
-        <DeleteModal
-          showDeleteModal={showDeleteModal}
-          closeDeleteModal={closeDeleteModal}
-          setIsDeletingBatch={setIsDeletingBatch}
-          isDeletingBatch={isDeletingBatch}
-          selectedKeys={selectedKeys}
-          users={filteredUsers}
-          deleteUsersBatch={deleteUsersBatch}
-          setSelectedKeys={setSelectedKeys}
-          check={check}
-        />
-      )}
+      <DeleteModal
+        config={{
+          showDeleteModal: showDeleteModal,
+          closeDeleteModal: closeDeleteModal,
+          setIsDeletingBatch: setIsDeletingBatch,
+          isDeletingBatch: isDeletingBatch,
+          selectedKeys: selectedKeys,
+          users: filteredUsers,
+          deleteUsersBatch: deleteUsersBatch,
+          setSelectedKeys: setSelectedKeys,
+          check: check,
+        }}
+      />
     </div>
   );
+  
 }

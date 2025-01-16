@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
 import {
   Modal,
@@ -23,143 +23,149 @@ import { parseDate } from "@internationalized/date";
 import check from "../../assets/check.png";
 import cruz_icon from "../../assets/cruz.png";
 import Progress from "./Progress";
-import useExtractArticles from "../../hooks/extractArticles/useExtractArticles.jsx";
+import useExtractArticles from "../../hooks/articles/extractArticles/useExtractArticles.jsx";
 
 /**
- * Edit Modal component
+ * EditModal component
  *
  * This component allows users to edit a legal basis.
  * It includes dynamic validations based on jurisdiction, management of
  * aspects, states, and municipalities, and supports file uploads.
  *
  * @component
- *
  * @param {Object} props - Component properties.
- * @param {boolean} props.isOpen - Indicates whether the modal is open.
- * @param {Function} props.closeModalEdit - Function to close the modal.
- * @param {Object} props.formData - Form data for the legal basis.
- * @param {Function} props.setFormData - Function to update form data.
- * @param {Object} props.selectedLegalBase - The Legal Base object selected for editing.
- * @param {Function} props.editLegalBasis - Function to edit a legal basis.
- * @param {string|null} props.nameError - Error message for the "Name" field.
- * @param {Function} props.setNameError - Function to set the "Name" field error message.
- * @param {Function} props.handleNameChange - Function to handle changes in the "Name" field.
- * @param {string|null} props.abbreviationError - Error message for the "Abbreviation" field.
- * @param {Function} props.setAbbreviationError - Function to set the "Abbreviation" field error message.
- * @param {Function} props.handleAbbreviationChange - Function to handle changes in the "Abbreviation" field.
- * @param {string|null} props.classificationError - Error message for the "Classification" field.
- * @param {Function} props.setClassificationError - Function to set the "Classification" field error message.
- * @param {Function} props.handleClassificationChange - Function to handle changes in the "Classification" field.
- * @param {string|null} props.jurisdictionError - Error message for the "Jurisdiction" field.
- * @param {Function} props.setJurisdictionError - Function to set the "Jurisdiction" field error message.
- * @param {Function} props.handleJurisdictionChange - Function to handle changes in the "Jurisdiction" field.
- * @param {Array<string>} props.states - List of states available for selection.
- * @param {string|null} props.stateError - Error message for the "State" field.
- * @param {Function} props.setStateError - Function to set the "State" field error message.
- * @param {boolean} props.isStateActive - Indicates whether the state field is active.
- * @param {Function} props.handleStateChange - Function to handle changes in the "State" field.
- * @param {Function} props.clearMunicipalities - Function to clear selected municipalities.
- * @param {Array<string>} props.municipalities - List of municipalities available for selection.
- * @param {string|null} props.municipalityError - Error message for the "Municipality" field.
- * @param {Function} props.setMunicipalityError - Function to set the "Municipality" field error message.
- * @param {boolean} props.isMunicipalityActive - Indicates whether the municipality field is active.
- * @param {boolean} props.loadingMunicipalities - Indicates if municipalities are loading.
- * @param {string|null} props.errorMunicipalities - Error message when municipalities cannot be loaded.
- * @param {Function} props.handleMunicipalityChange - Function to handle changes in the "Municipality" field.
- * @param {Array<Object>} props.subjects - List of subjects available for selection.
- * @param {string|null} props.subjectInputError - Error message for the "Subject" field.
- * @param {Function} props.setSubjectError - Function to set the "Subject" field error message.
- * @param {Function} props.handleSubjectChange - Function to handle changes in the "Subject" field.
- * @param {Array<Object>} props.aspects - List of aspects available for selection.
- * @param {string|null} props.aspectError - Error message for the "Aspects" field.
- * @param {Function} props.setAspectInputError - Function to set the "Aspects" field error message.
- * @param {boolean} props.isAspectsActive - Indicates whether the aspects field is active.
- * @param {boolean} props.loadingAspects - Indicates if aspects are loading.
- * @param {string|null} props.errorAspects - Error message when aspects cannot be loaded.
- * @param {Function} props.handleAspectsChange - Function to handle changes in the "Aspects" field.
- * @param {string|null} props.lastReformError - Error message for the "Last Reform" field.
- * @param {Function} props.setLastReformError - Function to set the "Last Reform" field error message.
- * @param {Function} props.handleLastReformChange - Function to handle changes in the "Last Reform" field.
- * @param {Function} props.handleFileChange - Function to handle file uploads.
- * @param {string|null} props.fileError - Error message for the file upload field.
- * @param {Function} props.handleRemoveDocument - Function to handle document removal.
- * @param {string|null} props.checkboxInputError - Error message for the "Extract Articles" checkbox.
- * @param {Function} props.setCheckboxInputError - Function to set the checkbox error message.
- * @param {boolean} props.isCheckboxChecked - Indicates if the "Extract Articles" checkbox is checked.
- * @param {Function} props.handleCheckboxChange - Function to handle changes in the checkbox.
- * @param {Function} props.setIsStateActive - Function to set whether the state field is active.
- * @param {Function} props.setIsMunicipalityActive - Function to set whether the municipality field is active.
- * @param {Function} props.setIsAspectsActive - Function to set whether the aspects field is active.
- * @param {Function} props.clearAspects - Function to clear selected aspects.
- * @param {Function} props.fetchMunicipalities - Function to fetch municipalities for a state.
- * @param {Function} props.fetchAspects - Function to fetch aspects for a subject.
+ * @param {Object} props.config - Configuration object for the component.
+ * @param {boolean} props.config.isOpen - Indicates whether the modal is open.
+ * @param {Function} props.config.closeModalEdit - Function to close the modal.
+ * @param {Function} props.config.goToArticles - Function to navigate to articles of the Legal Base.
+ * @param {Object} props.config.formData - Form data for the legal basis.
+ * @param {Function} props.config.setFormData - Function to update form data.
+ * @param {Object} props.config.selectedLegalBase - The Legal Base object selected for editing.
+ * @param {Function} props.config.editLegalBasis - Function to edit a legal basis.
+ * @param {string|null} props.config.nameError - Error message for the "Name" field.
+ * @param {Function} props.config.setNameError - Function to set the "Name" field error message.
+ * @param {Function} props.config.handleNameChange - Function to handle changes in the "Name" field.
+ * @param {string|null} props.config.abbreviationError - Error message for the "Abbreviation" field.
+ * @param {Function} props.config.setAbbreviationError - Function to set the "Abbreviation" field error message.
+ * @param {Function} props.config.handleAbbreviationChange - Function to handle changes in the "Abbreviation" field.
+ * @param {string|null} props.config.classificationError - Error message for the "Classification" field.
+ * @param {Function} props.config.setClassificationError - Function to set the "Classification" field error message.
+ * @param {Function} props.config.handleClassificationChange - Function to handle changes in the "Classification" field.
+ * @param {string|null} props.config.jurisdictionError - Error message for the "Jurisdiction" field.
+ * @param {Function} props.config.setJurisdictionError - Function to set the "Jurisdiction" field error message.
+ * @param {Function} props.config.handleJurisdictionChange - Function to handle changes in the "Jurisdiction" field.
+ * @param {Array<string>} props.config.states - List of states available for selection.
+ * @param {string|null} props.config.stateError - Error message for the "State" field.
+ * @param {Function} props.config.setStateError - Function to set the "State" field error message.
+ * @param {boolean} props.config.isStateActive - Indicates whether the state field is active.
+ * @param {Function} props.config.handleStateChange - Function to handle changes in the "State" field.
+ * @param {Function} props.config.clearMunicipalities - Function to clear selected municipalities.
+ * @param {Array<string>} props.config.municipalities - List of municipalities available for selection.
+ * @param {string|null} props.config.municipalityError - Error message for the "Municipality" field.
+ * @param {Function} props.config.setMunicipalityError - Function to set the "Municipality" field error message.
+ * @param {boolean} props.config.isMunicipalityActive - Indicates whether the municipality field is active.
+ * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are loading.
+ * @param {string|null} props.config.errorMunicipalities - Error message when municipalities cannot be loaded.
+ * @param {Function} props.config.handleMunicipalityChange - Function to handle changes in the "Municipality" field.
+ * @param {Array<Object>} props.config.subjects - List of subjects available for selection.
+ * @param {string|null} props.config.subjectInputError - Error message for the "Subject" field.
+ * @param {Function} props.config.setSubjectError - Function to set the "Subject" field error message.
+ * @param {Function} props.config.handleSubjectChange - Function to handle changes in the "Subject" field.
+ * @param {Array<Object>} props.config.aspects - List of aspects available for selection.
+ * @param {string|null} props.config.aspectError - Error message for the "Aspects" field.
+ * @param {Function} props.config.setAspectInputError - Function to set the "Aspects" field error message.
+ * @param {boolean} props.config.isAspectsActive - Indicates whether the aspects field is active.
+ * @param {boolean} props.config.loadingAspects - Indicates if aspects are loading.
+ * @param {string|null} props.config.errorAspects - Error message when aspects cannot be loaded.
+ * @param {Function} props.config.handleAspectsChange - Function to handle changes in the "Aspects" field.
+ * @param {string|null} props.config.lastReformError - Error message for the "Last Reform" field.
+ * @param {Function} props.config.setLastReformError - Function to set the "Last Reform" field error message.
+ * @param {Function} props.config.handleLastReformChange - Function to handle changes in the "Last Reform" field.
+ * @param {Function} props.config.handleFileChange - Function to handle file uploads.
+ * @param {string|null} props.config.fileError - Error message for the file upload field.
+ * @param {Function} props.config.handleRemoveDocument - Function to handle document removal.
+ * @param {string|null} props.config.checkboxInputError - Error message for the "Extract Articles" checkbox.
+ * @param {Function} props.config.setCheckboxInputError - Function to set the checkbox error message.
+ * @param {boolean} props.config.isCheckboxChecked - Indicates if the "Extract Articles" checkbox is checked.
+ * @param {Function} props.config.handleCheckboxChange - Function to handle changes in the checkbox.
+ * @param {Function} props.config.setIsStateActive - Function to set whether the state field is active.
+ * @param {Function} props.config.setIsMunicipalityActive - Function to set whether the municipality field is active.
+ * @param {Function} props.config.setIsAspectsActive - Function to set whether the aspects field is active.
+ * @param {Function} props.config.clearAspects - Function to clear selected aspects.
+ * @param {Function} props.config.fetchMunicipalities - Function to fetch municipalities for a state.
+ * @param {Function} props.config.fetchAspects - Function to fetch aspects for a subject.
  */
-function EditModal({
-  isOpen,
-  closeModalEdit,
-  formData,
-  editLegalBasis,
-  setFormData,
-  selectedLegalBase,
-  nameError,
-  setNameError,
-  handleNameChange,
-  abbreviationError,
-  setAbbreviationError,
-  handleAbbreviationChange,
-  classificationError,
-  setClassificationError,
-  handleClassificationChange,
-  jurisdictionError,
-  setJurisdictionError,
-  handleJurisdictionChange,
-  states,
-  stateError,
-  setStateError,
-  isStateActive,
-  handleStateChange,
-  clearMunicipalities,
-  municipalities,
-  municipalityError,
-  setMunicipalityError,
-  isMunicipalityActive,
-  loadingMunicipalities,
-  errorMunicipalities,
-  handleMunicipalityChange,
-  subjects,
-  subjectInputError,
-  setSubjectError,
-  handleSubjectChange,
-  aspects,
-  aspectError,
-  setAspectInputError,
-  isAspectsActive,
-  loadingAspects,
-  errorAspects,
-  handleAspectsChange,
-  lastReformError,
-  setLastReformError,
-  handleLastReformChange,
-  handleFileChange,
-  fileError,
-  handleRemoveDocument,
-  checkboxInputError,
-  setCheckboxInputError,
-  isCheckboxChecked,
-  handleCheckboxChange,
-  setIsStateActive,
-  setIsMunicipalityActive,
-  setIsAspectsActive,
-  clearAspects,
-  fetchMunicipalities,
-  fetchAspects,
-}) {
+
+function EditModal({ config }) {
+  const {
+    isOpen,
+    closeModalEdit,
+    formData,
+    goToArticles,
+    editLegalBasis,
+    setFormData,
+    selectedLegalBase,
+    nameError,
+    setNameError,
+    handleNameChange,
+    abbreviationError,
+    setAbbreviationError,
+    handleAbbreviationChange,
+    classificationError,
+    setClassificationError,
+    handleClassificationChange,
+    jurisdictionError,
+    setJurisdictionError,
+    handleJurisdictionChange,
+    states,
+    stateError,
+    setStateError,
+    isStateActive,
+    handleStateChange,
+    clearMunicipalities,
+    municipalities,
+    municipalityError,
+    setMunicipalityError,
+    isMunicipalityActive,
+    loadingMunicipalities,
+    errorMunicipalities,
+    handleMunicipalityChange,
+    subjects,
+    subjectInputError,
+    setSubjectError,
+    handleSubjectChange,
+    aspects,
+    aspectError,
+    setAspectInputError,
+    isAspectsActive,
+    loadingAspects,
+    errorAspects,
+    handleAspectsChange,
+    lastReformError,
+    setLastReformError,
+    handleLastReformChange,
+    handleFileChange,
+    fileError,
+    handleRemoveDocument,
+    checkboxInputError,
+    setCheckboxInputError,
+    isCheckboxChecked,
+    handleCheckboxChange,
+    setIsStateActive,
+    setIsMunicipalityActive,
+    setIsAspectsActive,
+    clearAspects,
+    fetchMunicipalities,
+    fetchAspects,
+  } = config;
+
   const { legalBasisJobLoading, legalBasisJobError, fetchJobByLegalBasis } =
     useExtractArticles();
   const [isLoading, setIsLoading] = useState(false);
   const [hasProgressJobs, setHasProgressJobs] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [jobId, setJobId] = useState(null);
+  const [legalBaseId, setLegalBaseId] = useState(null);
   const inputFileRef = useRef(null);
 
   useEffect(() => {
@@ -169,7 +175,7 @@ function EditModal({
         : null;
       setFormData({
         id: selectedLegalBase.id,
-        nombre: selectedLegalBase.legal_name,
+        name: selectedLegalBase.legal_name,
         abbreviation: selectedLegalBase.abbreviation,
         classification: selectedLegalBase.classification,
         jurisdiction: selectedLegalBase.jurisdiction,
@@ -281,6 +287,7 @@ function EditModal({
     setJobId(null);
     setHasProgressJobs(false);
     setShowProgress(false);
+    setLegalBaseId(null);
     closeModalEdit();
   };
 
@@ -288,6 +295,7 @@ function EditModal({
     setJobId(null);
     setHasProgressJobs(false);
     setShowProgress(false);
+    setLegalBaseId(null);
   };
 
   const onCompleteFinishAfter = () => {
@@ -295,6 +303,8 @@ function EditModal({
     setShowProgress(false);
     setHasProgressJobs(false);
     closeModalEdit();
+    goToArticles(legalBaseId);
+    setLegalBaseId(null);
   };
 
   const handleReload = () => {
@@ -305,7 +315,7 @@ function EditModal({
     e.preventDefault();
     setIsLoading(true);
 
-    if (formData.nombre === "") {
+    if (formData.name === "") {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -418,7 +428,7 @@ function EditModal({
     try {
       const legalBasisData = {
         id: formData.id,
-        legalName: formData.nombre,
+        legalName: formData.name,
         abbreviation: formData.abbreviation,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
@@ -434,8 +444,9 @@ function EditModal({
             : null,
         removeDocument: formData.document === null,
       };
-      const { success, error, jobId } = await editLegalBasis(legalBasisData);
-
+      const { success, error, jobId, legalBasis } = await editLegalBasis(
+        legalBasisData
+      );
       if (success) {
         toast.info("El fundamento legal ha sido editado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -443,12 +454,12 @@ function EditModal({
             background: "#113c53",
           },
         });
-
         if (!jobId) {
           onClose();
         } else {
           setJobId(jobId);
           setShowProgress(true);
+          setLegalBaseId(legalBasis.id);
         }
       } else {
         toast.error(error);
@@ -507,21 +518,21 @@ function EditModal({
             }
           />
         ) : hasProgressJobs ? (
-            <Progress
-              jobId={jobId}
-              onComplete={onCompleteFinishBefore}
-              onClose={onClose}
-              labelTop="Podrás editar el fundamento cuando los artículos se hayan extraído del documento."
-              labelButton="Editar ahora"
-            />
+          <Progress
+            jobId={jobId}
+            onComplete={onCompleteFinishBefore}
+            onClose={onClose}
+            labelTop="Podrás editar el fundamento cuando los artículos se hayan extraído del documento."
+            labelButton="Editar ahora"
+          />
         ) : showProgress ? (
-            <Progress
-              jobId={jobId}
-              onComplete={onCompleteFinishAfter}
-              onClose={onClose}
-              labelTop="Podrás ver los artículos del fundamento cuando se hayan extraído del documento."
-              labelButton="Ver artículos"
-            />
+          <Progress
+            jobId={jobId}
+            onComplete={onCompleteFinishAfter}
+            onClose={onClose}
+            labelTop="Podrás ver los artículos del fundamento cuando se hayan extraído del documento."
+            labelButton="Ver artículos"
+          />
         ) : (
           <>
             <ModalHeader className="flex flex-col gap-1 text-md">
@@ -535,7 +546,7 @@ function EditModal({
                       type="text"
                       name="nombre"
                       id="floating_nombre"
-                      value={formData.nombre}
+                      value={formData.name}
                       onChange={handleNameChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
                       placeholder=""
@@ -799,7 +810,14 @@ function EditModal({
                     onClick={() => inputFileRef.current.click()}
                     className="w-full px-4 py-2 border rounded-md bg-gray-100 hover:bg-gray-200 hover:border-primary relative"
                   >
-                    <span className="block truncate">
+                    <span
+                      className="block truncate"
+                      title={
+                        formData.document
+                          ? formData.document.file.name
+                          : "Selecciona un Documento"
+                      }
+                    >
                       {formData.document
                         ? formData.document.file.name
                         : "Selecciona un Documento"}
@@ -885,5 +903,69 @@ function EditModal({
     </Modal>
   );
 }
+
+EditModal.propTypes = {
+  config: PropTypes.shape({
+    isOpen: PropTypes.bool.isRequired,
+    closeModalEdit: PropTypes.func.isRequired,
+    goToArticles: PropTypes.func.isRequired,
+    formData: PropTypes.object.isRequired,
+    setFormData: PropTypes.func.isRequired,
+    selectedLegalBase: PropTypes.object,
+    editLegalBasis: PropTypes.func.isRequired,
+    nameError: PropTypes.string,
+    setNameError: PropTypes.func.isRequired,
+    handleNameChange: PropTypes.func.isRequired,
+    abbreviationError: PropTypes.string,
+    setAbbreviationError: PropTypes.func.isRequired,
+    handleAbbreviationChange: PropTypes.func.isRequired,
+    classificationError: PropTypes.string,
+    setClassificationError: PropTypes.func.isRequired,
+    handleClassificationChange: PropTypes.func.isRequired,
+    jurisdictionError: PropTypes.string,
+    setJurisdictionError: PropTypes.func.isRequired,
+    handleJurisdictionChange: PropTypes.func.isRequired,
+    states: PropTypes.array.isRequired,
+    stateError: PropTypes.string,
+    setStateError: PropTypes.func.isRequired,
+    isStateActive: PropTypes.bool.isRequired,
+    handleStateChange: PropTypes.func.isRequired,
+    clearMunicipalities: PropTypes.func.isRequired,
+    municipalities: PropTypes.array.isRequired,
+    municipalityError: PropTypes.string,
+    setMunicipalityError: PropTypes.func.isRequired,
+    isMunicipalityActive: PropTypes.bool.isRequired,
+    loadingMunicipalities: PropTypes.bool.isRequired,
+    errorMunicipalities: PropTypes.object,
+    handleMunicipalityChange: PropTypes.func.isRequired,
+    subjects: PropTypes.array.isRequired,
+    subjectInputError: PropTypes.string,
+    setSubjectError: PropTypes.func.isRequired,
+    handleSubjectChange: PropTypes.func.isRequired,
+    aspects: PropTypes.array.isRequired,
+    aspectError: PropTypes.string,
+    setAspectInputError: PropTypes.func.isRequired,
+    isAspectsActive: PropTypes.bool.isRequired,
+    loadingAspects: PropTypes.bool.isRequired,
+    errorAspects: PropTypes.object,
+    handleAspectsChange: PropTypes.func.isRequired,
+    lastReformError: PropTypes.string,
+    setLastReformError: PropTypes.func.isRequired,
+    handleLastReformChange: PropTypes.func.isRequired,
+    handleFileChange: PropTypes.func.isRequired,
+    fileError: PropTypes.string,
+    handleRemoveDocument: PropTypes.func.isRequired,
+    checkboxInputError: PropTypes.string,
+    setCheckboxInputError: PropTypes.func.isRequired,
+    isCheckboxChecked: PropTypes.bool.isRequired,
+    handleCheckboxChange: PropTypes.func.isRequired,
+    setIsStateActive: PropTypes.func.isRequired,
+    setIsMunicipalityActive: PropTypes.func.isRequired,
+    setIsAspectsActive: PropTypes.func.isRequired,
+    clearAspects: PropTypes.func.isRequired,
+    fetchMunicipalities: PropTypes.func.isRequired,
+    fetchAspects: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default EditModal;

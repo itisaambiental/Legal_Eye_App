@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useCallback } from "react";
 import {
   Dropdown,
@@ -12,27 +13,32 @@ import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
 import send_icon from "../../assets/enviar_blue.png";
+
 /**
  * LegalBasisCell component
  *
  * Functional component used for rendering table cells based on column keys.
  * It handles various types of data in the table, including legal name, abbreviation, classification, jurisdiction,
  * state, municipality, last reform, subject, aspects, and actions.
- * Each case checks for the corresponding column key and returns the appropriate JSX to display the cell's content.
  *
  * @component
- *
- * @param {Object} props - The component's props.
+ * @param {Object} props - Component properties.
  * @param {Object} props.legalBase - The legal basis data object containing all relevant details for a row.
  * @param {string} props.columnKey - The column key that determines which data should be rendered in the cell.
- *  * @param {Function} props.openEditModal - Function to open the edit modal for the legal Base.
+ * @param {Function} props.openEditModal - Function to open the edit modal for the legal Base.
+ * @param {Function} props.goToArticles - Function to navigate to articles of the Legal Base.
  * @param {Function} props.handleDelete - Function to handle deletion of the legal basis.
  * @param {Function} props.handleDownloadDocument - Function to handle the download of the legal base document.
- * 
- * @returns {JSX.Element|null} - Returns the JSX element for the cell content based on the column key, or null if no match is found.
+ * @returns {JSX.Element|null} Rendered cell content based on the column key.
  */
-
-const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, handleDownloadDocument }) => {
+const LegalBasisCell = ({
+  legalBase,
+  columnKey,
+  openEditModal,
+  goToArticles,
+  handleDelete,
+  handleDownloadDocument,
+}) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
       case "legal_name":
@@ -153,6 +159,7 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
                   className="hover:bg-primary/20"
                   key="watch"
                   textValue="Ver Articulos"
+                  onPress={() => goToArticles(legalBase.id)}
                 >
                   <p className="font-normal text-primary">Ver Articulos</p>
                 </DropdownItem>
@@ -168,7 +175,9 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
                   className="hover:bg-primary/20"
                   key="download"
                   textValue="Descargar Documento"
-                  onPress={() => handleDownloadDocument(legalBase.url, legalBase.legal_name)}
+                  onPress={() =>
+                    handleDownloadDocument(legalBase.url, legalBase.legal_name)
+                  }
                 >
                   <p className="font-normal text-primary">
                     Descargar Documento
@@ -203,9 +212,7 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
                   textValue="Editar Fundamento"
                   onPress={() => openEditModal(legalBase)}
                 >
-                  <p className="font-normal text-primary">
-                    Editar Fundamento
-                  </p>
+                  <p className="font-normal text-primary">Editar Fundamento</p>
                 </DropdownItem>
                 <DropdownItem
                   aria-label="Eliminar Fundamento"
@@ -231,9 +238,45 @@ const LegalBasisCell = ({ legalBase, columnKey, openEditModal, handleDelete, han
       default:
         return null;
     }
-  }, [legalBase, columnKey, openEditModal, handleDelete, handleDownloadDocument]);
+  }, [
+    legalBase,
+    columnKey,
+    openEditModal,
+    goToArticles,
+    handleDelete,
+    handleDownloadDocument,
+  ]);
 
   return renderCell();
+};
+
+LegalBasisCell.propTypes = {
+  legalBase: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    legal_name: PropTypes.string,
+    abbreviation: PropTypes.string,
+    classification: PropTypes.string,
+    jurisdiction: PropTypes.string,
+    state: PropTypes.string,
+    municipality: PropTypes.string,
+    last_reform: PropTypes.string,
+    url: PropTypes.string,
+    subject: PropTypes.shape({
+      subject_name: PropTypes.string,
+    }),
+    aspects: PropTypes.arrayOf(
+      PropTypes.shape({
+        aspect_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+          .isRequired,
+        aspect_name: PropTypes.string.isRequired,
+      })
+    ),
+  }).isRequired,
+  columnKey: PropTypes.string.isRequired,
+  openEditModal: PropTypes.func.isRequired,
+  goToArticles: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  handleDownloadDocument: PropTypes.func.isRequired,
 };
 
 export default LegalBasisCell;

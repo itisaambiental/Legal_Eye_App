@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from "prop-types";
 import { useEffect, useState, useRef } from "react";
 import {
   CircularProgress,
@@ -8,10 +8,10 @@ import {
   CardFooter,
   Alert,
   Button,
-  Divider 
+  Divider,
 } from "@nextui-org/react";
-import useExtractArticles from "../../hooks/extractArticles/useExtractArticles.jsx";
-import cruz_icon from "../../assets/cruz.png"
+import useExtractArticles from "../../hooks/articles/extractArticles/useExtractArticles.jsx";
+import cruz_icon from "../../assets/cruz.png";
 
 const HTTP_ERRORS = [
   "Solicitud inválida",
@@ -29,13 +29,14 @@ const HTTP_ERRORS = [
  * @param {string} props.jobId - The ID of the job to track.
  * @param {Function} props.onComplete - Callback function to be called when the job is complete.
  * @param {Function} props.onClose - Callback function to be called when the parent component is closed.
-  * @param {string} props.labelTop - Dynamic text displayed on the top.
+ * @param {string} props.labelTop - Dynamic text displayed on the top.
  * @param {string} props.labelButton - Dynamic text displayed on the button.
  * @returns {JSX.Element} The rendered component.
  *
  */
 const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
-  const { progress, message, error, fetchJobStatus, clearError } = useExtractArticles();
+  const { progress, message, error, fetchJobStatus, clearError } =
+    useExtractArticles();
   const [isActive, setIsActive] = useState(true);
   const intervalRef = useRef(null);
 
@@ -96,9 +97,11 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
   return (
     <Card className="w-full h-full border-none">
       <CardHeader className="flex">
-        <p className={`text-md ${error ? "text-red" : "text-primary"}`}>{labelTop}</p>
+        <p className={`text-md ${error ? "text-red" : "text-primary"}`}>
+          {labelTop}
+        </p>
         <Button
-            className={`hover:${error ? "bg-danger/20" : "bg-primary/20"} 
+          className={`hover:${error ? "bg-danger/20" : "bg-primary/20"} 
               text-${error ? "text-red" : "text-primary"} 
               active:${error ? "bg-red/10" : "bg-primary/10"} 
               -mt-6`}
@@ -108,7 +111,7 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
           onPress={onClose}
           isIconOnly
         >
-            <img src={cruz_icon} alt="Menu" className="w-3 h-3" />
+          <img src={cruz_icon} alt="Menu" className="w-3 h-3" />
         </Button>
       </CardHeader>
       <Divider />
@@ -118,8 +121,9 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
             svg: `w-36 h-36 drop-shadow-md`,
             indicator: error ? "stroke-red" : "stroke-primary",
             track: error ? "stroke-red/10" : "stroke-primary/10",
-            value: `text-3xl font-semibold ${error ? "text-red" : "text-primary"
-              }`,
+            value: `text-3xl font-semibold ${
+              error ? "text-red" : "text-primary"
+            }`,
           }}
           showValueLabel={true}
           value={progress || 0}
@@ -170,9 +174,7 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
           <Alert
             color="warning"
             title={error.title}
-            description={
-              error.message
-            }
+            description={error.message}
             variant="faded"
             classNames={{
               base: "bg-red/10 border-red",
@@ -187,6 +189,14 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
       </CardFooter>
     </Card>
   );
+};
+
+Progress.propTypes = {
+  jobId: PropTypes.string.isRequired,
+  onComplete: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  labelTop: PropTypes.string.isRequired,
+  labelButton: PropTypes.string.isRequired,
 };
 
 export default Progress;

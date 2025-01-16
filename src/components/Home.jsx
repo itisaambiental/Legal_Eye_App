@@ -1,7 +1,7 @@
-import useUserProfile from '../hooks/user/useUserProfile.jsx';
-import { useNavigate } from 'react-router-dom';
-import Error from './Error.jsx';
-import { Spinner } from '@nextui-org/react';
+import useUserProfile from "../hooks/user/useUserProfile.jsx";
+import { useNavigate } from "react-router-dom";
+import Error from "./utils/Error.jsx";
+import { Spinner } from "@nextui-org/react";
 
 /**
  * Home component
@@ -13,15 +13,20 @@ function Home() {
   const { name, loading, error } = useUserProfile();
   const navigate = useNavigate();
 
-  
   const handleClick = () => {
-    navigate('/legal_basis');
+    navigate("/legal_basis");
   };
 
   if (loading) {
     return (
-      <div role="status" className="fixed inset-0 flex items-center justify-center">
-        <Spinner className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" color="secondary" />
+      <div
+        role="status"
+        className="fixed inset-0 flex items-center justify-center"
+      >
+        <Spinner
+          className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
+          color="secondary"
+        />
       </div>
     );
   }
@@ -33,8 +38,12 @@ function Home() {
   return (
     <section className="bg-gray-50 mt-12 text-center justify-center  flex flex-col items-center -ml-64">
       <div className="py-8 px-4 max-w-screen-xl text-center lg:py-16 z-10 relative container xs:mx-auto sm:mx-auto md:mx-auto lg:mx-36 xl:mx-64 lg:pl-80">
-        <h1 className="mb-4 text-3xl font-extrabold tracking-tight leading-none text-primary dark:text-white sm:text-2xl md:text-5xl lg:text-6xl">Bienvenido {name || "Invitado"}</h1>
-        <p className="mb-8 text-lg font-normal text-secondary lg:text-xl sm:px-12 lg:px-44 sm:text-sm md:text-base">Dale click aca abajo para empezar</p>
+        <h1 className="mb-4 text-3xl font-extrabold tracking-tight leading-none text-primary dark:text-white sm:text-2xl md:text-5xl lg:text-6xl">
+          Bienvenido {name || "Invitado"}
+        </h1>
+        <p className="mb-8 text-lg font-normal text-secondary lg:text-xl sm:px-12 lg:px-44 sm:text-sm md:text-base">
+          Dale click aca abajo para empezar
+        </p>
         <form className="w-full max-w-md mx-auto sm:w-full md:w-3/4 lg:w-1/2">
           <div className="relative">
             <button
@@ -42,8 +51,20 @@ function Home() {
               className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary hover:bg-primary/80 sm:text-sm md:text-base"
             >
               Comenzar ahora
-              <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
               </svg>
             </button>
           </div>

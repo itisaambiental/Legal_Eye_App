@@ -6,72 +6,72 @@ import { vi } from "vitest";
 
 // Mocking hooks and dependencies
 vi.mock("react-router-dom", () => ({
-    useNavigate: vi.fn(),
-    useLocation: vi.fn(),
+  useNavigate: vi.fn(),
+  useLocation: vi.fn(),
 }));
 
 describe("CompleteReset Component", () => {
-    const mockNavigate = vi.fn();
-    const mockLocation = { state: { fromVerify: true } };
+  const mockNavigate = vi.fn();
+  const mockLocation = { state: { fromVerify: true } };
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-        vi.useFakeTimers();
-        useNavigate.mockReturnValue(mockNavigate);
-        useLocation.mockReturnValue(mockLocation);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    useNavigate.mockReturnValue(mockNavigate);
+    useLocation.mockReturnValue(mockLocation);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  test("shows loading spinner initially and then displays confirmation message", () => {
+    render(<CompleteReset />);
+    expect(screen.getByRole("status")).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
 
-    afterEach(() => {
-        vi.useRealTimers();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByText("Contraseña Actualizada")).toBeInTheDocument();
+  });
+
+  test("redirects to not found page if accessed without 'fromVerify' in location state", () => {
+    useLocation.mockReturnValue({ state: null });
+    render(<CompleteReset />);
+
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
 
-    test("shows loading spinner initially and then displays confirmation message", () => {
-        render(<CompleteReset />);
-        expect(screen.getByRole("status")).toBeInTheDocument();
-        
-        act(() => {
-            vi.advanceTimersByTime(0);
-        });
+    expect(mockNavigate).toHaveBeenCalledWith("/*", { replace: true });
+  });
 
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
-        expect(screen.getByText("Contraseña Actualizada")).toBeInTheDocument();
+  test("displays confirmation message and 'Ir al Inicio de Sesión' button", () => {
+    render(<CompleteReset />);
+
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
 
-    test("redirects to not found page if accessed without 'fromVerify' in location state", () => {
-        useLocation.mockReturnValue({ state: null });
-        render(<CompleteReset />);
-        
-        act(() => {
-            vi.advanceTimersByTime(0);
-        });
+    expect(screen.getByText("Contraseña Actualizada")).toBeInTheDocument();
+    expect(screen.getByText("Ir al Inicio de Sesión")).toBeInTheDocument();
+  });
 
-        expect(mockNavigate).toHaveBeenCalledWith("/*", { replace: true });
+  test("navigates to login page when 'Ir al Inicio de Sesión' button is clicked", async () => {
+    render(<CompleteReset />);
+
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
 
-    test("displays confirmation message and 'Ir al Inicio de Sesión' button", () => {
-        render(<CompleteReset />);
-        
-        act(() => {
-            vi.advanceTimersByTime(0);
-        });
+    const loginButton = screen.getByText("Ir al Inicio de Sesión");
 
-        expect(screen.getByText("Contraseña Actualizada")).toBeInTheDocument();
-        expect(screen.getByText("Ir al Inicio de Sesión")).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(loginButton);
     });
 
-    test("navigates to login page when 'Ir al Inicio de Sesión' button is clicked", async () => {
-        render(<CompleteReset />);
-        
-        act(() => {
-            vi.advanceTimersByTime(0);
-        });
-
-        const loginButton = screen.getByText("Ir al Inicio de Sesión");
-
-        await act(async () => {
-            fireEvent.click(loginButton);
-        });
-
-        expect(mockNavigate).toHaveBeenCalledWith("/login");
-    });
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
+  });
 });

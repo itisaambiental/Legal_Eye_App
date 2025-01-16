@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent } from "@testing-library/react";
 import Dashboard from "./Dashboard";
-import { MemoryRouter } from 'react-router-dom';
-import Context from '../context/userContext.jsx';
-import useUserProfile from '../hooks/user/useUserProfile.jsx';
+import { MemoryRouter } from "react-router-dom";
+import Context from "../context/userContext.jsx";
+import useUserProfile from "../hooks/user/useUserProfile.jsx";
 
-vi.mock('../hooks/user/useUserProfile.jsx', () => ({
+vi.mock("../hooks/user/useUserProfile.jsx", () => ({
   __esModule: true,
   default: vi.fn(),
 }));
@@ -24,20 +24,24 @@ describe("Dashboard Component", () => {
   test("does not render 'Usuarios' link for non-admin", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
     );
 
     const usersLink = screen.queryByText("Usuarios");
-    expect(usersLink).not.toBeInTheDocument(); 
+    expect(usersLink).not.toBeInTheDocument();
   });
 
   test("renders 'Usuarios' link for admin", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
@@ -45,13 +49,15 @@ describe("Dashboard Component", () => {
 
     const usersLink = screen.getByText("Usuarios");
     expect(usersLink).toBeInTheDocument();
-    expect(usersLink.closest('a')).toHaveAttribute('href', '/users'); 
+    expect(usersLink.closest("a")).toHaveAttribute("href", "/users");
   });
 
   test("renders 'Fundamentos Legales' link for admin", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
@@ -59,13 +65,18 @@ describe("Dashboard Component", () => {
 
     const fundamentosLink = screen.getByText("Fundamentos Legales");
     expect(fundamentosLink).toBeInTheDocument();
-    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/legal_basis'); 
+    expect(fundamentosLink.closest("a")).toHaveAttribute(
+      "href",
+      "/legal_basis"
+    );
   });
 
   test("renders 'Fundamentos Legales' link for analyst", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
@@ -73,13 +84,18 @@ describe("Dashboard Component", () => {
 
     const fundamentosLink = screen.getByText("Fundamentos Legales");
     expect(fundamentosLink).toBeInTheDocument();
-    expect(fundamentosLink.closest('a')).toHaveAttribute('href', '/legal_basis'); 
+    expect(fundamentosLink.closest("a")).toHaveAttribute(
+      "href",
+      "/legal_basis"
+    );
   });
 
   test("calls logout when clicking on 'Cerrar sesión' button", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
@@ -91,32 +107,34 @@ describe("Dashboard Component", () => {
     expect(mockLogout).toHaveBeenCalledTimes(1);
   });
 
-
   test("renders user info in dropdown for admin", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: true, isAnalyst: false }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
     );
-    const dropdownButton = screen.getByLabelText('user_avatar');
+    const dropdownButton = screen.getByLabelText("user_avatar");
     fireEvent.click(dropdownButton);
     const userInfo = screen.getByText("John Doe - Admin");
     expect(userInfo).toBeInTheDocument();
     expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
   });
 
-
   test("renders user info in dropdown for analyst", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: false, isAnalyst: true }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
     );
-    const dropdownButton = screen.getByLabelText('user_avatar');
+    const dropdownButton = screen.getByLabelText("user_avatar");
     fireEvent.click(dropdownButton);
     const userInfo = screen.getByText("John Doe - Analista");
     expect(userInfo).toBeInTheDocument();
@@ -126,12 +144,14 @@ describe("Dashboard Component", () => {
   test("renders user info in dropdown for guest", () => {
     render(
       <MemoryRouter>
-        <Context.Provider value={{ logout: mockLogout, isAdmin: false, isAnalyst: false }}>
+        <Context.Provider
+          value={{ logout: mockLogout, isAdmin: false, isAnalyst: false }}
+        >
           <Dashboard />
         </Context.Provider>
       </MemoryRouter>
     );
-    const dropdownButton = screen.getByLabelText('user_avatar');
+    const dropdownButton = screen.getByLabelText("user_avatar");
     fireEvent.click(dropdownButton);
     const userInfo = screen.getByText("John Doe - Invitado");
     expect(userInfo).toBeInTheDocument();

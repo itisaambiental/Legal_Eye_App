@@ -66,7 +66,7 @@ class SubjectErrors {
     [SubjectErrors.ASSOCIATED_BASES]: {
       title: "Asociación con Fundamentos legales",
       message:
-        "La materia está vinculada a uno o más fundamentos legales y no puedes eliminarla. Por favor, verifique e intente de nuevo.",
+        "La materia está vinculada a uno o más fundamentos legales y no puede ser eliminarla. Por favor, verifique e intente de nuevo.",
     },
     [SubjectErrors.MULTIPLE_ASSOCIATED_BASES]: {
       title: "Asociación con Fundamentos legales",
@@ -80,7 +80,7 @@ class SubjectErrors {
     [SubjectErrors.ASSOCIATED_ASPECTS]: {
       title: "Asociación con Aspectos",
       message:
-        "La materia tiene aspectos asociados con fundamentos legales y no puedes eliminarla. Por favor, verifique e intente de nuevo.",
+        "La materia tiene aspectos asociados con fundamentos legales y no puede ser eliminarla. Por favor, verifique e intente de nuevo.",
     },
     [SubjectErrors.MULTIPLE_ASSOCIATED_ASPECTS]: {
       title: "Asociación con Aspectos",

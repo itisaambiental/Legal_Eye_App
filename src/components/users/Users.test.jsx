@@ -15,11 +15,11 @@ vi.mock("../../hooks/user/useRoles.jsx", () => ({
   default: vi.fn(() => ({
     roles: [
       { id: 1, role: "Admin" },
-      { id: 2, role: "Analyst" }
+      { id: 2, role: "Analyst" },
     ],
     roles_loading: false,
-    roles_error: null
-  }))
+    roles_error: null,
+  })),
 }));
 
 describe("Users Component", () => {
@@ -27,7 +27,12 @@ describe("Users Component", () => {
     useUsers.mockReturnValue({
       users: [
         { id: 1, name: "User_Admin", gmail: "admin@ejemplo.com", roleId: 1 },
-        { id: 2, name: "User_Analyst", gmail: "analyst@ejemplo.com", roleId: 2 }
+        {
+          id: 2,
+          name: "User_Analyst",
+          gmail: "analyst@ejemplo.com",
+          roleId: 2,
+        },
       ],
       loading: false,
       error: null,
@@ -47,7 +52,9 @@ describe("Users Component", () => {
     expect(screen.getByText("Rol")).toBeInTheDocument();
     expect(screen.getByText("Acciones")).toBeInTheDocument();
 
-    const selectAllCheckbox = screen.getByRole("checkbox", { name: /select all/i });
+    const selectAllCheckbox = screen.getByRole("checkbox", {
+      name: /select all/i,
+    });
     expect(selectAllCheckbox).toBeInTheDocument();
   });
 
@@ -98,7 +105,12 @@ describe("Users Component - Edit Modal", () => {
     useUsers.mockReturnValue({
       users: [
         { id: 1, name: "User_Admin", gmail: "admin@ejemplo.com", roleId: 1 },
-        { id: 2, name: "User_Analyst", gmail: "analyst@ejemplo.com", roleId: 2 }
+        {
+          id: 2,
+          name: "User_Analyst",
+          gmail: "analyst@ejemplo.com",
+          roleId: 2,
+        },
       ],
       loading: false,
       error: null,

@@ -44,7 +44,7 @@ class AspectErrors {
         },
         [AspectErrors.SUBJECT_NOT_FOUND]: {
             title: "Materia no encontrada",
-            message: "La materia asociada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
+            message: "La materia seleccionada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
         },
         [AspectErrors.SERVER_ERROR]: {
             title: "Error interno del servidor",

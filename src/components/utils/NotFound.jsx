@@ -1,7 +1,7 @@
 /**
  * NotFound component that displays a 404 error message when a page is not found.
  * Provides a user-friendly message indicating that the page could not be found.
- * 
+ *
  * @component
  * @returns {JSX.Element} A styled 404 error page with a message.
  */

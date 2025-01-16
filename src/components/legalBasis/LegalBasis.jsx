@@ -10,6 +10,7 @@ import {
   Button,
   Tooltip,
 } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
 import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
@@ -17,8 +18,8 @@ import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import { useFiles } from "../../hooks/files/useFiles.jsx";
 import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
-import BottomContent from "./BottomContent.jsx";
-import Error from "../Error.jsx";
+import BottomContent from "../utils/BottomContent.jsx";
+import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
@@ -29,16 +30,16 @@ import trash_icon from "../../assets/papelera-mas.png";
 import send_icon from "../../assets/enviar.png";
 
 const columns = [
-  { name: "Fundamento Legal", uid: "legal_name" },
-  { name: "Abreviatura", uid: "abbreviation" },
-  { name: "Clasificación", uid: "classification" },
-  { name: "Jurisdicción", uid: "jurisdiction" },
-  { name: "Estado", uid: "state" },
-  { name: "Municipio", uid: "municipality" },
-  { name: "Última Reforma", uid: "lastReform" },
-  { name: "Materia", uid: "subject" },
-  { name: "Aspectos", uid: "aspects" },
-  { name: "Acciones", uid: "actions" },
+  { name: "Fundamento Legal", uid: "legal_name", align: "start" },
+  { name: "Abreviatura", uid: "abbreviation", align: "start" },
+  { name: "Clasificación", uid: "classification", align: "start" },
+  { name: "Jurisdicción", uid: "jurisdiction", align: "start" },
+  { name: "Estado", uid: "state", align: "start" },
+  { name: "Municipio", uid: "municipality", align: "start" },
+  { name: "Última Reforma", uid: "lastReform", align: "start" },
+  { name: "Materia", uid: "subject", align: "start" },
+  { name: "Aspectos", uid: "aspects", align: "start" },
+  { name: "Acciones", uid: "actions", align: "center" },
 ];
 
 /**
@@ -76,7 +77,7 @@ export default function LegalBasis() {
     fetchLegalBasisBySubjectAndAspects,
     modifyLegalBasis,
     removeLegalBasis,
-    removeLegalBasisBatch
+    removeLegalBasisBatch,
   } = useLegalBasis();
   const {
     subjects,
@@ -101,6 +102,7 @@ export default function LegalBasis() {
     clearMunicipalities,
   } = useCopomex();
   const { downloadFile } = useFiles();
+  const navigate = useNavigate();
   const [filterByName, setFilterByName] = useState("");
   const [filterByAbbreviation, setFilterByAbbreviation] = useState("");
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -141,7 +143,7 @@ export default function LegalBasis() {
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    nombre: "",
+    name: "",
     abbreviation: "",
     classification: "",
     jurisdiction: "",
@@ -460,7 +462,7 @@ export default function LegalBasis() {
   const openModalCreate = () => {
     setFormData({
       id: "",
-      nombre: "",
+      name: "",
       abbreviation: "",
       classification: "",
       jurisdiction: "",
@@ -529,7 +531,7 @@ export default function LegalBasis() {
       const { value } = e.target;
       setFormData((prevFormData) => ({
         ...prevFormData,
-        nombre: value,
+        name: value,
       }));
       if (nameInputError && value.trim() !== "") {
         setNameInputError(null);
@@ -841,6 +843,10 @@ export default function LegalBasis() {
     setPage(1);
   }, []);
 
+  const goToArticles = (legalBaseId) => {
+    navigate(`/legal_basis/${legalBaseId}/articles`);
+  };
+
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const onPageChange = (newPage) => setPage(newPage);
@@ -997,49 +1003,49 @@ export default function LegalBasis() {
       />
     );
   }
-
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
-        isCreateModalOpen={isCreateModalOpen}
-        isEditModalOpen={isEditModalOpen}
-        onRowsPerPageChange={onRowsPerPageChange}
-        totalLegalBasis={legalBasis.length}
-        openModalCreate={openModalCreate}
-        filterByName={filterByName}
-        filterByAbbreviation={filterByAbbreviation}
-        onFilterByName={handleFilterByName}
-        onFilterByAbbreviation={handleFilterByAbbreviation}
-        onClear={handleClear}
-        subjects={subjects}
-        selectedSubject={selectedSubject}
-        subjectLoading={subjectLoading}
-        onFilterBySubject={handleFilterBySubject}
-        aspects={aspects}
-        selectedAspects={selectedAspects}
-        aspectLoading={aspectLoading}
-        onFilterByAspects={handleFilterByAspects}
-        classifications={classifications}
-        selectedClassification={selectedClassification}
-        classificationsLoading={classificationsLoading}
-        onFilterByClassification={handleFilterByClassification}
-        jurisdictions={jurisdictions}
-        selectedJurisdiction={selectedJurisdiction}
-        jurisdictionsLoading={jurisdictionsLoading}
-        onFilterByJurisdiction={handleFilterByJurisdiction}
-        states={states}
-        selectedState={selectedState}
-        stateLoading={loadingStates}
-        onFilterByState={handleFilterByState}
-        municipalities={municipalities}
-        selectedMunicipalities={selectedMunicipalities}
-        municipalitiesLoading={loadingMunicipalities}
-        onFilterByMunicipalities={handleFilterByMunicipalities}
-        lastReformRange={lastReformRange}
-        setLastReformRange={setLastReformRange}
-        lastReformIsInvalid={lastReformIsInvalid}
-        lastReformError={lastReformError}
-        onFilterByLastReformRange={handleFilterByLastReformRange}
+        config={{
+          isCreateModalOpen: isCreateModalOpen,
+          isEditModalOpen: isEditModalOpen,
+          onRowsPerPageChange: onRowsPerPageChange,
+          totalLegalBasis: legalBasis.length,
+          openModalCreate: openModalCreate,
+          filterByName: filterByName,
+          filterByAbbreviation: filterByAbbreviation,
+          onFilterByName: handleFilterByName,
+          onFilterByAbbreviation: handleFilterByAbbreviation,
+          onClear: handleClear,
+          subjects: subjects,
+          selectedSubject: selectedSubject,
+          subjectLoading: subjectLoading,
+          onFilterBySubject: handleFilterBySubject,
+          aspects: aspects,
+          selectedAspects: selectedAspects,
+          aspectLoading: aspectLoading,
+          onFilterByAspects: handleFilterByAspects,
+          classifications: classifications,
+          selectedClassification: selectedClassification,
+          classificationsLoading: classificationsLoading,
+          onFilterByClassification: handleFilterByClassification,
+          jurisdictions: jurisdictions,
+          selectedJurisdiction: selectedJurisdiction,
+          jurisdictionsLoading: jurisdictionsLoading,
+          onFilterByJurisdiction: handleFilterByJurisdiction,
+          states: states,
+          selectedState: selectedState,
+          stateLoading: loadingStates,
+          onFilterByState: handleFilterByState,
+          municipalities: municipalities,
+          selectedMunicipalities: selectedMunicipalities,
+          municipalitiesLoading: loadingMunicipalities,
+          onFilterByMunicipalities: handleFilterByMunicipalities,
+          lastReformRange: lastReformRange,
+          lastReformIsInvalid: lastReformIsInvalid,
+          lastReformError: lastReformError,
+          onFilterByLastReformRange: handleFilterByLastReformRange,
+        }}
       />
       <>
         {IsSearching || loading ? (
@@ -1059,10 +1065,7 @@ export default function LegalBasis() {
           >
             <TableHeader columns={columns}>
               {(column) => (
-                <TableColumn
-                  key={column.uid}
-                  align={column.uid === "actions" ? "center" : "start"}
-                >
+                <TableColumn key={column.uid} align={column.align}>
                   {column.name}
                 </TableColumn>
               )}
@@ -1082,6 +1085,7 @@ export default function LegalBasis() {
                         legalBase={legalBase}
                         columnKey={columnKey}
                         openEditModal={openEditModal}
+                        goToArticles={goToArticles}
                         handleDelete={handleDelete}
                         handleDownloadDocument={handleDownloadDocument}
                       />
@@ -1120,144 +1124,153 @@ export default function LegalBasis() {
             </>
           )}
         </div>
-
         <BottomContent
-          page={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          onPreviousPage={onPreviousPage}
-          onNextPage={onNextPage}
-          selectedKeys={selectedKeys}
-          filteredItems={legalBasis}
+          config={{
+            page: page,
+            totalPages: totalPages,
+            onPageChange: onPageChange,
+            onPreviousPage: onPreviousPage,
+            onNextPage: onNextPage,
+            selectedKeys: selectedKeys,
+            filteredItems: legalBasis,
+          }}
         />
         {isCreateModalOpen && (
           <CreateModal
-            closeModalCreate={closeModalCreate}
-            isOpen={isCreateModalOpen}
-            formData={formData}
-            addLegalBasis={addLegalBasis}
-            nameError={nameInputError}
-            setNameError={setNameInputError}
-            handleNameChange={handleNameChange}
-            abbreviationError={abbreviationInputError}
-            setAbbreviationError={setAbbreviationInputError}
-            handleAbbreviationChange={handleAbbreviationChange}
-            classificationError={classificationInputError}
-            setClassificationError={setClassificationInputError}
-            handleClassificationChange={handleClassificationChange}
-            jurisdictionError={jurisdictionInputError}
-            setJurisdictionError={setJurisdictionInputError}
-            handleJurisdictionChange={handleJurisdictionChange}
-            states={states}
-            stateError={stateInputError}
-            setStateError={setStateInputError}
-            isStateActive={isStateActive}
-            handleStateChange={handleStateChange}
-            clearMunicipalities={clearMunicipalities}
-            municipalities={municipalities}
-            municipalityError={municipalityInputError}
-            setMunicipalityError={setMunicipalityInputError}
-            isMunicipalityActive={isMunicipalityActive}
-            loadingMunicipalities={loadingMunicipalities}
-            errorMunicipalities={errorMunicipalities}
-            handleMunicipalityChange={handleMunicipalityChange}
-            subjects={subjects}
-            subjectInputError={subjectInputError}
-            setSubjectError={setSubjectInputError}
-            handleSubjectChange={handleSubjectChange}
-            aspects={aspects}
-            aspectError={aspectInputError}
-            setAspectInputError={setAspectInputError}
-            isAspectsActive={isAspectsActive}
-            loadingAspects={aspectLoading}
-            errorAspects={aspectError}
-            handleAspectsChange={handleAspectsChange}
-            lastReformError={lastReformInputError}
-            setLastReformError={setLastReformInputError}
-            handleLastReformChange={handleLastReformChange}
-            handleFileChange={handleFileChange}
-            fileError={fileError}
-            handleRemoveDocument={handleRemoveDocument}
-            checkboxInputError={checkboxInputError}
-            setCheckboxInputError={setCheckboxInputError}
-            isCheckboxChecked={isCheckboxChecked}
-            handleCheckboxChange={handleCheckboxChange}
+            config={{
+              isOpen: isCreateModalOpen,
+              closeModalCreate: closeModalCreate,
+              formData: formData,
+              goToArticles: goToArticles,
+              addLegalBasis: addLegalBasis,
+              nameError: nameInputError,
+              setNameError: setNameInputError,
+              handleNameChange: handleNameChange,
+              abbreviationError: abbreviationInputError,
+              setAbbreviationError: setAbbreviationInputError,
+              handleAbbreviationChange: handleAbbreviationChange,
+              classificationError: classificationInputError,
+              setClassificationError: setClassificationInputError,
+              handleClassificationChange: handleClassificationChange,
+              jurisdictionError: jurisdictionInputError,
+              setJurisdictionError: setJurisdictionInputError,
+              handleJurisdictionChange: handleJurisdictionChange,
+              states: states,
+              stateError: stateInputError,
+              setStateError: setStateInputError,
+              isStateActive: isStateActive,
+              handleStateChange: handleStateChange,
+              clearMunicipalities: clearMunicipalities,
+              municipalities: municipalities,
+              municipalityError: municipalityInputError,
+              setMunicipalityError: setMunicipalityInputError,
+              isMunicipalityActive: isMunicipalityActive,
+              loadingMunicipalities: loadingMunicipalities,
+              errorMunicipalities: errorMunicipalities,
+              handleMunicipalityChange: handleMunicipalityChange,
+              subjects: subjects,
+              subjectInputError: subjectInputError,
+              setSubjectError: setSubjectInputError,
+              handleSubjectChange: handleSubjectChange,
+              aspects: aspects,
+              aspectError: aspectInputError,
+              setAspectInputError: setAspectInputError,
+              isAspectsActive: isAspectsActive,
+              loadingAspects: aspectLoading,
+              errorAspects: aspectError,
+              handleAspectsChange: handleAspectsChange,
+              lastReformError: lastReformInputError,
+              setLastReformError: setLastReformInputError,
+              handleLastReformChange: handleLastReformChange,
+              handleFileChange: handleFileChange,
+              fileError: fileError,
+              handleRemoveDocument: handleRemoveDocument,
+              checkboxInputError: checkboxInputError,
+              setCheckboxInputError: setCheckboxInputError,
+              isCheckboxChecked: isCheckboxChecked,
+              handleCheckboxChange: handleCheckboxChange,
+            }}
           />
         )}
         {isEditModalOpen && (
           <EditModal
-            isOpen={isEditModalOpen}
-            closeModalEdit={closeEditModal}
-            formData={formData}
-            setFormData={setFormData}
-            editLegalBasis={modifyLegalBasis}
-            selectedLegalBase={selectedLegalBase}
-            nameError={nameInputError}
-            setNameError={setNameInputError}
-            handleNameChange={handleNameChange}
-            abbreviationError={abbreviationInputError}
-            setAbbreviationError={setAbbreviationInputError}
-            handleAbbreviationChange={handleAbbreviationChange}
-            classificationError={classificationInputError}
-            setClassificationError={setClassificationInputError}
-            handleClassificationChange={handleClassificationChange}
-            jurisdictionError={jurisdictionInputError}
-            setJurisdictionError={setJurisdictionInputError}
-            handleJurisdictionChange={handleJurisdictionChange}
-            states={states}
-            stateError={stateInputError}
-            setStateError={setStateInputError}
-            isStateActive={isStateActive}
-            handleStateChange={handleStateChange}
-            clearMunicipalities={clearMunicipalities}
-            municipalities={municipalities}
-            municipalityError={municipalityInputError}
-            setMunicipalityError={setMunicipalityInputError}
-            isMunicipalityActive={isMunicipalityActive}
-            loadingMunicipalities={loadingMunicipalities}
-            errorMunicipalities={errorMunicipalities}
-            handleMunicipalityChange={handleMunicipalityChange}
-            subjects={subjects}
-            subjectInputError={subjectInputError}
-            setSubjectError={setSubjectInputError}
-            handleSubjectChange={handleSubjectChange}
-            aspects={aspects}
-            aspectError={aspectInputError}
-            setAspectInputError={setAspectInputError}
-            isAspectsActive={isAspectsActive}
-            loadingAspects={aspectLoading}
-            errorAspects={aspectError}
-            handleAspectsChange={handleAspectsChange}
-            lastReformError={lastReformInputError}
-            setLastReformError={setLastReformInputError}
-            handleLastReformChange={handleLastReformChange}
-            handleFileChange={handleFileChange}
-            fileError={fileError}
-            handleRemoveDocument={handleRemoveDocument}
-            checkboxInputError={checkboxInputError}
-            setCheckboxInputError={setCheckboxInputError}
-            isCheckboxChecked={isCheckboxChecked}
-            handleCheckboxChange={handleCheckboxChange}
-            setIsStateActive={setIsStateActive}
-            setIsMunicipalityActive={setIsMunicipalityActive}
-            setIsAspectsActive={setIsAspectsActive}
-            clearAspects={clearAspects}
-            fetchMunicipalities={fetchMunicipalities}
-            fetchAspects={fetchAspects}
+            config={{
+              isOpen: isEditModalOpen,
+              closeModalEdit: closeEditModal,
+              formData: formData,
+              goToArticles: goToArticles,
+              setFormData: setFormData,
+              editLegalBasis: modifyLegalBasis,
+              selectedLegalBase: selectedLegalBase,
+              nameError: nameInputError,
+              setNameError: setNameInputError,
+              handleNameChange: handleNameChange,
+              abbreviationError: abbreviationInputError,
+              setAbbreviationError: setAbbreviationInputError,
+              handleAbbreviationChange: handleAbbreviationChange,
+              classificationError: classificationInputError,
+              setClassificationError: setClassificationInputError,
+              handleClassificationChange: handleClassificationChange,
+              jurisdictionError: jurisdictionInputError,
+              setJurisdictionError: setJurisdictionInputError,
+              handleJurisdictionChange: handleJurisdictionChange,
+              states: states,
+              stateError: stateInputError,
+              setStateError: setStateInputError,
+              isStateActive: isStateActive,
+              handleStateChange: handleStateChange,
+              clearMunicipalities: clearMunicipalities,
+              municipalities: municipalities,
+              municipalityError: municipalityInputError,
+              setMunicipalityError: setMunicipalityInputError,
+              isMunicipalityActive: isMunicipalityActive,
+              loadingMunicipalities: loadingMunicipalities,
+              errorMunicipalities: errorMunicipalities,
+              handleMunicipalityChange: handleMunicipalityChange,
+              subjects: subjects,
+              subjectInputError: subjectInputError,
+              setSubjectError: setSubjectInputError,
+              handleSubjectChange: handleSubjectChange,
+              aspects: aspects,
+              aspectError: aspectInputError,
+              setAspectInputError: setAspectInputError,
+              isAspectsActive: isAspectsActive,
+              loadingAspects: aspectLoading,
+              errorAspects: aspectError,
+              handleAspectsChange: handleAspectsChange,
+              lastReformError: lastReformInputError,
+              setLastReformError: setLastReformInputError,
+              handleLastReformChange: handleLastReformChange,
+              handleFileChange: handleFileChange,
+              fileError: fileError,
+              handleRemoveDocument: handleRemoveDocument,
+              checkboxInputError: checkboxInputError,
+              setCheckboxInputError: setCheckboxInputError,
+              isCheckboxChecked: isCheckboxChecked,
+              handleCheckboxChange: handleCheckboxChange,
+              setIsStateActive: setIsStateActive,
+              setIsMunicipalityActive: setIsMunicipalityActive,
+              setIsAspectsActive: setIsAspectsActive,
+              clearAspects: clearAspects,
+              fetchMunicipalities: fetchMunicipalities,
+              fetchAspects: fetchAspects,
+            }}
           />
         )}
       </>
       {showDeleteModal && (
         <DeleteModal
-          showDeleteModal={showDeleteModal}
-          closeDeleteModal={closeDeleteModal}
-          setIsDeletingBatch={setIsDeletingBatch}
-          isDeletingBatch={isDeletingBatch}
-          selectedKeys={selectedKeys}
-          legalBasis={legalBasis}
-          deleteLegalBasisBatch={removeLegalBasisBatch}
-          setSelectedKeys={setSelectedKeys}
-          check={check}
+          config={{
+            showDeleteModal: showDeleteModal,
+            closeDeleteModal: closeDeleteModal,
+            setIsDeletingBatch: setIsDeletingBatch,
+            isDeletingBatch: isDeletingBatch,
+            selectedKeys: selectedKeys,
+            legalBasis: legalBasis,
+            deleteLegalBasisBatch: removeLegalBasisBatch,
+            setSelectedKeys: setSelectedKeys,
+            check: check,
+          }}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
-import NotFound from './components/NotFound.jsx'
-import Unauthorized from './components/Unauthorized.jsx'
+import NotFound from './components/utils/NotFound.jsx'
+import Unauthorized from './components/utils/Unauthorized.jsx'
 import Login from "./components/users/auth/Login.jsx"
 import ResetPassword from './components/users/auth/ResetPassword.jsx'
 import VerifyCode from './components/users/auth/VerifyCode.jsx'
@@ -13,6 +13,7 @@ import Users from './components/users/Users.jsx'
 import Subjects from './components/subjects/Subjects.jsx'
 import Aspects from './components/aspects/Aspects.jsx'
 import LegalBasis from './components/legalBasis/LegalBasis.jsx'
+import Articles from './components/articles/Articles.jsx'
 
 /**
  * Application routing component.
@@ -37,6 +38,7 @@ const AppRoutes = () => {
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/subjects/:id/aspects" element={<Aspects />} />
         <Route path="/legal_basis" element={<LegalBasis />} />
+        <Route path="/legal_basis/:id/articles" element={<Articles />} />
       </Route>
 
       {/* Error and Unauthorized routes */}

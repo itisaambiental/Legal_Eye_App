@@ -137,7 +137,7 @@ export default function useLegalBasis() {
         setLegalBasis((prevLegalBasis) => [legalBasis, ...prevLegalBasis]);
         fetchClassifications();
         fetchJurisdictions();
-        return { success: true, jobId };
+        return { success: true, jobId, legalBasis };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
@@ -186,15 +186,15 @@ export default function useLegalBasis() {
    * Fetches a specific legal basis by its ID.
    * @async
    * @function fetchLegalBasisById
-   * @param {number} legalBasisId - The ID of the legal basis to retrieve.
+   * @param {number} legalBaseId - The ID of the legal basis to retrieve.
    * @returns {Promise<Object|null>} - The retrieved legal basis data or null if an error occurs.
    */
   const fetchLegalBasisById = useCallback(
-    async (legalBasisId) => {
+    async (legalBaseId) => {
       setStateLegalBasis({ loading: true, error: null });
       try {
         const legalBasis = await getLegalBasisById({
-          legalBasisId,
+          legalBaseId,
           token: jwt,
         });
         setStateLegalBasis({ loading: false, error: null });
@@ -207,7 +207,7 @@ export default function useLegalBasis() {
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: [legalBasisId],
+          items: [legalBaseId],
         });
         setStateLegalBasis({
           loading: false,
@@ -594,7 +594,7 @@ export default function useLegalBasis() {
         );
         fetchClassifications();
         fetchJurisdictions();
-        return { success: true, jobId };
+        return { success: true, jobId, legalBasis };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;

@@ -21,7 +21,7 @@ describe("Aspects Component", () => {
     useAspects.mockReturnValue({
       aspects: [
         { id: 1, aspect_name: "Safety" },
-        { id: 2, aspect_name: "Environment" }
+        { id: 2, aspect_name: "Environment" },
       ],
       loading: false,
       error: null,
@@ -35,7 +35,7 @@ describe("Aspects Component", () => {
     useSubjects.mockReturnValue({
       fetchSubjectById: vi.fn().mockResolvedValue({
         success: true,
-        data: { id: 1, subject_name: "Health" }
+        data: { id: 1, subject_name: "Health" },
       }),
       loading: false,
       error: null,
@@ -60,7 +60,7 @@ describe("Aspects Component", () => {
 
   test("shows a loading indicator when aspects are loading", async () => {
     useAspects.mockReturnValueOnce({ ...useAspects(), loading: true });
-    useSubjects.mockReturnValueOnce({ ...useSubjects(), loading: true }); 
+    useSubjects.mockReturnValueOnce({ ...useSubjects(), loading: true });
     render(
       <MemoryRouter>
         <Aspects />
@@ -70,7 +70,10 @@ describe("Aspects Component", () => {
   });
 
   test("displays an error message if there is an error loading aspects", () => {
-    useAspects.mockReturnValueOnce({ ...useAspects(), error: { title: "Failed to load aspects", message: "Server Error" }});
+    useAspects.mockReturnValueOnce({
+      ...useAspects(),
+      error: { title: "Failed to load aspects", message: "Server Error" },
+    });
     render(
       <MemoryRouter>
         <Aspects />
@@ -92,35 +95,35 @@ describe("Aspects Component", () => {
         removeAspect: vi.fn(),
         deleteAspectsBatch: vi.fn(),
       });
-  
+
       useSubjects.mockReturnValue({
         fetchSubjectById: vi.fn().mockResolvedValue({
           success: true,
-          data: { id: 1, subject_name: "Health" }
+          data: { id: 1, subject_name: "Health" },
         }),
         loading: false,
         error: null,
       });
-  
+
       render(
         <MemoryRouter>
           <Aspects />
         </MemoryRouter>
       );
     });
-  
+
     test("renders empty content message when there are no aspects", () => {
       const emptyMessage = screen.getByText("No hay aspectos para mostrar");
       expect(emptyMessage).toBeInTheDocument();
     });
   });
-  
+
   describe("Aspects Component - Edit Modal", () => {
     beforeEach(() => {
       useAspects.mockReturnValue({
         aspects: [
           { id: 1, aspect_name: "Safety" },
-          { id: 2, aspect_name: "Environment" }
+          { id: 2, aspect_name: "Environment" },
         ],
         loading: false,
         error: null,
@@ -130,33 +133,35 @@ describe("Aspects Component", () => {
         removeAspect: vi.fn(),
         deleteAspectsBatch: vi.fn(),
       });
-  
+
       useSubjects.mockReturnValue({
         fetchSubjectById: vi.fn().mockResolvedValue({
           success: true,
-          data: { id: 1, subject_name: "Health" }
+          data: { id: 1, subject_name: "Health" },
         }),
         loading: false,
         error: null,
       });
-  
+
       render(
         <MemoryRouter>
           <Aspects />
         </MemoryRouter>
       );
     });
-  
+
     test("opens EditModal with correct data when Edit button is clicked", async () => {
       const optionsButtons = screen.getAllByLabelText("Opciones");
       fireEvent.click(optionsButtons[0]);
       const editButton = screen.getByText("Editar Aspecto");
       fireEvent.click(editButton);
-  
-      const modalTitle = screen.getByRole("heading", { name: "Editar Aspecto" });
+
+      const modalTitle = screen.getByRole("heading", {
+        name: "Editar Aspecto",
+      });
       expect(modalTitle).toBeInTheDocument();
       const nameInput = screen.getByDisplayValue("Safety");
       expect(nameInput).toBeInTheDocument();
     });
   });
-})
+});

@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
-import { useState, useEffect, createContext, useCallback } from 'react'
-import { jwtDecode } from 'jwt-decode'
-import { msalInstance } from '../config/msalConfig'
-import verifyToken from '../services/userService/verify_token'
+import { useState, useEffect, createContext, useCallback } from "react";
+import PropTypes from "prop-types";
+import { jwtDecode } from "jwt-decode";
+import { msalInstance } from "../config/msalConfig";
+import verifyToken from "../services/userService/verify_token";
 
 /**
  * User authentication and role management context.
@@ -11,7 +11,7 @@ import verifyToken from '../services/userService/verify_token'
  * @module UserContext
  */
 
-const Context = createContext({})
+const Context = createContext({});
 
 /**
  * UserContextProvider component.
@@ -23,19 +23,19 @@ const Context = createContext({})
  * @returns {JSX.Element} Context provider for user authentication and role-based access.
  */
 export function UserContextProvider({ children }) {
-    const [jwt, setJWT] = useState(() => window.localStorage.getItem('jwt'))
-    const [isAdmin, setIsAdmin] = useState(false)
-    const [isAnalyst, setIsAnalyst] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    const [jwt, setJWT] = useState(() => window.localStorage.getItem("jwt"));
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAnalyst, setIsAnalyst] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     /**
      * Sets role flags based on user type.
      * @param {number} userType - The user type, where 1 represents admin and 2 represents analyst.
      */
     const setRoleFlags = (userType) => {
-        setIsAdmin(userType === 1)
-        setIsAnalyst(userType === 2)
-    }
+        setIsAdmin(userType === 1);
+        setIsAnalyst(userType === 2);
+    };
 
     /**
      * Updates the JWT and role context.
@@ -47,15 +47,15 @@ export function UserContextProvider({ children }) {
      */
     const updateUserContext = useCallback((token) => {
         if (token) {
-            setJWT(token)
-            window.localStorage.setItem('jwt', token)
+            setJWT(token);
+            window.localStorage.setItem("jwt", token);
         } else {
-            setJWT(null)
-            window.localStorage.removeItem('jwt')
-            setIsAdmin(false)
-            setIsAnalyst(false)
+            setJWT(null);
+            window.localStorage.removeItem("jwt");
+            setIsAdmin(false);
+            setIsAnalyst(false);
         }
-    }, [])
+    }, []);
 
     /**
      * Logs out the user by clearing the JWT and role context.
@@ -63,23 +63,23 @@ export function UserContextProvider({ children }) {
      */
     const logout = useCallback(() => {
         updateUserContext(null);
-        msalInstance.clearCache().catch(error => {
+        msalInstance.clearCache().catch((error) => {
             console.error(error);
         });
     }, [updateUserContext]);
-    
+
     /**
      * Effect that decodes and verify the JWT to set role flags if a token exists.
      * If decoding fails, logs out the user to clear invalid token data.
      */
     useEffect(() => {
         const handleJwtValidation = async () => {
-            if (jwt && jwt !== '' && jwt !== 'null') {
+            if (jwt && jwt !== "" && jwt !== "null") {
                 const isValid = await verifyToken(jwt);
-                    if (!isValid) {
-                        logout();
-                        return;
-                    }
+                if (!isValid) {
+                    logout();
+                    return;
+                }
                 try {
                     const decodedToken = jwtDecode(jwt);
                     setRoleFlags(decodedToken.userForToken.userType);
@@ -97,10 +97,16 @@ export function UserContextProvider({ children }) {
     }, [jwt, logout]);
 
     return (
-        <Context.Provider value={{ jwt, isAdmin, isAnalyst, isLoading, updateUserContext, logout }}>
+        <Context.Provider
+            value={{ jwt, isAdmin, isAnalyst, isLoading, updateUserContext, logout }}
+        >
             {children}
         </Context.Provider>
-    )
+    );
 }
 
-export default Context
+UserContextProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+export default Context;

@@ -81,7 +81,7 @@ export class ExtractArticlesErrors {
   static ErrorMessagesMap = {
     "Network Error": ExtractArticlesErrors.NETWORK_ERROR,
     "Job not found": ExtractArticlesErrors.JOB_NOT_FOUND,
-    "Legal basis not found": ExtractArticlesErrors.LEGAL_BASE_NOT_FOUND,
+    "LegalBasis not found": ExtractArticlesErrors.LEGAL_BASE_NOT_FOUND,
     "Invalid document: missing buffer or mimetype":
       ExtractArticlesErrors.INVALID_DOCUMENT,
     "Document Processing Error":

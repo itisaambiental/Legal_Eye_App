@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from "prop-types";
 import { Input, Button } from "@nextui-org/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";
@@ -10,23 +10,27 @@ import mas_icon from "../../assets/mas.png";
  * and pagination controls, as well as a button to create a new subject.
  *
  * @component
+ *
  * @param {Object} props - Component properties.
- * @param {Function} props.onRowsPerPageChange - Callback function for changing rows per page.
- * @param {number} props.totalSubjects - The total number of subjects.
- * @param {Function} props.openModalCreate - Function to open the modal for creating a new subject.
- * @param {Function} props.onFilterChange - Callback function for handling search input changes.
- * @param {Function} props.onClear - Callback function to clear the search input.
+ * @param {Object} props.config - Component configuration object.
+ * @param {Function} props.config.onRowsPerPageChange - Callback function for changing rows per page.
+ * @param {number} props.config.totalSubjects - The total number of subjects.
+ * @param {Function} props.config.openModalCreate - Function to open the modal for creating a new subject.
+ * @param {Function} props.config.onFilterChange - Callback function for handling search input changes.
+ * @param {Function} props.config.onClear - Callback function to clear the search input.
  *
  * @returns {JSX.Element} Rendered TopContent component for managing subjects.
  */
 
-function TopContent({
-  onRowsPerPageChange,
-  totalSubjects,
-  openModalCreate,
-  onFilterChange,
-  onClear,
-}) {
+function TopContent({ config }) {
+  const {
+    onRowsPerPageChange,
+    totalSubjects,
+    openModalCreate,
+    onFilterChange,
+    onClear,
+  } = config;
+
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
@@ -81,5 +85,15 @@ function TopContent({
     </div>
   );
 }
+
+TopContent.propTypes = {
+  config: PropTypes.shape({
+    onRowsPerPageChange: PropTypes.func.isRequired,
+    totalSubjects: PropTypes.number.isRequired,
+    openModalCreate: PropTypes.func.isRequired,
+    onFilterChange: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default TopContent;

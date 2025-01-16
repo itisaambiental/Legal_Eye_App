@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from "prop-types";
 import {
   Input,
   Dropdown,
@@ -19,36 +19,37 @@ import mas_icon from "../../assets/mas.png";
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {Array} props.roles - List of roles available for filtering users.
- * @param {Function} props.onRowsPerPageChange - Callback function for changing rows per page.
- * @param {number} props.totalUsers - The total number of users.
- * @param {Function} props.capitalize - Function to capitalize role names.
- * @param {Function} props.openModalCreate - Function to open the modal for creating a new user.
- * @param {string} props.value - Current value of the filter input.
- * @param {Function} props.onFilterChange - Callback function for handling search input changes.
- * @param {Function} props.onClear - Callback function to clear the search input.
- * @param {string} props.selectedValue - Currently selected value for role filtering display.
- * @param {Set} props.selectedRoleKeys - Set of selected role keys for filtering.
- * @param {Function} props.onRoleChange - Callback function for handling role selection changes.
- * @param {Function} props.translateRole - Function to translate role names.
+ * @param {Object} props.config - Configuration object for the component.
+ * @param {Array} props.config.roles - List of roles available for filtering users.
+ * @param {Function} props.config.onRowsPerPageChange - Callback function for changing rows per page.
+ * @param {number} props.config.totalUsers - The total number of users.
+ * @param {Function} props.config.capitalize - Function to capitalize role names.
+ * @param {Function} props.config.openModalCreate - Function to open the modal for creating a new user.
+ * @param {string} props.config.value - Current value of the filter input.
+ * @param {Function} props.config.onFilterChange - Callback function for handling search input changes.
+ * @param {Function} props.config.onClear - Callback function to clear the search input.
+ * @param {string} props.config.selectedValue - Currently selected value for role filtering display.
+ * @param {Set} props.config.selectedRoleKeys - Set of selected role keys for filtering.
+ * @param {Function} props.config.onRoleChange - Callback function for handling role selection changes.
+ * @param {Function} props.config.translateRole - Function to translate role names.
  *
  * @returns {JSX.Element} Rendered TopContent component for managing users.
  */
-
-function TopContent({
-  value,
-  roles,
-  onRowsPerPageChange,
-  totalUsers,
-  capitalize,
-  openModalCreate,
-  onFilterChange,
-  onClear,
-  selectedValue,
-  selectedRoleKeys,
-  onRoleChange,
-  translateRole,
-}) {
+function TopContent({ config }) {
+  const {
+    value,
+    roles,
+    onRowsPerPageChange,
+    totalUsers,
+    capitalize,
+    openModalCreate,
+    onFilterChange,
+    onClear,
+    selectedValue,
+    selectedRoleKeys,
+    onRoleChange,
+    translateRole,
+  } = config;
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
@@ -136,5 +137,28 @@ function TopContent({
     </div>
   );
 }
+
+TopContent.propTypes = {
+  config: PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    roles: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+          .isRequired,
+        role: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    onRowsPerPageChange: PropTypes.func.isRequired,
+    totalUsers: PropTypes.number.isRequired,
+    capitalize: PropTypes.func.isRequired,
+    openModalCreate: PropTypes.func.isRequired,
+    onFilterChange: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
+    selectedValue: PropTypes.string.isRequired,
+    selectedRoleKeys: PropTypes.instanceOf(Set).isRequired,
+    onRoleChange: PropTypes.func.isRequired,
+    translateRole: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default TopContent;

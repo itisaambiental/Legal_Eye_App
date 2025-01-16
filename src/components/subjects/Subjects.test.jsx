@@ -6,7 +6,6 @@ import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import { useNavigate } from "react-router-dom";
 import { vi } from "vitest";
 
-
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -27,7 +26,7 @@ describe("Subjects Component", () => {
     useSubjects.mockReturnValue({
       subjects: [
         { id: 1, subject_name: "Environmental" },
-        { id: 2, subject_name: "Safety" }
+        { id: 2, subject_name: "Safety" },
       ],
       loading: false,
       error: null,
@@ -65,7 +64,10 @@ describe("Subjects Component", () => {
   });
 
   test("displays an error message if there is an error loading subjects", () => {
-    useSubjects.mockReturnValueOnce({ ...useSubjects(), error: { title: "Failed to load subjects", message: "Server Error" }});
+    useSubjects.mockReturnValueOnce({
+      ...useSubjects(),
+      error: { title: "Failed to load subjects", message: "Server Error" },
+    });
     render(
       <MemoryRouter>
         <Subjects />
@@ -106,7 +108,7 @@ describe("Subjects Component - Edit Modal", () => {
     useSubjects.mockReturnValue({
       subjects: [
         { id: 1, subject_name: "Environmental" },
-        { id: 2, subject_name: "Safety" }
+        { id: 2, subject_name: "Safety" },
       ],
       loading: false,
       error: null,
@@ -141,7 +143,7 @@ describe("Subjects Component - View Aspects Navigation", () => {
     useSubjects.mockReturnValue({
       subjects: [
         { id: 1, subject_name: "Environmental" },
-        { id: 2, subject_name: "Safety" }
+        { id: 2, subject_name: "Safety" },
       ],
       loading: false,
       error: null,

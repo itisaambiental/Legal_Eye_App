@@ -1,8 +1,8 @@
 import { useState, useCallback, useContext } from "react";
-import getJobStatus from "../../services/articlesService/extractArticles/getJobStatus.js";
-import getJobByLegalBasis from "../../services/articlesService/extractArticles/getJobByLegalBasis.js";
-import Context from "../../context/userContext.jsx";
-import { ExtractArticlesErrors, ExtractArticlesMessages } from "../../errors/articles/ExtractArticlesErrors.js";
+import getJobStatus from "../../../services/articlesService/extractArticles/getJobStatus.js";
+import getJobByLegalBasis from "../../../services/articlesService/extractArticles/getJobByLegalBasis.js";
+import Context from "../../../context/userContext.jsx";
+import { ExtractArticlesErrors, ExtractArticlesMessages } from "../../../errors/articles/ExtractArticlesErrors.js";
 
 /**
  * Custom hook to fetch and manage the status of a extract articles job, with localized messages and error handling.

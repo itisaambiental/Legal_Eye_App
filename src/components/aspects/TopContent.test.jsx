@@ -20,12 +20,14 @@ describe("TopContent Component", () => {
   });
 
   const defaultProps = {
-    subjectName: "Mathematics",
-    onRowsPerPageChange: vi.fn(),
-    totalAspects: 10,
-    openModalCreate: vi.fn(),
-    onFilterChange: vi.fn(),
-    onClear: vi.fn(),
+    config: {
+      subjectName: "Mathematics",
+      onRowsPerPageChange: vi.fn(),
+      totalAspects: 10,
+      openModalCreate: vi.fn(),
+      onFilterChange: vi.fn(),
+      onClear: vi.fn(),
+    },
   };
 
   test("renders subject name and total aspects correctly", () => {
@@ -35,7 +37,7 @@ describe("TopContent Component", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Aspectos de la materia: Mathematics")).toBeInTheDocument();
+    expect(screen.getByText("Mathematics")).toBeInTheDocument();
     expect(screen.getByText("Aspectos totales: 10")).toBeInTheDocument();
   });
 
@@ -62,7 +64,7 @@ describe("TopContent Component", () => {
     const newAspectButton = screen.getByText("Nuevo Aspecto");
     fireEvent.click(newAspectButton);
 
-    expect(defaultProps.openModalCreate).toHaveBeenCalled();
+    expect(defaultProps.config.openModalCreate).toHaveBeenCalled();
   });
 
   test("triggers filter change on input change", () => {
@@ -75,7 +77,7 @@ describe("TopContent Component", () => {
     const searchInput = screen.getByPlaceholderText("Buscar por nombre...");
     fireEvent.change(searchInput, { target: { value: "Safety" } });
 
-    expect(defaultProps.onFilterChange).toHaveBeenCalledWith("Safety");
+    expect(defaultProps.config.onFilterChange).toHaveBeenCalledWith("Safety");
   });
 
   test("clears filter input when clear button is clicked", () => {
@@ -90,6 +92,6 @@ describe("TopContent Component", () => {
     const clearButton = screen.getByRole("button", { name: /clear/i });
     fireEvent.click(clearButton);
 
-    expect(defaultProps.onClear).toHaveBeenCalled();
+    expect(defaultProps.config.onClear).toHaveBeenCalled();
   });
 });

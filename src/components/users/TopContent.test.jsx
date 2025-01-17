@@ -15,11 +15,12 @@ describe("TopContent Component for Users", () => {
       totalUsers: 12,
       capitalize: vi.fn((text) => text.charAt(0).toUpperCase() + text.slice(1)),
       openModalCreate: vi.fn(),
-      onFilterChange: vi.fn(),
+      onFilterByNameOrEmail: vi.fn(),
+      onFilterByRole: vi.fn(),
       onClear: vi.fn(),
-      selectedValue: "Todos los Roles",
+      filterByNameOrEmail: "",
+      filterByRole: "Todos los Roles",
       selectedRoleKeys: new Set(["0"]),
-      onRoleChange: vi.fn(),
       translateRole: vi.fn((role) => role),
       ...configOverrides,
     };
@@ -30,7 +31,7 @@ describe("TopContent Component for Users", () => {
       </MemoryRouter>
     );
 
-    return defaultConfig; 
+    return defaultConfig;
   };
 
   test("renders the total users count correctly", () => {
@@ -48,7 +49,7 @@ describe("TopContent Component for Users", () => {
     expect(config.openModalCreate).toHaveBeenCalled();
   });
 
-  test("triggers filter change on input change", () => {
+  test("triggers filter by name or email on input change", () => {
     const config = renderTopContent();
 
     const searchInput = screen.getByPlaceholderText(
@@ -56,10 +57,10 @@ describe("TopContent Component for Users", () => {
     );
     fireEvent.change(searchInput, { target: { value: "John" } });
 
-    expect(config.onFilterChange).toHaveBeenCalledWith("John");
+    expect(config.onFilterByNameOrEmail).toHaveBeenCalledWith("John");
   });
 
-  test("clears filter input when clear button is clicked", () => {
+  test("clears filters when clear button is clicked", () => {
     const config = renderTopContent();
 
     const searchInput = screen.getByPlaceholderText(
@@ -81,7 +82,7 @@ describe("TopContent Component for Users", () => {
     expect(config.onRowsPerPageChange).toHaveBeenCalledWith(expect.anything());
   });
 
-  test("displays roles correctly in dropdown and handles role selection change", () => {
+  test("renders roles correctly in the dropdown and handles role selection change", () => {
     const config = renderTopContent();
 
     const dropdownButton = screen.getByText("Todos los Roles");
@@ -93,6 +94,22 @@ describe("TopContent Component for Users", () => {
     const roleOption = screen.getByText("Admin");
     fireEvent.click(roleOption);
 
-    expect(config.onRoleChange).toHaveBeenCalled();
+    expect(config.onFilterByRole).toHaveBeenCalled();
   });
+
+  test("renders the current filter values correctly", () => {
+    renderTopContent({
+      filterByNameOrEmail: "Jane",
+      filterByRole: "Admin",
+    });
+  
+    const searchInput = screen.getByPlaceholderText(
+      "Buscar por nombre o email..."
+    );
+    expect(searchInput.value).toBe("Jane");
+  
+    const dropdownButton = screen.getByText("Admin");
+    expect(dropdownButton).toBeInTheDocument();
+  });
+  
 });

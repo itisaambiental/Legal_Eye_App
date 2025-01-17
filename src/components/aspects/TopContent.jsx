@@ -16,11 +16,12 @@ import flecha_icon from "../../assets/flecha_izquierda.png";
  * @param {Object} props - Component properties.
  * @param {Object} props.config - Component configuration object.
  * @param {string} props.config.subjectName - The name of the subject associated with the aspects.
- * @param {Function} props.config.onRowsPerPageChange - Callback function triggered when the number of rows per page changes.
- * @param {number} props.config.totalAspects - The total number of aspects being managed.
- * @param {Function} props.config.openModalCreate - Function to open the modal for creating a new aspect.
- * @param {Function} props.config.onFilterChange - Callback function triggered when the search input changes.
+ * @param {Function} props.config.onRowsPerPageChange - Callback function to handle changes in rows per page.
+ * @param {number} props.config.totalAspects - The total number of aspects.
+ * @param {Function} props.config.openModalCreate - Callback function to open the modal for creating a new aspect.
+ * @param {Function} props.config.onFilterByName - Callback function for handling changes in the search input.
  * @param {Function} props.config.onClear - Callback function to clear the search input.
+ * @param {string} props.config.filterByName - The current value of the search input.
  *
  * @returns {JSX.Element} Rendered TopContent component for managing aspects, with options for filtering, pagination, and creating aspects.
  */
@@ -30,8 +31,9 @@ function TopContent({ config }) {
     onRowsPerPageChange,
     totalAspects,
     openModalCreate,
-    onFilterChange,
+    onFilterByName,
     onClear,
+    filterByName,
   } = config;
 
   const navigate = useNavigate();
@@ -75,6 +77,7 @@ function TopContent({ config }) {
             variant="faded"
             isClearable
             className="w-full"
+            value={filterByName}
             placeholder="Buscar por nombre..."
             startContent={
               <img
@@ -84,7 +87,7 @@ function TopContent({ config }) {
               />
             }
             onClear={onClear}
-            onValueChange={onFilterChange}
+            onValueChange={onFilterByName}
           />
           <Button
             color="primary"
@@ -131,8 +134,9 @@ TopContent.propTypes = {
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalAspects: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
-    onFilterChange: PropTypes.func.isRequired,
+    onFilterByName: PropTypes.func.isRequired, 
     onClear: PropTypes.func.isRequired,
+    filterByName: PropTypes.string.isRequired, 
   }).isRequired,
 };
 

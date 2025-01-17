@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
+import { useCallback, useState, useMemo, useEffect, useRef } from "react";
 import {
   Tooltip,
   Table,
@@ -62,17 +62,21 @@ export default function Users() {
     deleteUser,
     deleteUsersBatch,
     fetchUsersByRole,
+    fetchUsersByNameOrGmail,
     fetchUsers,
   } = useUsers();
-  const [filterValue, setFilterValue] = useState("");
   const { roles, roles_error } = useRoles();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [filterByNameOrGmail, setFilterByNameOrGmail] = useState("");
+  const [selectedRoleKeys, setSelectedRoleKeys] = useState(new Set(["0"]));
+  const [selectedRole, setSelectedRole] = useState("Todos los Roles");
+  const [isSearching, setIsSearching] = useState(false);
+  const debounceTimeout = useRef(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [IsSearching, setIsSearching] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [usertypeError, setusertypeError] = useState(null);
   const [nameError, setNameError] = useState(null);
@@ -80,8 +84,6 @@ export default function Users() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [fileError, setFileError] = useState(null);
-  const [selectedRoleKeys, setSelectedRoleKeys] = useState(new Set(["0"]));
-  const [selectedValue, setSelectedValue] = useState("Todos los Roles");
   const [formData, setFormData] = useState({
     id: "",
     user_type: "",
@@ -160,59 +162,66 @@ export default function Users() {
     setFileError(null);
   };
 
-  const handleRoleSelection = useCallback(
+  const handleClear = useCallback(() => {
+    setFilterByNameOrGmail("");
+    setSelectedRole("Todos los Roles");
+    setSelectedRoleKeys(new Set(["0"]));
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleFilter = useCallback(
+    (field, value) => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(async () => {
+        setPage(1);
+        setIsSearching(true);
+        if (field === "nameOrGmail") {
+          await fetchUsersByNameOrGmail(value);
+        } else if (field === "role") {
+          await fetchUsersByRole(value);
+        }
+        setIsSearching(false);
+      }, 500);
+    },
+    [fetchUsersByNameOrGmail, fetchUsersByRole]
+  );
+
+  const handleFilterByNameOrGmail = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByNameOrGmail(value);
+      setSelectedRole("Todos los Roles");
+      setSelectedRoleKeys(new Set(["0"]));
+      handleFilter("nameOrGmail", value);
+    },
+    [handleClear, handleFilter]
+  );
+
+  const handleFilterByRole = useCallback(
     (selectedRole) => {
       if (selectedRole === "0" || !selectedRole) {
-        fetchUsers();
-        setSelectedValue("Todos los Roles");
+        handleClear();
       } else {
-        setIsSearching(true);
-        fetchUsersByRole(selectedRole);
+        setFilterByNameOrGmail("");
+        handleFilter("role", selectedRole);
         const roleName =
           roles.find((role) => role.id.toString() === selectedRole)?.role ||
           "Todos los Roles";
-        setSelectedValue(capitalize(translateRole(roleName)));
-        setIsSearching(false);
+        setSelectedRole(capitalize(translateRole(roleName)));
       }
     },
-    [roles, fetchUsers, fetchUsersByRole]
+    [roles, handleClear, handleFilter]
   );
 
   const onRoleChange = (keys) => {
     const selectedArray = Array.from(keys);
     const selectedRole = selectedArray[0];
     setSelectedRoleKeys(keys);
-    handleRoleSelection(selectedRole);
-    setFilterValue("");
+    handleFilterByRole(selectedRole);
   };
-
-  const filteredUsers = useMemo(() => {
-    if (!filterValue) return users;
-    return users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()) ||
-        user.gmail.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }, [users, filterValue]);
-
-  const totalPages = useMemo(
-    () => Math.ceil(filteredUsers.length / rowsPerPage),
-    [filteredUsers, rowsPerPage]
-  );
-
-  const handleFilterChange = useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
-      setPage(1);
-    } else {
-      setFilterValue("");
-    }
-  }, []);
-
-  const onClear = useCallback(() => {
-    setFilterValue("");
-    setPage(1);
-  }, []);
 
   const openModalCreate = () => {
     setFormData({
@@ -246,6 +255,11 @@ export default function Users() {
     setEmailError(null);
     setusertypeError(null);
   };
+
+  const totalPages = useMemo(
+    () => Math.ceil(users.length / rowsPerPage),
+    [users, rowsPerPage]
+  );
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -328,20 +342,21 @@ export default function Users() {
         config={{
           roles: roles,
           onRowsPerPageChange: onRowsPerPageChange,
-          totalUsers: filteredUsers.length,
+          totalUsers: users.length,
           capitalize: capitalize,
           openModalCreate: openModalCreate,
-          value: filterValue,
-          onFilterChange: handleFilterChange,
-          onClear: onClear,
-          selectedValue: selectedValue,
+          onFilterByNameOrEmail: handleFilterByNameOrGmail,
+          onFilterByRole: onRoleChange,
+          onClear: handleClear,
+          filterByNameOrEmail: filterByNameOrGmail,
+          filterByRole: selectedRole,
           selectedRoleKeys: selectedRoleKeys,
-          onRoleChange: onRoleChange,
           translateRole: translateRole,
         }}
       />
+
       <>
-        {IsSearching || loading ? (
+        {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"
@@ -364,10 +379,7 @@ export default function Users() {
               )}
             </TableHeader>
             <TableBody
-              items={filteredUsers.slice(
-                (page - 1) * rowsPerPage,
-                page * rowsPerPage
-              )}
+              items={users.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
               emptyContent="No hay usuarios para mostrar"
             >
               {(user) => (
@@ -411,7 +423,7 @@ export default function Users() {
           onPreviousPage: onPreviousPage,
           onNextPage: onNextPage,
           selectedKeys: selectedKeys,
-          filteredItems: filteredUsers,
+          filteredItems: users,
         }}
       />
       {isCreateModalOpen && (
@@ -468,7 +480,7 @@ export default function Users() {
           setIsDeletingBatch: setIsDeletingBatch,
           isDeletingBatch: isDeletingBatch,
           selectedKeys: selectedKeys,
-          users: filteredUsers,
+          users: users,
           deleteUsersBatch: deleteUsersBatch,
           setSelectedKeys: setSelectedKeys,
           check: check,
@@ -476,5 +488,4 @@ export default function Users() {
       />
     </div>
   );
-  
 }

@@ -16,8 +16,9 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onRowsPerPageChange - Callback function for changing rows per page.
  * @param {number} props.config.totalSubjects - The total number of subjects.
  * @param {Function} props.config.openModalCreate - Function to open the modal for creating a new subject.
- * @param {Function} props.config.onFilterChange - Callback function for handling search input changes.
+ * @param {Function} props.config.onFilterByName - Callback function for handling search input changes.
  * @param {Function} props.config.onClear - Callback function to clear the search input.
+ * @param {string} props.config.filterByName - The current value of the search input.
  *
  * @returns {JSX.Element} Rendered TopContent component for managing subjects.
  */
@@ -27,8 +28,9 @@ function TopContent({ config }) {
     onRowsPerPageChange,
     totalSubjects,
     openModalCreate,
-    onFilterChange,
+    onFilterByName,
     onClear,
+    filterByName,
   } = config;
 
   return (
@@ -39,6 +41,7 @@ function TopContent({ config }) {
           variant="faded"
           isClearable
           className="w-full"
+          value={filterByName}
           placeholder="Buscar por nombre..."
           startContent={
             <img
@@ -48,7 +51,7 @@ function TopContent({ config }) {
             />
           }
           onClear={onClear}
-          onValueChange={onFilterChange}
+          onValueChange={onFilterByName}
         />
         <Button
           color="primary"
@@ -91,8 +94,9 @@ TopContent.propTypes = {
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalSubjects: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
-    onFilterChange: PropTypes.func.isRequired,
+    onFilterByName: PropTypes.func.isRequired, 
     onClear: PropTypes.func.isRequired,
+    filterByName: PropTypes.string.isRequired, 
   }).isRequired,
 };
 

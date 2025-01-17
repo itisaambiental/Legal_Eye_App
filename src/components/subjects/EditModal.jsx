@@ -48,8 +48,6 @@ function EditModal({ config }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(formData)
-
   useEffect(() => {
     if (selectedSubject) {
       setFormData({
@@ -72,7 +70,6 @@ function EditModal({ config }) {
     }
 
     try {
-      console.log(formData)
       const { success, error } = await updateSubject(
         formData.id,
         formData.name

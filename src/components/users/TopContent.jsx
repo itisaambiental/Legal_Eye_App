@@ -15,41 +15,43 @@ import mas_icon from "../../assets/mas.png";
  * TopContent component
  *
  * This component renders the top section of a user management interface, providing search, filter,
- * and pagination controls, as well as a button to create a new user.
+ * pagination controls, and a button to create a new user. It supports filtering by name, email,
+ * and roles, and provides callbacks for handling search, filter, and pagination interactions.
  *
  * @component
  * @param {Object} props - Component properties.
  * @param {Object} props.config - Configuration object for the component.
  * @param {Array} props.config.roles - List of roles available for filtering users.
- * @param {Function} props.config.onRowsPerPageChange - Callback function for changing rows per page.
- * @param {number} props.config.totalUsers - The total number of users.
+ * @param {Function} props.config.onRowsPerPageChange - Callback for changing rows per page.
+ * @param {number} props.config.totalUsers - Total number of users.
  * @param {Function} props.config.capitalize - Function to capitalize role names.
- * @param {Function} props.config.openModalCreate - Function to open the modal for creating a new user.
- * @param {string} props.config.value - Current value of the filter input.
- * @param {Function} props.config.onFilterChange - Callback function for handling search input changes.
- * @param {Function} props.config.onClear - Callback function to clear the search input.
- * @param {string} props.config.selectedValue - Currently selected value for role filtering display.
+ * @param {Function} props.config.openModalCreate - Callback to open the modal for creating a new user.
+ * @param {Function} props.config.onFilterByNameOrEmail - Callback to handle filtering by name or email.
+ * @param {Function} props.config.onFilterByRole - Callback to handle filtering by role.
+ * @param {Function} props.config.onClear - Callback to clear all filters.
+ * @param {string} props.config.filterByNameOrEmail - Current value of the name or email filter input.
+ * @param {string} props.config.filterByRole - Current value of the role filter.
  * @param {Set} props.config.selectedRoleKeys - Set of selected role keys for filtering.
- * @param {Function} props.config.onRoleChange - Callback function for handling role selection changes.
  * @param {Function} props.config.translateRole - Function to translate role names.
  *
- * @returns {JSX.Element} Rendered TopContent component for managing users.
+ * @returns {JSX.Element} Rendered TopContent component.
  */
 function TopContent({ config }) {
   const {
-    value,
     roles,
     onRowsPerPageChange,
     totalUsers,
     capitalize,
     openModalCreate,
-    onFilterChange,
+    onFilterByNameOrEmail,
+    onFilterByRole,
     onClear,
-    selectedValue,
+    filterByNameOrEmail,
+    filterByRole,
     selectedRoleKeys,
-    onRoleChange,
     translateRole,
   } = config;
+
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
@@ -57,7 +59,7 @@ function TopContent({ config }) {
           color="primary"
           variant="faded"
           isClearable
-          value={value}
+          value={filterByNameOrEmail}
           className="w-full"
           placeholder="Buscar por nombre o email..."
           startContent={
@@ -68,7 +70,7 @@ function TopContent({ config }) {
             />
           }
           onClear={onClear}
-          onValueChange={onFilterChange}
+          onValueChange={onFilterByNameOrEmail}
         />
 
         <Dropdown>
@@ -77,14 +79,14 @@ function TopContent({ config }) {
               endContent={
                 <img
                   src={angulo_abajo_icon}
-                  alt="Search Icon"
+                  alt="Dropdown Icon"
                   className="w-4 h-4 flex-shrink-0 text-small"
                 />
               }
               variant="faded"
               color="primary"
             >
-              {selectedValue}
+              {filterByRole}
             </Button>
           </DropdownTrigger>
           <DropdownMenu
@@ -94,7 +96,7 @@ function TopContent({ config }) {
             aria-label="Seleccionar Rol"
             selectionMode="single"
             selectedKeys={selectedRoleKeys}
-            onSelectionChange={onRoleChange}
+            onSelectionChange={onFilterByRole}
           >
             <DropdownItem key="0">Todos los Roles</DropdownItem>
             {roles.map((role) => (
@@ -140,7 +142,6 @@ function TopContent({ config }) {
 
 TopContent.propTypes = {
   config: PropTypes.shape({
-    value: PropTypes.string.isRequired,
     roles: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -152,11 +153,12 @@ TopContent.propTypes = {
     totalUsers: PropTypes.number.isRequired,
     capitalize: PropTypes.func.isRequired,
     openModalCreate: PropTypes.func.isRequired,
-    onFilterChange: PropTypes.func.isRequired,
+    onFilterByNameOrEmail: PropTypes.func.isRequired,
+    onFilterByRole: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
-    selectedValue: PropTypes.string.isRequired,
+    filterByNameOrEmail: PropTypes.string.isRequired,
+    filterByRole: PropTypes.string.isRequired,
     selectedRoleKeys: PropTypes.instanceOf(Set).isRequired,
-    onRoleChange: PropTypes.func.isRequired,
     translateRole: PropTypes.func.isRequired,
   }).isRequired,
 };

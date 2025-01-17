@@ -15,18 +15,16 @@ import server from "../../config/server.js";
 export default async function getClassifications({ token }) {
   try {
     const response = await server.get(
-      '/legalBasis/classification/classification/all',
+      "/legalBasis/classification/classification/all",
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-
     if (response.status !== 200) {
       throw new Error("Failed to retrieve classifications");
     }
-
     return response.data.classifications;
   } catch (error) {
     console.error(error);

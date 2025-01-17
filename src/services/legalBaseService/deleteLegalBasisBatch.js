@@ -21,7 +21,6 @@ export default async function deleteLegalBasisBatch({ legalBasisIds, token }) {
       },
       data: { legalBasisIds },
     });
-
     if (response.status !== 204) {
       throw new Error("Failed to delete legal bases in batch");
     }

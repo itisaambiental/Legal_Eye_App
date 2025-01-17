@@ -15,22 +15,20 @@ import server from "../../config/server.js";
  * @throws {Error} Throws an error if the response status is not 200 or if there is an issue with the request.
  */
 export default async function getLegalBasisByLastReform({ from, to, token }) {
-    try {
-        const response = await server.get('/legalBasis/lastReform/lastReform', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            params: { from, to },
-        });
+  try {
+    const response = await server.get("/legalBasis/lastReform/lastReform", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { from, to },
+    });
 
-        if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis by lastReform");
-        }
-
-        return response.data.legalBasis;
-
-    } catch (error) {
-        console.error(error);
-        throw error;
+    if (response.status !== 200) {
+      throw new Error("Failed to retrieve legal basis by lastReform");
     }
+    return response.data.legalBasis;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

@@ -1,6 +1,8 @@
 import { useContext, useState, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getArticlesByLegalBasis from "../../services/articlesService/getArticlesByLegalBasisId.js";
+import getArticlesByName from "../../services/articlesService/getArticlesByName.js";
+import getArticlesByDescription from "../../services/articlesService/getArticlesByDescription.js";
 import createNewArticle from "../../services/articlesService/createArticle.js";
 import ArticleErrors from "../../errors/articles/articleErrors.js";
 
@@ -16,23 +18,11 @@ export default function useArticles() {
     error: null,
   });
 
-  /**
-   * Clears the list of articles from the state.
-   * @function clearArticles
-   * @returns {void}
-   */
   const clearArticles = useCallback(() => {
     setArticles([]);
     setStateArticles((prevState) => ({ ...prevState, error: null }));
   }, []);
 
-  /**
-   * Fetches articles associated with a specific legal basis.
-   * @async
-   * @function fetchArticles
-   * @param {number} legalBasisId - The ID of the legal basis to retrieve articles for.
-   * @returns {Promise<void>}
-   */
   const fetchArticles = useCallback(
     async (legalBaseId) => {
       setStateArticles({ loading: true, error: null });
@@ -62,15 +52,6 @@ export default function useArticles() {
     [jwt]
   );
 
-  /**
-   * Adds a new article to the list of articles.
-   * Maintains the correct order using binary search for efficient insertion.
-   * @param {number} legalBasisId - The ID of the legal basis.
-   * @param {string} title - The title of the article.
-   * @param {string} article - The content of the article.
-   * @param {number} order - The order of the article within the legal basis.
-   * @returns {Promise<Object>} - Success or failure of the operation.
-   */
   const addArticle = useCallback(
     async (legalBasisId, title, article, order) => {
       try {
@@ -122,6 +103,69 @@ export default function useArticles() {
     [jwt]
   );
 
+  const fetchArticlesByName = useCallback(
+    async (name) => {
+      setStateArticles({ loading: true, error: null });
+      try {
+        const articles = await getArticlesByName({
+          name,
+          token: jwt,
+        });
+        setArticles(articles);
+        setStateArticles({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = ArticleErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateArticles({
+          loading: false,
+          error: handledError,
+        });
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Fetches articles by description.
+   * @async
+   * @function fetchArticlesByDescription
+   * @param {string} description - The description or part of the description of the articles to retrieve.
+   * @returns {Promise<void>}
+   */
+  const fetchArticlesByDescription = useCallback(
+    async (description) => {
+      setStateArticles({ loading: true, error: null });
+      try {
+        const articles = await getArticlesByDescription({
+          description,
+          token: jwt,
+        });
+        setArticles(articles);
+        setStateArticles({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = ArticleErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateArticles({
+          loading: false,
+          error: handledError,
+        });
+      }
+    },
+    [jwt]
+  );
+
   return {
     articles,
     loading: stateArticles.loading,
@@ -129,5 +173,7 @@ export default function useArticles() {
     clearArticles,
     fetchArticles,
     addArticle,
+    fetchArticlesByName,
+    fetchArticlesByDescription,
   };
 }

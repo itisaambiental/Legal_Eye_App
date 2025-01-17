@@ -45,18 +45,16 @@ export default async function createLegalBasis({
     formData.append("aspectsIds", JSON.stringify(aspectsIds));
     formData.append("classification", classification);
     formData.append("jurisdiction", jurisdiction);
-
     if (state) {
-      formData.append("state", state); 
+      formData.append("state", state);
     }
-
     if (municipality) {
-      formData.append("municipality", municipality); 
+      formData.append("municipality", municipality);
     }
     formData.append("lastReform", lastReform);
     formData.append("extractArticles", String(extractArticles));
     if (document) {
-      formData.append("document", document); 
+      formData.append("document", document);
     }
     const response = await server.post("/legalBasis", formData, {
       headers: {
@@ -67,7 +65,6 @@ export default async function createLegalBasis({
     if (response.status !== 201) {
       throw new Error("Failed to create legal basis");
     }
-
     const { jobId, legalBasis } = response.data;
     return { jobId, legalBasis };
   } catch (error) {

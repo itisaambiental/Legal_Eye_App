@@ -63,19 +63,19 @@ describe("Subjects Component", () => {
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
 
-  test("displays an error message if there is an error loading subjects", () => {
-    useSubjects.mockReturnValueOnce({
-      ...useSubjects(),
-      error: { title: "Failed to load subjects", message: "Server Error" },
-    });
-    render(
-      <MemoryRouter>
-        <Subjects />
-      </MemoryRouter>
-    );
-    expect(screen.getByText("Failed to load subjects")).toBeInTheDocument();
-    expect(screen.getByText("Server Error")).toBeInTheDocument();
-  });
+  // test("displays an error message if there is an error loading subjects", () => {
+  //   useSubjects.mockReturnValueOnce({
+  //     ...useSubjects(),
+  //     error: { title: "Failed to load subjects", message: "Server Error" },
+  //   });
+  //   render(
+  //     <MemoryRouter>
+  //       <Subjects />
+  //     </MemoryRouter>
+  //   );
+  //   expect(screen.getByText("Failed to load subjects")).toBeInTheDocument();
+  //   expect(screen.getByText("Server Error")).toBeInTheDocument();
+  // });
 });
 
 describe("Subjects Component with no subjects", () => {

@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
+import { useCallback, useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Tooltip,
@@ -49,15 +49,19 @@ export default function Aspects() {
     error,
     fetchAspects,
     addAspect,
+    fetchAspectsByName,
     modifyAspect,
     removeAspect,
     deleteAspectsBatch,
   } = useAspects();
   const { fetchSubjectById, error: subjectError } = useSubjects();
-  const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
+  const [filterByName, setFilterByName] = useState("");
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [IsSearching, setIsSearching] = useState(false);
+  const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAspect, setSelectedAspect] = useState(null);
@@ -86,26 +90,45 @@ export default function Aspects() {
     fetchData();
   }, [id, fetchAspects, fetchSubjectById]);
 
-  const filteredAspects = useMemo(() => {
-    if (!filterValue) return aspects;
-    return aspects.filter((aspect) =>
-      aspect.aspect_name.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }, [aspects, filterValue]);
+  useEffect(() => {
+    if (!loading && isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [loading, isFirstRender]);
 
-  const totalPages = useMemo(
-    () => Math.ceil(filteredAspects.length / rowsPerPage),
-    [filteredAspects, rowsPerPage]
+  const handleClear = useCallback(() => {
+    setFilterByName("");
+    fetchAspects(id);
+  }, [fetchAspects, id]);
+
+  const handleFilter = useCallback(
+    (field, value) => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(async () => {
+        setPage(1);
+        setIsSearching(true);
+        switch (field) {
+          case "name":
+            await fetchAspectsByName(id, value);
+            break;
+        }
+        setIsSearching(false);
+      }, 500);
+    },
+    [fetchAspectsByName, id]
   );
 
-  const handleFilterChange = useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
-      setPage(1);
-    } else {
-      setFilterValue("");
-    }
-  }, []);
+  const handleFilterByName = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByName(value);
+      handleFilter("name", value);
+    },
+    [handleFilter, handleClear]
+  );
 
   const handleNameChange = (e) => {
     const { value } = e.target;
@@ -117,11 +140,6 @@ export default function Aspects() {
       setNameError(null);
     }
   };
-
-  const onClear = useCallback(() => {
-    setFilterValue("");
-    setPage(1);
-  }, []);
 
   const openModalCreate = () => {
     setFormData({
@@ -147,6 +165,11 @@ export default function Aspects() {
     setSelectedAspect(null);
     setNameError(null);
   };
+
+  const totalPages = useMemo(
+    () => Math.ceil(aspects.length / rowsPerPage),
+    [aspects, rowsPerPage]
+  );
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -205,7 +228,7 @@ export default function Aspects() {
     [removeAspect]
   );
 
-  if (loading) {
+  if (loading && isFirstRender) {
     return (
       <div
         role="status"
@@ -227,49 +250,61 @@ export default function Aspects() {
         config={{
           subjectName: subjectName,
           onRowsPerPageChange: onRowsPerPageChange,
-          totalAspects: filteredAspects.length,
+          totalAspects: aspects.length,
           openModalCreate: openModalCreate,
-          onFilterChange: handleFilterChange,
-          onClear: onClear,
+          onFilterByName: handleFilterByName,
+          filterByName: filterByName,
+          onClear: handleClear,
         }}
       />
-      <Table
-        aria-label="Tabla de Aspectos"
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-        color="primary"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid} align={column.align}>
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={filteredAspects.slice(
-            (page - 1) * rowsPerPage,
-            page * rowsPerPage
-          )}
-          emptyContent="No hay aspectos para mostrar"
-        >
-          {(aspect) => (
-            <TableRow key={aspect.id}>
-              {(columnKey) => (
-                <TableCell>
-                  <AspectCell
-                    aspect={aspect}
-                    columnKey={columnKey}
-                    openEditModal={openEditModal}
-                    handleDelete={handleDelete}
-                  />
-                </TableCell>
+      <>
+        {IsSearching || loading ? (
+          <div
+            role="status"
+            className="flex justify-center items-center w-full h-40"
+          >
+            <Spinner className="h-10 w-10" color="secondary" />
+          </div>
+        ) : (
+          <Table
+            aria-label="Tabla de Aspectos"
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            color="primary"
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.uid} align={column.align}>
+                  {column.name}
+                </TableColumn>
               )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody
+              items={aspects.slice(
+                (page - 1) * rowsPerPage,
+                page * rowsPerPage
+              )}
+              emptyContent="No hay aspectos para mostrar"
+            >
+              {(aspect) => (
+                <TableRow key={aspect.id}>
+                  {(columnKey) => (
+                    <TableCell>
+                      <AspectCell
+                        aspect={aspect}
+                        columnKey={columnKey}
+                        openEditModal={openEditModal}
+                        handleDelete={handleDelete}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </>
       <div className="relative w-full">
         {(selectedKeys.size > 0 || selectedKeys === "all") && (
           <Tooltip content="Eliminar" size="sm">
@@ -293,7 +328,7 @@ export default function Aspects() {
           onPreviousPage: onPreviousPage,
           onNextPage: onNextPage,
           selectedKeys: selectedKeys,
-          filteredItems: filteredAspects,
+          filteredItems: aspects,
         }}
       />
       {isCreateModalOpen && (
@@ -333,7 +368,7 @@ export default function Aspects() {
             setIsDeletingBatch: setIsDeletingBatch,
             isDeletingBatch: isDeletingBatch,
             selectedKeys: selectedKeys,
-            aspects: filteredAspects,
+            aspects: aspects,
             deleteAspectsBatch: deleteAspectsBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,

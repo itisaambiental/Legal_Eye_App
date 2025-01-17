@@ -9,8 +9,9 @@ describe("TopContent Component for Subjects", () => {
     onRowsPerPageChange: vi.fn(),
     totalSubjects: 8,
     openModalCreate: vi.fn(),
-    onFilterChange: vi.fn(),
+    onFilterByName: vi.fn(),
     onClear: vi.fn(),
+    filterByName: "",
   };
 
   const renderComponent = (config = defaultConfig) => {
@@ -42,7 +43,7 @@ describe("TopContent Component for Subjects", () => {
     const searchInput = screen.getByPlaceholderText("Buscar por nombre...");
     fireEvent.change(searchInput, { target: { value: "Math" } });
 
-    expect(defaultConfig.onFilterChange).toHaveBeenCalledWith("Math");
+    expect(defaultConfig.onFilterByName).toHaveBeenCalledWith("Math");
   });
 
   test("clears filter input when clear button is clicked", () => {
@@ -65,5 +66,13 @@ describe("TopContent Component for Subjects", () => {
     expect(defaultConfig.onRowsPerPageChange).toHaveBeenCalledWith(
       expect.anything()
     );
+  });
+
+  test("renders the correct value in the filter input", () => {
+    const configWithFilter = { ...defaultConfig, filterByName: "InitialValue" };
+    renderComponent(configWithFilter);
+
+    const searchInput = screen.getByPlaceholderText("Buscar por nombre...");
+    expect(searchInput.value).toBe("InitialValue");
   });
 });

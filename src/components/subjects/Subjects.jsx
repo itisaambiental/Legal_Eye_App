@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useRef, useEffect } from "react";
 import {
   Tooltip,
   Table,
@@ -45,14 +45,19 @@ export default function Subjects() {
     loading,
     error,
     addSubject,
+    fetchSubjects,
+    fetchSubjectsByName,
     modifySubject,
     removeSubject,
     deleteSubjectsBatch,
   } = useSubjects();
   const navigate = useNavigate();
-  const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [filterByName, setFilterByName] = useState("");
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [IsSearching, setIsSearching] = useState(false);
+  const debounceTimeout = useRef(null);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -64,26 +69,46 @@ export default function Subjects() {
     id: "",
     name: "",
   });
-  const filteredSubjects = useMemo(() => {
-    if (!filterValue) return subjects;
-    return subjects.filter((subject) =>
-      subject.subject_name.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }, [subjects, filterValue]);
 
-  const totalPages = useMemo(
-    () => Math.ceil(filteredSubjects.length / rowsPerPage),
-    [filteredSubjects, rowsPerPage]
+  useEffect(() => {
+    if (!loading && isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [loading, isFirstRender]);
+
+  const handleClear = useCallback(() => {
+    setFilterByName("");
+    fetchSubjects();
+  }, [fetchSubjects]);
+
+  const handleFilter = useCallback(
+    (field, value) => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(async () => {
+        setPage(1);
+        setIsSearching(true);
+        switch (field) {
+          case "name":
+            await fetchSubjectsByName(value);
+            break;
+        }
+        setIsSearching(false);
+      }, 500);
+    },
+    [fetchSubjectsByName]
   );
 
-  const handleFilterChange = useCallback((value) => {
-    if (value) {
-      setFilterValue(value);
-      setPage(1);
-    } else {
-      setFilterValue("");
-    }
-  }, []);
+  const handleFilterByName = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByName(value);
+      handleFilter("name", value);
+    },
+    [handleFilter, handleClear]
+  );
 
   const handleNameChange = (e) => {
     const { value } = e.target;
@@ -95,11 +120,6 @@ export default function Subjects() {
       setNameError(null);
     }
   };
-
-  const onClear = useCallback(() => {
-    setFilterValue("");
-    setPage(1);
-  }, []);
 
   const openModalCreate = () => {
     setFormData({
@@ -129,6 +149,11 @@ export default function Subjects() {
     navigate(`/subjects/${subjectId}/aspects`);
   };
 
+  const totalPages = useMemo(
+    () => Math.ceil(subjects.length / rowsPerPage),
+    [subjects, rowsPerPage]
+  );
+
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
     setPage(1);
@@ -139,8 +164,6 @@ export default function Subjects() {
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
-
-  console.log(subjects)
 
   const handleDelete = useCallback(
     async (subjectId) => {
@@ -188,7 +211,7 @@ export default function Subjects() {
     [removeSubject]
   );
 
-  if (loading) {
+  if (loading && isFirstRender) {
     return (
       <div
         role="status"
@@ -208,50 +231,62 @@ export default function Subjects() {
       <TopContent
         config={{
           onRowsPerPageChange: onRowsPerPageChange,
-          totalSubjects: filteredSubjects.length,
+          totalSubjects: subjects.length,
           openModalCreate: openModalCreate,
-          onFilterChange: handleFilterChange,
-          onClear: onClear,
+          onFilterByName: handleFilterByName,
+          filterByName: filterByName,
+          onClear: handleClear,
         }}
       />
-      <Table
-        aria-label="Tabla de Materias"
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-        color="primary"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid} align={column.align}>
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={filteredSubjects.slice(
-            (page - 1) * rowsPerPage,
-            page * rowsPerPage
-          )}
-          emptyContent="No hay materias para mostrar"
-        >
-          {(subject) => (
-            <TableRow key={subject.id}>
-              {(columnKey) => (
-                <TableCell>
-                  <SubjectCell
-                    subject={subject}
-                    columnKey={columnKey}
-                    goToAspects={goToAspects}
-                    openEditModal={openEditModal}
-                    handleDelete={handleDelete}
-                  />
-                </TableCell>
+      <>
+        {IsSearching || loading ? (
+          <div
+            role="status"
+            className="flex justify-center items-center w-full h-40"
+          >
+            <Spinner className="h-10 w-10" color="secondary" />
+          </div>
+        ) : (
+          <Table
+            aria-label="Tabla de Materias"
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            color="primary"
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.uid} align={column.align}>
+                  {column.name}
+                </TableColumn>
               )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody
+              items={subjects.slice(
+                (page - 1) * rowsPerPage,
+                page * rowsPerPage
+              )}
+              emptyContent="No hay materias para mostrar"
+            >
+              {(subject) => (
+                <TableRow key={subject.id}>
+                  {(columnKey) => (
+                    <TableCell>
+                      <SubjectCell
+                        subject={subject}
+                        columnKey={columnKey}
+                        goToAspects={goToAspects}
+                        openEditModal={openEditModal}
+                        handleDelete={handleDelete}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </>
       <div className="relative w-full">
         {(selectedKeys.size > 0 || selectedKeys === "all") && (
           <Tooltip content="Eliminar" size="sm">
@@ -275,7 +310,7 @@ export default function Subjects() {
           onPreviousPage: onPreviousPage,
           onNextPage: onNextPage,
           selectedKeys: selectedKeys,
-          filteredItems: filteredSubjects,
+          filteredItems: subjects,
         }}
       />
       {isCreateModalOpen && (
@@ -314,7 +349,7 @@ export default function Subjects() {
             setIsDeletingBatch: setIsDeletingBatch,
             isDeletingBatch: isDeletingBatch,
             selectedKeys: selectedKeys,
-            subjects: filteredSubjects,
+            subjects: subjects,
             deleteSubjectsBatch: deleteSubjectsBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,

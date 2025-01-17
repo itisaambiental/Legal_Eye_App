@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
+import { useCallback, useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import {
   Tooltip,
@@ -42,13 +42,26 @@ const columns = [
 export default function Articles() {
   const { id } = useParams();
   const [legalBaseName, setLegalBaseName] = useState(null);
-  const { articles, loading, error, fetchArticles, addArticle } = useArticles();
+  const {
+    articles,
+    loading,
+    error,
+    fetchArticles,
+    addArticle,
+    fetchArticlesByName,
+    fetchArticlesByDescription
+  } = useArticles();
   const { fetchLegalBasisById, error: legalBasisError } = useLegalBasis();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [filterByName, setFilterByName] = useState("");
+  const [filterByDescription, setFilterByDescription] = useState("");
+  const [isFirstRender, setIsFirstRender] = useState(true);
+  const [IsSearching, setIsSearching] = useState(false);
+  const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [nameError, setNameError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
@@ -77,9 +90,65 @@ export default function Articles() {
     fetchData();
   }, [id, fetchArticles, fetchLegalBasisById]);
 
-  const totalPages = useMemo(
-    () => Math.ceil(articles.length / rowsPerPage),
-    [articles, rowsPerPage]
+  useEffect(() => {
+    if (!loading && isFirstRender) {
+      setIsFirstRender(false);
+    }
+  }, [loading, isFirstRender]);
+
+  const handleClear = useCallback(() => {
+    setFilterByName("");
+    setFilterByDescription("");
+    fetchArticles(id);
+  }, [fetchArticles, id]);
+
+  const handleFilter = useCallback(
+    (field, value) => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(async () => {
+        setPage(1);
+        setIsSearching(true);
+        switch (field) {
+          case "name":
+            await fetchArticlesByName(value);
+            break;
+            case "description":
+            await fetchArticlesByDescription(value);
+            break;
+        }
+        setIsSearching(false);
+      }, 500);
+    },
+    [fetchArticlesByName, fetchArticlesByDescription]
+  );
+
+  const handleFilterByName = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByName(value);
+      setFilterByDescription("");
+      handleFilter("name", value);
+    },
+    [handleFilter, handleClear]
+  );
+
+  const handleFilterByAbbreviation = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByDescription(value);
+      setFilterByName("");
+      handleFilter("description", value);
+    },
+    [
+      handleFilter,
+      handleClear,
+    ]
   );
 
   const handleNameChange = (e) => {
@@ -125,9 +194,10 @@ export default function Articles() {
     }
   };
 
-  const onClear = useCallback(() => {
-    setPage(1);
-  }, []);
+  const totalPages = useMemo(
+    () => Math.ceil(articles.length / rowsPerPage),
+    [articles, rowsPerPage]
+  );
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -166,7 +236,7 @@ export default function Articles() {
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
 
-  if (loading) {
+  if (loading && isFirstRender) {
     return (
       <div
         role="status"
@@ -193,44 +263,62 @@ export default function Articles() {
           onRowsPerPageChange: onRowsPerPageChange,
           totalArticles: articles.length,
           openModalCreate: openModalCreate,
-          onClear: onClear,
+          filterByName: filterByName,
+          onFilterByName: handleFilterByName,
+          filterByDescription: filterByDescription,
+          onFilterByDescription: handleFilterByAbbreviation,
+          onClear: handleClear,
         }}
       />
-      <Table
-        aria-label="Tabla de Articulos"
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-        color="primary"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid} align={column.align}>
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          items={articles.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
-          emptyContent="No hay articulos para mostrar"
-        >
-          {(article) => (
-            <TableRow key={article.id}>
-              {(columnKey) => (
-                <TableCell>
-                  <ArticleCell
-                    article={article}
-                    columnKey={columnKey}
-                    openEditModal={() => {}}
-                    handleDelete={() => {}}
-                    openModalDescription={openModalDescription}
-                  />
-                </TableCell>
+      <>
+        {IsSearching || loading ? (
+          <div
+            role="status"
+            className="flex justify-center items-center w-full h-40"
+          >
+            <Spinner className="h-10 w-10" color="secondary" />
+          </div>
+        ) : (
+          <Table
+            aria-label="Tabla de Articulos"
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            color="primary"
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.uid} align={column.align}>
+                  {column.name}
+                </TableColumn>
               )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody
+              items={articles.slice(
+                (page - 1) * rowsPerPage,
+                page * rowsPerPage
+              )}
+              emptyContent="No hay articulos para mostrar"
+            >
+              {(article) => (
+                <TableRow key={article.id}>
+                  {(columnKey) => (
+                    <TableCell>
+                      <ArticleCell
+                        article={article}
+                        columnKey={columnKey}
+                        openEditModal={() => {}}
+                        handleDelete={() => {}}
+                        openModalDescription={openModalDescription}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </>
       <div className="relative w-full">
         {(selectedKeys.size > 0 || selectedKeys === "all") && (
           <Tooltip content="Eliminar" size="sm">

@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getSubjects from "../../services/subjectService/getSubjects.js";
 import getSubjectById from "../../services/subjectService/getSubjectById.js";
+import getSubjectsByName from "../../services/subjectService/getSubjectsByName.js";
 import createNewSubject from "../../services/subjectService/createSubject.js";
 import updateSubject from "../../services/subjectService/updateSubject.js";
 import deleteSubject from "../../services/subjectService/deleteSubject.js";
@@ -113,6 +114,39 @@ export default function useSubjects() {
   );
 
   /**
+   * Fetches a specific subject by its name.
+   * @async
+   * @function fetchSubjectByName
+   * @param {string} subjectName - The name of the subject to retrieve.
+   * @returns {Promise<Object|null>} - The retrieved subject data or null if an error occurs.
+   */
+  const fetchSubjectsByName = useCallback(
+    async (subjectName) => {
+      setStateSubjects({ loading: true, error: null });
+      try {
+        const subjects = await getSubjectsByName({ subjectName, token: jwt });
+        setSubjects(subjects.reverse());
+        setStateSubjects({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = SubjectErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateSubjects({
+          loading: false,
+          error: handledError,
+        });
+        return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
+
+  /**
    * Updates an existing subject by ID.
    * @async
    * @function modifySubject
@@ -202,9 +236,10 @@ export default function useSubjects() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
-        const subjects =   error.response?.data?.errors?.associatedSubjects?.map(
+        const subjects =
+          error.response?.data?.errors?.associatedSubjects?.map(
             (subject) => subject.name
-          ) || subjectIds
+          ) || subjectIds;
         const handledError = SubjectErrors.handleError({
           code: errorCode,
           error: serverMessage,
@@ -228,6 +263,7 @@ export default function useSubjects() {
     fetchSubjects,
     fetchSubjectById,
     addSubject,
+    fetchSubjectsByName,
     modifySubject,
     removeSubject,
     deleteSubjectsBatch,

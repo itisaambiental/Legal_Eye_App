@@ -2,6 +2,7 @@ import { useContext, useState, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getAspectsBySubject from "../../services/aspectService/getAspects.js";
 import createNewAspect from "../../services/aspectService/createAspect.js";
+import getAspectsByName from "../../services/aspectService/getAspectsByName.js";
 import updateAspect from "../../services/aspectService/updateAspect.js";
 import deleteAspect from "../../services/aspectService/deleteAspect.js";
 import deleteAspects from "../../services/aspectService/deleteAspects.js";
@@ -89,6 +90,46 @@ export default function useAspects() {
           error: serverMessage,
           httpError: clientMessage,
           items: [subjectId],
+        });
+        return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Fetches aspects by name for a specific subject.
+   * @async
+   * @function fetchAspectsByName
+   * @param {Object} params - Parameters for retrieving aspects.
+   * @param {number} params.subjectId - The ID of the subject to filter aspects by.
+   * @param {string} params.aspectName - The name or partial name of the aspects to search for.
+   * @returns {Promise<Object>} - The retrieved aspects data or an error message if an error occurs.
+   */
+  const fetchAspectsByName = useCallback(
+    async (subjectId, aspectName) => {
+      setStateAspects({ loading: true, error: null });
+      try {
+        const aspects = await getAspectsByName({
+          subjectId,
+          aspectName,
+          token: jwt,
+        });
+        setAspects(aspects.reverse());
+        setStateAspects({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = AspectErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [subjectId],
+        });
+        setStateAspects({
+          loading: false,
+          error: handledError,
         });
         return { success: false, error: handledError.message };
       }
@@ -209,6 +250,7 @@ export default function useAspects() {
     clearAspects,
     fetchAspects,
     addAspect,
+    fetchAspectsByName,
     modifyAspect,
     removeAspect,
     deleteAspectsBatch,

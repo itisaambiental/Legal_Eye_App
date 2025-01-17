@@ -6,6 +6,7 @@ import updateUser from "../../services/userService/updateUser.js";
 import deleteUserById from "../../services/userService/deleteUserById.js";
 import deleteUsers from "../../services/userService/deleteUsers.js";
 import getUserByRoleId from "../../services/userService/getUserByRole.js";
+import getUsersByNameOrGmail from "../../services/userService/getUsersByNameOrGmail.js";
 import { jwtDecode } from "jwt-decode";
 import UserErrors from "../../errors/users/UserErrors.js";
 
@@ -42,34 +43,6 @@ export default function useUsers() {
   }, [jwt]);
 
   /**
-   * Fetches users by their role ID.
-   * @param {number} roleId - Role ID to filter users.
-   */
-  const fetchUsersByRole = useCallback(
-    async (roleId) => {
-      setStateUsers({ loading: true, error: null });
-
-      try {
-        const users = await getUserByRoleId({ roleId, token: jwt });
-        setUsers(users.reverse());
-        setStateUsers({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = UserErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-          items: [roleId],
-        });
-        setStateUsers({ loading: false, error: handledError });
-      }
-    },
-    [jwt]
-  );
-
-  /**
    * Registers a new user.
    * @param {Object} userData - User data including name, email, role ID, and profile picture.
    * @returns {Promise<Object>} - Success status and user data or error message.
@@ -96,6 +69,64 @@ export default function useUsers() {
           httpError: clientMessage,
         });
         return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
+  /**
+   * Fetches users by their role ID.
+   * @param {number} roleId - Role ID to filter users.
+   */
+  const fetchUsersByRole = useCallback(
+    async (roleId) => {
+      setStateUsers({ loading: true, error: null });
+
+      try {
+        const users = await getUserByRoleId({ roleId, token: jwt });
+        setUsers(users.reverse());
+        setStateUsers({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = UserErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateUsers({ loading: false, error: handledError });
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   *
+   * @async
+   * @function fetchUsersByNameOrGmail
+   * @param {string} nameOrEmail - The name or email of the user to search for.
+   * @returns {Promise<void>} - Updates the state with the filtered users or an error object.
+   */
+  const fetchUsersByNameOrGmail = useCallback(
+    async (nameOrEmail) => {
+      setStateUsers({ loading: true, error: null });
+      try {
+        const users = await getUsersByNameOrGmail({
+          nameOrEmail,
+          token: jwt,
+        });
+        setUsers(users.reverse());
+        setStateUsers({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = UserErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateUsers({ loading: false, error: handledError });
       }
     },
     [jwt]
@@ -216,9 +247,10 @@ export default function useUsers() {
     users,
     loading: stateUsers.loading,
     error: stateUsers.error,
-    fetchUsersByRole,
     fetchUsers,
     addUser,
+    fetchUsersByRole,
+    fetchUsersByNameOrGmail,
     updateUserDetails,
     deleteUser,
     deleteUsersBatch,

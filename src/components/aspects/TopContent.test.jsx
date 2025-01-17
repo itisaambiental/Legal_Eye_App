@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import TopContent from "./TopContent";
 import { useNavigate } from "react-router-dom";
+
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -25,8 +26,9 @@ describe("TopContent Component", () => {
       onRowsPerPageChange: vi.fn(),
       totalAspects: 10,
       openModalCreate: vi.fn(),
-      onFilterChange: vi.fn(),
+      onFilterByName: vi.fn(),
       onClear: vi.fn(),
+      filterByName: "",
     },
   };
 
@@ -77,7 +79,7 @@ describe("TopContent Component", () => {
     const searchInput = screen.getByPlaceholderText("Buscar por nombre...");
     fireEvent.change(searchInput, { target: { value: "Safety" } });
 
-    expect(defaultProps.config.onFilterChange).toHaveBeenCalledWith("Safety");
+    expect(defaultProps.config.onFilterByName).toHaveBeenCalledWith("Safety");
   });
 
   test("clears filter input when clear button is clicked", () => {
@@ -93,5 +95,18 @@ describe("TopContent Component", () => {
     fireEvent.click(clearButton);
 
     expect(defaultProps.config.onClear).toHaveBeenCalled();
+  });
+
+  test("updates rows per page when select option changes", () => {
+    render(
+      <MemoryRouter>
+        <TopContent {...defaultProps} />
+      </MemoryRouter>
+    );
+
+    const select = screen.getByLabelText(/Filas por página:/i);
+    fireEvent.change(select, { target: { value: "10" } });
+
+    expect(defaultProps.config.onRowsPerPageChange).toHaveBeenCalled();
   });
 });

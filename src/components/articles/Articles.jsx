@@ -59,9 +59,9 @@ export default function Articles() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [filterByName, setFilterByName] = useState("");
   const [filterByDescription, setFilterByDescription] = useState("");
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  const [IsSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [nameError, setNameError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
@@ -271,7 +271,7 @@ export default function Articles() {
         }}
       />
       <>
-        {IsSearching || loading ? (
+        {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"

@@ -17,7 +17,7 @@ export default function useSubjects() {
   const { jwt } = useContext(Context);
   const [subjects, setSubjects] = useState([]);
   const [stateSubjects, setStateSubjects] = useState({
-    loading: false,
+    loading: true,
     error: null,
   });
 

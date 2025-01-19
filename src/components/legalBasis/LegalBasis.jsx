@@ -86,7 +86,6 @@ export default function LegalBasis() {
   } = useSubjects();
   const {
     aspects,
-    loading: aspectLoading,
     error: aspectError,
     clearAspects,
     fetchAspects,
@@ -114,9 +113,10 @@ export default function LegalBasis() {
   const [lastReformRange, setLastReformRange] = useState(null);
   const [lastReformIsInvalid, setLastReformIsInvalid] = useState(false);
   const [lastReformError, setLastReformError] = useState("");
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  const [IsSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [aspectLoading, setAspectLoading] = useState(false)
   const debounceTimeout = useRef(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedLegalBase, setSelectedLegalBase] = useState(null);
@@ -209,7 +209,9 @@ export default function LegalBasis() {
             break;
           case "subject":
             await fetchLegalBasisBySubject(value);
+            setAspectLoading(true)
             await fetchAspects(value);
+            setAspectLoading(false)
             break;
           case "subjectAndAspects": {
             const { subjectId, aspectsIds } = value;
@@ -1048,7 +1050,7 @@ export default function LegalBasis() {
         }}
       />
       <>
-        {IsSearching || loading ? (
+        {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"

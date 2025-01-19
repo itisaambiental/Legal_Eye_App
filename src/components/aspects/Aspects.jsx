@@ -59,9 +59,9 @@ export default function Aspects() {
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [filterByName, setFilterByName] = useState("");
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  const [IsSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAspect, setSelectedAspect] = useState(null);
@@ -258,7 +258,7 @@ export default function Aspects() {
         }}
       />
       <>
-        {IsSearching || loading ? (
+        {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"

@@ -55,9 +55,9 @@ export default function Subjects() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [filterByName, setFilterByName] = useState("");
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  const [IsSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -70,6 +70,7 @@ export default function Subjects() {
     name: "",
   });
 
+  console.log(loading, isFirstRender, isSearching)
   useEffect(() => {
     if (!loading && isFirstRender) {
       setIsFirstRender(false);
@@ -211,6 +212,7 @@ export default function Subjects() {
     [removeSubject]
   );
 
+
   if (loading && isFirstRender) {
     return (
       <div
@@ -239,7 +241,7 @@ export default function Subjects() {
         }}
       />
       <>
-        {IsSearching || loading ? (
+      {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"

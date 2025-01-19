@@ -16,7 +16,7 @@ export default function useAspects() {
   const { jwt } = useContext(Context);
   const [aspects, setAspects] = useState([]);
   const [stateAspects, setStateAspects] = useState({
-    loading: false,
+    loading: true,
     error: null,
   });
 

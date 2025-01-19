@@ -14,7 +14,7 @@ export default function useArticles() {
   const { jwt } = useContext(Context);
   const [articles, setArticles] = useState([]);
   const [stateArticles, setStateArticles] = useState({
-    loading: false,
+    loading: true,
     error: null,
   });
 

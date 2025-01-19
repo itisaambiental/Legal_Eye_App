@@ -70,7 +70,6 @@ export default function Subjects() {
     name: "",
   });
 
-  console.log(loading, isFirstRender, isSearching)
   useEffect(() => {
     if (!loading && isFirstRender) {
       setIsFirstRender(false);

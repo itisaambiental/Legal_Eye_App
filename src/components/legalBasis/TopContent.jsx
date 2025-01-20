@@ -39,7 +39,7 @@ import { I18nProvider } from "@react-aria/i18n";
  * @param {Function} props.config.onFilterBySubject - Callback for subject filter changes.
  * @param {Array<Object>} props.config.aspects - List of aspects for filtering.
  * @param {Array<string>} props.config.selectedAspects - Selected aspects.
- * @param {boolean} props.config.aspectLoading - Indicates if aspects are loading.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {Function} props.config.onFilterByAspects - Callback for aspect filter changes.
  * @param {Array<Object>} props.config.classifications - List of classifications for filtering.
  * @param {string} props.config.selectedClassification - Selected classification.
@@ -82,7 +82,7 @@ function TopContent({ config }) {
     onFilterBySubject,
     aspects,
     selectedAspects,
-    aspectLoading,
+    aspectsLoading,
     onFilterByAspects,
     classifications,
     selectedClassification,
@@ -325,7 +325,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-                aspectLoading && !isCreateModalOpen && !isEditModalOpen
+                aspectsLoading && !isCreateModalOpen && !isEditModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedAspects}
@@ -432,7 +432,7 @@ TopContent.propTypes = {
       })
     ).isRequired,
     selectedAspects: PropTypes.arrayOf(PropTypes.string),
-    aspectLoading: PropTypes.bool.isRequired,
+    aspectsLoading: PropTypes.bool.isRequired,
     onFilterByAspects: PropTypes.func.isRequired,
     classifications: PropTypes.arrayOf(
       PropTypes.shape({
@@ -455,13 +455,13 @@ TopContent.propTypes = {
     stateLoading: PropTypes.bool.isRequired,
     onFilterByState: PropTypes.func.isRequired,
     municipalities: PropTypes.arrayOf(PropTypes.string).isRequired,
-    selectedMunicipalities: PropTypes.instanceOf(Set),
+    selectedMunicipalities: PropTypes.array,
     municipalitiesLoading: PropTypes.bool.isRequired,
     onFilterByMunicipalities: PropTypes.func.isRequired,
     lastReformRange: PropTypes.shape({
       start: PropTypes.string,
       end: PropTypes.string,
-    }).isRequired,
+    }),
     lastReformIsInvalid: PropTypes.bool.isRequired,
     lastReformError: PropTypes.string,
     onFilterByLastReformRange: PropTypes.func.isRequired,

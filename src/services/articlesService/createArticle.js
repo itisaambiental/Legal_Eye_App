@@ -16,7 +16,7 @@ import server from "../../config/server.js"
  * @returns {Promise<Object>} The created article data returned from the server.
  * @throws {Error} If the response status is not 201 or if there is an error with the request.
  */
-export default async function createNewArticle({ legalBasisId, title, article, order, token }) {
+export default async function createArticle({ legalBasisId, title, article, order, token }) {
   try {
     const response = await server.post(
       `/articles/legalBasis/${legalBasisId}`,

@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalBody,
   Spinner,
+  Button
 } from "@nextui-org/react";
 import check from "../../assets/check.png";
 
@@ -71,7 +72,7 @@ function CreateModal({ config }) {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Algo salió mal al crear el aspecto. Intenta de nuevo");
+      toast.error("Algo salió mal al registrar el aspecto. Intenta de nuevo");
     } finally {
       setIsLoading(false);
     }
@@ -118,18 +119,18 @@ function CreateModal({ config }) {
                   </div>
                 </div>
                 <div>
-                  <button
-                    type="submit"
-                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                  >
-                    {isLoading ? (
-                      <div role="status">
-                        <Spinner size="sm" color="white" />
-                      </div>
-                    ) : (
-                      "Registrar Aspecto"
-                    )}
-                  </button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading}
+                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                >
+                  {isLoading ? (
+                    <Spinner size="sm" color="white" />
+                  ) : (
+                    "Registrar Aspecto"
+                  )}
+                </Button>
                 </div>
               </form>
             </ModalBody>

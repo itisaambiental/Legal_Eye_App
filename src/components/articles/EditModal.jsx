@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -8,24 +8,26 @@ import {
   ModalBody,
   Spinner,
   Textarea,
-  Button
+  Button,
 } from "@nextui-org/react";
 import check from "../../assets/check.png";
 
 /**
- * CreateModal component for Articles
+ * EditModal component for Articles
  *
- * This component provides a form for creating a new article, including fields for order, name, and description.
+ * This component provides a modal dialog for editing an articles's information.
  * Validation is performed for the required fields, and appropriate error messages are shown.
- * The form submission triggers the addArticle function to create the article, and feedback is displayed to the user based on the response.
+ * and provides feedback to the user on the success or failure of the update operation.
  *
  * @component
  * @param {Object} props - Component properties.
  * @param {Object} props.config - Configuration object for the component.
- * @param {boolean} props.config.isOpen - Controls whether the modal is open.
- * @param {Function} props.config.closeModalCreate - Function to close the modal.
- * @param {Object} props.config.formData - Form data containing the article details.
- * @param {Function} props.config.addArticle - Function to add a new article.
+ * @param {Object} props.config.formData - Current form data for the article being edited.
+ * @param {Function} props.config.setFormData - Function to update form data.
+ * @param {Object} props.config.selectedArticle - The article object selected for editing.
+ * @param {boolean} props.config.isOpen - Controls whether the modal is visible.
+ * @param {Function} props.config.updateArticle - Function to submit the updated article data.
+ * @param {Function} props.config.closeModalEdit - Function to close the modal.
  * @param {string|null} props.config.nameError - Error message for the article name input field.
  * @param {string|null} props.config.descriptionError - Error message for the article description field.
  * @param {string|null} props.config.orderError - Error message for the article order input field.
@@ -37,14 +39,16 @@ import check from "../../assets/check.png";
  * @param {Function} props.config.clearDescription - Handler to clear description entry.
  * @param {Function} props.config.handleOrderChange - Handler for article order input change.
  *
- * @returns {JSX.Element} Rendered CreateModal component with form elements and validation.
+ * @returns {JSX.Element} Rendered EditModal component for editing aspect details.
  */
-function CreateModal({ config }) {
+function EditModal({ config }) {
   const {
     isOpen,
-    closeModalCreate,
+    closeModalEdit,
     formData,
-    addArticle,
+    setFormData,
+    selectedArticle,
+    updateArticle,
     nameError,
     descriptionError,
     orderError,
@@ -59,7 +63,19 @@ function CreateModal({ config }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreate = async (e) => {
+  useEffect(() => {
+    if (selectedArticle) {
+      setFormData({
+        id: selectedArticle.id,
+        legalBaseId: selectedArticle.legal_basis_id,
+        name: selectedArticle.article_name,
+        description: selectedArticle.description,
+        order: selectedArticle.article_order,
+      });
+    }
+  }, [selectedArticle, setFormData]);
+
+  const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -94,28 +110,28 @@ function CreateModal({ config }) {
     } else {
       setDescriptionError(null);
     }
-
     try {
-      const { success, error } = await addArticle(formData.legalBaseId, {
+      const { success, error } = await updateArticle(formData.id, {
         title: formData.name,
         article: formData.description,
         order: formData.order,
-      }
-      );
+      });
       if (success) {
-        toast.info("El artículo ha sido registrado correctamente", {
+        toast.info("El artículo ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
           progressStyle: {
             background: "#113c53",
           },
         });
-        closeModalCreate();
+        closeModalEdit();
       } else {
         toast.error(error);
       }
     } catch (error) {
       console.error(error);
-      toast.error("Algo salió mal al registrar el artículo. Intenta de nuevo.");
+      toast.error(
+        "Algo salió mal al actualizar el artículo. Intenta de nuevo."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +140,7 @@ function CreateModal({ config }) {
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={closeModalCreate}
+      onOpenChange={closeModalEdit}
       backdrop="opaque"
       placement="center"
       classNames={{
@@ -135,10 +151,10 @@ function CreateModal({ config }) {
         {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Registrar Nuevo Artículo
+              Editar Artículo
             </ModalHeader>
             <ModalBody>
-              <form onSubmit={handleCreate}>
+              <form onSubmit={handleEdit}>
                 <div className="grid gap-4 mb-2 grid-cols-1 sm:grid-cols-2">
                   <div className="relative z-0 w-full mb-5 group">
                     <input
@@ -185,7 +201,7 @@ function CreateModal({ config }) {
                 <div className="mb-5">
                   <Textarea
                     isClearable
-                    onClear={clearDescription} 
+                    onClear={clearDescription}
                     radius="md"
                     value={formData.description}
                     onChange={handleDescriptionChange}
@@ -203,18 +219,18 @@ function CreateModal({ config }) {
                 </div>
 
                 <div>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isLoading}
-                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                >
-                  {isLoading ? (
-                    <Spinner size="sm" color="white" />
-                  ) : (
-                    "Registrar Artículo"
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    disabled={isLoading}
+                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                  >
+                    {isLoading ? (
+                      <Spinner size="sm" color="white" />
+                    ) : (
+                      "Editar Artículo"
+                    )}
+                  </Button>
                 </div>
               </form>
             </ModalBody>
@@ -225,11 +241,26 @@ function CreateModal({ config }) {
   );
 }
 
-CreateModal.propTypes = {
+EditModal.propTypes = {
   config: PropTypes.shape({
+    formData: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      order: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+    }).isRequired,
+    setFormData: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    closeModalCreate: PropTypes.func.isRequired,
-    addArticle: PropTypes.func.isRequired,
+    updateArticle: PropTypes.func.isRequired, // Correcto nombre de la función
+    closeModalEdit: PropTypes.func.isRequired,
+    selectedArticle: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      legal_basis_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      article_name: PropTypes.string,
+      description: PropTypes.string,
+      article_order: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    }),
     nameError: PropTypes.string,
     descriptionError: PropTypes.string,
     orderError: PropTypes.string,
@@ -240,15 +271,7 @@ CreateModal.propTypes = {
     handleDescriptionChange: PropTypes.func.isRequired,
     clearDescription: PropTypes.func.isRequired,
     handleOrderChange: PropTypes.func.isRequired,
-    formData: PropTypes.shape({
-      order: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-      legalBaseId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-      name: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-    }).isRequired,
   }).isRequired,
 };
 
-export default CreateModal;
+export default EditModal;

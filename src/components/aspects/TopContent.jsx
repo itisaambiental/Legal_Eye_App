@@ -130,7 +130,7 @@ function TopContent({ config }) {
 
 TopContent.propTypes = {
   config: PropTypes.shape({
-    subjectName: PropTypes.string.isRequired,
+    subjectName: PropTypes.string,
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalAspects: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,

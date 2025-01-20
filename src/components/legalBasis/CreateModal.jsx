@@ -70,7 +70,7 @@ import Progress from "./Progress";
  * @param {string|null} props.config.aspectError - Error message for the "Aspects" field.
  * @param {Function} props.config.setAspectInputError - Function to set the "Aspects" field error message.
  * @param {boolean} props.config.isAspectsActive - Indicates whether the aspects field is active.
- * @param {boolean} props.config.loadingAspects - Indicates if aspects are loading.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {string|null} props.config.errorAspects - Error message when aspects cannot be loaded.
  * @param {Function} props.config.handleAspectsChange - Function to handle changes in the "Aspects" field.
  * @param {string|null} props.config.lastReformError - Error message for the "Last Reform" field.
@@ -127,7 +127,7 @@ const CreateModal = ({ config }) => {
     aspectError,
     setAspectInputError,
     isAspectsActive,
-    loadingAspects,
+    aspectsLoading,
     errorAspects,
     handleAspectsChange,
     lastReformError,
@@ -338,7 +338,7 @@ const CreateModal = ({ config }) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Algo mal sucedió al crear el fundamento. Intente de nuevo.");
+      toast.error("Algo mal sucedió al registrar el fundamento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -594,7 +594,7 @@ const CreateModal = ({ config }) => {
                           variant="bordered"
                           label="Aspectos"
                           selectionMode="multiple"
-                          isLoading={loadingAspects}
+                          isLoading={aspectsLoading}
                           selectedKeys={formData.aspects}
                           onSelectionChange={handleAspectsChange}
                           isDisabled={!isAspectsActive || !!errorAspects}
@@ -701,7 +701,7 @@ const CreateModal = ({ config }) => {
                     </div>
                   )}
                 </div>
-                <div className="w-full mt-2 flex items-start">
+                <div className="w-full mt-2 mb-4 flex items-start">
                   <Checkbox
                     size="md"
                     isSelected={isCheckboxChecked}
@@ -716,18 +716,18 @@ const CreateModal = ({ config }) => {
                   <p className="mt-2 text-sm text-red">{checkboxInputError}</p>
                 )}
                 <div>
-                  <button
-                    type="submit"
-                    className="w-full rounded border mb-4 mt-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                  >
-                    {isLoading ? (
-                      <div role="status">
-                        <Spinner size="sm" color="white" />
-                      </div>
-                    ) : (
-                      "Registrar Fundamento"
-                    )}
-                  </button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading}
+                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                >
+                  {isLoading ? (
+                    <Spinner size="sm" color="white" />
+                  ) : (
+                    "Registrar Fundamento"
+                  )}
+                </Button>
                 </div>
               </form>
             </ModalBody>
@@ -778,7 +778,7 @@ CreateModal.propTypes = {
     aspectError: PropTypes.string,
     setAspectInputError: PropTypes.func.isRequired,
     isAspectsActive: PropTypes.bool.isRequired,
-    loadingAspects: PropTypes.bool.isRequired,
+    aspectsLoading: PropTypes.bool.isRequired,
     errorAspects: PropTypes.object,
     handleAspectsChange: PropTypes.func.isRequired,
     lastReformError: PropTypes.string,

@@ -367,17 +367,18 @@ function EditModal({ config }) {
                   </Listbox>
                 </div>
                 <div>
-                  <button
-                    disabled={fileError}
-                    type="submit"
-                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                  >
-                    {isLoading ? (
-                      <Spinner size="sm" color="white" />
-                    ) : (
-                      "Guardar Cambios"
-                    )}
-                  </button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading}
+                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                >
+                  {isLoading ? (
+                    <Spinner size="sm" color="white" />
+                  ) : (
+                    "Editar Usuario"
+                  )}
+                </Button>
                 </div>
               </form>
             </ModalBody>

@@ -7,6 +7,7 @@ import {
   ModalHeader,
   ModalBody,
   Spinner,
+  Button
 } from "@nextui-org/react";
 import check from "../../assets/check.png";
 
@@ -114,18 +115,18 @@ function CreateModal({ config }) {
                   </div>
                 </div>
                 <div>
-                  <button
-                    type="submit"
-                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                  >
-                    {isLoading ? (
-                      <div role="status">
-                        <Spinner size="sm" color="white" />
-                      </div>
-                    ) : (
-                      "Registrar Materia"
-                    )}
-                  </button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading}
+                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                >
+                  {isLoading ? (
+                    <Spinner size="sm" color="white" />
+                  ) : (
+                    "Registrar Materia"
+                  )}
+                </Button>
                 </div>
               </form>
             </ModalBody>

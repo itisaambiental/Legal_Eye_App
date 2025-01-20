@@ -75,7 +75,7 @@ import useExtractArticles from "../../hooks/articles/extractArticles/useExtractA
  * @param {string|null} props.config.aspectError - Error message for the "Aspects" field.
  * @param {Function} props.config.setAspectInputError - Function to set the "Aspects" field error message.
  * @param {boolean} props.config.isAspectsActive - Indicates whether the aspects field is active.
- * @param {boolean} props.config.loadingAspects - Indicates if aspects are loading.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {string|null} props.config.errorAspects - Error message when aspects cannot be loaded.
  * @param {Function} props.config.handleAspectsChange - Function to handle changes in the "Aspects" field.
  * @param {string|null} props.config.lastReformError - Error message for the "Last Reform" field.
@@ -138,7 +138,7 @@ function EditModal({ config }) {
     aspectError,
     setAspectInputError,
     isAspectsActive,
-    loadingAspects,
+    aspectsLoading,
     errorAspects,
     handleAspectsChange,
     lastReformError,
@@ -448,7 +448,7 @@ function EditModal({ config }) {
         legalBasisData
       );
       if (success) {
-        toast.info("El fundamento legal ha sido editado correctamente", {
+        toast.info("El fundamento legal ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
           progressStyle: {
             background: "#113c53",
@@ -467,7 +467,7 @@ function EditModal({ config }) {
     } catch (error) {
       console.error(error);
       toast.error(
-        "Algo mal sucedió al editar el fundamento. Intente de nuevo."
+        "Algo mal sucedió al actualizar el fundamento. Intente de nuevo."
       );
     } finally {
       setIsLoading(false);
@@ -761,7 +761,7 @@ function EditModal({ config }) {
                           variant="bordered"
                           label="Aspectos"
                           selectionMode="multiple"
-                          isLoading={loadingAspects}
+                          isLoading={aspectsLoading}
                           selectedKeys={formData.aspects}
                           onSelectionChange={handleAspectsChange}
                           isDisabled={!isAspectsActive || !!errorAspects}
@@ -867,7 +867,7 @@ function EditModal({ config }) {
                     </div>
                   )}
                 </div>
-                <div className="w-full mt-2 flex items-start">
+                <div className="w-full mt-2 mb-4 flex items-start">
                   <Checkbox
                     size="md"
                     isSelected={isCheckboxChecked}
@@ -882,18 +882,18 @@ function EditModal({ config }) {
                   <p className="mt-2 text-sm text-red">{checkboxInputError}</p>
                 )}
                 <div>
-                  <button
-                    type="submit"
-                    className="w-full rounded border mb-4 mt-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                  >
-                    {isLoading ? (
-                      <div role="status">
-                        <Spinner size="sm" color="white" />
-                      </div>
-                    ) : (
-                      "Editar Fundamento"
-                    )}
-                  </button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading}
+                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                >
+                  {isLoading ? (
+                    <Spinner size="sm" color="white" />
+                  ) : (
+                    "Editar Fundamento"
+                  )}
+                </Button>
                 </div>
               </form>
             </ModalBody>
@@ -946,7 +946,7 @@ EditModal.propTypes = {
     aspectError: PropTypes.string,
     setAspectInputError: PropTypes.func.isRequired,
     isAspectsActive: PropTypes.bool.isRequired,
-    loadingAspects: PropTypes.bool.isRequired,
+    aspectsLoading: PropTypes.bool.isRequired,
     errorAspects: PropTypes.object,
     handleAspectsChange: PropTypes.func.isRequired,
     lastReformError: PropTypes.string,

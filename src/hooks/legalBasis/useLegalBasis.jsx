@@ -191,13 +191,11 @@ export default function useLegalBasis() {
    */
   const fetchLegalBasisById = useCallback(
     async (legalBaseId) => {
-      setStateLegalBasis({ loading: true, error: null });
       try {
         const legalBasis = await getLegalBasisById({
           legalBaseId,
           token: jwt,
         });
-        setStateLegalBasis({ loading: false, error: null });
         return { success: true, data: legalBasis };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -208,10 +206,6 @@ export default function useLegalBasis() {
           error: serverMessage,
           httpError: clientMessage,
           items: [legalBaseId],
-        });
-        setStateLegalBasis({
-          loading: false,
-          error: handledError,
         });
         return {
           success: false,

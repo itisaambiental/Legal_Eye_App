@@ -140,7 +140,7 @@ function EditModal({ config }) {
                   {isLoading ? (
                     <Spinner size="sm" color="white" />
                   ) : (
-                    "Guardar Cambios"
+                    "Editar Aspecto"
                   )}
                 </Button>
               </form>

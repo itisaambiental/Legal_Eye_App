@@ -54,7 +54,8 @@ export default function Aspects() {
     removeAspect,
     deleteAspectsBatch,
   } = useAspects();
-  const { fetchSubjectById, error: subjectError } = useSubjects();
+  const { fetchSubjectById } = useSubjects();
+  const [subjectError, setSubjectError] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -77,16 +78,17 @@ export default function Aspects() {
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
+        const { success, data, error } = await fetchSubjectById(id);
         await fetchAspects(id);
-        const { success, data } = await fetchSubjectById(id);
         if (success && data) {
           setSubjectName(data.subject_name);
+          setSubjectError(null);
         } else {
           setSubjectName(null);
+          setSubjectError(error)
         }
       }
     };
-
     fetchData();
   }, [id, fetchAspects, fetchSubjectById]);
 
@@ -242,139 +244,146 @@ export default function Aspects() {
     );
   }
   if (error) return <Error title={error.title} message={error.message} />;
-  if (subjectError)
-    return <Error title={subjectError.title} message={subjectError.message} />;
+
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
-      <TopContent
-        config={{
-          subjectName: subjectName,
-          onRowsPerPageChange: onRowsPerPageChange,
-          totalAspects: aspects.length,
-          openModalCreate: openModalCreate,
-          onFilterByName: handleFilterByName,
-          filterByName: filterByName,
-          onClear: handleClear,
-        }}
-      />
-      <>
-        {isSearching || loading ? (
-          <div
-            role="status"
-            className="flex justify-center items-center w-full h-40"
-          >
-            <Spinner className="h-10 w-10" color="secondary" />
-          </div>
-        ) : (
-          <Table
-            aria-label="Tabla de Aspectos"
-            selectionMode="multiple"
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            color="primary"
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn key={column.uid} align={column.align}>
-                  {column.name}
-                </TableColumn>
-              )}
-            </TableHeader>
-            <TableBody
-              items={aspects.slice(
-                (page - 1) * rowsPerPage,
-                page * rowsPerPage
-              )}
-              emptyContent="No hay aspectos para mostrar"
-            >
-              {(aspect) => (
-                <TableRow key={aspect.id}>
-                  {(columnKey) => (
-                    <TableCell>
-                      <AspectCell
-                        aspect={aspect}
-                        columnKey={columnKey}
-                        openEditModal={openEditModal}
-                        handleDelete={handleDelete}
-                      />
-                    </TableCell>
+      {subjectError ? (
+        <Error
+          title={subjectError.title}
+          message={subjectError.message}
+        />
+      ) : (
+        <>
+          <TopContent
+            config={{
+              subjectName: subjectName,
+              onRowsPerPageChange: onRowsPerPageChange,
+              totalAspects: aspects.length,
+              openModalCreate: openModalCreate,
+              onFilterByName: handleFilterByName,
+              filterByName: filterByName,
+              onClear: handleClear,
+            }}
+          />
+          <>
+            {isSearching || loading ? (
+              <div
+                role="status"
+                className="flex justify-center items-center w-full h-40"
+              >
+                <Spinner className="h-10 w-10" color="secondary" />
+              </div>
+            ) : (
+              <Table
+                aria-label="Tabla de Aspectos"
+                selectionMode="multiple"
+                selectedKeys={selectedKeys}
+                onSelectionChange={setSelectedKeys}
+                color="primary"
+              >
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn key={column.uid} align={column.align}>
+                      {column.name}
+                    </TableColumn>
                   )}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
-      </>
-      <div className="relative w-full">
-        {(selectedKeys.size > 0 || selectedKeys === "all") && (
-          <Tooltip content="Eliminar" size="sm">
-            <Button
-              isIconOnly
-              size="sm"
-              className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
-              aria-label="Eliminar seleccionados"
-              onPress={openDeleteModal}
-            >
-              <img src={trash_icon} alt="delete" className="w-5 h-5" />
-            </Button>
-          </Tooltip>
-        )}
-      </div>
-      <BottomContent
-        config={{
-          page: page,
-          totalPages: totalPages,
-          onPageChange: onPageChange,
-          onPreviousPage: onPreviousPage,
-          onNextPage: onNextPage,
-          selectedKeys: selectedKeys,
-          filteredItems: aspects,
-        }}
-      />
-      {isCreateModalOpen && (
-        <CreateModal
-          config={{
-            isOpen: isCreateModalOpen,
-            closeModalCreate: closeModalCreate,
-            addAspect: addAspect,
-            formData: formData,
-            nameError: nameError,
-            setNameError: setNameError,
-            handleNameChange: handleNameChange,
-          }}
-        />
-      )}
-      {isEditModalOpen && (
-        <EditModal
-          config={{
-            formData: formData,
-            setFormData: setFormData,
-            selectedAspect: selectedAspect,
-            closeModalEdit: closeEditModal,
-            isOpen: isEditModalOpen,
-            updateAspect: modifyAspect,
-            nameError: nameError,
-            setNameError: setNameError,
-            handleNameChange: handleNameChange,
-          }}
-        />
-      )}
-
-      {showDeleteModal && (
-        <DeleteModal
-          config={{
-            showDeleteModal: showDeleteModal,
-            closeDeleteModal: closeDeleteModal,
-            setIsDeletingBatch: setIsDeletingBatch,
-            isDeletingBatch: isDeletingBatch,
-            selectedKeys: selectedKeys,
-            aspects: aspects,
-            deleteAspectsBatch: deleteAspectsBatch,
-            setSelectedKeys: setSelectedKeys,
-            check: check,
-          }}
-        />
+                </TableHeader>
+                <TableBody
+                  items={aspects.slice(
+                    (page - 1) * rowsPerPage,
+                    page * rowsPerPage
+                  )}
+                  emptyContent="No hay aspectos para mostrar"
+                >
+                  {(aspect) => (
+                    <TableRow key={aspect.id}>
+                      {(columnKey) => (
+                        <TableCell>
+                          <AspectCell
+                            aspect={aspect}
+                            columnKey={columnKey}
+                            openEditModal={openEditModal}
+                            handleDelete={handleDelete}
+                          />
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </>
+          <div className="relative w-full">
+            {(selectedKeys.size > 0 || selectedKeys === "all") && (
+              <Tooltip content="Eliminar" size="sm">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                  aria-label="Eliminar seleccionados"
+                  onPress={openDeleteModal}
+                >
+                  <img src={trash_icon} alt="delete" className="w-5 h-5" />
+                </Button>
+              </Tooltip>
+            )}
+          </div>
+          <BottomContent
+            config={{
+              page: page,
+              totalPages: totalPages,
+              onPageChange: onPageChange,
+              onPreviousPage: onPreviousPage,
+              onNextPage: onNextPage,
+              selectedKeys: selectedKeys,
+              filteredItems: aspects,
+            }}
+          />
+          {isCreateModalOpen && (
+            <CreateModal
+              config={{
+                isOpen: isCreateModalOpen,
+                closeModalCreate: closeModalCreate,
+                addAspect: addAspect,
+                formData: formData,
+                nameError: nameError,
+                setNameError: setNameError,
+                handleNameChange: handleNameChange,
+              }}
+            />
+          )}
+          {isEditModalOpen && (
+            <EditModal
+              config={{
+                formData: formData,
+                setFormData: setFormData,
+                selectedAspect: selectedAspect,
+                closeModalEdit: closeEditModal,
+                isOpen: isEditModalOpen,
+                updateAspect: modifyAspect,
+                nameError: nameError,
+                setNameError: setNameError,
+                handleNameChange: handleNameChange,
+              }}
+            />
+          )}
+          {showDeleteModal && (
+            <DeleteModal
+              config={{
+                showDeleteModal: showDeleteModal,
+                closeDeleteModal: closeDeleteModal,
+                setIsDeletingBatch: setIsDeletingBatch,
+                isDeletingBatch: isDeletingBatch,
+                selectedKeys: selectedKeys,
+                aspects: aspects,
+                deleteAspectsBatch: deleteAspectsBatch,
+                setSelectedKeys: setSelectedKeys,
+                check: check,
+              }}
+            />
+          )}
+        </>
       )}
     </div>
-  );
+  );  
 }

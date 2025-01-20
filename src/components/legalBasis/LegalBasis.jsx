@@ -81,7 +81,7 @@ export default function LegalBasis() {
   } = useLegalBasis();
   const {
     subjects,
-    error: subjectLoading,
+    loading: subjectLoading,
     error: subjectError,
   } = useSubjects();
   const {
@@ -114,7 +114,7 @@ export default function LegalBasis() {
   const [lastReformIsInvalid, setLastReformIsInvalid] = useState(false);
   const [lastReformError, setLastReformError] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [aspectLoading, setAspectLoading] = useState(false)
+  const [aspectsLoading, setAspectsLoading] = useState(false)
   const debounceTimeout = useRef(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -209,9 +209,9 @@ export default function LegalBasis() {
             break;
           case "subject":
             await fetchLegalBasisBySubject(value);
-            setAspectLoading(true)
+            setAspectsLoading(true)
             await fetchAspects(value);
-            setAspectLoading(false)
+            setAspectsLoading(false)
             break;
           case "subjectAndAspects": {
             const { subjectId, aspectsIds } = value;
@@ -1025,7 +1025,7 @@ export default function LegalBasis() {
           onFilterBySubject: handleFilterBySubject,
           aspects: aspects,
           selectedAspects: selectedAspects,
-          aspectLoading: aspectLoading,
+          aspectsLoading: aspectsLoading,
           onFilterByAspects: handleFilterByAspects,
           classifications: classifications,
           selectedClassification: selectedClassification,
@@ -1178,7 +1178,7 @@ export default function LegalBasis() {
               aspectError: aspectInputError,
               setAspectInputError: setAspectInputError,
               isAspectsActive: isAspectsActive,
-              loadingAspects: aspectLoading,
+              aspectsLoading: aspectsLoading,
               errorAspects: aspectError,
               handleAspectsChange: handleAspectsChange,
               lastReformError: lastReformInputError,
@@ -1237,7 +1237,7 @@ export default function LegalBasis() {
               aspectError: aspectInputError,
               setAspectInputError: setAspectInputError,
               isAspectsActive: isAspectsActive,
-              loadingAspects: aspectLoading,
+              aspectsLoading: aspectsLoading,
               errorAspects: aspectError,
               handleAspectsChange: handleAspectsChange,
               lastReformError: lastReformInputError,

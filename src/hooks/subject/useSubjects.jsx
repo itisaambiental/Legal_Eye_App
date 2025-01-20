@@ -59,10 +59,8 @@ export default function useSubjects() {
    */
   const fetchSubjectById = useCallback(
     async (subjectId) => {
-      setStateSubjects({ loading: true, error: null });
       try {
         const subject = await getSubjectById({ subjectId, token: jwt });
-        setStateSubjects({ loading: false, error: null });
         return { success: true, data: subject };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -73,10 +71,6 @@ export default function useSubjects() {
           error: serverMessage,
           httpError: clientMessage,
           items: [subjectId],
-        });
-        setStateSubjects({
-          loading: false,
-          error: handledError,
         });
         return { success: false, error: handledError };
       }

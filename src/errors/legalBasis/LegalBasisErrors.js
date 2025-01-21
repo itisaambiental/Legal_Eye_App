@@ -1,3 +1,7 @@
+/**
+ * Class for managing and mapping errors related to Legal Basis.
+ * Centralizes error handling, mapping error codes and messages to user-friendly messages.
+ */
 class LegalBasisErrors {
   static NETWORK_ERROR = "NETWORK_ERROR";
   static UNAUTHORIZED = "UNAUTHORIZED";
@@ -12,7 +16,10 @@ class LegalBasisErrors {
   static DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
   static PENDING_JOBS_CONFLICT = "PENDING_JOBS_CONFLICT";
   static MULTIPLE_PENDING_JOBS_CONFLICT = "MULTIPLE_PENDING_JOBS_CONFLICT";
-  static CONFLICT = "CONFLICT";
+  static ARTICLES_EXTRACTION_CONFLICT = "ARTICLES_EXTRACTION_CONFLICT";
+  static DOCUMENT_CONFLICT = "DOCUMENT_CONFLICT";
+  static REMOVE_DOCUMENT_PENDING_CONFLICT = "REMOVE_DOCUMENT_PENDING_CONFLICT";
+  static NEW_DOCUMENT_PENDING_CONFLICT = "NEW_DOCUMENT_PENDING_CONFLICT";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -69,9 +76,21 @@ class LegalBasisErrors {
           ? `El fundamento legal ${items[0]} no puede ser eliminado porque se están extrayendo artículos de su documento asociado.`
           : `Los fundamentos legales ${items.join(", ")} no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados.`,
     },
-    [LegalBasisErrors.CONFLICT]: {
-      title: "Conflicto",
-      message: "No puedes realizar esta acción porque actualmente hay un proceso asociado con este fundamento legal.",
+    [LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT]: {
+      title: "Conflicto de extracción de artículos",
+      message: "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de su documento asociado.",
+    },
+    [LegalBasisErrors.DOCUMENT_CONFLICT]: {
+      title: "Conflicto con el documento",
+      message: "No se puede proporcionar un documento si desea eliminarlo.",
+    },
+    [LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT]: {
+      title: "Conflicto al eliminar el documento",
+      message: "El documento no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
+    },
+    [LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT]: {
+      title: "Conflicto al subir un nuevo documento",
+      message: "No se puede subir un nuevo documento porque en este momento se están extrayendo artículos de su documento asociado.",
     },
     [LegalBasisErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
@@ -86,6 +105,10 @@ class LegalBasisErrors {
     "Network Error": LegalBasisErrors.NETWORK_ERROR,
     "LegalBasis already exists": LegalBasisErrors.DUPLICATED_NAME,
     "A document must be provided if extractArticles is true": LegalBasisErrors.DOCUMENT_REQUIRED,
+    "Cannot provide a document if removeDocument is true": LegalBasisErrors.DOCUMENT_CONFLICT,
+    "The document cannot be removed because there are pending jobs for this Legal Basis": LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT,
+    "Articles cannot be extracted because there is already a process that does so": LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT,
+    "A new document cannot be uploaded because there are pending jobs for this Legal Basis": LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT,
     "Subject not found": LegalBasisErrors.SUBJECT_NOT_FOUND,
     "Aspects not found for IDs": LegalBasisErrors.ASPECTS_NOT_FOUND,
     "Cannot delete LegalBasis with pending jobs": LegalBasisErrors.PENDING_JOBS_CONFLICT,

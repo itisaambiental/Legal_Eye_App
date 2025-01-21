@@ -1,5 +1,6 @@
 /**
  * Class for managing and mapping messages and errors related to article extraction jobs.
+* Centralizes error handling, mapping error codes and messages to user-friendly messages.
  */
 export class ExtractArticlesErrors {
   static INVALID_REQUEST = "INVALID_REQUEST";

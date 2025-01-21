@@ -1,3 +1,7 @@
+/**
+ * Class for managing and mapping errors related to Authentication.
+ * Centralizes error handling, mapping error codes and messages to user-friendly messages.
+ */
 class AuthErrors {
     static NETWORK_ERROR = "NETWORK_ERROR";
     static INVALID_EMAIL = "INVALID_EMAIL";

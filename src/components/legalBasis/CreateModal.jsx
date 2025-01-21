@@ -701,7 +701,7 @@ const CreateModal = ({ config }) => {
                     </div>
                   )}
                 </div>
-                <div className="w-full mt-2 mb-4 flex items-start">
+                <div className="w-full mt-2 mb-3 flex items-start">
                   <Checkbox
                     size="md"
                     isSelected={isCheckboxChecked}
@@ -713,7 +713,7 @@ const CreateModal = ({ config }) => {
                   </Checkbox>
                 </div>
                 {checkboxInputError && (
-                  <p className="mt-2 text-sm text-red">{checkboxInputError}</p>
+                  <p className="mb-2 text-sm text-red">{checkboxInputError}</p>
                 )}
                 <div>
                 <Button

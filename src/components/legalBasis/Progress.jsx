@@ -168,6 +168,16 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
               alertIcon: "text-primary",
             }}
             hideIconWrapper
+            endContent={
+              <Button
+                color="primary"
+                size="md"
+                variant="faded"
+                className="mt-4"
+              >
+                Cancelar
+              </Button>
+            }
           />
         )}
         {error && (

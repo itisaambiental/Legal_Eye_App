@@ -22,7 +22,7 @@ import { I18nProvider } from "@react-aria/i18n";
 import { parseDate } from "@internationalized/date";
 import check from "../../assets/check.png";
 import cruz_icon from "../../assets/cruz.png";
-import Progress from "./Progress";
+import Progress from "./progress/Progress.jsx";
 import useExtractArticles from "../../hooks/articles/extractArticles/useExtractArticles.jsx";
 
 /**

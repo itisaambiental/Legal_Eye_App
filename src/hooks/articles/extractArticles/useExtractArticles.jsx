@@ -1,8 +1,12 @@
 import { useState, useCallback, useContext } from "react";
 import getJobStatus from "../../../services/articlesService/extractArticles/getJobStatus.js";
 import getJobByLegalBasis from "../../../services/articlesService/extractArticles/getJobByLegalBasis.js";
+import cancelJob from "../../../services/articlesService/extractArticles/cancelJob.js";
 import Context from "../../../context/userContext.jsx";
-import { ExtractArticlesErrors, ExtractArticlesMessages } from "../../../errors/articles/ExtractArticlesErrors.js";
+import {
+  ExtractArticlesErrors,
+  ExtractArticlesStatus,
+} from "../../../errors/articles/ExtractArticles.js";
 
 /**
  * Custom hook to fetch and manage the status of a extract articles job, with localized messages and error handling.
@@ -13,13 +17,37 @@ const useExtractArticles = () => {
   const { jwt } = useContext(Context);
   const [jobStatus, setJobStatus] = useState({
     progress: null,
+    status: null, 
     message: null,
     error: null,
+    errorStatus: null
   });
+
   const [legalBasisJob, setLegalBasisJob] = useState({
     isLoading: false,
     error: null,
   });
+
+  /**
+   * Clears the error state.
+   */
+  const clearError = () => {
+    setJobStatus((prev) => ({ ...prev, error: null }));
+  };
+
+  /**
+   * Resets the job status to its initial state.
+   */
+  const cleanjobStatus = useCallback(() => {
+    setJobStatus({
+      progress: null,
+      message: null,
+      status: null,
+      error: null,
+      errorStatus: null,
+    });
+  }, []);
+
 
   /**
    * Fetches the job status using the provided job ID and updates the state.
@@ -32,23 +60,25 @@ const useExtractArticles = () => {
     async (jobId) => {
       try {
         const { message, jobProgress, error } = await getJobStatus({
-          id: jobId,
+          jobId,
           token: jwt,
         });
         if (error) {
           setJobStatus({
             progress: null,
             message: null,
-            error: ExtractArticlesErrors.handleError({
-              error,
-            }),
+            status: ExtractArticlesStatus.handleStatus(message),
+            error: ExtractArticlesErrors.handleError({ error }),
+            errorStatus: ExtractArticlesErrors.handleStatus(error),
           });
           return;
         }
         setJobStatus({
           progress: jobProgress,
-          message: ExtractArticlesMessages.handleMessage(message),
+          message: ExtractArticlesStatus.handleMessage(message),
+          status: ExtractArticlesStatus.handleStatus(message),
           error: null,
+          errorStatus: null,
         });
       } catch (err) {
         const errorCode = err.response?.status;
@@ -59,19 +89,18 @@ const useExtractArticles = () => {
           error: serverMessage,
           httpError: clientMessage,
         });
+        const errorStatus = ExtractArticlesErrors.handleStatus(serverMessage)
         setJobStatus({
           progress: null,
           message: null,
+          status: null,
           error: handledError,
+          errorStatus
         });
       }
     },
     [jwt]
   );
-
-  const clearError = () => {
-    setJobStatus((prev) => ({ ...prev, error: null }));
-  };
 
   /**
    * Fetches the job using the provided legalBasisId.
@@ -106,14 +135,47 @@ const useExtractArticles = () => {
     [jwt]
   );
 
+  /**
+   * Cancels a job using the provided job ID and updates the state.
+   *
+   * @async
+   * @function cancelJobById
+   * @param {string} jobId - The ID of the job to cancel.
+   * @returns {Promise<Object>} - Returns { success: true } if successful, otherwise includes error details.
+   */
+  const cancelJobById = useCallback(
+    async (jobId) => {
+      try {
+        await cancelJob({ jobId, token: jwt });
+        return { success: true };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = ExtractArticlesErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        const errorStatus = ExtractArticlesErrors.handleStatus(serverMessage)
+        return { success: false, error: handledError, errorStatus: errorStatus };
+      }
+    },
+    [jwt]
+  );
+
   return {
     progress: jobStatus.progress,
     message: jobStatus.message,
+    status: jobStatus.status, 
     error: jobStatus.error,
+    errorStatus: jobStatus.errorStatus,
     legalBasisJobLoading: legalBasisJob.isLoading,
     legalBasisJobError: legalBasisJob.error,
     fetchJobStatus,
     clearError,
+    cleanjobStatus,
+    cancelJobById,
     fetchJobByLegalBasis,
   };
 };

@@ -1,13 +1,14 @@
 /**
  * Class for managing and mapping messages and errors related to article extraction jobs.
-* Centralizes error handling, mapping error codes and messages to user-friendly messages.
+ * Centralizes error handling, mapping error codes and messages to user-friendly messages.
  */
 export class ExtractArticlesErrors {
   static INVALID_REQUEST = "INVALID_REQUEST";
   static NETWORK_ERROR = "NETWORK_ERROR";
   static UNAUTHORIZED = "UNAUTHORIZED";
-  static JOB_NOT_FOUND = "NOT_FOUND";
-  static LEGAL_BASE_NOT_FOUND = "NOT_FOUND";
+  static JOB_NOT_FOUND = "JOB_NOT_FOUND";
+  static LEGAL_BASE_NOT_FOUND = "LEGAL_BASE_NOT_FOUND";
+  static JOB_CANCELED = "JOB_CANCELED";
   static SERVER_ERROR = "SERVER_ERROR";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   static INVALID_DOCUMENT = "INVALID_DOCUMENT";
@@ -33,9 +34,9 @@ export class ExtractArticlesErrors {
         "No tiene autorización para realizar esta acción. Verifique su sesión e intente nuevamente.",
     },
     [ExtractArticlesErrors.JOB_NOT_FOUND]: {
-      title: "Proceso no encontrado",
+      title: "Extracción de artículos cancelada",
       message:
-        "El proceso de extracción de artículos no fue encontrado. Verifique los datos proporcionados e intente nuevamente.",
+        "La extracción de artículos fue cancelada anteriormente. Si necesita realizar esta operación, cierre esta ventana e intente de nuevo.",
     },
     [ExtractArticlesErrors.LEGAL_BASE_NOT_FOUND]: {
       title: "Fundamento legal no encontrado",
@@ -77,6 +78,12 @@ export class ExtractArticlesErrors {
       message:
         "Hubo un problema al intentar guardar los artículos extraídos. Por favor, intente nuevamente.",
     },
+
+    [ExtractArticlesErrors.JOB_CANCELED]: {
+      title: "Extracción de artículos cancelada",
+      message:
+        "La extracción de artículos fue cancelada anteriormente. Si necesita realizar esta operación, cierre esta ventana e intente de nuevo.",
+    },
   };
 
   static ErrorMessagesMap = {
@@ -91,7 +98,9 @@ export class ExtractArticlesErrors {
     "Article Processing Error": ExtractArticlesErrors.ARTICLE_PROCESSING_ERROR,
     "Failed to insert articles":
       ExtractArticlesErrors.FAILED_TO_INSERT_ARTICLES,
-    'Unexpected error during article processing': ExtractArticlesErrors.UNEXPECTED_ERROR,
+    "Job was canceled": ExtractArticlesErrors.JOB_CANCELED,
+    "Unexpected error during article processing":
+      ExtractArticlesErrors.UNEXPECTED_ERROR,
   };
 
   /**
@@ -106,8 +115,8 @@ export class ExtractArticlesErrors {
   static handleError({ code, error, httpError }) {
     const message = error || httpError;
     if (message && ExtractArticlesErrors.ErrorMessagesMap[message]) {
-      const errorKey = ExtractArticlesErrors.ErrorMessagesMap[message];
-      return ExtractArticlesErrors.errorMap[errorKey];
+      const key = ExtractArticlesErrors.ErrorMessagesMap[message];
+      return ExtractArticlesErrors.errorMap[key];
     }
     switch (code) {
       case 400:
@@ -129,52 +138,85 @@ export class ExtractArticlesErrors {
         ];
     }
   }
+    /**
+   * Handles messages by mapping them to their associated status.
+   *
+   * @param {string} [message] - The error message.
+   * @returns {string} - The associated status.
+   */
+    static handleStatus(message) {
+      return ExtractArticlesErrors.ErrorMessagesMap[message];
+    }
 }
-
-
 /**
  * Class for managing and mapping messages related to article extraction jobs.
  */
-export class ExtractArticlesMessages {
-    static WAITING = "WAITING";
-    static PROCESSING = "PROCESSING";
-    static COMPLETED = "COMPLETED";
-    static DELAYED = "DELAYED";
-    static PAUSED = "PAUSED";
-    static STUCK = "STUCK";
-    static UNKNOWN = "UNKNOWN";
-  
-    static messageMap = {
-      [ExtractArticlesMessages.WAITING]: "El proceso de extracción de artículos comenzará en un momento.",
-      [ExtractArticlesMessages.PROCESSING]: "El proceso de extracción de artículos está en curso...",
-      [ExtractArticlesMessages.COMPLETED]: "El proceso de extracción de artículos se completó con éxito.",
-      [ExtractArticlesMessages.DELAYED]: "El proceso de extracción de artículos está retrasado y se procesará más tarde.",
-      [ExtractArticlesMessages.PAUSED]: "El proceso de extracción de artículos está en pausa. Comuníquese con los administradores del sistema para continuar.",
-      [ExtractArticlesMessages.STUCK]: "El proceso de extracción de artículos está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
-      [ExtractArticlesMessages.UNKNOWN]: "El proceso de extracción de artículos está en un estado desconocido. Comuníquese con los administradores del sistema.",
-    };
+export class ExtractArticlesStatus {
+  static WAITING = "WAITING";
+  static ACTIVE = "ACTIVE";
+  static COMPLETED = "COMPLETED";
+  static FAILED = "FAILED"; 
+  static DELAYED = "DELAYED";
+  static PAUSED = "PAUSED";
+  static STUCK = "STUCK";
+  static UNKNOWN = "UNKNOWN";
 
-    static ErrorMessagesMap = {
-      "The job is waiting to be processed": ExtractArticlesMessages.WAITING,
-      "Job is still processing": ExtractArticlesMessages.PROCESSING,
-      "Job completed successfully": ExtractArticlesMessages.COMPLETED,
-      "Job is delayed and will be processed later": ExtractArticlesMessages.DELAYED,
-      "Job is paused and will be resumed once unpaused": ExtractArticlesMessages.PAUSED,
-      "Job is stuck and cannot proceed": ExtractArticlesMessages.STUCK,
-      "Job is in an unknown state": ExtractArticlesMessages.UNKNOWN,
-    };
-  
-    /**
-     * Handles messages by mapping them to user-friendly localized messages.
-     *
-     * @param {string} message - The message server.
-     * @returns {string} - A user-friendly localized message.
-     */
-    static handleMessage(message) {
-      const messageKey = ExtractArticlesMessages.ErrorMessagesMap[message];
-      return ExtractArticlesMessages.messageMap[messageKey];
-    }
+  static MessageStatusMap = {
+    "The job is waiting to be processed": ExtractArticlesStatus.WAITING,
+    "Job is still processing": ExtractArticlesStatus.ACTIVE,
+    "Job completed successfully": ExtractArticlesStatus.COMPLETED,
+    "Job failed": ExtractArticlesStatus.FAILED, 
+    "Job is delayed and will be processed later":
+    ExtractArticlesStatus.DELAYED,
+    "Job is paused and will be resumed once unpaused":
+    ExtractArticlesStatus.PAUSED,
+    "Job is stuck and cannot proceed": ExtractArticlesStatus.STUCK,
+    "Job is in an unknown state": ExtractArticlesStatus.UNKNOWN,
+  };
+
+  static messageMap = Object.fromEntries(
+    Object.entries(ExtractArticlesStatus.MessageStatusMap).map(
+      ([, value]) => [
+        value,
+        {
+          [ExtractArticlesStatus.WAITING]:
+            "El proceso de extracción de artículos comenzará en un momento.",
+          [ExtractArticlesStatus.ACTIVE]:
+            "El proceso de extracción de artículos está en curso...",
+          [ExtractArticlesStatus.COMPLETED]:
+            "El proceso de extracción de artículos se completó con éxito.",
+          [ExtractArticlesStatus.DELAYED]:
+            "El proceso de extracción de artículos está retrasado y se procesará más tarde.",
+          [ExtractArticlesStatus.PAUSED]:
+            "El proceso de extracción de artículos está en pausa. Comuníquese con los administradores del sistema para continuar.",
+          [ExtractArticlesStatus.STUCK]:
+            "El proceso de extracción de artículos está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
+          [ExtractArticlesStatus.UNKNOWN]:
+            "El proceso de extracción de artículos está en un estado desconocido. Comuníquese con los administradores del sistema.",
+        }[value],
+      ]
+    )
+  );
+
+  /**
+   * Handles messages by mapping them to user-friendly localized messages.
+   *
+   * @param {string} message - The server message.
+   * @returns {string} - A user-friendly localized message.
+   */
+  static handleMessage(message) {
+    const status = ExtractArticlesStatus.MessageStatusMap[message];
+    return ExtractArticlesStatus.messageMap[status];
   }
-  
-  export default ExtractArticlesMessages;
-  
+
+  /**
+   * Handles messages by mapping them to their associated status.
+   *
+   * @param {string} message - The server message.
+   * @returns {string} - The associated status.
+   */
+  static handleStatus(message) {
+    return ExtractArticlesStatus.MessageStatusMap[message];
+  }
+}
+

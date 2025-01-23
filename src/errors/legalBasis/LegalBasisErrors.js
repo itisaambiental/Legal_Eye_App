@@ -78,7 +78,7 @@ class LegalBasisErrors {
     },
     [LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT]: {
       title: "Conflicto de extracción de artículos",
-      message: "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de su documento asociado.",
+      message: "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de el documento asociado.",
     },
     [LegalBasisErrors.DOCUMENT_CONFLICT]: {
       title: "Conflicto con el documento",

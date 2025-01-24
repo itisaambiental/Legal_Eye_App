@@ -16,7 +16,7 @@ import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import ArticleCell from "./ArticleCell.jsx";
 import TopContent from "./TopContent.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
-import DescriptionModal from "./DescriptionModal.jsx";
+import DescriptionModal from "./TextArea/DescriptionModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
@@ -74,7 +74,6 @@ export default function Articles() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [nameError, setNameError] = useState(null);
-  const [descriptionError, setDescriptionError] = useState(null);
   const [orderError, setOrderError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
@@ -178,19 +177,6 @@ export default function Articles() {
       ...prevFormData,
       description: value,
     }));
-    if (descriptionError && value.trim() !== "") {
-      setDescriptionError(null);
-    }
-  };
-
-  const handleClearDescription = () => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      description: "",
-    }));
-    if (descriptionError) {
-      setDescriptionError(null);
-    }
   };
 
   const handleOrderChange = (e) => {
@@ -238,7 +224,6 @@ export default function Articles() {
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
     setNameError(null);
-    setDescriptionError(null);
     setOrderError(null);
   };
 
@@ -433,13 +418,10 @@ export default function Articles() {
                 formData: formData,
                 nameError: nameError,
                 setNameError: setNameError,
-                descriptionError: descriptionError,
-                setDescriptionError: setDescriptionError,
                 orderError: orderError,
                 setOrderError: setOrderError,
                 handleNameChange: handleNameChange,
                 handleDescriptionChange: handleDescriptionChange,
-                clearDescription: handleClearDescription,
                 handleOrderChange: handleOrderChange,
               }}
             />
@@ -455,13 +437,10 @@ export default function Articles() {
                 updateArticle: modifyArticle,
                 nameError: nameError,
                 setNameError: setNameError,
-                descriptionError: descriptionError,
-                setDescriptionError: setDescriptionError,
                 orderError: orderError,
                 setOrderError: setOrderError,
                 handleNameChange: handleNameChange,
                 handleDescriptionChange: handleDescriptionChange,
-                clearDescription: handleClearDescription,
                 handleOrderChange: handleOrderChange,
               }}
             />

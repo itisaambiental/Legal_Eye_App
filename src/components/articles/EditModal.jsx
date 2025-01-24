@@ -7,9 +7,9 @@ import {
   ModalHeader,
   ModalBody,
   Spinner,
-  Textarea,
   Button,
 } from "@nextui-org/react";
+import TextArea from "./TextArea/TextArea.jsx";
 import check from "../../assets/check.png";
 
 /**
@@ -29,14 +29,11 @@ import check from "../../assets/check.png";
  * @param {Function} props.config.updateArticle - Function to submit the updated article data.
  * @param {Function} props.config.closeModalEdit - Function to close the modal.
  * @param {string|null} props.config.nameError - Error message for the article name input field.
- * @param {string|null} props.config.descriptionError - Error message for the article description field.
  * @param {string|null} props.config.orderError - Error message for the article order input field.
  * @param {Function} props.config.setNameError - Setter function for nameError.
- * @param {Function} props.config.setDescriptionError - Setter function for descriptionError.
  * @param {Function} props.config.setOrderError - Setter function for orderError.
  * @param {Function} props.config.handleNameChange - Handler for article name input change.
  * @param {Function} props.config.handleDescriptionChange - Handler for article description input change.
- * @param {Function} props.config.clearDescription - Handler to clear description entry.
  * @param {Function} props.config.handleOrderChange - Handler for article order input change.
  *
  * @returns {JSX.Element} Rendered EditModal component for editing aspect details.
@@ -50,14 +47,11 @@ function EditModal({ config }) {
     selectedArticle,
     updateArticle,
     nameError,
-    descriptionError,
     orderError,
     setNameError,
-    setDescriptionError,
     setOrderError,
     handleNameChange,
     handleDescriptionChange,
-    clearDescription,
     handleOrderChange,
   } = config;
 
@@ -78,7 +72,6 @@ function EditModal({ config }) {
   const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     if (!formData.order) {
       setOrderError("Este campo es obligatorio");
       setIsLoading(false);
@@ -94,21 +87,12 @@ function EditModal({ config }) {
     } else {
       setOrderError(null);
     }
-
     if (!formData.name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
     } else {
       setNameError(null);
-    }
-
-    if (!formData.description.trim()) {
-      setDescriptionError("Este campo es obligatorio");
-      setIsLoading(false);
-      return;
-    } else {
-      setDescriptionError(null);
     }
     try {
       const { success, error } = await updateArticle(formData.id, {
@@ -199,25 +183,14 @@ function EditModal({ config }) {
                 </div>
 
                 <div className="mb-5">
-                  <Textarea
-                    isClearable
-                    onClear={clearDescription}
-                    radius="md"
+                  <TextArea
                     value={formData.description}
-                    onChange={handleDescriptionChange}
-                    label="Descripción"
-                    placeholder="Ingrese la descripción"
-                    variant="bordered"
-                    classNames={{
-                      base: "w-full",
-                      input: "min-h-[100px]",
-                    }}
-                  />
-                  {descriptionError && (
-                    <p className="mt-2 text-sm text-red">{descriptionError}</p>
-                  )}
+                    onChange={(value) =>
+                      handleDescriptionChange({ target: { value } })
+                    }
+                    placeholder="Ingrese la descripción(Opcional)"
+                    />
                 </div>
-
                 <div>
                   <Button
                     type="submit"
@@ -252,7 +225,7 @@ EditModal.propTypes = {
     }).isRequired,
     setFormData: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    updateArticle: PropTypes.func.isRequired, // Correcto nombre de la función
+    updateArticle: PropTypes.func.isRequired, 
     closeModalEdit: PropTypes.func.isRequired,
     selectedArticle: PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -262,14 +235,11 @@ EditModal.propTypes = {
       article_order: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
     nameError: PropTypes.string,
-    descriptionError: PropTypes.string,
     orderError: PropTypes.string,
     setNameError: PropTypes.func.isRequired,
-    setDescriptionError: PropTypes.func.isRequired,
     setOrderError: PropTypes.func.isRequired,
     handleNameChange: PropTypes.func.isRequired,
     handleDescriptionChange: PropTypes.func.isRequired,
-    clearDescription: PropTypes.func.isRequired,
     handleOrderChange: PropTypes.func.isRequired,
   }).isRequired,
 };

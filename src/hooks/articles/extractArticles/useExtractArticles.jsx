@@ -15,12 +15,13 @@ import {
  */
 const useExtractArticles = () => {
   const { jwt } = useContext(Context);
+
   const [jobStatus, setJobStatus] = useState({
     progress: null,
-    status: null, 
+    status: null,
     message: null,
     error: null,
-    errorStatus: null
+    errorStatus: null,
   });
 
   const [legalBasisJob, setLegalBasisJob] = useState({
@@ -32,7 +33,7 @@ const useExtractArticles = () => {
    * Clears the error state.
    */
   const clearError = () => {
-    setJobStatus((prev) => ({ ...prev, error: null }));
+    setJobStatus((prev) => ({ ...prev, error: null, errorStatus: null }));
   };
 
   /**
@@ -48,7 +49,6 @@ const useExtractArticles = () => {
     });
   }, []);
 
-
   /**
    * Fetches the job status using the provided job ID and updates the state.
    *
@@ -63,16 +63,18 @@ const useExtractArticles = () => {
           jobId,
           token: jwt,
         });
+
         if (error) {
           setJobStatus({
             progress: null,
             message: null,
             status: ExtractArticlesStatus.handleStatus(message),
             error: ExtractArticlesErrors.handleError({ error }),
-            errorStatus: ExtractArticlesErrors.handleStatus(error),
+            errorStatus: ExtractArticlesErrors.handleStatus({ error }),
           });
           return;
         }
+
         setJobStatus({
           progress: jobProgress,
           message: ExtractArticlesStatus.handleMessage(message),
@@ -84,18 +86,20 @@ const useExtractArticles = () => {
         const errorCode = err.response?.status;
         const serverMessage = err.response?.data?.message;
         const clientMessage = err.message;
-        const handledError = ExtractArticlesErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        const errorStatus = ExtractArticlesErrors.handleStatus(serverMessage)
         setJobStatus({
           progress: null,
           message: null,
           status: null,
-          error: handledError,
-          errorStatus
+          error: ExtractArticlesErrors.handleError({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          }),
+          errorStatus: ExtractArticlesErrors.handleStatus({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          }),
         });
       }
     },
@@ -107,7 +111,7 @@ const useExtractArticles = () => {
    *
    * @async
    * @function fetchJobByLegalBasis
-   * @param {string} legalBasisId - The ID of the legal Basis to retrieve job.
+   * @param {string} legalBasisId - The ID of the legal basis to retrieve job.
    */
   const fetchJobByLegalBasis = useCallback(
     async (legalBasisId) => {
@@ -117,19 +121,21 @@ const useExtractArticles = () => {
           legalBasisId,
           token: jwt,
         });
+
         setLegalBasisJob({ isLoading: false, error: null });
         return { hasPendingJobs, jobId };
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = ExtractArticlesErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
+      } catch (err) {
+        const errorCode = err.response?.status;
+        const serverMessage = err.response?.data?.message;
+        const clientMessage = err.message;
+        setLegalBasisJob({
+          isLoading: false,
+          error: ExtractArticlesErrors.handleError({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          }),
         });
-        setLegalBasisJob({ isLoading: false, error: handledError });
-        return { success: false, error: handledError };
       }
     },
     [jwt]
@@ -148,17 +154,23 @@ const useExtractArticles = () => {
       try {
         await cancelJob({ jobId, token: jwt });
         return { success: true };
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = ExtractArticlesErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        const errorStatus = ExtractArticlesErrors.handleStatus(serverMessage)
-        return { success: false, error: handledError, errorStatus: errorStatus };
+      } catch (err) {
+        const errorCode = err.response?.status;
+        const serverMessage = err.response?.data?.message;
+        const clientMessage = err.message;
+        return {
+          success: false,
+          error: ExtractArticlesErrors.handleError({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          }),
+          errorStatus: ExtractArticlesErrors.handleStatus({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          }),
+        };
       }
     },
     [jwt]
@@ -167,7 +179,7 @@ const useExtractArticles = () => {
   return {
     progress: jobStatus.progress,
     message: jobStatus.message,
-    status: jobStatus.status, 
+    status: jobStatus.status,
     error: jobStatus.error,
     errorStatus: jobStatus.errorStatus,
     legalBasisJobLoading: legalBasisJob.isLoading,

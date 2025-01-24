@@ -21,7 +21,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.INVALID_REQUEST]: {
       title: "Solicitud inválida",
       message:
-        "La solicitud es inválida. Por favor, recargue la página e intente nuevamente.",
+        "La solicitud es inválida. Por favor, cierre esta ventana e intente nuevamente.",
     },
     [ExtractArticlesErrors.NETWORK_ERROR]: {
       title: "Error de conexión",
@@ -34,9 +34,9 @@ export class ExtractArticlesErrors {
         "No tiene autorización para realizar esta acción. Verifique su sesión e intente nuevamente.",
     },
     [ExtractArticlesErrors.JOB_NOT_FOUND]: {
-      title: "Extracción de artículos cancelada",
+      title: "Extracción de artículos cancelada anteriormente",
       message:
-        "La extracción de artículos fue cancelada anteriormente. Si necesita realizar esta operación, cierre esta ventana e intente de nuevo.",
+        "La extracción de artículos fue cancelada anteriormente. Si necesita realizar esta operación, cierre esta ventana e intente nuevamente.",
     },
     [ExtractArticlesErrors.LEGAL_BASE_NOT_FOUND]: {
       title: "Fundamento legal no encontrado",
@@ -46,7 +46,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.SERVER_ERROR]: {
       title: "Error interno del servidor",
       message:
-        "Hubo un problema en el servidor. Espere un momento e intente nuevamente.",
+        "Hubo un problema en el servidor. Por favor, intente nuevamente más tarde.",
     },
     [ExtractArticlesErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
@@ -56,12 +56,12 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.INVALID_DOCUMENT]: {
       title: "Documento inválido",
       message:
-        "El documento proporcionado no es válido o está incompleto. Asegúrese de cargar un archivo válido.",
+        "El documento proporcionado no es válido o está incompleto. Asegúrese de cargar un documento válido.",
     },
     [ExtractArticlesErrors.DOCUMENT_PROCESSING_ERROR]: {
       title: "Error al procesar el documento",
       message:
-        "Hubo un problema procesando el documento. Por favor, revise el archivo y vuelva a intentarlo.",
+        "Hubo un problema procesando el documento. Por favor, revise el documento y vuelva a intentarlo.",
     },
     [ExtractArticlesErrors.INVALID_CLASSIFICATION]: {
       title: "Clasificación inválida",
@@ -71,7 +71,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.ARTICLE_PROCESSING_ERROR]: {
       title: "Error al procesar los artículos",
       message:
-        "No se pudieron extraer los artículos del documento. Verifique el archivo proporcionado e intente nuevamente.",
+        "No se pudieron extraer los artículos del documento. Verifique el documento proporcionado e intente nuevamente.",
     },
     [ExtractArticlesErrors.FAILED_TO_INSERT_ARTICLES]: {
       title: "Error al guardar los artículos",
@@ -82,7 +82,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.JOB_CANCELED]: {
       title: "Extracción de artículos cancelada",
       message:
-        "La extracción de artículos fue cancelada anteriormente. Si necesita realizar esta operación, cierre esta ventana e intente de nuevo.",
+        "La extracción de artículos fue cancelada. Si necesita realizar esta operación, cierre esta ventana e intente de nuevo.",
     },
   };
 
@@ -138,15 +138,33 @@ export class ExtractArticlesErrors {
         ];
     }
   }
-    /**
+  /**
    * Handles messages by mapping them to their associated status.
    *
-   * @param {string} [message] - The error message.
-   * @returns {string} - The associated status.
+   * @param {Object} params - Parameters for handling the status.
+   * @param {number} params.code - The HTTP status code.
+   * @param {string} [params.error] - The server error message.
+   * @param {string} [params.httpError] - The HTTP error message.
+   * @returns {string} - A string representing the associated status or a default status.
    */
-    static handleStatus(message) {
+  static handleStatus({ code, error, httpError }) {
+    const message = error || httpError;
+    if (message && ExtractArticlesErrors.ErrorMessagesMap[message]) {
       return ExtractArticlesErrors.ErrorMessagesMap[message];
     }
+
+    switch (code) {
+      case 400:
+        return ExtractArticlesErrors.INVALID_REQUEST;
+      case 401:
+      case 403:
+        return ExtractArticlesErrors.UNAUTHORIZED;
+      case 500:
+        return ExtractArticlesErrors.SERVER_ERROR;
+      default:
+        return ExtractArticlesErrors.UNEXPECTED_ERROR;
+    }
+  }
 }
 /**
  * Class for managing and mapping messages related to article extraction jobs.
@@ -155,7 +173,7 @@ export class ExtractArticlesStatus {
   static WAITING = "WAITING";
   static ACTIVE = "ACTIVE";
   static COMPLETED = "COMPLETED";
-  static FAILED = "FAILED"; 
+  static FAILED = "FAILED";
   static DELAYED = "DELAYED";
   static PAUSED = "PAUSED";
   static STUCK = "STUCK";
@@ -165,37 +183,34 @@ export class ExtractArticlesStatus {
     "The job is waiting to be processed": ExtractArticlesStatus.WAITING,
     "Job is still processing": ExtractArticlesStatus.ACTIVE,
     "Job completed successfully": ExtractArticlesStatus.COMPLETED,
-    "Job failed": ExtractArticlesStatus.FAILED, 
-    "Job is delayed and will be processed later":
-    ExtractArticlesStatus.DELAYED,
+    "Job failed": ExtractArticlesStatus.FAILED,
+    "Job is delayed and will be processed later": ExtractArticlesStatus.DELAYED,
     "Job is paused and will be resumed once unpaused":
-    ExtractArticlesStatus.PAUSED,
+      ExtractArticlesStatus.PAUSED,
     "Job is stuck and cannot proceed": ExtractArticlesStatus.STUCK,
     "Job is in an unknown state": ExtractArticlesStatus.UNKNOWN,
   };
 
   static messageMap = Object.fromEntries(
-    Object.entries(ExtractArticlesStatus.MessageStatusMap).map(
-      ([, value]) => [
-        value,
-        {
-          [ExtractArticlesStatus.WAITING]:
-            "El proceso de extracción de artículos comenzará en un momento.",
-          [ExtractArticlesStatus.ACTIVE]:
-            "El proceso de extracción de artículos está en curso...",
-          [ExtractArticlesStatus.COMPLETED]:
-            "El proceso de extracción de artículos se completó con éxito.",
-          [ExtractArticlesStatus.DELAYED]:
-            "El proceso de extracción de artículos está retrasado y se procesará más tarde.",
-          [ExtractArticlesStatus.PAUSED]:
-            "El proceso de extracción de artículos está en pausa. Comuníquese con los administradores del sistema para continuar.",
-          [ExtractArticlesStatus.STUCK]:
-            "El proceso de extracción de artículos está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
-          [ExtractArticlesStatus.UNKNOWN]:
-            "El proceso de extracción de artículos está en un estado desconocido. Comuníquese con los administradores del sistema.",
-        }[value],
-      ]
-    )
+    Object.entries(ExtractArticlesStatus.MessageStatusMap).map(([, value]) => [
+      value,
+      {
+        [ExtractArticlesStatus.WAITING]:
+          "El proceso de extracción de artículos comenzará en un momento.",
+        [ExtractArticlesStatus.ACTIVE]:
+          "El proceso de extracción de artículos está en curso...",
+        [ExtractArticlesStatus.COMPLETED]:
+          "El proceso de extracción de artículos se completó con éxito.",
+        [ExtractArticlesStatus.DELAYED]:
+          "El proceso de extracción de artículos está retrasado y se procesará más tarde.",
+        [ExtractArticlesStatus.PAUSED]:
+          "El proceso de extracción de artículos está en pausa. Comuníquese con los administradores del sistema para continuar.",
+        [ExtractArticlesStatus.STUCK]:
+          "El proceso de extracción de artículos está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
+        [ExtractArticlesStatus.UNKNOWN]:
+          "El proceso de extracción de artículos está en un estado desconocido. Comuníquese con los administradores del sistema.",
+      }[value],
+    ])
   );
 
   /**
@@ -219,4 +234,3 @@ export class ExtractArticlesStatus {
     return ExtractArticlesStatus.MessageStatusMap[message];
   }
 }
-

@@ -7,9 +7,9 @@ import {
   ModalHeader,
   ModalBody,
   Spinner,
-  Textarea,
-  Button
+  Button,
 } from "@nextui-org/react";
+import TextArea from "./TextArea/TextArea.jsx";
 import check from "../../assets/check.png";
 
 /**
@@ -27,14 +27,11 @@ import check from "../../assets/check.png";
  * @param {Object} props.config.formData - Form data containing the article details.
  * @param {Function} props.config.addArticle - Function to add a new article.
  * @param {string|null} props.config.nameError - Error message for the article name input field.
- * @param {string|null} props.config.descriptionError - Error message for the article description field.
  * @param {string|null} props.config.orderError - Error message for the article order input field.
  * @param {Function} props.config.setNameError - Setter function for nameError.
- * @param {Function} props.config.setDescriptionError - Setter function for descriptionError.
  * @param {Function} props.config.setOrderError - Setter function for orderError.
  * @param {Function} props.config.handleNameChange - Handler for article name input change.
  * @param {Function} props.config.handleDescriptionChange - Handler for article description input change.
- * @param {Function} props.config.clearDescription - Handler to clear description entry.
  * @param {Function} props.config.handleOrderChange - Handler for article order input change.
  *
  * @returns {JSX.Element} Rendered CreateModal component with form elements and validation.
@@ -46,14 +43,11 @@ function CreateModal({ config }) {
     formData,
     addArticle,
     nameError,
-    descriptionError,
     orderError,
     setNameError,
-    setDescriptionError,
     setOrderError,
     handleNameChange,
     handleDescriptionChange,
-    clearDescription,
     handleOrderChange,
   } = config;
 
@@ -86,22 +80,12 @@ function CreateModal({ config }) {
     } else {
       setNameError(null);
     }
-
-    if (!formData.description.trim()) {
-      setDescriptionError("Este campo es obligatorio");
-      setIsLoading(false);
-      return;
-    } else {
-      setDescriptionError(null);
-    }
-
     try {
       const { success, error } = await addArticle(formData.legalBaseId, {
         title: formData.name,
         article: formData.description,
         order: formData.order,
-      }
-      );
+      });
       if (success) {
         toast.info("El artículo ha sido registrado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -183,38 +167,28 @@ function CreateModal({ config }) {
                 </div>
 
                 <div className="mb-5">
-                  <Textarea
-                    isClearable
-                    onClear={clearDescription} 
-                    radius="md"
+                  <TextArea
                     value={formData.description}
-                    onChange={handleDescriptionChange}
-                    label="Descripción"
-                    placeholder="Ingrese la descripción"
-                    variant="bordered"
-                    classNames={{
-                      base: "w-full",
-                      input: "min-h-[100px]",
-                    }}
+                    onChange={(value) =>
+                      handleDescriptionChange({ target: { value } })
+                    }
+                    placeholder="Ingrese la descripción(Opcional)"
                   />
-                  {descriptionError && (
-                    <p className="mt-2 text-sm text-red">{descriptionError}</p>
-                  )}
                 </div>
 
                 <div>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isLoading}
-                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                >
-                  {isLoading ? (
-                    <Spinner size="sm" color="white" />
-                  ) : (
-                    "Registrar Artículo"
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    disabled={isLoading}
+                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                  >
+                    {isLoading ? (
+                      <Spinner size="sm" color="white" />
+                    ) : (
+                      "Registrar Artículo"
+                    )}
+                  </Button>
                 </div>
               </form>
             </ModalBody>
@@ -231,14 +205,11 @@ CreateModal.propTypes = {
     closeModalCreate: PropTypes.func.isRequired,
     addArticle: PropTypes.func.isRequired,
     nameError: PropTypes.string,
-    descriptionError: PropTypes.string,
     orderError: PropTypes.string,
     setNameError: PropTypes.func.isRequired,
-    setDescriptionError: PropTypes.func.isRequired,
     setOrderError: PropTypes.func.isRequired,
     handleNameChange: PropTypes.func.isRequired,
     handleDescriptionChange: PropTypes.func.isRequired,
-    clearDescription: PropTypes.func.isRequired,
     handleOrderChange: PropTypes.func.isRequired,
     formData: PropTypes.shape({
       order: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

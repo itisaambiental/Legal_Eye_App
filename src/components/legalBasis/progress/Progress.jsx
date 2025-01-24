@@ -47,6 +47,9 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
     isCancelled: false,
   });
 
+  // Variable to evaluate if there is any error or cancellation error
+  const hasError = !!error || !!cancelState.cancelError;
+
   /**
    * Handles the cancellation of a job.
    * Updates the cancel state and simulates a loading period before showing the result.
@@ -62,7 +65,6 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
     cleanjobStatus();
     setIsIntervalActive(false);
     clearInterval(intervalRef.current);
-
     try {
       const { success, error, errorStatus } = await cancelJobById(jobId);
       setTimeout(() => {
@@ -117,7 +119,7 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
   /**
    * useEffect to handle polling for job status.
    *
-   * This effect sets up an interval to fetch the job status every 2 second if a job ID is provided
+   * This effect sets up an interval to fetch the job status every 5 seconds if a job ID is provided
    * and the interval is marked as active (`isIntervalActive`). The interval is cleared when the
    * component unmounts or if `jobId`, `fetchJobStatus`, or `isIntervalActive` changes.
    *
@@ -130,7 +132,7 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
     if (jobId && isIntervalActive) {
       intervalRef.current = setInterval(() => {
         fetchJobStatus(jobId);
-      }, 2000);
+      }, 5000);
       return () => clearInterval(intervalRef.current);
     }
   }, [jobId, fetchJobStatus, isIntervalActive]);
@@ -164,14 +166,14 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
   return (
     <Card className="w-full h-full border-none">
       <CardHeader className="flex">
-        <p className={`text-md ${error ? "text-red" : "text-primary"}`}>
+        <p className={`text-md ${hasError ? "text-red" : "text-primary"}`}>
           {labelTop}
         </p>
         <Button
-          className={`hover:${error ? "bg-danger/20" : "bg-primary/20"} 
-            text-${error ? "text-red" : "text-primary"} 
-            active:${error ? "bg-red/10" : "bg-primary/10"} 
-            -mt-6`}
+          className={`hover:${hasError ? "bg-danger/20" : "bg-primary/20"} 
+          text-${hasError ? "text-red" : "text-primary"} 
+          active:${hasError ? "bg-red/10" : "bg-primary/10"} 
+          -mt-6`}
           color="white"
           radius="full"
           size="sm"
@@ -186,10 +188,10 @@ const Progress = ({ jobId, onComplete, onClose, labelTop, labelButton }) => {
         <CircularProgress
           classNames={{
             svg: `w-36 h-36 drop-shadow-md`,
-            indicator: error ? "stroke-red" : "stroke-primary",
-            track: error ? "stroke-red/10" : "stroke-primary/10",
+            indicator: hasError ? "stroke-red" : "stroke-primary",
+            track: hasError ? "stroke-red/10" : "stroke-primary/10",
             value: `text-3xl font-semibold ${
-              error ? "text-red" : "text-primary"
+              hasError ? "text-red" : "text-primary"
             }`,
           }}
           showValueLabel={true}

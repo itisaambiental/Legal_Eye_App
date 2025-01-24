@@ -70,7 +70,6 @@ const Alerts = ({
       />
     );
   }
-
   // 2. Checking if cancellation was successful
   if (cancelState.isCancelled) {
     return (
@@ -87,11 +86,10 @@ const Alerts = ({
       />
     );
   }
-
   // 3. Checking if there was an error during cancellation
   if (cancelState.cancelError) {
-    const isJobNotFound =
-      cancelState.cancelErrorStatus === ExtractArticlesErrors.JOB_NOT_FOUND;
+    const isRetryable =
+      cancelState.cancelErrorStatus === ExtractArticlesErrors.NETWORK_ERROR;
     return (
       <Alert
         title="Error cancelando extracción de artículos"
@@ -101,11 +99,7 @@ const Alerts = ({
         classNames={errorAlertStyles}
         endContent={
           <div className="flex space-x-2">
-            {isJobNotFound ? (
-              <Button onPress={onClose} color="danger">
-                Cerrar
-              </Button>
-            ) : (
+            {isRetryable ? (
               <>
                 <Button onPress={onCancel} color="danger">
                   Reintentar
@@ -114,13 +108,16 @@ const Alerts = ({
                   Continuar
                 </Button>
               </>
+            ) : (
+              <Button onPress={onClose} color="danger">
+                Cerrar
+              </Button>
             )}
           </div>
         }
       />
     );
   }
-
   // 4. Checking if the job has completed successfully
   if (status === ExtractArticlesStatus.COMPLETED) {
     return (
@@ -137,11 +134,9 @@ const Alerts = ({
       />
     );
   }
-
   // 5. Checking if there is a general error
   if (error) {
-    const isJobError = status === ExtractArticlesStatus.FAILED;
-    const isJobNotFound = errorStatus === ExtractArticlesErrors.JOB_NOT_FOUND;
+    const isRetryable = errorStatus === ExtractArticlesErrors.NETWORK_ERROR;
     return (
       <Alert
         title={error.title}
@@ -150,17 +145,21 @@ const Alerts = ({
         variant="faded"
         classNames={errorAlertStyles}
         endContent={
-          <Button
-            onPress={isJobNotFound ? onClose : isJobError ? onClose : onRetry}
-            color="danger"
-          >
-            {isJobNotFound || isJobError ? "Cerrar" : "Reintentar"}
-          </Button>
+          <div className="flex space-x-2">
+            {isRetryable ? (
+              <Button onPress={onRetry} color="danger">
+                Reintentar
+              </Button>
+            ) : (
+              <Button onPress={onClose} color="danger">
+                Cerrar
+              </Button>
+            )}
+          </div>
         }
       />
     );
   }
-
   // 6. Checking if the job is still in progress
   if (!status && !message && !error) {
     return (
@@ -175,7 +174,6 @@ const Alerts = ({
       />
     );
   }
-
   // 7. Fallback
   return (
     <Alert

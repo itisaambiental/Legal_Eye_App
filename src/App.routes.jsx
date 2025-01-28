@@ -5,8 +5,8 @@ import Login from "./components/users/auth/Login.jsx"
 import ResetPassword from './components/users/auth/ResetPassword.jsx'
 import VerifyCode from './components/users/auth/VerifyCode.jsx'
 import CompleteReset from './components/users/auth/CompleteReset.jsx'
-import AccessUser from './middleware/access_user.jsx'
-import AccessAdmin from './middleware/access_admin.jsx'
+import AccessUser from './middlewares/access_user.jsx'
+import AccessAdmin from './middlewares/access_admin.jsx'
 import Dashboard from "./components/Dashboard.jsx"
 import Home from './components/Home.jsx'
 import Users from './components/users/Users.jsx'

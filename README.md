@@ -17,8 +17,8 @@
 1. **Clonar el repositorio** (si tienes Git instalado):
 
    ```
-   git clone https://github.com/itisaambiental/LegalEye_Frontend.git
-   cd LegalEye_Frontend
+   git clone https://github.com/itisaambiental/Legal_Eye_App.git
+   cd Legal_Eye_App
    ```
 2. **Instalar dependencias** :
 

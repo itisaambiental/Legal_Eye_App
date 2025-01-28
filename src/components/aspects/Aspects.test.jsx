@@ -69,20 +69,7 @@ describe("Aspects Component", () => {
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
 
-  // test("displays an error message if there is an error loading aspects", () => {
-  //   useAspects.mockReturnValueOnce({
-  //     ...useAspects(),
-  //     error: { title: "Failed to load aspects", message: "Server Error" },
-  //   });
-  //   render(
-  //     <MemoryRouter>
-  //       <Aspects />
-  //     </MemoryRouter>
-  //   );
-  //   expect(screen.getByText("Failed to load aspects")).toBeInTheDocument();
-  //   expect(screen.getByText("Server Error")).toBeInTheDocument();
-  // });
-
+  
   describe("Aspects Component with no aspects", () => {
     beforeEach(() => {
       useAspects.mockReturnValue({

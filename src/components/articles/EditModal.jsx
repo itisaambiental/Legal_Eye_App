@@ -134,7 +134,7 @@ function EditModal({ config }) {
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
+            <ModalHeader role="heading" className="flex flex-col gap-1">
               Editar Artículo
             </ModalHeader>
             <ModalBody>

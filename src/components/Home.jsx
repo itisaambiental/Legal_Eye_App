@@ -59,7 +59,7 @@ function Home() {
                   />
                 }
               >
-                <span className="text-primary">Comienza</span>
+                <span className="text-primary">Comenzar</span>
               </Button>
             <h1 className="text-primary text-4xl font-extrabold mb-2">
               Comienza a analizar fundamentos legales

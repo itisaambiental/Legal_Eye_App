@@ -355,6 +355,7 @@ function TopContent({ config }) {
             value={lastReformRange}
             showMonthAndYearPickers
             onChange={onFilterByLastReformRange}
+            color="primary"
             radius="sm"
             variant="faded"
             aria-label="Buscar por última reforma..."

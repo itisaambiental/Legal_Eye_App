@@ -232,6 +232,7 @@ export default function Subjects() {
       <TopContent
         config={{
           onRowsPerPageChange: onRowsPerPageChange,
+          rowsPerPage: rowsPerPage,
           totalSubjects: subjects.length,
           openModalCreate: openModalCreate,
           onFilterByName: handleFilterByName,

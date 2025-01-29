@@ -80,7 +80,7 @@ const Alerts = ({
         classNames={AlertStyles}
         endContent={
           <Button onPress={onClose} color="primary">
-            Cerrar
+            <span className="text-xs">Cerrar</span>
           </Button>
         }
       />
@@ -102,15 +102,15 @@ const Alerts = ({
             {isRetryable ? (
               <>
                 <Button onPress={onCancel} color="danger">
-                  Reintentar
+                  <span className="text-xs">Reintentar</span>
                 </Button>
                 <Button onPress={onRetry} color="danger" variant="faded">
-                  Continuar
+                  <span className="text-xs">Continuar</span>
                 </Button>
               </>
             ) : (
               <Button onPress={onClose} color="danger">
-                Cerrar
+                <span className="text-xs">Cerrar</span>
               </Button>
             )}
           </div>
@@ -128,7 +128,7 @@ const Alerts = ({
         classNames={AlertStyles}
         endContent={
           <Button onPress={onComplete} color="primary">
-            {labelButton}
+            <span className="text-xs">{labelButton}</span>
           </Button>
         }
       />
@@ -148,11 +148,11 @@ const Alerts = ({
           <div className="flex space-x-2">
             {isRetryable ? (
               <Button onPress={onRetry} color="danger">
-                Reintentar
+                <span className="text-xs">Reintentar</span>
               </Button>
             ) : (
               <Button onPress={onClose} color="danger">
-                Cerrar
+                <span className="text-xs">Cerrar</span>
               </Button>
             )}
           </div>
@@ -187,7 +187,7 @@ const Alerts = ({
           disabled={cancelState.isCancelling}
           color="primary"
         >
-          Cancelar
+          <span className="text-xs">Cancelar</span>
         </Button>
       }
     />

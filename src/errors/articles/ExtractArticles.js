@@ -51,7 +51,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
       message:
-        "Se produjo un error inesperado durante el proceso. Por favor, intente nuevamente más tarde.",
+        "Se produjo un error inesperado durante la extracción de articulos. Por favor, intente nuevamente más tarde.",
     },
     [ExtractArticlesErrors.INVALID_DOCUMENT]: {
       title: "Documento inválido",

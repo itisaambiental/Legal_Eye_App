@@ -37,18 +37,26 @@ describe("CreateModal Component", () => {
 
   it("validates the order field on submit", async () => {
     render(<CreateModal config={config} />);
-    const submitButton = screen.getByRole("button", { name: "Registrar Artículo" });
+    const submitButton = screen.getByRole("button", {
+      name: "Registrar Artículo",
+    });
     fireEvent.click(submitButton);
-    expect(config.setOrderError).toHaveBeenCalledWith("Este campo es obligatorio");
+    expect(config.setOrderError).toHaveBeenCalledWith(
+      "Este campo es obligatorio"
+    );
   });
 
   it("validates the name field on submit", async () => {
     config.formData.order = 1;
     render(<CreateModal config={config} />);
-    const submitButton = screen.getByRole("button", { name: "Registrar Artículo" });
+    const submitButton = screen.getByRole("button", {
+      name: "Registrar Artículo",
+    });
 
     fireEvent.click(submitButton);
-    expect(config.setNameError).toHaveBeenCalledWith("Este campo es obligatorio");
+    expect(config.setNameError).toHaveBeenCalledWith(
+      "Este campo es obligatorio"
+    );
   });
 
   it("calls addArticle when form is valid", async () => {
@@ -60,7 +68,9 @@ describe("CreateModal Component", () => {
     };
 
     render(<CreateModal config={config} />);
-    const submitButton = screen.getByRole("button", { name: "Registrar Artículo" });
+    const submitButton = screen.getByRole("button", {
+      name: "Registrar Artículo",
+    });
 
     fireEvent.click(submitButton);
     expect(config.addArticle).toHaveBeenCalledWith(1, {
@@ -78,13 +88,15 @@ describe("CreateModal Component", () => {
         <CreateModal config={config} />
       </>
     );
-    const submitButton = screen.getByRole("button", { name: "Registrar Artículo" });
+    const submitButton = screen.getByRole("button", {
+      name: "Registrar Artículo",
+    });
     fireEvent.click(submitButton);
     expect(
       await screen.findByText("El artículo ha sido registrado correctamente")
     ).toBeInTheDocument();
   });
-  
+
   it("displays error toast on article creation failure", async () => {
     config.addArticle = vi.fn().mockResolvedValue({
       success: false,
@@ -92,11 +104,13 @@ describe("CreateModal Component", () => {
     });
 
     render(<CreateModal config={config} />);
-    const submitButton = screen.getByRole("button", { name: "Registrar Artículo" });
+    const submitButton = screen.getByRole("button", {
+      name: "Registrar Artículo",
+    });
 
     fireEvent.click(submitButton);
     await waitFor(() => {
-        expect(config.closeModalCreate).not.toHaveBeenCalled();
-      });
+      expect(config.closeModalCreate).not.toHaveBeenCalled();
+    });
   });
 });

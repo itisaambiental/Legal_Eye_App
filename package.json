@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve dist -s -n -L -p 3000"
+    "start": "serve dist -s -n -L -p $PORT"
   },
   "engines": {
     "node": "20.x",

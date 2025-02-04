@@ -2,12 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
 import Context from "../context/userContext.jsx";
 import useUserProfile from "../hooks/user/useUserProfile.jsx";
-import menu_hamburguesa from "../assets/menu-hamburguesa.png";
+import menu_burger from "../assets/menu-hamburguesa.png";
 import logo from "../assets/logo2.png";
 import hogar from "../assets/hogar.png";
-import flecha_izquierda from "../assets/flecha_izquierda.png";
+import left_arrow_icon from "../assets/flecha_izquierda.png";
 import users from "../assets/users.png";
-import fundamentos_icon from "../assets/fundamento-legal.png";
+import legal_basis_icon from "../assets/fundamento-legal.png";
+import requirement_icon from "../assets/requirement.png"
 import materias_icon from "../assets/materias.png";
 import user from "../assets/usuario.png";
 import {
@@ -71,7 +72,7 @@ function Dashboard() {
                 className="inline-flex items-center p-2 text-sm rounded-lg lg:hidden xl:hidden hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <img
-                  src={menu_hamburguesa}
+                  src={menu_burger}
                   alt="Open sidebar"
                   className="w-6 h-6"
                 />
@@ -206,10 +207,21 @@ function Dashboard() {
                 }`}
               >
                 <img
-                  src={fundamentos_icon}
+                  src={legal_basis_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
                 <span className="ms-3 font-medium">Fundamentos Legales</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+              >
+                <img
+                  src={requirement_icon}
+                  className="flex-shrink-0 w-5 h-5 transition duration-75"
+                />
+                <span className="ms-3 font-medium">Requerimientos Legales</span>
               </Link>
             </li>
             <li>
@@ -218,7 +230,7 @@ function Dashboard() {
                 className="flex items-center p-2 text-white hover:bg-white/15 rounded-lg group"
               >
                 <img
-                  src={flecha_izquierda}
+                  src={left_arrow_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
                 <span className="flex-1 ms-3 whitespace-nowrap">

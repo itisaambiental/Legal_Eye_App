@@ -31,10 +31,10 @@ jobs:
         if: success()
         uses: dawidd6/action-send-mail@v3
         with:
-          connection_url: smtp://${{ secrets.SMTP_USER }}:${{ secrets.SMTP_PASSWORD }}@${{ secrets.SMTP_SERVER }}:${{ secrets.SMTP_PORT }}
+          connection_url: smtp://AKIAXQIQAHZ35FBZAQ2R:BHoHzydmOCERH1ecT8HIna/cwyx9SGsQoT9Q3rmqydDP@email-smtp.us-east-1.amazonaws.com:587
           subject: 'CI Notification: All Tests Passed'
-          to: ${{ secrets.NOTIFICATION_EMAIL }} 
-          from: ${{ secrets.SMTP_USER }}
+          to: it@isaambiental.com 
+          from: AKIAXQIQAHZ35FBZAQ2R
           body: |
             All tests have passed successfully in the Isa Legal App CI workflow.
 

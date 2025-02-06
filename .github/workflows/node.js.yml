@@ -33,7 +33,7 @@ jobs:
         with:
           connection_url: smtp://AKIAXQIQAHZ35FBZAQ2R:BHoHzydmOCERH1ecT8HIna%2Fcwyx9SGsQoT9Q3rmqydDP@email-smtp.us-east-1.amazonaws.com:587
           subject: 'CI Notification: All Tests Passed'
-          to: it@isaambiental.com
+          to: acastellano@isaambiental.com
           from: services@isalegal.app
           body: |
             All tests have passed successfully in the Isa Legal App CI workflow.

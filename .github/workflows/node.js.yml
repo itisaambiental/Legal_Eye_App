@@ -31,7 +31,7 @@ jobs:
         if: success()
         uses: dawidd6/action-send-mail@v3
         with:
-          connection_url: smtp://AKIAXQIQAHZ35FBZAQ2R:BHoHzydmOCERH1ecT8HIna/cwyx9SGsQoT9Q3rmqydDP@email-smtp.us-east-1.amazonaws.com:587
+          connection_url: smtp://AKIAXQIQAHZ35FBZAQ2R:BHoHzydmOCERH1ecT8HIna%2Fcwyx9SGsQoT9Q3rmqydDP@email-smtp.us-east-1.amazonaws.com:587
           subject: 'CI Notification: All Tests Passed'
           to: it@isaambiental.com
           from: services@isalegal.app  # Usando el correo verificado

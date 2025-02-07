@@ -13,6 +13,7 @@ class LegalBasisErrors {
   static ASPECTS_NOT_FOUND = "ASPECTS_NOT_FOUND";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   static DUPLICATED_NAME = "DUPLICATED_NAME";
+  static DUPLICATED_ABBREVIATION = "DUPLICATED_ABBREVIATION";
   static DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
   static PENDING_JOBS_CONFLICT = "PENDING_JOBS_CONFLICT";
   static MULTIPLE_PENDING_JOBS_CONFLICT = "MULTIPLE_PENDING_JOBS_CONFLICT";
@@ -20,6 +21,7 @@ class LegalBasisErrors {
   static DOCUMENT_CONFLICT = "DOCUMENT_CONFLICT";
   static REMOVE_DOCUMENT_PENDING_CONFLICT = "REMOVE_DOCUMENT_PENDING_CONFLICT";
   static NEW_DOCUMENT_PENDING_CONFLICT = "NEW_DOCUMENT_PENDING_CONFLICT";
+  static CONFLICT = "CONFLICT";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -61,6 +63,10 @@ class LegalBasisErrors {
       title: "Nombre duplicado",
       message: "Ya existe un fundamento legal con el mismo nombre. Por favor, utiliza otro.",
     },
+    [LegalBasisErrors.DUPLICATED_ABBREVIATION]: {
+      title: "Abreviatura duplicada",
+      message: "Ya existe un fundamento legal con la misma abreviatura. Por favor, utiliza otra.",
+    },    
     [LegalBasisErrors.DOCUMENT_REQUIRED]: {
       title: "Documento requerido",
       message: "Debe proporcionarse un documento si se desea extraer artículos.",
@@ -92,6 +98,10 @@ class LegalBasisErrors {
       title: "Conflicto al subir un nuevo documento",
       message: "No se puede subir un nuevo documento porque en este momento se están extrayendo artículos de su documento asociado.",
     },
+    [LegalBasisErrors.CONFLICT]: { 
+      title: "Conflicto detectado",
+      message: "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
     [LegalBasisErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
       message: "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
@@ -104,6 +114,7 @@ class LegalBasisErrors {
   static ErrorMessagesMap = {
     "Network Error": LegalBasisErrors.NETWORK_ERROR,
     "LegalBasis already exists": LegalBasisErrors.DUPLICATED_NAME,
+    "LegalBasis abbreviation already exists": LegalBasisErrors.DUPLICATED_ABBREVIATION,
     "A document must be provided if extractArticles is true": LegalBasisErrors.DOCUMENT_REQUIRED,
     "Cannot provide a document if removeDocument is true": LegalBasisErrors.DOCUMENT_CONFLICT,
     "The document cannot be removed because there are pending jobs for this Legal Basis": LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT,

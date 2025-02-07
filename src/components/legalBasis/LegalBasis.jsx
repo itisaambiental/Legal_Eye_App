@@ -27,6 +27,7 @@ import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import { saveAs } from "file-saver";
 import trash_icon from "../../assets/papelera-mas.png";
+import think_icon from "../../assets/cerebro.png";
 import send_icon from "../../assets/enviar.png";
 
 const columns = [
@@ -114,7 +115,7 @@ export default function LegalBasis() {
   const [lastReformIsInvalid, setLastReformIsInvalid] = useState(false);
   const [lastReformError, setLastReformError] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [aspectsLoading, setAspectsLoading] = useState(false)
+  const [aspectsLoading, setAspectsLoading] = useState(false);
   const debounceTimeout = useRef(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -209,9 +210,9 @@ export default function LegalBasis() {
             break;
           case "subject":
             await fetchLegalBasisBySubject(value);
-            setAspectsLoading(true)
+            setAspectsLoading(true);
             await fetchAspects(value);
-            setAspectsLoading(false)
+            setAspectsLoading(false);
             break;
           case "subjectAndAspects": {
             const { subjectId, aspectsIds } = value;
@@ -1105,19 +1106,28 @@ export default function LegalBasis() {
                 <Button
                   isIconOnly
                   size="sm"
-                  className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                  className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
                   aria-label="Eliminar seleccionados"
                   onPress={openDeleteModal}
                 >
                   <img src={trash_icon} alt="delete" className="w-5 h-5" />
                 </Button>
               </Tooltip>
-
+              <Tooltip content="Identificar Requerimientos" size="sm">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute left-12 bottom-0 ml-5 bg-secondary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
+                  aria-label="Identificar"
+                >
+                  <img src={think_icon} alt="edit" className="w-5 h-5" />
+                </Button>
+              </Tooltip>
               <Tooltip content="Enviar a ACM Suite" size="sm">
                 <Button
                   isIconOnly
                   size="sm"
-                  className="absolute left-12 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-10 lg:translate-y-10 xl:translate-y-10"
+                  className="absolute left-24 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
                   aria-label="Enviar a ACM Suite"
                 >
                   <img src={send_icon} alt="send" className="w-5 h-5" />

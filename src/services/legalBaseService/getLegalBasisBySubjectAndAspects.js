@@ -16,12 +16,11 @@ import server from "../../config/server.js";
  */
 export default async function getLegalBasisBySubjectAndAspects({ subjectId, aspectsIds, token }) {
     try {
-        const response = await server.get(`/legalBasis/aspects/subject`, {
+        const response = await server.get(`/legalBasis/subject/${subjectId}/aspects`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
             },
             params: {
-                subjectId: subjectId,
                 aspectIds: aspectsIds
             },
         });

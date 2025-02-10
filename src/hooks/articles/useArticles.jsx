@@ -1,12 +1,12 @@
 import { useContext, useState, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
-import createArticle from "../../services/articlesService/createArticle.js";
-import getArticlesByLegalBasis from "../../services/articlesService/getArticlesByLegalBasisId.js";
-import getArticlesByName from "../../services/articlesService/getArticlesByName.js";
-import getArticlesByDescription from "../../services/articlesService/getArticlesByDescription.js";
-import updateArticle from "../../services/articlesService/updateArticle.js";
-import deleteArticle from "../../services/articlesService/deleteArticle.js";
-import deleteArticles from "../../services/articlesService/deleteArticles.js";
+import createArticle from "../../services/articleService/createArticle.js";
+import getArticlesByLegalBasis from "../../services/articleService/getArticlesByLegalBasisId.js";
+import getArticlesByName from "../../services/articleService/getArticlesByName.js";
+import getArticlesByDescription from "../../services/articleService/getArticlesByDescription.js";
+import updateArticle from "../../services/articleService/updateArticle.js";
+import deleteArticle from "../../services/articleService/deleteArticle.js";
+import deleteArticles from "../../services/articleService/deleteArticles.js";
 import ArticleErrors from "../../errors/articles/articleErrors.js";
 
 /**

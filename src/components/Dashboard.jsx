@@ -9,6 +9,7 @@ import left_arrow_icon from "../assets/flecha_izquierda.png";
 import users from "../assets/users.png";
 import legal_basis_icon from "../assets/fundamento-legal.png";
 import requirement_icon from "../assets/requirement.png"
+import think_icon from "../assets/cerebro.png";
 import materias_icon from "../assets/materias.png";
 import user from "../assets/usuario.png";
 import {
@@ -222,6 +223,17 @@ function Dashboard() {
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
                 <span className="ms-3 font-medium">Requerimientos Legales</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+              >
+                <img
+                  src={think_icon}
+                  className="flex-shrink-0 w-5 h-5 transition duration-75"
+                />
+                <span className="ms-3 font-medium">Análisis Posterior</span>
               </Link>
             </li>
             <li>

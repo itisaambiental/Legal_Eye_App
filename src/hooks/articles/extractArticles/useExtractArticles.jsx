@@ -1,7 +1,7 @@
 import { useState, useCallback, useContext } from "react";
-import getJobStatus from "../../../services/articlesService/extractArticles/getJobStatus.js";
-import getJobByLegalBasis from "../../../services/articlesService/extractArticles/getJobByLegalBasis.js";
-import cancelJob from "../../../services/articlesService/extractArticles/cancelJob.js";
+import getJobStatus from "../../../services/articleService/extractArticles/getJobStatus.js";
+import getJobByLegalBasis from "../../../services/articleService/extractArticles/getJobByLegalBasis.js";
+import cancelJob from "../../../services/articleService/extractArticles/cancelJob.js";
 import Context from "../../../context/userContext.jsx";
 import {
   ExtractArticlesErrors,

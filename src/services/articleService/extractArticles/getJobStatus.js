@@ -10,7 +10,15 @@ import server from "../../../config/server.js";
  * @param {string} params.jobId - The ID of the job to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Object>} The job status object containing message, progress, or error details.
+ * @returns {Promise<{
+ *   message: string,
+ *   jobProgress?: number,
+ *   error?: string
+ * }>} - The job status object containing:
+ * - `message` (string): General message about the job status.
+ * - `jobProgress` (number, optional): The progress percentage of the job.
+ * - `error` (string, optional): Error details if the job encountered an issue.
+ *
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getJobStatus({ jobId, token }) {
@@ -20,9 +28,11 @@ export default async function getJobStatus({ jobId, token }) {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (response.status !== 200) {
-      throw new Error('Failed to retrieve job status');
+      throw new Error("Failed to retrieve job status");
     }
+
     const { message, jobProgress, error } = response.data;
     return {
       message,
@@ -30,7 +40,7 @@ export default async function getJobStatus({ jobId, token }) {
       ...(error !== undefined && { error }),
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving job status:", error);
     throw error;
   }
 }

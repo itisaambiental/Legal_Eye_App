@@ -27,9 +27,10 @@ export default async function createNewSubject({ subjectName, token }) {
     if (response.status !== 201) {
       throw new Error("Failed to create subject");
     }
-    return response.data.subject;
+    const { subject } = response.data;
+    return subject;
   } catch (error) {
-    console.error(error);
+    console.error("Error creating new subject:", error);
     throw error;
   }
 }

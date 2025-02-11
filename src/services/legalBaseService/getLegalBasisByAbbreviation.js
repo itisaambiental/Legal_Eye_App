@@ -10,7 +10,7 @@ import server from "../../config/server.js";
  * @param {string} params.abbreviation - The abbreviation of the legal basis to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of legal basis records matching the abbreviation.
+ * @returns {Promise<Array<Object>>} The list of legal basis records matching the abbreviation.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasisByAbbreviation({ abbreviation, token }) {
@@ -27,11 +27,10 @@ export default async function getLegalBasisByAbbreviation({ abbreviation, token 
         if (response.status !== 200) {
             throw new Error("Failed to retrieve legal basis by abbreviation");
         }
-
-        return response.data.legalBasis;
-
+        const { legalBasis } = response.data;
+        return legalBasis; 
     } catch (error) {
-        console.error(error);
+        console.error("Error retrieving legal basis by abbreviation:", error);
         throw error;
     }
 }

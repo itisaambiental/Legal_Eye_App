@@ -24,9 +24,10 @@ export default async function getSubjectById({ subjectId, token }) {
     if (response.status !== 200) {
       throw new Error("Failed to retrieve subject");
     }
-    return response.data.subject;
+    const { subject } = response.data;
+    return subject;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving subject by ID:", error);
     throw error;
   }
 }

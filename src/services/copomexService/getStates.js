@@ -18,7 +18,7 @@ export default async function getStates() {
     const { estado } = response.data.response;
     return estado;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving states", error);
     throw error;
   }
 }

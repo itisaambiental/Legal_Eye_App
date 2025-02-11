@@ -11,7 +11,7 @@ import server from "../../config/server.js";
  * @param {string} params.to - End date.
  * @param {string} params.token - Authorization token for the request.
  *
- * @returns {Promise<Array>} Resolves to an array of legal basis records matching the criteria.
+ * @returns {Promise<Array<Object>>} Resolves to an array of legal basis records matching the criteria.
  * @throws {Error} Throws an error if the response status is not 200 or if there is an issue with the request.
  */
 export default async function getLegalBasisByLastReform({ from, to, token }) {
@@ -26,9 +26,10 @@ export default async function getLegalBasisByLastReform({ from, to, token }) {
     if (response.status !== 200) {
       throw new Error("Failed to retrieve legal basis by lastReform");
     }
-    return response.data.legalBasis;
+    const { legalBasis } = response.data;
+    return legalBasis;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving legal basis by last reform date:", error);
     throw error;
   }
 }

@@ -24,7 +24,7 @@ export default async function deleteArticle({ id, token }) {
       throw new Error("Failed to delete article");
     }
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting article:", error);
     throw error;
   }
 }

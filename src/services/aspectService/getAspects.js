@@ -9,7 +9,7 @@ import server from "../../config/server.js"
  * @param {number} params.subjectId - The ID of the subject to retrieve aspects for.
  * @param {string} params.token - The authorization token for the request.
  * 
- * @returns {Promise<Array>} The list of aspects associated with the subject.
+ * @returns {Promise<Array<Object>>} The list of aspects associated with the subject.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getAspectsBySubject({ subjectId, token }) {
@@ -23,11 +23,10 @@ export default async function getAspectsBySubject({ subjectId, token }) {
         if (response.status !== 200) {
             throw new Error('Failed to retrieve aspects')
         }
-
-        return response.data.aspects
-
+        const { aspects } = response.data;
+        return aspects;
     } catch (error) {
-        console.error(error)
+        console.error("Error retrieving aspects by subject:", error);
         throw error
     }
 }

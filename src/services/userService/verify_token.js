@@ -21,7 +21,7 @@ export default async function verifyToken(token) {
 
         return response.data.valid;
     } catch (error) {
-        console.error(error);
+        console.error("Error verifying token:", error);
         throw error;
     }
 }

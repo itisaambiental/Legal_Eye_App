@@ -10,25 +10,28 @@ import server from "../../config/server.js";
  * @param {number} params.subjectId - The subjectId to retrieve legal basis.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of legal basis records matching the subjectId.
+ * @returns {Promise<Array<Object>>} The list of legal basis records matching the subjectId.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasisBySubject({ subjectId, token }) {
-    try {
-        const response = await server.get(`/legalBasis/subject/${encodeURIComponent(subjectId)}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            }
-        });
+  try {
+    const response = await server.get(
+      `/legalBasis/subject/${encodeURIComponent(subjectId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-        if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis by subject");
-        }
-
-        return response.data.legalBasis;
-
-    } catch (error) {
-        console.error(error);
-        throw error;
+    if (response.status !== 200) {
+      throw new Error("Failed to retrieve legal basis by subject");
     }
+
+    const { legalBasis } = response.data;
+    return legalBasis;
+  } catch (error) {
+    console.error("Error retrieving legal basis by subject:", error);
+    throw error;
+  }
 }

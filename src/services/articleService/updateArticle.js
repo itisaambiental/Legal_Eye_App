@@ -30,9 +30,10 @@ export default async function updateArticle({ id, title, article, order, token }
     if (response.status !== 200) {
       throw new Error("Failed to update article");
     }
-    return response.data.updatedArticle;
+    const { updatedArticle } = response.data;
+    return updatedArticle;
   } catch (error) {
-    console.error(error);
+    console.error("Error updating article:", error);
     throw error;
   }
 }

@@ -10,28 +10,30 @@ import server from "../../config/server.js";
  * @param {string} params.jurisdiction - The jurisdiction of the legal basis to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of legal basis records matching the jurisdiction.
+ * @returns {Promise<Array<Object>>} The list of legal basis records matching the jurisdiction.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getLegalBasisByJurisdiction({ jurisdiction, token }) {
-    try {
-        const response = await server.get('/legalBasis/jurisdiction/jurisdiction', {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            },
-            params: {
-                jurisdiction: jurisdiction, 
-            },
-        });
+export default async function getLegalBasisByJurisdiction({
+  jurisdiction,
+  token,
+}) {
+  try {
+    const response = await server.get("/legalBasis/jurisdiction/jurisdiction", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        jurisdiction: jurisdiction,
+      },
+    });
 
-        if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis by jurisdiction");
-        }
-
-        return response.data.legalBasis;
-
-    } catch (error) {
-        console.error(error);
-        throw error;
+    if (response.status !== 200) {
+      throw new Error("Failed to retrieve legal basis by jurisdiction");
     }
+    const { legalBasis } = response.data;
+    return legalBasis;
+  } catch (error) {
+    console.error("Error retrieving legal basis by jurisdiction:", error);
+    throw error;
+  }
 }

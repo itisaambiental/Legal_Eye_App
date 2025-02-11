@@ -24,9 +24,10 @@ export default async function getLegalBasisById({ legalBaseId, token }) {
     if (response.status !== 200) {
       throw new Error("Failed to retrieve legal basis");
     }
-    return response.data.legalBasis;
+    const { legalBasis } = response.data;
+    return legalBasis;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving legal basis by ID:", error);
     throw error;
   }
 }

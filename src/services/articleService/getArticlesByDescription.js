@@ -11,7 +11,7 @@ import server from "../../config/server.js";
  * @param {string} params.description - The description or part of the description of the articles to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of articles matching the description returned from the server.
+ * @returns {Promise<Array<Object>>} The list of articles matching the description returned from the server.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getArticlesByDescription({
@@ -31,9 +31,10 @@ export default async function getArticlesByDescription({
     if (response.status !== 200) {
       throw new Error("Failed to retrieve articles");
     }
-    return response.data.articles;
+    const { articles } = response.data;
+    return articles;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving articles by description:", error);
     throw error;
   }
 }

@@ -25,7 +25,7 @@ export default async function deleteSubject({ id, token }) {
       throw new Error("Failed to delete subject");
     }
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting subject by ID:", error);
     throw error;
   }
 }

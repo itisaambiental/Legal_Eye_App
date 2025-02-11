@@ -9,7 +9,7 @@ import server from "../../config/server.js";
  * @param {Object} params - Parameters for the request.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of legal basis records.
+ * @returns {Promise<Array<Object>>} The list of legal basis records.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasis({ token }) {
@@ -23,9 +23,10 @@ export default async function getLegalBasis({ token }) {
         if (response.status !== 200) {
             throw new Error("Failed to retrieve legal basis");
         }
-        return response.data.legalBasis; 
+        const { legalBasis } = response.data;
+        return legalBasis;     
     } catch (error) {
-        console.error(error);
+        console.error("Error retrieving all legal basis records:", error);
         throw error;
     }
 }

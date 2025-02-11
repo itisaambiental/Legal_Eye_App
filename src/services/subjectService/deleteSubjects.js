@@ -28,7 +28,7 @@ export default async function deleteSubjects({ subjectIds, token }) {
 
     return true;
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting subjects:", error);
     throw error;
   }
 }

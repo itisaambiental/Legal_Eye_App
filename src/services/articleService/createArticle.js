@@ -32,7 +32,7 @@ export default async function createArticle({ legalBasisId, title, article, orde
     }
     return response.data.article
   } catch (error) {
-    console.error(error)
+    console.error("Error creating article:", error);
     throw error
   }
 }

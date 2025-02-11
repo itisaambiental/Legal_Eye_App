@@ -25,9 +25,10 @@ export default async function getClassifications({ token }) {
     if (response.status !== 200) {
       throw new Error("Failed to retrieve classifications");
     }
-    return response.data.classifications;
+    const { classifications } = response.data;
+    return classifications;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving classifications:", error);
     throw error;
   }
 }

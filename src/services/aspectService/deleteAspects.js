@@ -28,7 +28,7 @@ export default async function deleteAspects({ aspectIds, token }) {
 
         return true;
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting aspects:", error);
         throw error;
     }
 }

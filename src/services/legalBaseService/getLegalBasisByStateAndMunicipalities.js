@@ -14,25 +14,33 @@ import server from "../../config/server.js";
  * @returns {Promise<Array>} The list of legal basis records matching the state and municipalities.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getLegalBasisByStateAndMunicipalities({ state, municipalities, token }) {
-    try {
-        const response = await server.get(`/legalBasis/state/municipalities/query`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            },
-            params: {
-                state: state,
-                municipalities: municipalities
-            }
-        });
-        if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis by state and municipalities");
-        }
-
-        return response.data.legalBasis;
-
-    } catch (error) {
-        console.error(error);
-        throw error;
+export default async function getLegalBasisByStateAndMunicipalities({
+  state,
+  municipalities,
+  token,
+}) {
+  try {
+    const response = await server.get(
+      `/legalBasis/state/municipalities/query`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          state: state,
+          municipalities: municipalities,
+        },
+      }
+    );
+    if (response.status !== 200) {
+      throw new Error(
+        "Failed to retrieve legal basis by state and municipalities"
+      );
     }
+    const { legalBasis } = response.data;
+    return legalBasis;
+  } catch (error) {
+    console.error("Error retrieving legal basis by state and municipalities:", error);
+    throw error;
+  }
 }

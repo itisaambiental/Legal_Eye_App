@@ -24,11 +24,10 @@ export default async function getAspectById({ aspectId, token }) {
         if (response.status !== 200) {
             throw new Error('Failed to retrieve aspect');
         }
-
-        return response.data.aspect;
-
+        const { aspect } = response.data;
+        return aspect;
     } catch (error) {
-        console.error(error);
+        console.error("Error retrieving aspect by ID:", error);
         throw error;
     }
 }

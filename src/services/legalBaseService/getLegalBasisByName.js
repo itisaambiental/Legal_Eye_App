@@ -10,28 +10,27 @@ import server from "../../config/server.js";
  * @param {string} params.legalName - The name of the legal basis to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Object>} The legal basis data returned from the server.
+ * @returns {Promise<Array<Object>>} The legal basis data returned from the server.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasisByName({ legalName, token }) {
-    try {
-        const response = await server.get('/legalBasis/name/name', {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            }, 
-            params: {
-                name: legalName, 
-            },
-        });
+  try {
+    const response = await server.get("/legalBasis/name/name", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        name: legalName,
+      },
+    });
 
-        if (response.status !== 200) {
-            throw new Error("Failed to retrieve legal basis");
-        }
-
-        return response.data.legalBasis;
-
-    } catch (error) {
-        console.error(error);
-        throw error;
+    if (response.status !== 200) {
+      throw new Error("Failed to retrieve legal basis");
     }
+    const { legalBasis } = response.data;
+    return legalBasis;
+  } catch (error) {
+    console.error("Error retrieving legal basis by name:", error);
+    throw error;
+  }
 }

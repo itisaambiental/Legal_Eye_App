@@ -12,7 +12,7 @@ import server from "../../config/server.js";
  * @param {string} params.aspectName - The name or partial name of the aspects to search for.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} An array of aspects matching the criteria.
+ * @returns {Promise<Array<Object>>} An array of aspects matching the criteria.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getAspectsByName({ subjectId, aspectName, token }) {
@@ -28,9 +28,10 @@ export default async function getAspectsByName({ subjectId, aspectName, token })
     if (response.status !== 200) {
       throw new Error("Failed to retrieve aspects by name");
     }
-    return response.data.aspects;
+    const { aspects } = response.data;
+    return aspects;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving aspects by name:", error);
     throw error;
   }
 }

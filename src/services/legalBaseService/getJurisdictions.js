@@ -9,7 +9,7 @@ import server from "../../config/server.js";
  * @param {Object} params - Parameters for the request.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array<{jurisdiction_name: string}>>} The list of unique jurisdictions as objects.
+ * @returns {Promise<Array<string>>} The list of unique jurisdictions as objects.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getJurisdictions({ token }) {
@@ -26,10 +26,10 @@ export default async function getJurisdictions({ token }) {
     if (response.status !== 200) {
       throw new Error("Failed to retrieve jurisdictions");
     }
-
-    return response.data.jurisdictions;
+    const { jurisdictions } = response.data;
+    return jurisdictions;
   } catch (error) {
-    console.error(error);
+    console.error("Error retrieving jurisdictions:", error);
     throw error;
   }
 }

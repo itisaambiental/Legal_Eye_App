@@ -28,7 +28,7 @@ export default async function deleteArticles({ articleIds, token }) {
 
     return true;
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting multiple articles:", error);
     throw error;
   }
 }

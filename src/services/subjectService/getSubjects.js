@@ -8,7 +8,7 @@ import server from "../../config/server.js";
  * @function getSubjects
  * @param {string} token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of all subjects returned from the server.
+ * @returns {Promise<Array<Object>>}  The list of all subjects returned from the server.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getSubjects(token) {
@@ -22,10 +22,10 @@ export default async function getSubjects(token) {
     if (response.status !== 200) {
       throw new Error("Failed to fetch subjects");
     }
-
-    return response.data.subjects;
+    const { subjects } = response.data;
+    return subjects;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching subjects:", error);
     throw error;
   }
 }

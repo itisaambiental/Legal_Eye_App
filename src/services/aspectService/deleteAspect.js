@@ -25,7 +25,7 @@ export default async function deleteAspect({ aspectId, token }) {
             throw new Error('Failed to delete aspect')
         }
     } catch (error) {
-        console.error(error)
+        console.error("Error deleting aspect by ID:", error);
         throw error
     }
 }

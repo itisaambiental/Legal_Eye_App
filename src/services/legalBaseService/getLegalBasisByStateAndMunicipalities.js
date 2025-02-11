@@ -11,7 +11,7 @@ import server from "../../config/server.js";
  * @param {Array<string>} params.municipalities - An array of municipalities to retrieve legal basis for (required).
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} The list of legal basis records matching the state and municipalities.
+ * @returns {Promise<Array<Object>>} The list of legal basis records matching the state and municipalities.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getLegalBasisByStateAndMunicipalities({

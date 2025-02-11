@@ -10,7 +10,7 @@ import server from "../../config/server.js";
  * @param {string} params.nameOrEmail - The name or email of the user to search for.
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<Array>} A list of users matching the specified name or email.
+ * @returns {Promise<Array<Object>>} A list of users matching the specified name or email.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function getUsersByNameOrGmail({ nameOrEmail, token }) {

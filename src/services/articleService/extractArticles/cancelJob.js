@@ -22,12 +22,12 @@ export default async function cancelJob({ jobId, token }) {
     });
 
     if (response.status !== 204) {
-      throw new Error('Failed to cancel job');
+      throw new Error("Failed to cancel job");
     }
 
     return true;
   } catch (error) {
-    console.error('Error canceling job:', error);
+    console.error("Error canceling job:", error);
     throw error;
   }
 }

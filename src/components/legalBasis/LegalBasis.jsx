@@ -87,6 +87,7 @@ export default function LegalBasis() {
   } = useSubjects();
   const {
     aspects,
+    loadingState: aspectsLoading,
     error: aspectError,
     clearAspects,
     fetchAspects,
@@ -115,7 +116,6 @@ export default function LegalBasis() {
   const [lastReformIsInvalid, setLastReformIsInvalid] = useState(false);
   const [lastReformError, setLastReformError] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [aspectsLoading, setAspectsLoading] = useState(false);
   const debounceTimeout = useRef(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -210,9 +210,7 @@ export default function LegalBasis() {
             break;
           case "subject":
             await fetchLegalBasisBySubject(value);
-            setAspectsLoading(true);
             await fetchAspects(value);
-            setAspectsLoading(false);
             break;
           case "subjectAndAspects": {
             const { subjectId, aspectsIds } = value;

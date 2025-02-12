@@ -16,6 +16,7 @@ export default function useAspects() {
   const { jwt } = useContext(Context);
   const [aspects, setAspects] = useState([]);
   const [stateAspects, setStateAspects] = useState({
+    loadingState: false,
     loading: true,
     error: null,
   });
@@ -39,11 +40,11 @@ export default function useAspects() {
    */
   const fetchAspects = useCallback(
     async (subjectId) => {
-      setStateAspects({ loading: true, error: null });
+      setStateAspects({ loading: true, loadingState: true, error: null });
       try {
         const aspects = await getAspectsBySubject({ subjectId, token: jwt });
         setAspects(aspects.reverse());
-        setStateAspects({ loading: false, error: null });
+        setStateAspects({ loading: false, loadingState: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
@@ -56,6 +57,7 @@ export default function useAspects() {
         });
         setStateAspects({
           loading: false,
+          loadingState: false,
           error: handledError,
         });
       }
@@ -108,7 +110,7 @@ export default function useAspects() {
    */
   const fetchAspectsByName = useCallback(
     async (subjectId, aspectName) => {
-      setStateAspects({ loading: true, error: null });
+      setStateAspects({ loading: true, loadingState: true, error: null });
       try {
         const aspects = await getAspectsByName({
           subjectId,
@@ -116,7 +118,7 @@ export default function useAspects() {
           token: jwt,
         });
         setAspects(aspects.reverse());
-        setStateAspects({ loading: false, error: null });
+        setStateAspects({ loading: false, loadingState: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
@@ -129,6 +131,7 @@ export default function useAspects() {
         });
         setStateAspects({
           loading: false,
+          loadingState: false,
           error: handledError,
         });
         return { success: false, error: handledError.message };
@@ -245,6 +248,7 @@ export default function useAspects() {
 
   return {
     aspects,
+    loadingState: stateAspects.loadingState,
     loading: stateAspects.loading,
     error: stateAspects.error,
     clearAspects,

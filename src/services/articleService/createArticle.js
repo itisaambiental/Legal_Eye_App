@@ -30,7 +30,8 @@ export default async function createArticle({ legalBasisId, title, article, orde
     if (response.status !== 201) {
       throw new Error('Failed to create article')
     }
-    return response.data.article
+    const { article: createdArticle } = response.data;
+    return createdArticle
   } catch (error) {
     console.error("Error creating article:", error);
     throw error

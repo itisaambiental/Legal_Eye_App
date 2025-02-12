@@ -47,9 +47,8 @@ export default async function updateUser({
     if (response.status !== 200) {
       throw new Error("Response is NOT ok");
     }
-
     return {
-      updatedUser: response.data.updatedUser,
+      updatedUser: response.data.user,
       token: response.data.token || null,
     };
   } catch (error) {

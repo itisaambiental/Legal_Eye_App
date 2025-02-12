@@ -42,8 +42,8 @@ export default async function registerNewUser({
     if (response.status !== 201) {
       throw new Error("Response is NOT ok");
     }
-
-    return response.data.user;
+    const { user } = response.data;
+    return user;
   } catch (error) {
     console.error("Error registering new user:", error);
     throw error;

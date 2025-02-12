@@ -29,8 +29,8 @@ export default async function updateSubject({ id, subjectName, token }) {
     if (response.status !== 200) {
       throw new Error("Failed to update subject");
     }
-    const { updatedSubject } = response.data;
-    return updatedSubject
+    const { subject } = response.data;
+    return subject;
   } catch (error) {
     console.error("Error updating subject:", error);
     throw error;

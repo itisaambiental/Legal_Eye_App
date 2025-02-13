@@ -135,8 +135,9 @@ export default function LegalBasis() {
   const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
   const [fileError, setFileError] = useState(null);
-  const [checkboxInputError, setCheckboxInputError] = useState(null);
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [extractArticlesInputError, setExtractArticlesInputError] =
+    useState(null);
+  const [isExtracArticlesChecked, setIsExtracArticlesChecked] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -496,8 +497,8 @@ export default function LegalBasis() {
     clearAspects();
     setLastReformInputError(null);
     setFileError(null);
-    setCheckboxInputError(null);
-    setIsCheckboxChecked(false);
+    setExtractArticlesInputError(null);
+    setIsExtracArticlesChecked(false);
   };
 
   const openEditModal = (legalBase) => {
@@ -523,8 +524,8 @@ export default function LegalBasis() {
     clearAspects();
     setLastReformInputError(null);
     setFileError(null);
-    setCheckboxInputError(null);
-    setIsCheckboxChecked(false);
+    setExtractArticlesInputError(null);
+    setIsExtracArticlesChecked(false);
   };
 
   const handleNameChange = useCallback(
@@ -800,7 +801,7 @@ export default function LegalBasis() {
             previewUrl: fileUrl,
           },
         }));
-        setCheckboxInputError(null);
+        setExtractArticlesInputError(null);
       } else {
         setFileError(
           "Solo se permiten documentos en formatos PDF, PNG y JPEG."
@@ -811,7 +812,11 @@ export default function LegalBasis() {
         }));
       }
     },
-    [setFormData, setFileError]
+    [
+      setFormData,
+      setFileError,
+      setExtractArticlesInputError,
+    ]
   );
 
   const handleRemoveDocument = () => {
@@ -819,19 +824,22 @@ export default function LegalBasis() {
       ...prevFormData,
       document: null,
     }));
+    setIsExtracArticlesChecked(false)
+    setExtractArticlesInputError(null)
     setFileError(null);
   };
 
-  const handleCheckboxChange = useCallback(
+
+  const handleExtractArticlesChange = useCallback(
     (isChecked) => {
-      setIsCheckboxChecked(isChecked);
+      setIsExtracArticlesChecked(isChecked);
       setFormData((prevFormData) => ({
         ...prevFormData,
         extractArticles: isChecked,
       }));
-      setCheckboxInputError(null);
+      setExtractArticlesInputError(null);
     },
-    [setIsCheckboxChecked, setFormData, setCheckboxInputError]
+    [setIsExtracArticlesChecked, setFormData, setExtractArticlesInputError]
   );
 
   const totalPages = useMemo(
@@ -1195,10 +1203,10 @@ export default function LegalBasis() {
               handleFileChange: handleFileChange,
               fileError: fileError,
               handleRemoveDocument: handleRemoveDocument,
-              checkboxInputError: checkboxInputError,
-              setCheckboxInputError: setCheckboxInputError,
-              isCheckboxChecked: isCheckboxChecked,
-              handleCheckboxChange: handleCheckboxChange,
+              extractArticlesInputError: extractArticlesInputError,
+              setExtractArticlesInputError: setExtractArticlesInputError,
+              isExtracArticlesChecked: isExtracArticlesChecked,
+              handleExtractArticlesChange: handleExtractArticlesChange,
             }}
           />
         )}
@@ -1254,10 +1262,10 @@ export default function LegalBasis() {
               handleFileChange: handleFileChange,
               fileError: fileError,
               handleRemoveDocument: handleRemoveDocument,
-              checkboxInputError: checkboxInputError,
-              setCheckboxInputError: setCheckboxInputError,
-              isCheckboxChecked: isCheckboxChecked,
-              handleCheckboxChange: handleCheckboxChange,
+              extractArticlesInputError: extractArticlesInputError,
+              setExtractArticlesInputError: setExtractArticlesInputError,
+              isExtracArticlesChecked: isExtracArticlesChecked,
+              handleExtractArticlesChange: handleExtractArticlesChange,
               setIsStateActive: setIsStateActive,
               setIsMunicipalityActive: setIsMunicipalityActive,
               setIsAspectsActive: setIsAspectsActive,

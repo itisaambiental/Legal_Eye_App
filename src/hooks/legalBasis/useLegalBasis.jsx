@@ -103,6 +103,17 @@ export default function useLegalBasis() {
    * @async
    * @function addLegalBasis
    * @param {Object} params - The data to create a new legal basis.
+   * @param {string} params.legalName - The name of the legal basis.
+   * @param {string} params.abbreviation - The abbreviation of the legal basis.
+   * @param {string} params.subjectId - The ID of the subject linked to the legal basis.
+   * @param {Array<string>} params.aspectsIds - An array of aspect IDs linked to the legal basis.
+   * @param {string} params.classification - The classification of the legal basis.
+   * @param {string} params.jurisdiction - The jurisdiction of the legal basis (e.g., "Federal", "State").
+   * @param {string} [params.state] - The state associated with the legal basis (optional).
+   * @param {string} [params.municipality] - The municipality associated with the legal basis (optional).
+   * @param {string} [params.lastReform] - The last reform date of the legal basis.
+   * @param {boolean} [params.extractArticles=false] - Whether to extract articles from the document.
+   * @param {File|null} [params.document=null] - A file representing the document (optional).
    * @returns {Object} - Result of the creation process including success status and any errors.
    */
   const addLegalBasis = useCallback(
@@ -147,12 +158,12 @@ export default function useLegalBasis() {
           error: serverMessage,
           httpError: clientMessage,
         });
-
         return { success: false, error: handledError.message };
       }
     },
     [jwt, fetchClassifications, fetchJurisdictions]
   );
+
   /**
    * Fetches the complete list of LegalBasis.
    * @async
@@ -544,7 +555,20 @@ export default function useLegalBasis() {
    * Updates an existing Legal Basis by ID.
    * @async
    * @function modifyLegalBasis
-   * @param {Object} params - The data to update an existing Legal Base
+   * @param {Object} params - The data to update an existing Legal Base.
+   * @param {string} params.id - The ID of the legal basis to update.
+   * @param {string} [params.legalName] - The new legal name (optional).
+   * @param {string} [params.abbreviation] - The new abbreviation (optional).
+   * @param {string} [params.subjectId] - The new subject ID (optional).
+   * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
+   * @param {string} [params.classification] - The new classification (optional).
+   * @param {string} [params.jurisdiction] - The new jurisdiction (optional).
+   * @param {string} [params.state] - The new state (optional).
+   * @param {string} [params.municipality] - The new municipality (optional).
+   * @param {string} [params.lastReform] - The last reform date (optional).
+   * @param {boolean} [params.extractArticles] - Whether to extract articles from the document.
+   * @param {boolean} [params.removeDocument] - Flag to indicate whether to remove the document (optional).
+   * @param {File|null} [params.document] - The new document file (optional).
    * @returns {Promise<Object>} - Result of the operation with success status and updated Legal Base or error message.
    * @throws {Object} - Returns an error message if the update fails.
    */

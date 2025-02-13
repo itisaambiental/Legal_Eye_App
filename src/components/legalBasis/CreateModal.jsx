@@ -5,7 +5,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  DatePicker, 
+  DatePicker,
   Select,
   SelectItem,
   Autocomplete,
@@ -79,10 +79,10 @@ import Progress from "./progress/Progress.jsx";
  * @param {Function} props.config.handleFileChange - Function to handle file uploads.
  * @param {string|null} props.config.fileError - Error message for the file upload field.
  * @param {Function} props.config.handleRemoveDocument - Function to handle document removal.
- * @param {string|null} props.config.checkboxInputError - Error message for the "Extract Articles" checkbox.
- * @param {Function} props.config.setCheckboxInputError - Function to set the checkbox error message.
- * @param {boolean} props.config.isCheckboxChecked - Indicates if the "Extract Articles" checkbox is checked.
- * @param {Function} props.config.handleCheckboxChange - Function to handle changes in the checkbox.
+ * @param {string|null} props.config.extractArticlesInputError - Error message for the "Extract Articles" checkbox.
+ * @param {Function} props.config.setExtractArticlesInputError - Function to set the "Extract Articles" checkbox. error message.
+ * @param {boolean} props.config.isExtracArticlesChecked - Indicates if the "Extract Articles" checkbox is checked.
+ * @param {Function} props.config.handleExtractArticlesChange - Function to handle changes in the "Extract Articles" checkbox.
  *
  * @returns {JSX.Element} - Rendered CreateModal component.
  */
@@ -136,10 +136,10 @@ const CreateModal = ({ config }) => {
     handleFileChange,
     fileError,
     handleRemoveDocument,
-    checkboxInputError,
-    setCheckboxInputError,
-    isCheckboxChecked,
-    handleCheckboxChange,
+    extractArticlesInputError,
+    setExtractArticlesInputError,
+    isExtracArticlesChecked,
+    handleExtractArticlesChange,
   } = config;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -292,14 +292,14 @@ const CreateModal = ({ config }) => {
     } else {
       setLastReformError(null);
     }
-    if (isCheckboxChecked && !formData.document) {
-      setCheckboxInputError(
+    if (isExtracArticlesChecked && !formData.document) {
+      setExtractArticlesInputError(
         "Debes cargar un documento si seleccionas 'Extraer Articulos'."
       );
       setIsLoading(false);
       return;
     } else {
-      setCheckboxInputError(null);
+      setExtractArticlesInputError(null);
     }
 
     try {
@@ -338,7 +338,9 @@ const CreateModal = ({ config }) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Algo mal sucedió al registrar el fundamento. Intente de nuevo.");
+      toast.error(
+        "Algo mal sucedió al registrar el fundamento. Intente de nuevo."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -704,30 +706,32 @@ const CreateModal = ({ config }) => {
                 <div className="w-full mt-2 mb-3 flex items-start">
                   <Checkbox
                     size="md"
-                    isSelected={isCheckboxChecked}
+                    isSelected={isExtracArticlesChecked}
                     onValueChange={(isChecked) =>
-                      handleCheckboxChange(isChecked)
+                      handleExtractArticlesChange(isChecked)
                     }
                   >
                     Extraer Articulos
                   </Checkbox>
                 </div>
-                {checkboxInputError && (
-                  <p className="mb-2 text-sm text-red">{checkboxInputError}</p>
+                {extractArticlesInputError && (
+                  <p className="mb-2 text-sm text-red">
+                    {extractArticlesInputError}
+                  </p>
                 )}
                 <div>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isLoading}
-                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                >
-                  {isLoading ? (
-                    <Spinner size="sm" color="white" />
-                  ) : (
-                    "Registrar Fundamento"
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    disabled={isLoading}
+                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                  >
+                    {isLoading ? (
+                      <Spinner size="sm" color="white" />
+                    ) : (
+                      "Registrar Fundamento"
+                    )}
+                  </Button>
                 </div>
               </form>
             </ModalBody>
@@ -787,10 +791,10 @@ CreateModal.propTypes = {
     handleFileChange: PropTypes.func.isRequired,
     fileError: PropTypes.string,
     handleRemoveDocument: PropTypes.func.isRequired,
-    checkboxInputError: PropTypes.string,
-    setCheckboxInputError: PropTypes.func.isRequired,
-    isCheckboxChecked: PropTypes.bool.isRequired,
-    handleCheckboxChange: PropTypes.func.isRequired,
+    extractArticlesInputError: PropTypes.string,
+    setExtractArticlesInputError: PropTypes.func.isRequired,
+    isExtracArticlesChecked: PropTypes.bool.isRequired,
+    handleExtractArticlesChange: PropTypes.func.isRequired,
   }).isRequired,
 };
 

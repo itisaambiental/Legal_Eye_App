@@ -261,7 +261,7 @@ function CreateModal({ config }) {
                             type="file"
                             name="profile_picture"
                             id="profile_picture"
-                            accept=".png, .jpg, .jpeg, .webp"
+                            accept=".png, .jpeg, .webp"
                             ref={inputFileRef}
                             onChange={handleFileChange}
                             className="hidden"
@@ -286,7 +286,7 @@ function CreateModal({ config }) {
                         type="file"
                         name="profile_picture"
                         id="profile_picture"
-                        accept=".png, .jpg, .jpeg, .webp"
+                        accept=".png,.jpeg"
                         ref={inputFileRef}
                         onChange={handleFileChange}
                         className="hidden"

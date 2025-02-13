@@ -17,7 +17,7 @@ import server from "../../config/server.js";
  * @param {string} [params.state] - The new state (optional).
  * @param {string} [params.municipality] - The new municipality (optional).
  * @param {string} [params.lastReform] - The last reform date (optional).
- * @param {string} [params.extractArticles] - The new extracted articles (optional).
+ * @param {boolean} [params.extractArticles=false] - Whether to extract articles from the document.
  * @param {boolean} [params.removeDocument] - Flag to indicate whether to remove the document (optional).
  * @param {File} [params.document] - The new document file (optional).
  * @param {string} params.token - The authorization token for the request.
@@ -56,7 +56,7 @@ export default async function updateLegalBasis({
     formData.append("extractArticles", String(extractArticles));
     if (document) formData.append("document", document);
     if (removeDocument !== undefined)
-      formData.append("removeDocument", removeDocument);
+      formData.append("removeDocument", String(removeDocument));
 
     const response = await server.patch(`/legalBasis/${id}`, formData, {
       headers: {

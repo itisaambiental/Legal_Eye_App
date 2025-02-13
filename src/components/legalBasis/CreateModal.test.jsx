@@ -56,10 +56,10 @@ describe("CreateModal Component for Legal Basis", () => {
       handleFileChange: vi.fn(),
       fileError: null,
       handleRemoveDocument: vi.fn(),
-      checkboxInputError: null,
-      setCheckboxInputError: vi.fn(),
-      isCheckboxChecked: false,
-      handleCheckboxChange: vi.fn(),
+      extractArticlesInputError: null,
+      setExtractArticlesInputError: vi.fn(),
+      isExtracArticlesChecked: false,
+      handleExtractArticlesChange: vi.fn(),
       formData: {
         name: "",
         abbreviation: "",
@@ -191,6 +191,6 @@ describe("CreateModal Component for Legal Basis", () => {
     render(<CreateModal config={config} />);
     const checkbox = screen.getByText("Extraer Articulos");
     fireEvent.click(checkbox);
-    expect(config.handleCheckboxChange).toHaveBeenCalled();
+    expect(config.handleExtractArticlesChange).toHaveBeenCalled();
   });
 });

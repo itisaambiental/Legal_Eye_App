@@ -71,7 +71,7 @@ export class ExtractArticlesErrors {
     [ExtractArticlesErrors.ARTICLE_PROCESSING_ERROR]: {
       title: "Error al procesar los artículos",
       message:
-        "No se pudieron extraer los artículos del documento. Verifique el documento proporcionado e intente nuevamente.",
+        "No se pudieron extraer los artículos del documento. Verifique el documento o comuníquese con los administradores del sistema e inténte nuevamente",
     },
     [ExtractArticlesErrors.FAILED_TO_INSERT_ARTICLES]: {
       title: "Error al guardar los artículos",

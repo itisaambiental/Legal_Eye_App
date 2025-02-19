@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../../../assets/logo.png";
 

@@ -17,9 +17,9 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@nextui-org/dropdown";
+} from "@heroui/react";
 import logout_icon from "../assets/salida.png";
-import { User } from "@nextui-org/react";
+import { User } from "@heroui/react";
 
 /**
  * Dashboard component

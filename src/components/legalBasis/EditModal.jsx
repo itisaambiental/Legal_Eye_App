@@ -18,7 +18,7 @@ import {
   Alert,
   Radio,
   RadioGroup,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
 import { parseDate } from "@internationalized/date";

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, Pagination } from "@nextui-org/react";
+import { Button, Pagination } from "@heroui/react";
 import { useMemo } from "react";
 
 /**

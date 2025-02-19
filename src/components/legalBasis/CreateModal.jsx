@@ -17,7 +17,7 @@ import {
   Button,
   RadioGroup,
   Radio,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
 import check from "../../assets/check.png";

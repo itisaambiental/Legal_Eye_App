@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-import { nextui } from "@nextui-org/react";
+import { heroui } from "@heroui/react";
 
 export default {
   content: [
     "./src/**/*.{js,ts,tsx,jsx,css}", 
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
     'node_modules/flowbite-react/lib/esm/**/*.js',
     'node_modules/preline/dist/*.js',
   ],
@@ -21,6 +21,6 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [nextui(), 'flowbite/plugin', 'preline/plugin'],
+  plugins: [heroui(), 'flowbite/plugin', 'preline/plugin'],
 }
 

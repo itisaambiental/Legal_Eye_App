@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../context/userContext.jsx";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 
 /**
  * Component that restricts access to routes for admin users only.

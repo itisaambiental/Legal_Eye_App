@@ -6,7 +6,7 @@ import {
   Button,
   DropdownTrigger,
   DropdownMenu,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import menu_icon from "../../assets/aplicaciones.png";
 import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";

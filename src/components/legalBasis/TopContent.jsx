@@ -8,7 +8,7 @@ import {
   SelectItem,
   Tooltip,
   DateRangePicker,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";
 import { I18nProvider } from "@react-aria/i18n";

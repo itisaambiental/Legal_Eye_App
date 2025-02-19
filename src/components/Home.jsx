@@ -1,8 +1,8 @@
 import useUserProfile from "../hooks/user/useUserProfile.jsx";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import Error from "./utils/Error.jsx";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 import search_icon from "../assets/busqueda_blue.png";
 import time_icon from "../assets/time.png";
 import play_icon from "../assets/play.png";

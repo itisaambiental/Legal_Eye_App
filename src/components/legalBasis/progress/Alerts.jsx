@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Alert, Button } from "@nextui-org/react";
+import { Alert, Button } from "@heroui/react";
 import {
   ExtractArticlesErrors,
   ExtractArticlesStatus,

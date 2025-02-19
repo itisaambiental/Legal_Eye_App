@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Button,
   Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { toast } from "react-toastify";
 
 /**

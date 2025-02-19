@@ -17,7 +17,7 @@ import {
   Image,
   Button,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState, Fragment, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import check from "../../assets/check.png";

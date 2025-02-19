@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";
 

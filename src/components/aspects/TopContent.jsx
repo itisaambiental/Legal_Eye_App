@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Input, Button, ScrollShadow } from "@nextui-org/react";
+import { Input, Button, ScrollShadow } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import search_icon from "../../assets/busqueda_blue.png";
 import mas_icon from "../../assets/mas.png";

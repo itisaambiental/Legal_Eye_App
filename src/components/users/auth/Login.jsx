@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import useAuth from "../../../hooks/user/auth/useAuth.jsx";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo.png";
 import eye from "../../../assets/ojo.png";

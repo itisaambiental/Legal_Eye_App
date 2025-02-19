@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import search_icon from "../../assets/busqueda_blue.png";
 import angulo_abajo_icon from "../../assets/angulo_abajo.png";
 import mas_icon from "../../assets/mas.png";

@@ -8,7 +8,7 @@ import {
   CardFooter,
   Button,
   Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Alerts from "./Alerts.jsx";
 import { ExtractArticlesErrors } from "../../../errors/articles/ExtractArticles.js";
 import useExtractArticles from "../../../hooks/articles/extractArticles/useExtractArticles.jsx";

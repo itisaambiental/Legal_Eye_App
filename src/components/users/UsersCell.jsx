@@ -7,7 +7,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   User,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import defaultAvatar from "../../assets/usuario.png";
 import menu_icon from "../../assets/aplicaciones.png";
 import edit_user from "../../assets/editar_usuario.png";

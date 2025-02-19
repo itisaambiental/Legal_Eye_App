@@ -7,7 +7,7 @@ import {
   Button,
   ScrollShadow,
   Divider,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import PropTypes from "prop-types";
 import DOMPurify from "dompurify";
 

@@ -19,7 +19,7 @@ import {
   Image,
   Button,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import check from "../../assets/check.png";
 import chevron_icon from "../../assets/chevron.png";
 import cruz_icon from "../../assets/cruz.png";

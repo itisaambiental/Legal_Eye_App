@@ -1,5 +1,5 @@
 import { ToastContainer } from "react-toastify"
-import { NextUIProvider } from "@nextui-org/react"
+import { HeroUIProvider } from "@heroui/react"
 import { UserContextProvider } from './context/userContext.jsx'
 import AppRoutes from './App.routes'
 import "react-toastify/dist/ReactToastify.css"
@@ -13,12 +13,12 @@ import "react-toastify/dist/ReactToastify.css"
  */
 function App() {
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
       <UserContextProvider>
         <ToastContainer />
         <AppRoutes />
       </UserContextProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   )
 }
 

@@ -8,7 +8,7 @@ import {
   ModalBody,
   Spinner,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import TextArea from "./TextArea/TextArea.jsx";
 import check from "../../assets/check.png";
 

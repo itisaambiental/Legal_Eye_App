@@ -9,7 +9,7 @@ import {
   TableCell,
   Spinner,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import TopContent from "./TopContent.jsx";
 import DeleteModal from "./deleteModal.jsx";

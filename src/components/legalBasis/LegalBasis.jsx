@@ -9,7 +9,7 @@ import {
   Spinner,
   Button,
   Tooltip,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";

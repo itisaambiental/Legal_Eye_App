@@ -10,7 +10,7 @@ import {
   TableCell,
   Spinner,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import useArticles from "../../hooks/articles/useArticles.jsx";
 import useLegalBasis from "../../hooks/legalBasis/useLegalBasis.jsx";
 import ArticleCell from "./ArticleCell.jsx";

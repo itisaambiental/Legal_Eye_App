@@ -751,8 +751,18 @@ const CreateModal = ({ config }) => {
                         value={formData.intelligenceLevel}
                         onValueChange={handleIntelligenceLevelChange}
                       >
-                        <Radio value="Low">Bajo</Radio>
-                        <Radio value="High">Alto</Radio>
+                        <Radio
+                          description="Inteligencia baja: más rápida, pero menos precisa."
+                          value="Low"
+                        >
+                          Bajo
+                        </Radio>
+                        <Radio
+                          description="Inteligencia alta: más lenta, pero más precisa."
+                          value="High"
+                        >
+                          Alto
+                        </Radio>
                       </RadioGroup>
                       {intelligenceLevelInputError && (
                         <p className="mt-1 text-sm text-red">
@@ -762,6 +772,7 @@ const CreateModal = ({ config }) => {
                     </div>
                   </div>
                 )}
+
                 <div>
                   <Button
                     type="submit"

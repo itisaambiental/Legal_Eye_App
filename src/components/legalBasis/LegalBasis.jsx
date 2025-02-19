@@ -138,6 +138,8 @@ export default function LegalBasis() {
   const [extractArticlesInputError, setExtractArticlesInputError] =
     useState(null);
   const [isExtracArticlesChecked, setIsExtracArticlesChecked] = useState(false);
+  const [intelligenceLevelInputError, setIntelligenceLevelInputError] =
+    useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -156,6 +158,7 @@ export default function LegalBasis() {
     lastReform: null,
     document: null,
     extractArticles: false,
+    intelligenceLevel: "",
     removeDocument: false,
   });
 
@@ -475,6 +478,7 @@ export default function LegalBasis() {
       lastReform: null,
       document: null,
       extractArticles: false,
+      intelligenceLevel: "",
       removeDocument: false,
     });
     setIsCreateModalOpen(true);
@@ -499,6 +503,7 @@ export default function LegalBasis() {
     setFileError(null);
     setExtractArticlesInputError(null);
     setIsExtracArticlesChecked(false);
+    setIntelligenceLevelInputError(null);
   };
 
   const openEditModal = (legalBase) => {
@@ -526,6 +531,7 @@ export default function LegalBasis() {
     setFileError(null);
     setExtractArticlesInputError(null);
     setIsExtracArticlesChecked(false);
+    setIntelligenceLevelInputError(null);
   };
 
   const handleNameChange = useCallback(
@@ -812,11 +818,7 @@ export default function LegalBasis() {
         }));
       }
     },
-    [
-      setFormData,
-      setFileError,
-      setExtractArticlesInputError,
-    ]
+    [setFormData, setFileError, setExtractArticlesInputError]
   );
 
   const handleRemoveDocument = () => {
@@ -824,11 +826,10 @@ export default function LegalBasis() {
       ...prevFormData,
       document: null,
     }));
-    setIsExtracArticlesChecked(false)
-    setExtractArticlesInputError(null)
+    setIsExtracArticlesChecked(false);
+    setExtractArticlesInputError(null);
     setFileError(null);
   };
-
 
   const handleExtractArticlesChange = useCallback(
     (isChecked) => {
@@ -836,10 +837,25 @@ export default function LegalBasis() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         extractArticles: isChecked,
+        intelligenceLevel: "",
       }));
       setExtractArticlesInputError(null);
+      setIntelligenceLevelInputError(null);
     },
     [setIsExtracArticlesChecked, setFormData, setExtractArticlesInputError]
+  );
+
+  const handleIntelligenceLevelChange = useCallback(
+    (value) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        intelligenceLevel: value,
+      }));
+      if (intelligenceLevelInputError && value.trim() !== "") {
+        setIntelligenceLevelInputError(null);
+      }
+    },
+    [intelligenceLevelInputError, setFormData, setIntelligenceLevelInputError]
   );
 
   const totalPages = useMemo(
@@ -1207,6 +1223,9 @@ export default function LegalBasis() {
               setExtractArticlesInputError: setExtractArticlesInputError,
               isExtracArticlesChecked: isExtracArticlesChecked,
               handleExtractArticlesChange: handleExtractArticlesChange,
+              intelligenceLevelInputError: intelligenceLevelInputError,
+              setIntelligenceLevelInputError: setIntelligenceLevelInputError,
+              handleIntelligenceLevelChange: handleIntelligenceLevelChange,
             }}
           />
         )}
@@ -1272,6 +1291,9 @@ export default function LegalBasis() {
               clearAspects: clearAspects,
               fetchMunicipalities: fetchMunicipalities,
               fetchAspects: fetchAspects,
+              intelligenceLevelInputError: intelligenceLevelInputError,
+              setIntelligenceLevelInputError: setIntelligenceLevelInputError,
+              handleIntelligenceLevelChange: handleIntelligenceLevelChange,
             }}
           />
         )}

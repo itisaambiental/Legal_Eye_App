@@ -15,8 +15,9 @@ import server from "../../config/server.js";
  * @param {string} params.jurisdiction - The jurisdiction of the legal basis (e.g., "Federal", "State").
  * @param {string} [params.state] - The state associated with the legal basis (optional).
  * @param {string} [params.municipality] - The municipality associated with the legal basis (optional).
- * @param {string} [params.lastReform] - The last reform date of the legal basis.
+ * @param {string} params.lastReform - The last reform date of the legal basis.
  * @param {boolean} [params.extractArticles=false] - Whether to extract articles from the document.
+ * @param {string} [params.intelligenceLevel] - Intelligence level ("High" or "Low") for article extraction.
  * @param {File|null} [params.document=null] - A file representing the document (optional).
  * @param {string} params.token - The authorization token for the request.
  *
@@ -34,6 +35,7 @@ export default async function createLegalBasis({
   municipality = null,
   lastReform,
   extractArticles = false,
+  intelligenceLevel,
   document = null,
   token,
 }) {
@@ -45,7 +47,7 @@ export default async function createLegalBasis({
     formData.append("aspectsIds", JSON.stringify(aspectsIds));
     formData.append("classification", classification);
     formData.append("jurisdiction", jurisdiction);
-    
+
     if (state) {
       formData.append("state", state);
     }
@@ -54,7 +56,9 @@ export default async function createLegalBasis({
     }
     formData.append("lastReform", lastReform);
     formData.append("extractArticles", String(extractArticles));
-
+    if (intelligenceLevel) {
+      formData.append("intelligenceLevel", intelligenceLevel);
+    }
     if (document) {
       formData.append("document", document);
     }

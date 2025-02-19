@@ -16,6 +16,8 @@ import {
   Checkbox,
   Button,
   Alert,
+  Radio,
+  RadioGroup,
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
@@ -94,6 +96,9 @@ import useExtractArticles from "../../hooks/articles/extractArticles/useExtractA
  * @param {Function} props.config.clearAspects - Function to clear selected aspects.
  * @param {Function} props.config.fetchMunicipalities - Function to fetch municipalities for a state.
  * @param {Function} props.config.fetchAspects - Function to fetch aspects for a subject.
+ * @param {string|null} props.config.intelligenceLevelInputError - Error message for the "intelligenceLevel" field.
+ * @param {Function} props.config.setIntelligenceLevelInputError - Function to set the "intelligenceLevel" field error message.
+ * @param {Function} props.config.handleIntelligenceLevelChange - Function to handle changes in the "intelligenceLevel" field.
  */
 
 function EditModal({ config }) {
@@ -157,6 +162,9 @@ function EditModal({ config }) {
     clearAspects,
     fetchMunicipalities,
     fetchAspects,
+    intelligenceLevelInputError,
+    setIntelligenceLevelInputError,
+    handleIntelligenceLevelChange,
   } = config;
 
   const { legalBasisJobLoading, legalBasisJobError, fetchJobByLegalBasis } =
@@ -196,9 +204,9 @@ function EditModal({ config }) {
             : null,
         lastReform: formattedLastReform ? parseDate(formattedLastReform) : null,
         extractArticles: false,
+        intelligenceLevel: "",
         removeDocument: false,
       });
-
       switch (selectedLegalBase.jurisdiction) {
         case "Federal":
           setIsStateActive(false);
@@ -424,7 +432,15 @@ function EditModal({ config }) {
     } else {
       setExtractArticlesInputError(null);
     }
-
+    if (isExtracArticlesChecked && formData.intelligenceLevel.trim() === "") {
+      setIntelligenceLevelInputError(
+        'Este campo es obligatorio si se selecciona "Extraer Articulos"'
+      );
+      setIsLoading(false);
+      return;
+    } else {
+      setIntelligenceLevelInputError(null);
+    }
     try {
       const legalBasisData = {
         id: formData.id,
@@ -438,6 +454,7 @@ function EditModal({ config }) {
         municipality: formData.municipality,
         lastReform: formData.lastReform.toString(),
         extractArticles: formData.extractArticles,
+        intelligenceLevel: formData.intelligenceLevel,
         document:
           formData.document && formData.document.file instanceof File
             ? formData.document.file
@@ -867,33 +884,61 @@ function EditModal({ config }) {
                     </div>
                   )}
                 </div>
-                <div className="w-full mt-2 mb-3 flex items-start">
-                  <Checkbox
-                    size="md"
-                    isSelected={isExtracArticlesChecked}
-                    onValueChange={(isChecked) =>
-                      handleExtractArticlesChange(isChecked)
-                    }
-                  >
-                    Extraer Articulos
-                  </Checkbox>
+                <div className="w-full mt-2 mb-2 flex items-start">
+                  <div className="flex flex-col">
+                    <Checkbox
+                      size="md"
+                      isSelected={isExtracArticlesChecked}
+                      onValueChange={(isChecked) =>
+                        handleExtractArticlesChange(isChecked)
+                      }
+                    >
+                      <span className="text-md text-black">
+                        Extraer Articulos
+                      </span>
+                    </Checkbox>
+                    {extractArticlesInputError && (
+                      <p className="mt-1 text-sm text-red">
+                        {extractArticlesInputError}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {extractArticlesInputError && (
-                  <p className="mb-2 text-sm text-red">{extractArticlesInputError}</p>
+                {isExtracArticlesChecked && (
+                  <div className="w-full mt-2 mb-4 flex items-start">
+                    <div className="flex flex-col">
+                      <RadioGroup
+                        classNames={{ label: "text-md text-black" }}
+                        size="md"
+                        orientation="horizontal"
+                        label="Nivel de Inteligencia:"
+                        value={formData.intelligenceLevel}
+                        onValueChange={handleIntelligenceLevelChange}
+                      >
+                        <Radio value="Low">Bajo</Radio>
+                        <Radio value="High">Alto</Radio>
+                      </RadioGroup>
+                      {intelligenceLevelInputError && (
+                        <p className="mt-1 text-sm text-red">
+                          {intelligenceLevelInputError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
                 <div>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isLoading}
-                  className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
-                >
-                  {isLoading ? (
-                    <Spinner size="sm" color="white" />
-                  ) : (
-                    "Editar Fundamento"
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    disabled={isLoading}
+                    className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
+                  >
+                    {isLoading ? (
+                      <Spinner size="sm" color="white" />
+                    ) : (
+                      "Editar Fundamento"
+                    )}
+                  </Button>
                 </div>
               </form>
             </ModalBody>
@@ -965,6 +1010,9 @@ EditModal.propTypes = {
     clearAspects: PropTypes.func.isRequired,
     fetchMunicipalities: PropTypes.func.isRequired,
     fetchAspects: PropTypes.func.isRequired,
+    intelligenceLevelInputError: PropTypes.string,
+    setIntelligenceLevelInputError: PropTypes.func.isRequired,
+    handleIntelligenceLevelChange: PropTypes.func.isRequired,
   }).isRequired,
 };
 

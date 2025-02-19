@@ -15,6 +15,8 @@ import {
   Link,
   Checkbox,
   Button,
+  RadioGroup,
+  Radio,
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 import { I18nProvider } from "@react-aria/i18n";
@@ -83,6 +85,9 @@ import Progress from "./progress/Progress.jsx";
  * @param {Function} props.config.setExtractArticlesInputError - Function to set the "Extract Articles" checkbox. error message.
  * @param {boolean} props.config.isExtracArticlesChecked - Indicates if the "Extract Articles" checkbox is checked.
  * @param {Function} props.config.handleExtractArticlesChange - Function to handle changes in the "Extract Articles" checkbox.
+ * @param {string|null} props.config.intelligenceLevelInputError - Error message for the "intelligenceLevel" field.
+ * @param {Function} props.config.setIntelligenceLevelInputError - Function to set the "intelligenceLevel" field error message.
+ * @param {Function} props.config.handleIntelligenceLevelChange - Function to handle changes in the "intelligenceLevel" field.
  *
  * @returns {JSX.Element} - Rendered CreateModal component.
  */
@@ -140,6 +145,9 @@ const CreateModal = ({ config }) => {
     setExtractArticlesInputError,
     isExtracArticlesChecked,
     handleExtractArticlesChange,
+    intelligenceLevelInputError,
+    setIntelligenceLevelInputError,
+    handleIntelligenceLevelChange,
   } = config;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -301,7 +309,15 @@ const CreateModal = ({ config }) => {
     } else {
       setExtractArticlesInputError(null);
     }
-
+    if (isExtracArticlesChecked && formData.intelligenceLevel.trim() === "") {
+      setIntelligenceLevelInputError(
+        'Este campo es obligatorio si se selecciona "Extraer Articulos"'
+      );
+      setIsLoading(false);
+      return;
+    } else {
+      setIntelligenceLevelInputError(null);
+    }
     try {
       const legalBasisData = {
         legalName: formData.name,
@@ -314,6 +330,7 @@ const CreateModal = ({ config }) => {
         municipality: formData.municipality,
         lastReform: formData.lastReform.toString(),
         extractArticles: formData.extractArticles,
+        intelligenceLevel: formData.intelligenceLevel,
         ...(formData.document && { document: formData.document.file }),
       };
       const { success, error, jobId, legalBasis } = await addLegalBasis(
@@ -703,21 +720,47 @@ const CreateModal = ({ config }) => {
                     </div>
                   )}
                 </div>
-                <div className="w-full mt-2 mb-3 flex items-start">
-                  <Checkbox
-                    size="md"
-                    isSelected={isExtracArticlesChecked}
-                    onValueChange={(isChecked) =>
-                      handleExtractArticlesChange(isChecked)
-                    }
-                  >
-                    Extraer Articulos
-                  </Checkbox>
+                <div className="w-full mt-2 mb-2 flex items-start">
+                  <div className="flex flex-col">
+                    <Checkbox
+                      size="md"
+                      isSelected={isExtracArticlesChecked}
+                      onValueChange={(isChecked) =>
+                        handleExtractArticlesChange(isChecked)
+                      }
+                    >
+                      <span className="text-md text-black">
+                        Extraer Articulos
+                      </span>
+                    </Checkbox>
+                    {extractArticlesInputError && (
+                      <p className="mt-1 text-sm text-red">
+                        {extractArticlesInputError}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                {extractArticlesInputError && (
-                  <p className="mb-2 text-sm text-red">
-                    {extractArticlesInputError}
-                  </p>
+                {isExtracArticlesChecked && (
+                  <div className="w-full mt-2 mb-4 flex items-start">
+                    <div className="flex flex-col">
+                      <RadioGroup
+                        classNames={{ label: "text-md text-black" }}
+                        size="md"
+                        orientation="horizontal"
+                        label="Nivel de Inteligencia:"
+                        value={formData.intelligenceLevel}
+                        onValueChange={handleIntelligenceLevelChange}
+                      >
+                        <Radio value="Low">Bajo</Radio>
+                        <Radio value="High">Alto</Radio>
+                      </RadioGroup>
+                      {intelligenceLevelInputError && (
+                        <p className="mt-1 text-sm text-red">
+                          {intelligenceLevelInputError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
                 <div>
                   <Button
@@ -795,6 +838,9 @@ CreateModal.propTypes = {
     setExtractArticlesInputError: PropTypes.func.isRequired,
     isExtracArticlesChecked: PropTypes.bool.isRequired,
     handleExtractArticlesChange: PropTypes.func.isRequired,
+    intelligenceLevelInputError: PropTypes.string,
+    setIntelligenceLevelInputError: PropTypes.func.isRequired,
+    handleIntelligenceLevelChange: PropTypes.func.isRequired,
   }).isRequired,
 };
 

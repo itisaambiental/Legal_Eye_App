@@ -18,11 +18,12 @@ import server from "../../config/server.js";
  * @param {string} [params.municipality] - The new municipality (optional).
  * @param {string} [params.lastReform] - The last reform date (optional).
  * @param {boolean} [params.extractArticles=false] - Whether to extract articles from the document.
+ * @param {string} [params.intelligenceLevel] - Intelligence level ("High" or "Low") for article extraction.
  * @param {boolean} [params.removeDocument] - Flag to indicate whether to remove the document (optional).
  * @param {File} [params.document] - The new document file (optional).
  * @param {string} params.token - The authorization token for the request.
  *
- * @returns {Promise<{ jobId?: string, legalBasis: Array<Object> }>}  An object containing the jobId and updated legal basis data.
+ * @returns {Promise<{ jobId?: string, legalBasis: Array<Object> }>} An object containing the jobId and updated legal basis data.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
 export default async function updateLegalBasis({
@@ -37,6 +38,7 @@ export default async function updateLegalBasis({
   municipality = null,
   lastReform,
   extractArticles = false,
+  intelligenceLevel,
   removeDocument,
   document = null,
   token,
@@ -53,7 +55,8 @@ export default async function updateLegalBasis({
     if (state) formData.append("state", state);
     if (municipality) formData.append("municipality", municipality);
     if (lastReform) formData.append("lastReform", lastReform);
-    formData.append("extractArticles", String(extractArticles));
+    formData.append("extractArticles", String(extractArticles))
+    if (intelligenceLevel) formData.append("intelligenceLevel", intelligenceLevel);
     if (document) formData.append("document", document);
     if (removeDocument !== undefined)
       formData.append("removeDocument", String(removeDocument));

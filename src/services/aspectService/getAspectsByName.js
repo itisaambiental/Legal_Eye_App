@@ -1,4 +1,3 @@
-// src/server/aspectservice/getAspectsByName.js
 import server from "../../config/server.js";
 
 /**
@@ -15,7 +14,11 @@ import server from "../../config/server.js";
  * @returns {Promise<Array<Object>>} An array of aspects matching the criteria.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getAspectsByName({ subjectId, aspectName, token }) {
+export default async function getAspectsByName({
+  subjectId,
+  aspectName,
+  token,
+}) {
   try {
     const response = await server.get(`/subjects/${subjectId}/aspects/name`, {
       headers: {

@@ -15,7 +15,7 @@ import server from "../../config/server.js";
  */
 export default async function deleteArticles({ articleIds, token }) {
   try {
-    const response = await server.delete('/articles/batch', {
+    const response = await server.delete("/articles/batch", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

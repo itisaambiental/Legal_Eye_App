@@ -60,6 +60,9 @@ describe("CreateModal Component for Legal Basis", () => {
       setExtractArticlesInputError: vi.fn(),
       isExtracArticlesChecked: false,
       handleExtractArticlesChange: vi.fn(),
+      intelligenceLevelInputError: null,
+      setIntelligenceLevelInputError: vi.fn(),
+      handleIntelligenceLevelChange: vi.fn(),
       formData: {
         name: "",
         abbreviation: "",

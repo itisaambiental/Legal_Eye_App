@@ -20,6 +20,7 @@
     "@headlessui/react": "^2.1.9",
     "@heroui/react": "^2.7.2",
     "@react-aria/i18n": "^3.12.4",
+    "@tinymce/tinymce-react": "^5.1.1",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.3",
@@ -30,10 +31,10 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.3.1",
-    "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.2",
     "react-toastify": "^10.0.5",
-    "serve": "^14.2.3"
+    "serve": "^14.2.3",
+    "tinymce": "^7.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

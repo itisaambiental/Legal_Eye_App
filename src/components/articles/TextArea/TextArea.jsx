@@ -1,27 +1,7 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { Editor } from '@tinymce/tinymce-react';
-import { Spinner } from "@heroui/react";
 
 const API_KEY = import.meta.env.VITE_TINYMCE;
-
-const contentStyles = `
-  ::-webkit-scrollbar {
-    width: 4px;
-    background: #fff;
-  }
-  ::-webkit-scrollbar-track {
-    background: #fff;
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #113c53;
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #194c68;
-  }
-`;
 
 /**
  * TextArea Component
@@ -37,16 +17,8 @@ const contentStyles = `
  * @returns {JSX.Element} The rendered TextArea component.
  */
 function TextArea({ value, onChange, placeholder }) {
-  const [isLoading, setIsLoading] = useState(true);
-
   return (
     <div className="w-full">
-      {isLoading && (
-        <div className="mb-2 flex items-center justify-center">
-          <Spinner />
-          <span className="ml-2">Cargando Editor...</span>
-        </div>
-      )}
       <div className="overflow-auto border border-gray-300 rounded-md">
         <Editor
           apiKey={API_KEY}
@@ -73,10 +45,6 @@ function TextArea({ value, onChange, placeholder }) {
               'emoticons',     // Insert emoticons
             ],
             menubar: 'file edit view insert format tools table help',
-            content_style: contentStyles,
-            init_instance_callback: () => {
-              setIsLoading(false);
-            }
           }}
         />
       </div>

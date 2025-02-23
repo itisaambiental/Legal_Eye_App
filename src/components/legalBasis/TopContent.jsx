@@ -41,13 +41,9 @@ import { I18nProvider } from "@react-aria/i18n";
  * @param {Array<string>} props.config.selectedAspects - Selected aspects.
  * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {Function} props.config.onFilterByAspects - Callback for aspect filter changes.
- * @param {Array<Object>} props.config.classifications - List of classifications for filtering.
  * @param {string} props.config.selectedClassification - Selected classification.
- * @param {boolean} props.config.classificationsLoading - Indicates if classifications are loading.
  * @param {Function} props.config.onFilterByClassification - Callback for classification changes.
- * @param {Array<Object>} props.config.jurisdictions - List of jurisdictions for filtering.
  * @param {string} props.config.selectedJurisdiction - Selected jurisdiction.
- * @param {boolean} props.config.jurisdictionsLoading - Indicates if jurisdictions are loading.
  * @param {Function} props.config.onFilterByJurisdiction - Callback for jurisdiction changes.
  * @param {Array<string>} props.config.states - List of states for filtering.
  * @param {string} props.config.selectedState - Selected state.
@@ -84,13 +80,9 @@ function TopContent({ config }) {
     selectedAspects,
     aspectsLoading,
     onFilterByAspects,
-    classifications,
     selectedClassification,
-    classificationsLoading,
     onFilterByClassification,
-    jurisdictions,
     selectedJurisdiction,
-    jurisdictionsLoading,
     onFilterByJurisdiction,
     states,
     selectedState,
@@ -173,8 +165,6 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
-          defaultItems={classifications}
-          isLoading={classificationsLoading}
           onClear={onClear}
           placeholder="Buscar por clasificación..."
           startContent={
@@ -191,20 +181,18 @@ function TopContent({ config }) {
           }}
           onSelectionChange={onFilterByClassification}
         >
-          {(classification) => (
-            <AutocompleteItem
-              key={classification.classification_name}
-              value={classification.classification_name}
-            >
-              {classification.classification_name}
-            </AutocompleteItem>
-          )}
+          <AutocompleteItem key="Ley">Ley</AutocompleteItem>
+          <AutocompleteItem key="Reglamento">Reglamento</AutocompleteItem>
+          <AutocompleteItem key="Norma">Norma</AutocompleteItem>
+          <AutocompleteItem key="Acuerdos">Acuerdos</AutocompleteItem>
+          <AutocompleteItem key="Código">Código</AutocompleteItem>
+          <AutocompleteItem key="Decreto">Decreto</AutocompleteItem>
+          <AutocompleteItem key="Lineamiento">Lineamiento</AutocompleteItem>
+          <AutocompleteItem key="Aviso">Aviso</AutocompleteItem>
         </Autocomplete>
         <Autocomplete
           color="primary"
           variant="faded"
-          defaultItems={jurisdictions}
-          isLoading={jurisdictionsLoading}
           onClear={onClear}
           placeholder="Buscar por jurisdicción..."
           startContent={
@@ -221,14 +209,9 @@ function TopContent({ config }) {
           }}
           onSelectionChange={onFilterByJurisdiction}
         >
-          {(jurisdiction) => (
-            <AutocompleteItem
-              key={jurisdiction.jurisdiction_name}
-              value={jurisdiction.jurisdiction_name}
-            >
-              {jurisdiction.jurisdiction_name}
-            </AutocompleteItem>
-          )}
+          <AutocompleteItem key="Federal">Federal</AutocompleteItem>
+          <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
+          <AutocompleteItem key="Local">Local</AutocompleteItem>
         </Autocomplete>
         <Autocomplete
           color="primary"
@@ -292,9 +275,8 @@ function TopContent({ config }) {
               renderValue={(selected) =>
                 !selected || selected.length === 0
                   ? "Buscar por municipio..."
-                  : `${selected.length} municipio${
-                      selected.length > 1 ? "s" : ""
-                    } seleccionado${selected.length > 1 ? "s" : ""}`
+                  : `${selected.length} municipio${selected.length > 1 ? "s" : ""
+                  } seleccionado${selected.length > 1 ? "s" : ""}`
               }
             >
               {(municipio) => (
@@ -337,9 +319,8 @@ function TopContent({ config }) {
               renderValue={(selected) =>
                 !selected || selected.length === 0
                   ? "Buscar por aspecto..."
-                  : `${selected.length} aspecto${
-                      selected.length > 1 ? "s" : ""
-                    } seleccionado${selected.length > 1 ? "s" : ""}`
+                  : `${selected.length} aspecto${selected.length > 1 ? "s" : ""
+                  } seleccionado${selected.length > 1 ? "s" : ""}`
               }
             >
               {(aspect) => (
@@ -435,21 +416,9 @@ TopContent.propTypes = {
     selectedAspects: PropTypes.arrayOf(PropTypes.string),
     aspectsLoading: PropTypes.bool.isRequired,
     onFilterByAspects: PropTypes.func.isRequired,
-    classifications: PropTypes.arrayOf(
-      PropTypes.shape({
-        classification_name: PropTypes.string,
-      })
-    ).isRequired,
     selectedClassification: PropTypes.string,
-    classificationsLoading: PropTypes.bool.isRequired,
     onFilterByClassification: PropTypes.func.isRequired,
-    jurisdictions: PropTypes.arrayOf(
-      PropTypes.shape({
-        jurisdiction_name: PropTypes.string,
-      })
-    ).isRequired,
     selectedJurisdiction: PropTypes.string,
-    jurisdictionsLoading: PropTypes.bool.isRequired,
     onFilterByJurisdiction: PropTypes.func.isRequired,
     states: PropTypes.arrayOf(PropTypes.string).isRequired,
     selectedState: PropTypes.string,

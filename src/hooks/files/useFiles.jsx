@@ -22,6 +22,7 @@ export const useFiles = () => {
             const errorCode = error.response?.status;
             const serverMessage = error.response?.data?.message;
             const clientMessage = error.message;
+            console.log(errorCode, serverMessage, clientMessage);
             const handledError = FileErrors.handleError({
                 code: errorCode,
                 error: serverMessage,

@@ -12,8 +12,6 @@ import getLegalBasisByStateAndMunicipalities from "../../services/legalBaseServi
 import getLegalBasisBySubject from "../../services/legalBaseService/getLegalBasisBySubject";
 import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/getLegalBasisBySubjectAndAspects";
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
-import getClassifications from "../../services/legalBaseService/getClassifications";
-import getJurisdictions from "../../services/legalBaseService/getJurisdictions";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
@@ -29,74 +27,6 @@ export default function useLegalBasis() {
     loading: true,
     error: null,
   });
-  const [classifications, setClassifications] = useState([]);
-  const [stateClassifications, setStateClassifications] = useState({
-    loading: true,
-    error: null,
-  });
-  const [jurisdictions, setJurisdictions] = useState([]);
-  const [stateJurisdictions, setStateJurisdictions] = useState({
-    loading: true,
-    error: null,
-  });
-
-  /**
-   * Fetches the list of classifications.
-   * @async
-   * @function fetchClassifications
-   * @returns {Promise<void>} - Updates the classifications list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
-  const fetchClassifications = useCallback(async () => {
-    setStateClassifications({ loading: true, error: null });
-    try {
-      const classificationsData = await getClassifications({ token: jwt });
-      setClassifications(classificationsData);
-      setStateClassifications({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = LegalBasisErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateClassifications({
-        loading: false,
-        error: handledError,
-      });
-    }
-  }, [jwt]);
-
-  /**
-   * Fetches the list of jurisdictions.
-   * @async
-   * @function fetchJurisdictions
-   * @returns {Promise<void>} - Updates the jurisdictions list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
-  const fetchJurisdictions = useCallback(async () => {
-    setStateJurisdictions({ loading: true, error: null });
-    try {
-      const jurisdictionsData = await getJurisdictions({ token: jwt });
-      setJurisdictions(jurisdictionsData);
-      setStateJurisdictions({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = LegalBasisErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateJurisdictions({
-        loading: false,
-        error: handledError,
-      });
-    }
-  }, [jwt]);
 
   /**
    * Creates a new Legal Basis by sending the request with the provided data.
@@ -149,8 +79,6 @@ export default function useLegalBasis() {
           token: jwt,
         });
         setLegalBasis((prevLegalBasis) => [legalBasis, ...prevLegalBasis]);
-        fetchClassifications();
-        fetchJurisdictions();
         return { success: true, jobId, legalBasis };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -164,7 +92,7 @@ export default function useLegalBasis() {
         return { success: false, error: handledError.message };
       }
     },
-    [jwt, fetchClassifications, fetchJurisdictions]
+    [jwt]
   );
 
   /**
@@ -616,8 +544,6 @@ const modifyLegalBasis = useCallback(
           prevLegalBasis.id === legalBasis.id ? legalBasis : prevLegalBasis
         )
       );
-      fetchClassifications();
-      fetchJurisdictions();
       return { success: true, jobId, legalBasis };
     } catch (error) {
       const errorCode = error.response?.status;
@@ -632,7 +558,7 @@ const modifyLegalBasis = useCallback(
       return { success: false, error: handledError.message };
     }
   },
-  [jwt, fetchClassifications, fetchJurisdictions]
+  [jwt]
 );
 
   /**
@@ -650,8 +576,6 @@ const modifyLegalBasis = useCallback(
         setLegalBasis((prevLegalBasis) =>
           prevLegalBasis.filter((legalBasis) => legalBasis.id !== id)
         );
-        fetchClassifications();
-        fetchJurisdictions();
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -666,7 +590,7 @@ const modifyLegalBasis = useCallback(
         return { success: false, error: handledError.message };
       }
     },
-    [jwt, fetchClassifications, fetchJurisdictions]
+    [jwt]
   );
 
   /**
@@ -685,8 +609,6 @@ const modifyLegalBasis = useCallback(
             (legalBasis) => !legalBasisIds.includes(legalBasis.id)
           )
         );
-        fetchClassifications();
-        fetchJurisdictions();
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -706,25 +628,17 @@ const modifyLegalBasis = useCallback(
         return { success: false, error: handledError.message };
       }
     },
-    [jwt, fetchClassifications, fetchJurisdictions]
+    [jwt]
   );
 
   useEffect(() => {
     fetchLegalBasis();
-    fetchClassifications();
-    fetchJurisdictions();
-  }, [fetchLegalBasis, fetchClassifications, fetchJurisdictions]);
+  }, [fetchLegalBasis]);
 
   return {
     legalBasis,
     loading: stateLegalBasis.loading,
     error: stateLegalBasis.error,
-    classifications,
-    classificationsLoading: stateClassifications.loading,
-    classificationsError: stateClassifications.error,
-    jurisdictions,
-    jurisdictionsLoading: stateJurisdictions.loading,
-    jurisdictionsError: stateJurisdictions.error,
     addLegalBasis,
     fetchLegalBasis,
     fetchLegalBasisById,

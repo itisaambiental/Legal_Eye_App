@@ -25,11 +25,8 @@ const mockConfig = {
   onFilterByAspects: vi.fn(),
   classifications: [{ classification_name: "Classification 1" }],
   selectedClassification: "",
-  classificationsLoading: false,
   onFilterByClassification: vi.fn(),
-  jurisdictions: [{ jurisdiction_name: "Jurisdiction 1" }],
   selectedJurisdiction: "",
-  jurisdictionsLoading: false,
   onFilterByJurisdiction: vi.fn(),
   states: ["State 1"],
   selectedState: "",
@@ -65,50 +62,54 @@ describe("TopContent Component for Legal Basis", () => {
       expect.anything()
     );
   });
-   test('calls onFilterByName when name input changes', () => {
-        render(<TopContent config={mockConfig} />);
-        const nameInput = screen.getByPlaceholderText('Buscar por nombre...');
-        fireEvent.change(nameInput, { target: { value: 'Test Name' } });
-        expect(mockConfig.onFilterByName).toHaveBeenCalled();
-    });
+  test('calls onFilterByName when name input changes', () => {
+    render(<TopContent config={mockConfig} />);
+    const nameInput = screen.getByPlaceholderText('Buscar por nombre...');
+    fireEvent.change(nameInput, { target: { value: 'Test Name' } });
+    expect(mockConfig.onFilterByName).toHaveBeenCalled();
+  });
 
-    test('calls onFilterByAbbreviation when abbreviation input changes', () => {
-        render(<TopContent config={mockConfig} />);
-        const abbreviationInput = screen.getByPlaceholderText('Buscar por abreviatura...');
-        fireEvent.change(abbreviationInput, { target: { value: 'Test Abbreviation' } });
-        expect(mockConfig.onFilterByAbbreviation).toHaveBeenCalled();
-    });
-    test("calls onFilterBySubject when a subject is selected", async () => {
-        render(<TopContent config={mockConfig} />);
-        const subjectInput = screen.getByPlaceholderText("Buscar por materia...");
-        fireEvent.click(subjectInput);
-        fireEvent.keyDown(subjectInput, { key: "ArrowDown" }); 
-        fireEvent.keyDown(subjectInput, { key: "Enter" });
-        expect(mockConfig.onFilterBySubject).toHaveBeenCalledWith("1");
-    });
-    test("calls onFilterByClassification when classification is selected", async () => {
-        render(<TopContent config={mockConfig} />);
-        const classificationInput = screen.getByPlaceholderText("Buscar por clasificación...");
-        fireEvent.click(classificationInput);
-        fireEvent.keyDown(classificationInput, { key: "ArrowDown" });
-        fireEvent.keyDown(classificationInput, { key: "Enter" });
-        expect(mockConfig.onFilterByClassification).toHaveBeenCalledWith("Classification 1");
-    });
-    test("calls onFilterByJurisdiction when jurisdiction is selected", async () => {
-        render(<TopContent config={mockConfig} />);
-        const jurisdictionInput = screen.getByPlaceholderText("Buscar por jurisdicción...");
-        fireEvent.click(jurisdictionInput);
-        fireEvent.keyDown(jurisdictionInput, { key: "ArrowDown" });
-        fireEvent.keyDown(jurisdictionInput, { key: "Enter" });
-        expect(mockConfig.onFilterByJurisdiction).toHaveBeenCalledWith("Jurisdiction 1");
-    });
-    test("calls onFilterByState when state is selected", async () => {
-        render(<TopContent config={mockConfig} />);
-        const stateInput = screen.getByPlaceholderText("Buscar por estado...");
-        fireEvent.click(stateInput);
-        fireEvent.keyDown(stateInput, { key: "ArrowDown" });
-        fireEvent.keyDown(stateInput, { key: "Enter" });
-        expect(mockConfig.onFilterByState).toHaveBeenCalledWith("State 1");
-    });
-    
+  test('calls onFilterByAbbreviation when abbreviation input changes', () => {
+    render(<TopContent config={mockConfig} />);
+    const abbreviationInput = screen.getByPlaceholderText('Buscar por abreviatura...');
+    fireEvent.change(abbreviationInput, { target: { value: 'Test Abbreviation' } });
+    expect(mockConfig.onFilterByAbbreviation).toHaveBeenCalled();
+  });
+  test("calls onFilterBySubject when a subject is selected", async () => {
+    render(<TopContent config={mockConfig} />);
+    const subjectInput = screen.getByPlaceholderText("Buscar por materia...");
+    fireEvent.click(subjectInput);
+    fireEvent.keyDown(subjectInput, { key: "ArrowDown" });
+    fireEvent.keyDown(subjectInput, { key: "Enter" });
+    expect(mockConfig.onFilterBySubject).toHaveBeenCalledWith("1");
+  });
+  test("calls onFilterByClassification when classification is selected", async () => {
+    render(<TopContent config={mockConfig} />);
+    const classificationInput = screen.getByPlaceholderText("Buscar por clasificación...");
+    fireEvent.click(classificationInput);
+    fireEvent.keyDown(classificationInput, { key: "ArrowDown" }); 
+    fireEvent.keyDown(classificationInput, { key: "Enter" });
+
+    expect(mockConfig.onFilterByClassification).toHaveBeenCalledWith("Ley");
+  });
+
+  test("calls onFilterByJurisdiction when jurisdiction is selected", async () => {
+    render(<TopContent config={mockConfig} />);
+    const jurisdictionInput = screen.getByPlaceholderText("Buscar por jurisdicción...");
+    fireEvent.click(jurisdictionInput);
+    fireEvent.keyDown(jurisdictionInput, { key: "ArrowDown" }); 
+    fireEvent.keyDown(jurisdictionInput, { key: "Enter" });
+
+    expect(mockConfig.onFilterByJurisdiction).toHaveBeenCalledWith("Federal"); 
+  });
+
+  test("calls onFilterByState when state is selected", async () => {
+    render(<TopContent config={mockConfig} />);
+    const stateInput = screen.getByPlaceholderText("Buscar por estado...");
+    fireEvent.click(stateInput);
+    fireEvent.keyDown(stateInput, { key: "ArrowDown" });
+    fireEvent.keyDown(stateInput, { key: "Enter" });
+    expect(mockConfig.onFilterByState).toHaveBeenCalledWith("State 1");
+  });
+
 });

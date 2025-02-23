@@ -59,12 +59,6 @@ export default function LegalBasis() {
     legalBasis,
     loading,
     error,
-    classifications,
-    classificationsLoading,
-    classificationsError,
-    jurisdictions,
-    jurisdictionsLoading,
-    jurisdictionsError,
     addLegalBasis,
     fetchLegalBasis,
     fetchLegalBasisByName,
@@ -1003,20 +997,6 @@ export default function LegalBasis() {
     return <Error title={subjectError.title} message={subjectError.message} />;
   if (aspectError && !isCreateModalOpen && !isEditModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
-  if (classificationsError)
-    return (
-      <Error
-        title={classificationsError.title}
-        message={classificationsError.message}
-      />
-    );
-  if (jurisdictionsError)
-    return (
-      <Error
-        title={jurisdictionsError.title}
-        message={jurisdictionsError.message}
-      />
-    );
   if (errorStates)
     return <Error title={errorStates.title} message={errorStates.message} />;
 
@@ -1050,13 +1030,9 @@ export default function LegalBasis() {
           selectedAspects: selectedAspects,
           aspectsLoading: aspectsLoading,
           onFilterByAspects: handleFilterByAspects,
-          classifications: classifications,
           selectedClassification: selectedClassification,
-          classificationsLoading: classificationsLoading,
           onFilterByClassification: handleFilterByClassification,
-          jurisdictions: jurisdictions,
           selectedJurisdiction: selectedJurisdiction,
-          jurisdictionsLoading: jurisdictionsLoading,
           onFilterByJurisdiction: handleFilterByJurisdiction,
           states: states,
           selectedState: selectedState,

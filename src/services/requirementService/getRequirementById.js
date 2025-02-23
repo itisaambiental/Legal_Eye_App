@@ -15,7 +15,7 @@ import server from "../../config/server.js";
  */
 export default async function getRequirementById({ id, token }) {
   try {
-    const response = await server.get(`/requirements/${id}`, {
+    const response = await server.get(`/requirement/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

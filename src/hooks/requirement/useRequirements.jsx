@@ -850,6 +850,7 @@ const removeRequirementsBatch = useCallback(
   useEffect(() => {
     fetchRequirements();
   }, [fetchRequirements]);
+
   return {
     requirements,
     loading: stateRequirements.loading,

@@ -95,12 +95,10 @@ class RequirementErrors {
    */
     static handleError({ code, error, httpError, items }) {
       const message = error || httpError;
-  
       if (message && RequirementErrors.ErrorMessagesMap[message]) {
         const key = RequirementErrors.ErrorMessagesMap[message];
         return RequirementErrors.errorMap[key];
       }
-  
       switch (code) {
         case 400:
           return RequirementErrors.errorMap[RequirementErrors.VALIDATION_ERROR];

@@ -134,7 +134,6 @@ export default function useAspects() {
           loadingState: false,
           error: handledError,
         });
-        return { success: false, error: handledError.message };
       }
     },
     [jwt]

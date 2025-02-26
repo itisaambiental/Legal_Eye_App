@@ -134,7 +134,6 @@ export default function useSubjects() {
           loading: false,
           error: handledError,
         });
-        return { success: false, error: handledError.message };
       }
     },
     [jwt]

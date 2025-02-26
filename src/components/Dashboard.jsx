@@ -216,7 +216,12 @@ function Dashboard() {
             </li>
             <li>
               <Link
-                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+                to="/requirements"
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
+                  /\/requirements(\/\d+\/articles)?$/.test(location.pathname)
+                    ? "bg-white/20"
+                    : ""
+                }`}
               >
                 <img
                   src={requirement_icon}

@@ -53,8 +53,6 @@ function TopContent({ config }) {
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        
-        {/* Filtro por Número de Requisito */}
         <Input
           color="primary"
           variant="faded"
@@ -67,7 +65,6 @@ function TopContent({ config }) {
           onValueChange={onFilterByNumber}
         />
 
-        {/* Filtro por Nombre */}
         <Input
           color="primary"
           variant="faded"
@@ -79,8 +76,6 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByName}
         />
-
-        {/* Filtro por Condición */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -97,7 +92,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Pendiente">Pendiente</AutocompleteItem>
         </Autocomplete>
 
-        {/* Filtro por Evidencia */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -114,7 +108,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Documento">Documento</AutocompleteItem>
         </Autocomplete>
 
-        {/* Filtro por Periodicidad */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -131,7 +124,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
         </Autocomplete>
 
-        {/* Filtro por Jurisdicción */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -147,7 +139,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Local">Local</AutocompleteItem>
         </Autocomplete>
 
-        {/* Filtro por Estado */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -166,7 +157,6 @@ function TopContent({ config }) {
           )}
         </Autocomplete>
 
-        {/* Filtro por Municipio */}
         <Tooltip content="Debes seleccionar un estado" isDisabled={!!selectedState}>
           <div className="w-full">
             <Select
@@ -196,7 +186,6 @@ function TopContent({ config }) {
         </Tooltip>
       </div>
 
-      {/* Barra inferior con controles */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <span className="text-default-400">Total de Requerimientos: {totalRequirements}</span>
         <div className="flex items-center gap-4 w-full sm:w-auto sm:ml-auto">

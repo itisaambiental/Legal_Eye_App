@@ -80,6 +80,9 @@ A continuación se detalla la estructura del proyecto:
    # Configuración de la aplicación
    VITE_APP_URL=URL base de la aplicación frontend.
 
+   # Configuración de la API de TINYMCE para el rich text
+   VITE_TINYMCE=Clave API de TINYMCE para el rich text
+
    # Configuración de la API de COPOMEX
    VITE_COPOMEX_API_KEY=Clave de API para acceder a los servicios de COPOMEX.
    ```

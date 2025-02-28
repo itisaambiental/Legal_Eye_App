@@ -67,6 +67,7 @@ describe("LegalBasis Component", () => {
 
     const mockFiles = {
         downloadFile: vi.fn(),
+        downloadBase64File: vi.fn(),
     };
 
     beforeEach(() => {

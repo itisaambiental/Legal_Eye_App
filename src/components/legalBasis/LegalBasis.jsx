@@ -25,7 +25,6 @@ import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
-import { saveAs } from "file-saver";
 import trash_icon from "../../assets/papelera-mas.png";
 import think_icon from "../../assets/cerebro.png";
 import send_icon from "../../assets/enviar.png";
@@ -96,7 +95,7 @@ export default function LegalBasis() {
     errorMunicipalities,
     clearMunicipalities,
   } = useCopomex();
-  const { downloadFile } = useFiles();
+  const { downloadFile, downloadBase64File } = useFiles();
   const navigate = useNavigate();
   const [filterByName, setFilterByName] = useState("");
   const [filterByAbbreviation, setFilterByAbbreviation] = useState("");
@@ -931,11 +930,9 @@ export default function LegalBasis() {
       },
     });
     try {
-      const { success, fileBlob, error } = await downloadFile(url);
+      const { success, file, contentType, error } = await downloadFile(url);
       if (success) {
-        const mimeType = fileBlob.type;
-        const extension = mimeType.split("/")[1];
-        if (!extension) {
+        if (!contentType) {
           toast.update(toastId, {
             render:
               "No se pudo determinar el tipo de documento. Contacte a los administradores del sistema.",
@@ -945,7 +942,7 @@ export default function LegalBasis() {
           });
           return;
         }
-        saveAs(fileBlob, fileName);
+        downloadBase64File(file, contentType, fileName);
         toast.update(toastId, {
           render: "Documento descargado con éxito.",
           type: "info",

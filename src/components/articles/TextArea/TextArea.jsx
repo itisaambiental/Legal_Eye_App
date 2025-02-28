@@ -40,6 +40,7 @@ function TextArea({ value, onChange, placeholder }) {
 
   /**
    * Handles pasted content, detects Blob URLs, uploads the image, and replaces them with uploaded URLs.
+   * If the upload fails, removes the image from the document.
    *
    * @param {Editor} editor - TinyMCE editor API.
    * @param {Object} args - Paste content arguments.
@@ -48,15 +49,18 @@ function TextArea({ value, onChange, placeholder }) {
     let content = args.content;
     const blobUrlRegex = /<img[^>]+src=["'](blob:http[^"']+)["']/gi;
     const matches = [...content.matchAll(blobUrlRegex)];
-
     if (matches.length > 0) {
       for (const match of matches) {
         const blobUrl = match[1];
         const fileUrl = await handleBlobImageUpload(blobUrl);
+        const imgElement = editor.dom.select(`img[src="${blobUrl}"]`)[0];
         if (fileUrl) {
-          const imgElement = editor.dom.select(`img[src="${blobUrl}"]`)[0];
           if (imgElement) {
             editor.dom.setAttrib(imgElement, "src", fileUrl);
+          }
+        } else {
+          if (imgElement) {
+            editor.dom.remove(imgElement);
           }
         }
       }

@@ -21,19 +21,19 @@ class FileErrors {
     static errorMap = {
         [FileErrors.NETWORK_ERROR]: {
             title: "Error de conexión",
-            message: "Error de conexión durante la descarga. Verifique su conexión a internet.",
+            message: "Error de conexión. Verifique su conexión a internet.",
         },
         [FileErrors.BAD_REQUEST]: {
             title: "Solicitud incorrecta",
-            message: "El enlace de descarga es incorrecto. Recargue la página e intente de nuevo.",
+            message: "El enlace es incorrecto. Recargue la página e intente de nuevo.",
         },
         [FileErrors.FORBIDDEN]: {
             title: "Acceso denegado",
-            message: "El enlace ha expirado o no tienes permisos para descargar el documento. Intente de nuevo.",
+            message: "El enlace ha expirado o no tienes permisos. Intente de nuevo.",
         },
         [FileErrors.NOT_FOUND]: {
             title: "Documento no encontrado",
-            message: "El documento solicitado no existe. Recargue la página e intente de nuevo.",
+            message: "El documento no existe. Recargue la página e intente de nuevo.",
         },
         [FileErrors.REQUEST_TIMEOUT]: {
             title: "Tiempo de espera excedido",

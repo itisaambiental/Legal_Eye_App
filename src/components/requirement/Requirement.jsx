@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -11,6 +11,7 @@ import {
 import useRequirement from "../../hooks/requirement/useRequirements.jsx";
 import RequirementCell from "./RequirementCell.jsx";
 import TopContent from "./TopContent.jsx";
+import BottomContent from "../utils/BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 
 const columns = [
@@ -34,7 +35,8 @@ const columns = [
 
 export default function Requirement() {
     const { requirements, loading, error, fetchRequirements } = useRequirement();
-    const [page] = useState(1);
+    const [page, setPage] = useState(1);
+    const [selectedKeys, setSelectedKeys] = useState(new Set());
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isFirstRender, setIsFirstRender] = useState(true);
     const [filterByNumber, setFilterByNumber] = useState("");
@@ -63,34 +65,21 @@ export default function Requirement() {
       setSelectedMunicipalities([]);
       fetchRequirements();
     };
-  
-    const topContentConfig = {
-      isCreateModalOpen: false,
-      onRowsPerPageChange: (e) => setRowsPerPage(Number(e.target.value)),
-      totalRequirements: requirements.length,
-      openModalCreate: () => console.log("Abrir modal de creación"),
-      filterByNumber,
-      onFilterByNumber: setFilterByNumber,
-      filterByName,
-      onFilterByName: setFilterByName,
-      onClear: handleClear,
-      selectedCondition,
-      onFilterByCondition: setSelectedCondition,
-      selectedEvidence,
-      onFilterByEvidence: setSelectedEvidence,
-      selectedPeriodicity,
-      onFilterByPeriodicity: setSelectedPeriodicity,
-      selectedJurisdiction,
-      onFilterByJurisdiction: setSelectedJurisdiction,
-      selectedState,
-      states: ["Estado 1", "Estado 2", "Estado 3"], // Esto debería venir de tu API
-      onFilterByState: setSelectedState,
-      selectedMunicipalities,
-      municipalities: ["Municipio 1", "Municipio 2", "Municipio 3"], // Esto debería venir de tu API
-      municipalitiesLoading: false,
-      onFilterByMunicipalities: setSelectedMunicipalities,
-    };
-  
+
+    const totalPages = useMemo(
+      () => Math.ceil(requirements.length / rowsPerPage),
+      [requirements, rowsPerPage]
+    );
+   
+      const onRowsPerPageChange = useCallback((e) => {
+        setRowsPerPage(Number(e.target.value));
+        setPage(1);
+      }, []);
+
+    const onPageChange = (newPage) => setPage(newPage);
+    const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
+    const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
+ 
     if (loading && isFirstRender) {
       return (
         <div role="status" className="fixed inset-0 flex items-center justify-center">
@@ -98,14 +87,45 @@ export default function Requirement() {
         </div>
       );
     }
+
   
     if (error) return <Error title={error.title} message={error.message} />;
   
     return (
       <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
-        <TopContent config={topContentConfig} />
+        <TopContent 
+         config={{      
+          isCreateModalOpen: false,
+          onRowsPerPageChange: onRowsPerPageChange,
+          totalRequirements: requirements.length,
+          openModalCreate: () => console.log("Abrir modal de creación"),
+          filterByNumber,
+          onFilterByNumber: setFilterByNumber,
+          filterByName,
+          onFilterByName: setFilterByName,
+          onClear: handleClear,
+          selectedCondition,
+          onFilterByCondition: setSelectedCondition,
+          selectedEvidence,
+          onFilterByEvidence: setSelectedEvidence,
+          selectedPeriodicity,
+          onFilterByPeriodicity: setSelectedPeriodicity,
+          selectedJurisdiction,
+          onFilterByJurisdiction: setSelectedJurisdiction,
+          selectedState,
+          states: ["Estado 1", "Estado 2", "Estado 3"], // Esto debería venir de tu API
+          onFilterByState: setSelectedState,
+          selectedMunicipalities,
+          municipalities: ["Municipio 1", "Municipio 2", "Municipio 3"], // Esto debería venir de tu API
+          municipalitiesLoading: false,
+          onFilterByMunicipalities: setSelectedMunicipalities,}} />
   
-        <Table aria-label="Tabla de requerimientos" selectionMode="multiple" color="primary">
+        <Table 
+        aria-label="Tabla de requerimientos" 
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys} 
+        color="primary">
           <TableHeader columns={columns}>
             {(column) => <TableColumn key={column.uid} align={column.align}>{column.name}</TableColumn>}
           </TableHeader>
@@ -124,6 +144,17 @@ export default function Requirement() {
             )}
           </TableBody>
         </Table>
+                <BottomContent
+                  config={{
+                    page: page,
+                    totalPages: totalPages,
+                    onPageChange: onPageChange,
+                    onPreviousPage: onPreviousPage,
+                    onNextPage: onNextPage,
+                    selectedKeys: selectedKeys,
+                    filteredItems: requirements,
+                  }}
+                />
       </div>
     );
   }

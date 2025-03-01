@@ -16,9 +16,10 @@ const API_KEY = import.meta.env.VITE_TINYMCE;
  * @param {string} props.value - Content of the editor.
  * @param {Function} props.onChange - Function to handle content changes.
  * @param {string} [props.placeholder] - Placeholder text for the editor.
+ * @param {Function} props.setIsUploading - Function to set uploading state (true when uploading, false otherwise).
  * @returns {JSX.Element} - TinyMCE rich text editor component.
  */
-function TextArea({ value, onChange, placeholder }) {
+function TextArea({ value, onChange, placeholder, setIsUploading }) {
   const { uploadFile } = useFiles();
 
   /**
@@ -94,12 +95,14 @@ function TextArea({ value, onChange, placeholder }) {
    * @returns {Promise<string|null>} - Returns the file URL if successful, otherwise null.
    */
   const handleFileUpload = async (file) => {
+    setIsUploading(true);
     const allowedExtensions = ["png", "jpeg", "webp", "jpg"];
     const fileExtension = file.name.split(".").pop().toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
       toast.error(
         "Formato de archivo inválido. Solo se permiten PNG, JPEG, WEBP y JPG."
       );
+      setIsUploading(false);
       return null;
     }
     const toastId = toast.loading("Cargando archivo...", {
@@ -140,6 +143,8 @@ function TextArea({ value, onChange, placeholder }) {
         autoClose: 5000,
       });
       return null;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -188,6 +193,7 @@ TextArea.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  setIsUploading: PropTypes.func.isRequired,
 };
 
 export default TextArea;

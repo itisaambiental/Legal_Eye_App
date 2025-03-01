@@ -56,6 +56,7 @@ function EditModal({ config }) {
   } = config;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingPicture, setIsUploadingPicture] = useState(false); 
 
   useEffect(() => {
     if (selectedArticle) {
@@ -190,13 +191,14 @@ function EditModal({ config }) {
                       handleDescriptionChange({ target: { value } })
                     }
                     placeholder="Ingrese la descripción(Opcional)"
+                    setIsUploading={setIsUploadingPicture}
                     />
                 </div>
                 <div>
                   <Button
                     type="submit"
                     color="primary"
-                    disabled={isLoading}
+                    disabled={isLoading || isUploadingPicture} 
                     className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                   >
                     {isLoading ? (

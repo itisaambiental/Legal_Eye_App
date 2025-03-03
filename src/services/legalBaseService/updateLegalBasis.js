@@ -49,7 +49,7 @@ export default async function updateLegalBasis({
     if (legalName) formData.append("legalName", legalName);
     if (abbreviation) formData.append("abbreviation", abbreviation);
     if (subjectId) formData.append("subjectId", subjectId);
-    if (aspectsIds) formData.append("aspectsIds", JSON.stringify(aspectsIds));
+    if (aspectsIds) formData.append("aspectsIds", JSON.stringify(aspectsIds.map(Number)));
     if (classification) formData.append("classification", classification);
     if (jurisdiction) formData.append("jurisdiction", jurisdiction);
     if (state) formData.append("state", state);

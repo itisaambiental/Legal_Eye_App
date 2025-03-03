@@ -44,7 +44,7 @@ export default async function createLegalBasis({
     formData.append("legalName", legalName);
     formData.append("abbreviation", abbreviation);
     formData.append("subjectId", subjectId);
-    formData.append("aspectsIds", JSON.stringify(aspectsIds));
+    formData.append("aspectsIds", JSON.stringify(aspectsIds.map(Number)));
     formData.append("classification", classification);
     formData.append("jurisdiction", jurisdiction);
 

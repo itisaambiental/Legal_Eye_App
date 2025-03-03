@@ -11,10 +11,10 @@ class SubjectErrors {
   static SERVER_ERROR = "SERVER_ERROR";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   static DUPLICATED_NAME = "DUPLICATED_NAME";
-  static ASSOCIATED_ASPECTS = "ASSOCIATED_ASPECTS";
   static ASSOCIATED_BASES = "ASSOCIATED_BASES";
-  static MULTIPLE_ASSOCIATED_ASPECTS = "MULTIPLE_ASSOCIATED_ASPECTS";
+  static ASSOCIATED_REQUIREMENTS = "ASSOCIATED_REQUIREMENTS";
   static MULTIPLE_ASSOCIATED_BASES = "MULTIPLE_ASSOCIATED_BASES";
+  static MULTIPLE_ASSOCIATED_REQUIREMENTS = "MULTIPLE_ASSOCIATED_REQUIREMENTS";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -66,7 +66,7 @@ class SubjectErrors {
     [SubjectErrors.ASSOCIATED_BASES]: {
       title: "Asociación con Fundamentos legales",
       message:
-        "La materia está vinculada a uno o más fundamentos legales y no puede ser eliminarla. Por favor, verifique e intente de nuevo.",
+        "La materia está vinculada a uno o más fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.",
     },
     [SubjectErrors.MULTIPLE_ASSOCIATED_BASES]: {
       title: "Asociación con Fundamentos legales",
@@ -77,19 +77,19 @@ class SubjectErrors {
               ", "
             )} están vinculadas a uno o más fundamentos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`,
     },
-    [SubjectErrors.ASSOCIATED_ASPECTS]: {
-      title: "Asociación con Aspectos",
+    [SubjectErrors.ASSOCIATED_REQUIREMENTS]: {
+      title: "Asociación con Requerimientos",
       message:
-        "La materia tiene aspectos asociados con fundamentos legales y no puede ser eliminarla. Por favor, verifique e intente de nuevo.",
+        "La materia está vinculada a uno o más requerimientos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.",
     },
-    [SubjectErrors.MULTIPLE_ASSOCIATED_ASPECTS]: {
-      title: "Asociación con Aspectos",
+    [SubjectErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS]: {
+      title: "Asociación con Requerimientos",
       message: ({ items }) =>
         items.length === 1
-          ? `La materia ${items[0]} tiene aspectos asociados a fundamentos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.`
+          ? `La materia ${items[0]} está vinculada a uno o más requerimientos legales y no puede ser eliminada. Por favor, verifique e intente de nuevo.`
           : `Las materias ${items.join(
               ", "
-            )} tienen aspectos asociados a fundamentos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`,
+            )} están vinculadas a uno o más requerimientos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`,
     },
   };
 
@@ -104,8 +104,8 @@ class SubjectErrors {
     "Subject already exists": SubjectErrors.DUPLICATED_NAME,
     "The subject is associated with one or more legal bases": SubjectErrors.ASSOCIATED_BASES, 
     "Subjects are associated with legal bases": SubjectErrors.MULTIPLE_ASSOCIATED_BASES,
-    "Some aspects of the subject are associated with legal bases": SubjectErrors.ASSOCIATED_ASPECTS,
-    "Subjects have aspects associated with legal bases": SubjectErrors.MULTIPLE_ASSOCIATED_ASPECTS,
+    "The subject is associated with one or more requirements": SubjectErrors.ASSOCIATED_REQUIREMENTS,
+    "Subjects are associated with requirements": SubjectErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS,
   };
   
 
@@ -125,8 +125,8 @@ class SubjectErrors {
       const key = SubjectErrors.ErrorMessagesMap[message];
       const errorConfig = SubjectErrors.errorMap[key];
       if (
-        (key === SubjectErrors.MULTIPLE_ASSOCIATED_ASPECTS ||
-          key === SubjectErrors.MULTIPLE_ASSOCIATED_BASES) &&
+        (key === SubjectErrors.MULTIPLE_ASSOCIATED_BASES ||
+          key === SubjectErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS) &&
         items &&
         items.length > 0
       ) {

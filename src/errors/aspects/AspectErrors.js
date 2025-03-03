@@ -85,7 +85,7 @@ class AspectErrors {
     [AspectErrors.ASSOCIATED_REQUIREMENTS]: {
       title: "Asociación con Requerimientos",
       message:
-        "El aspecto está vinculada a uno o más requerimientos legales y no puede ser eliminado. Por favor, verifique e intente de nuevo.",
+        "El aspecto está vinculado a uno o más requerimientos legales y no puede ser eliminado. Por favor, verifique e intente de nuevo.",
     },
     [AspectErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS]: {
       title: "Asociación con Requerimientos",

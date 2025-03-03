@@ -5,7 +5,7 @@ import server from "../../../config/server.js";
  * Sends a GET request to the /api/jobs/articles/:id endpoint.
  *
  * @async
- * @function getJobStatus
+ * @function getExtractionJobStatus
  * @param {Object} params - Parameters for retrieving the job status.
  * @param {string} params.jobId - The ID of the job to retrieve.
  * @param {string} params.token - The authorization token for the request.
@@ -21,7 +21,7 @@ import server from "../../../config/server.js";
  *
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getJobStatus({ jobId, token }) {
+export default async function getExtractionJobStatus({ jobId, token }) {
   try {
     const response = await server.get(`/jobs/articles/${jobId}`, {
       headers: {

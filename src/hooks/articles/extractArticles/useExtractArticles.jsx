@@ -1,7 +1,7 @@
 import { useState, useCallback, useContext } from "react";
-import getJobStatus from "../../../services/articleService/extractArticles/getJobStatus.js";
-import getJobByLegalBasis from "../../../services/articleService/extractArticles/getJobByLegalBasis.js";
-import cancelJob from "../../../services/articleService/extractArticles/cancelJob.js";
+import getExtractionJobStatus from "../../../services/articleService/extractArticles/getExtractionJobStatus.js";
+import hasPendingExtractionJobs from "../../../services/articleService/extractArticles/hasPendingExtractionJobs.js";
+import cancelExtractionJob from "../../../services/articleService/extractArticles/cancelExtractionJob.js";
 import Context from "../../../context/userContext.jsx";
 import {
   ExtractArticlesErrors,
@@ -59,7 +59,7 @@ const useExtractArticles = () => {
   const fetchJobStatus = useCallback(
     async (jobId) => {
       try {
-        const { message, jobProgress, error } = await getJobStatus({
+        const { message, jobProgress, error } = await getExtractionJobStatus({
           jobId,
           token: jwt,
         });
@@ -117,7 +117,7 @@ const useExtractArticles = () => {
     async (legalBasisId) => {
       setLegalBasisJob({ isLoading: true, error: null });
       try {
-        const { hasPendingJobs, jobId } = await getJobByLegalBasis({
+        const { hasPendingJobs, jobId } = await hasPendingExtractionJobs({
           legalBasisId,
           token: jwt,
         });
@@ -152,7 +152,7 @@ const useExtractArticles = () => {
   const cancelJobById = useCallback(
     async (jobId) => {
       try {
-        await cancelJob({ jobId, token: jwt });
+        await cancelExtractionJob({ jobId, token: jwt });
         return { success: true };
       } catch (err) {
         const errorCode = err.response?.status;

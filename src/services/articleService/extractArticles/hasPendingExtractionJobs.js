@@ -5,7 +5,7 @@ import server from "../../../config/server.js";
  * Sends a GET request to the /api/jobs/articles/legalBasis/:legalBasisId endpoint.
  *
  * @async
- * @function getJobByLegalBasis
+ * @function hasPendingExtractionJobs
  * @param {Object} params - Parameters for retrieving the job status.
  * @param {string} params.legalBasisId - The ID of the legal basis to check for jobs.
  * @param {string} params.token - The authorization token for the request.
@@ -13,7 +13,7 @@ import server from "../../../config/server.js";
  * @returns {Promise<{hasPendingJobs: boolean, jobId?: string}>}  The job status object containing hasPendingJobs and jobId.
  * @throws {Error} If the response status is not 200 or if there is an error with the request.
  */
-export default async function getJobByLegalBasis({ legalBasisId, token }) {
+export default async function hasPendingExtractionJobs({ legalBasisId, token }) {
   try {
     const response = await server.get(
       `/jobs/articles/legalBasis/${legalBasisId}`,

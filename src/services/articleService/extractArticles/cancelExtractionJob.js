@@ -5,7 +5,7 @@ import server from "../../../config/server.js";
  * Sends a DELETE request to the /api/jobs/articles/:jobId endpoint.
  *
  * @async
- * @function cancelJob
+ * @function cancelExtractionJob
  * @param {Object} params - Parameters for canceling the job.
  * @param {string} params.jobId - The ID of the job to cancel.
  * @param {string} params.token - The authorization token for the request.
@@ -13,7 +13,7 @@ import server from "../../../config/server.js";
  * @returns {Promise<boolean>} - True if the job was successfully canceled.
  * @throws {Error} If the response status is not 204 or if there is an error with the request.
  */
-export default async function cancelJob({ jobId, token }) {
+export default async function cancelExtractionJob({ jobId, token }) {
   try {
     const response = await server.delete(`/jobs/articles/${jobId}`, {
       headers: {

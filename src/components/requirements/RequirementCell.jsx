@@ -8,7 +8,6 @@ import {
   DropdownMenu,
 } from "@heroui/react";
 import menu_icon from "../../assets/aplicaciones.png";
-import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
 
@@ -31,7 +30,6 @@ const RequirementCell = ({
   requirement,
   columnKey,
   openEditModal,
-  viewRequirementDetails,
   handleDelete,
 }) => {
   const renderCell = useCallback(() => {
@@ -90,6 +88,15 @@ const RequirementCell = ({
           </div>
         );
 
+        case "requirement_type":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">
+                {requirement.requirementType || "N/A"}
+              </p>
+            </div>
+          );
+
       case "jurisdiction":
         return (
           <div className="flex flex-col">
@@ -116,6 +123,42 @@ const RequirementCell = ({
             </p>
           </div>
         );
+        case "mandatory_sentences":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">
+                {requirement.mandatorySentences || "N/A"}
+              </p>
+            </div>
+          );
+
+        case "complementary_sentences":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">
+                {requirement.complementarySentences || "N/A"}
+              </p>
+            </div>
+          );
+
+        case "mandatory_keywords":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">
+                {requirement.mandatoryKeywords || "N/A"}
+              </p>
+            </div>
+          );
+
+        case "complementary_keywords":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">
+                {requirement.complementaryKeywords || "N/A"}
+              </p>
+            </div>
+          );
+     
 
       case "actions":
         return (
@@ -137,22 +180,6 @@ const RequirementCell = ({
                 aria-label="Opciones de requerimiento"
                 variant="light"
               >
-                <DropdownItem
-                  aria-label="Ver Detalles"
-                  startContent={
-                    <img
-                      src={watch_icon}
-                      alt="Watch Icon"
-                      className="w-4 h-4 flex-shrink-0"
-                    />
-                  }
-                  className="hover:bg-primary/20"
-                  key="watch"
-                  textValue="Ver Detalles"
-                  onPress={() => viewRequirementDetails(requirement.id)}
-                >
-                  <p className="font-normal text-primary">Ver Detalles</p>
-                </DropdownItem>
                 <DropdownItem
                   aria-label="Editar Requerimiento"
                   startContent={
@@ -193,7 +220,7 @@ const RequirementCell = ({
       default:
         return null;
     }
-  }, [requirement, columnKey, openEditModal, viewRequirementDetails, handleDelete]);
+  }, [requirement, columnKey, openEditModal, handleDelete]);
 
   return renderCell();
 };
@@ -211,10 +238,13 @@ RequirementCell.propTypes = {
     jurisdiction: PropTypes.string,
     state: PropTypes.string,
     municipality: PropTypes.string,
+    mandatorySentences: PropTypes.string,
+    complementarySentences: PropTypes.string,
+    mandatoryKeywords: PropTypes.string,
+    complementaryKeywords: PropTypes.string,
   }).isRequired,
   columnKey: PropTypes.string.isRequired,
   openEditModal: PropTypes.func.isRequired,
-  viewRequirementDetails: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
 

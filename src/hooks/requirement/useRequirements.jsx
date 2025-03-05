@@ -317,6 +317,44 @@ export default function useRequirement() {
   }, 
   [jwt]
 );
+    /**
+   * Fetches the list of Requirements by Complementary Description.
+   * @async
+   * @function fetchRequirementsByType
+   * @param {string} requirementType - The complementary description of the requirement.
+   * @returns {Promise<void>} - Updates the requirements list and loading state.
+   */
+
+    const fetchRequirementsByType = useCallback(
+      async (requirementType) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByType({ 
+          requirementType, 
+          token: jwt
+         });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({ 
+          loading: false, 
+          error: handledError,
+         });
+      }
+    },
+    [jwt]
+  );
+
+
+
 
   /**
    * Fetches the list of Requirements by Complementary Description.
@@ -380,34 +418,7 @@ const fetchRequirementsByComplementaryKeywords = useCallback(
     }
   }, [jwt]);
 
-  /**
-   * Fetches the list of Requirements by Type.
-   * @async
-   * @function fetchRequirementsByType
-   * @param {string} requirementType - The type of the requirement.
-   */
-  const fetchRequirementsByType = useCallback(
-   async (requirementType) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByType({ requirementType, token: jwt });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+
 
   /**
    * Fetches the list of Requirements by Complementary Sentences.
@@ -870,10 +881,10 @@ const removeRequirementsBatch = useCallback(
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsByEvidence,
     fetchRequirementsByJurisdiction,
+    fetchRequirementsByType,
     fetchRequirementsByComplementaryDescription,
     fetchRequirementsByComplementaryKeywords,
     fetchRequirementsByComplementarySentences,
-    fetchRequirementsByType,
     fetchRequirementsByCondition,
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByMandatorySentences,

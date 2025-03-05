@@ -39,6 +39,7 @@ import mas_icon from "../../assets/mas.png";
  * @param {string} props.config.selectedJurisdiction - Selected jurisdiction filter.
  * @param {Function} props.config.onFilterByJurisdiction - Callback for filtering by jurisdiction.
  * @param {string} props.config.selectedState - Selected state filter.
+ * @param {boolean} props.config.stateLoading - Indicates if states are loading.
  * @param {Function} props.config.onFilterByState - Callback for filtering by state.
  * @param {Array<string>} props.config.states - List of available states.
  * @param {Array<string>} props.config.municipalities - List of available municipalities.
@@ -47,9 +48,10 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onFilterByMunicipalities - Callback for filtering by municipalities.
  * @param {string} props.config.filterByMandatoryDescription - Current value for filtering by mandatory description.
  * @param {Function} props.config.onFilterByMandatoryDescription - Callback for filtering by mandatory description.
- * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description. - Callback for filtering by complementary description.
- * @param {string} props.config.filterByObligatoryDescription - Current value for filtering by mandatory sentences.
+ * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description.
  * @param {Function} props.config.onFilterByComplementaryDescription - Callback for filtering by complementary description.
+ * @param {string} props.config.filterByObligatoryDescription - Current value for filtering by mandatory sentences.
+ * @param {Function} props.config.onFilterByObligatoryDescription - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByMandatorySentences - Current value for filtering by mandatory sentences.
  * @param {Function} props.config.onFilterByMandatorySentences - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByComplementarySentences - Current value for filtering by complementary sentences.
@@ -63,6 +65,11 @@ import mas_icon from "../../assets/mas.png";
  * @param {string} props.config.selectedSubject - Currently selected subject.
  * @param {boolean} props.config.subjectLoading - Indicates if subjects are loading.
  * @param {Function} props.config.onFilterBySubject - Callback for filtering by subject.
+ * @param {Array<Object>} props.config.aspects - List of aspects for filtering.
+ * @param {Array<string>} props.config.selectedAspects - Selected aspects.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
+ * @param {Function} props.config.onFilterByAspects - Callback for aspect filter changes.
+ *
  * @returns {JSX.Element} The rendered filter component.
  */
 
@@ -87,6 +94,7 @@ function TopContent({ config }) {
     selectedJurisdiction,
     onFilterByJurisdiction,
     selectedState,
+    stateLoading,
     onFilterByState,
     states,
     selectedMunicipalities,
@@ -103,8 +111,8 @@ function TopContent({ config }) {
     selectedAspects,
     onFilterByAspects,    
     filterByComplementaryDescription,
-    filterByObligatoryDescription,
-    onFilterByObligatoryDescription,
+    filterByMandatoryDescription,
+    onFilterByMandatoryDescription,
     onFilterByComplementaryDescription,
     filterByMandatorySentences,
     onFilterByMandatorySentences,
@@ -150,7 +158,7 @@ function TopContent({ config }) {
           onValueChange={onFilterByName}
         />
         {/* Condición */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
           placeholder="Seleccionar condición..."
@@ -159,14 +167,14 @@ function TopContent({ config }) {
           selectedKey={selectedCondition}
           onSelectionChange={onFilterByCondition}
         >
-          <SelectItem key="Crítica">Crítica</SelectItem>
-          <SelectItem key="Operativa">Operativa</SelectItem>
-          <SelectItem key="Recomendación">Recomendación</SelectItem>
-          <SelectItem key="Pendiente">Pendiente</SelectItem>
-        </Select>
+          <AutocompleteItem key="Crítica">Crítica</AutocompleteItem>
+          <AutocompleteItem key="Operativa">Operativa</AutocompleteItem>
+          <AutocompleteItem key="Recomendación">Recomendación</AutocompleteItem>
+          <AutocompleteItem key="Pendiente">Pendiente</AutocompleteItem>
+        </Autocomplete>
 
         {/* Evidencia */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
           placeholder="Seleccionar evidencia..."
@@ -175,14 +183,14 @@ function TopContent({ config }) {
           selectedKey={selectedEvidence}
           onSelectionChange={onFilterByEvidence}
         >
-          <SelectItem key="Trámite">Trámite</SelectItem>
-          <SelectItem key="Registro">Registro</SelectItem>
-          <SelectItem key="Específico">Específico</SelectItem>
-          <SelectItem key="Documento">Documento</SelectItem>
-        </Select>
+          <AutocompleteItem key="Trámite">Trámite</AutocompleteItem>
+          <AutocompleteItem key="Registro">Registro</AutocompleteItem>
+          <AutocompleteItem key="Específico">Específico</AutocompleteItem>
+          <AutocompleteItem key="Documento">Documento</AutocompleteItem>
+        </Autocomplete>
 
         {/* Periodicidad */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
           placeholder="Seleccionar periodicidad..."
@@ -191,33 +199,33 @@ function TopContent({ config }) {
           selectedKey={selectedPeriodicity}
           onSelectionChange={onFilterByPeriodicity}
         >
-          <SelectItem key="Anual">Anual</SelectItem>
-          <SelectItem key="2 años">2 años</SelectItem>
-          <SelectItem key="Por evento">Por evento</SelectItem>
-          <SelectItem key="Única vez">Única vez</SelectItem>
-        </Select>
+          <AutocompleteItem key="Anual">Anual</AutocompleteItem>
+          <AutocompleteItem key="2 años">2 años</AutocompleteItem>
+          <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
+          <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+        </Autocomplete>
 
         {/* Tipo de requerimiento */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
           placeholder="Buscar por tipo de requerimiento..."
           className="w-full"
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          value={selectedRequirementType}
-          onValueChange={onFilterByRequirementType}
+          selectedKey={selectedRequirementType}
+          onSelectionChange={onFilterByRequirementType}
         >
-          <SelectItem key="Identificación Estatal">Identificación Estatal</SelectItem>
-          <SelectItem key="Identificación Federal">Identificación Federal</SelectItem>
-          <SelectItem key="Identificación Local">Identificación Local</SelectItem>
-          <SelectItem key="Requerimiento Compuesto">Requerimiento Compuesto</SelectItem>
-          <SelectItem key="Requerimiento Compuesto e Identificación">Requerimiento Compuesto e Identificación</SelectItem>
-          <SelectItem key="Requerimiento Estatal">Requerimiento Estatal</SelectItem>
-          <SelectItem key="Requerimiento Local">Requerimiento Local</SelectItem>
-        </Select>
+          <AutocompleteItem key="Identificación Estatal">Identificación Estatal</AutocompleteItem>
+          <AutocompleteItem key="Identificación Federal">Identificación Federal</AutocompleteItem>
+          <AutocompleteItem key="Identificación Local">Identificación Local</AutocompleteItem>
+          <AutocompleteItem key="Requerimiento Compuesto">Requerimiento Compuesto</AutocompleteItem>
+          <AutocompleteItem key="Requerimiento Compuesto e Identificación">Requerimiento Compuesto e Identificación</AutocompleteItem>
+          <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
+          <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
+        </Autocomplete>
 
         {/* Jurisdicción */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
           placeholder="Seleccionar jurisdicción..."
@@ -226,55 +234,88 @@ function TopContent({ config }) {
           selectedKey={selectedJurisdiction}
           onSelectionChange={onFilterByJurisdiction}
         >
-          <SelectItem key="Federal">Federal</SelectItem>
-          <SelectItem key="Estatal">Estatal</SelectItem>
-          <SelectItem key="Local">Local</SelectItem>
-        </Select>
+          <AutocompleteItem key="Federal">Federal</AutocompleteItem>
+          <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
+          <AutocompleteItem key="Local">Local</AutocompleteItem>
+        </Autocomplete>
 
         {/* Estado */}
-        <Select
+        <Autocomplete
           color="primary"
           variant="faded"
-          placeholder="Seleccionar estado..."
+          defaultItems={states.map((estado) => ({ id: estado, name: estado }))}
+          isLoading={stateLoading}
+          onClear={onClear}
+          placeholder="Buscar por estado..."
+          startContent={
+            <img
+              src={search_icon}
+              alt="Search Icon"
+              className="w-4 h-4 flex-shrink-0"
+            />
+          }
           className="w-full"
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedState}
+          listboxProps={{
+            emptyContent: "Estado no encontrado",
+          }}
           onSelectionChange={onFilterByState}
         >
-          {states.map((estado) => (
-            <SelectItem key={estado} value={estado}>
-              {estado}
-            </SelectItem>
-          ))}
-        </Select>
+          {(estado) => (
+            <AutocompleteItem key={estado.id} value={estado.id}>
+              {estado.name}
+            </AutocompleteItem>
+          )}
+        </Autocomplete>
 
         {/* Municipio */}
-        <Tooltip content="Selecciona un estado primero" isDisabled={!!selectedState}>
+        <Tooltip content="Debes seleccionar un estado" 
+        isDisabled={!!selectedState}
+        >
           <div className="w-full">
             <Select
-              color="primary"
+              color="primary"  
+              items={municipalities.map((municipio) => ({
+                id: municipio,
+                name: municipio,
+              }))}
+              onClear={onClear}
               variant="faded"
-              items={municipalities}
-              placeholder="Seleccionar municipio..."
+              placeholder="Buscar por municipio..."
+              startContent={
+              <img 
+              src={search_icon} 
+              alt="Search Icon" 
+              className="w-4 h-4 flex-shrink-0" 
+              />
+            }
               className="w-full"
-              startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
+              isLoading={municipalitiesLoading}
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
-              isLoading={municipalitiesLoading}
+              listboxProps={{
+                emptyContent: "Municipios no encontrados",
+              }}
               isDisabled={!selectedState}
               onSelectionChange={onFilterByMunicipalities}
+              renderValue={(selected) =>
+                !selected || selected.length === 0
+                  ? "Buscar por municipio..."
+                  : `${selected.length} municipio${selected.length > 1 ? "s" : ""
+                  } seleccionado${selected.length > 1 ? "s" : ""}`
+              }
             >
-              {municipalities.map((municipio) => (
-                <SelectItem key={municipio} value={municipio}>
-                  {municipio}
+              {(municipio) => (
+                <SelectItem key={municipio.id} value={municipio.id}>
+                  {municipio.name}
                 </SelectItem>
-              ))}
+              )}
             </Select>
           </div>
         </Tooltip>
 
         <Autocomplete
-          color="primary"
+          color="primary"  
           variant="faded"
           defaultItems={subjects}
           isLoading={subjectLoading}
@@ -305,12 +346,18 @@ function TopContent({ config }) {
           color="primary"
           variant="faded"
           isClearable
-          value={filterByObligatoryDescription}
+          value={filterByMandatoryDescription}
           className="w-full"
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           placeholder="Buscar por descripción obligatoria..."
+          startContent={
+          <img 
+          src={search_icon} 
+          alt="Search Icon" 
+          className="w-4 h-4 flex-shrink-0" 
+          />
+        }
           onClear={onClear}
-          onValueChange={onFilterByObligatoryDescription}
+          onValueChange={onFilterByMandatoryDescription}
         />
         <Input
           color="primary"
@@ -318,8 +365,13 @@ function TopContent({ config }) {
           isClearable
           value={filterByComplementaryDescription}
           className="w-full"
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           placeholder="Buscar por descripción complementaria..."
+          startContent={
+          <img 
+          src={search_icon} 
+          alt="Search Icon" 
+          className="w-4 h-4" 
+          />}
           onClear={onClear}
           onValueChange={onFilterByComplementaryDescription}
         />
@@ -447,7 +499,7 @@ function TopContent({ config }) {
 
 TopContent.propTypes = {
   config: PropTypes.shape({
-    isCreateModalOpen: PropTypes.bool.isRequired,
+    isCreateModalOpen: PropTypes.bool, 
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalRequirements: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
@@ -466,35 +518,17 @@ TopContent.propTypes = {
     selectedJurisdiction: PropTypes.string,
     onFilterByJurisdiction: PropTypes.func.isRequired,
     selectedState: PropTypes.string,
+    stateLoading: PropTypes.bool.isRequired,
     onFilterByState: PropTypes.func.isRequired,
     states: PropTypes.arrayOf(PropTypes.string).isRequired,
-    selectedMunicipalities: PropTypes.array,
+    selectedMunicipalities: PropTypes.arrayOf(PropTypes.string),
     municipalities: PropTypes.arrayOf(PropTypes.string).isRequired,
     municipalitiesLoading: PropTypes.bool.isRequired,
     onFilterByMunicipalities: PropTypes.func.isRequired,
-    onClear: PropTypes.func.isRequired,
-        subjects: PropTypes.arrayOf(
-          PropTypes.shape({
-            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            subject_name: PropTypes.string,
-          })
-        ).isRequired,
-        selectedSubject: PropTypes.string,
-        subjectLoading: PropTypes.bool.isRequired,
-        onFilterBySubject: PropTypes.func.isRequired,
-        aspects: PropTypes.arrayOf(
-          PropTypes.shape({
-            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            aspect_name: PropTypes.string,
-          })
-        ).isRequired,
-        selectedAspects: PropTypes.arrayOf(PropTypes.string),
-        aspectsLoading: PropTypes.bool.isRequired,
-        onFilterByAspects: PropTypes.func.isRequired,    
+    filterByMandatoryDescription: PropTypes.string,
+    onFilterByMandatoryDescription: PropTypes.func,
     filterByComplementaryDescription: PropTypes.string,
     onFilterByComplementaryDescription: PropTypes.func,
-    filterByObligatoryDescription: PropTypes.string,
-    onFilterByObligatoryDescription: PropTypes.func,
     filterByMandatorySentences: PropTypes.string,
     onFilterByMandatorySentences: PropTypes.func,
     filterByComplementarySentences: PropTypes.string,
@@ -503,7 +537,29 @@ TopContent.propTypes = {
     onFilterByMandatoryKeywords: PropTypes.func,
     filterByComplementaryKeywords: PropTypes.string,
     onFilterByComplementaryKeywords: PropTypes.func,
+
+    subjects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        subject_name: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    selectedSubject: PropTypes.string,
+    subjectLoading: PropTypes.bool.isRequired,
+    onFilterBySubject: PropTypes.func.isRequired,
+    aspects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        aspect_name: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    selectedAspects: PropTypes.arrayOf(PropTypes.string),
+    aspectsLoading: PropTypes.bool.isRequired,
+    onFilterByAspects: PropTypes.func.isRequired,
+    onClear: PropTypes.func.isRequired,
   }).isRequired,
 };
 
 export default TopContent;
+
+

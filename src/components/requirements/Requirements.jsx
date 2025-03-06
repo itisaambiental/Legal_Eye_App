@@ -66,7 +66,7 @@ export default function Requirement() {
       fetchRequirementsByStateAndMunicipalities,
       fetchRequirementsByMandatoryDescription,
       fetchRequirementsBySubject,
-      fetchLegalBasisBySubjectAndAspects,
+      fetchRequirementsBySubjectAndAspects,
       fetchRequirementsByComplementaryDescription,
       fetchRequirementsByMandatorySentences,
       fetchRequirementsByComplementarySentences,
@@ -215,7 +215,7 @@ export default function Requirement() {
           break;
         case "subjectAndAspects": {
           const { subjectId, aspectsIds } = value;
-          await fetchLegalBasisBySubjectAndAspects(subjectId, aspectsIds);
+          await fetchRequirementsBySubjectAndAspects (subjectId, aspectsIds);
           break;
         }  
         case "mandatoryDescription":
@@ -255,7 +255,7 @@ export default function Requirement() {
     fetchRequirementsByStateAndMunicipalities,
     fetchRequirementsBySubject,
     fetchAspects,
-    fetchLegalBasisBySubjectAndAspects,
+    fetchRequirementsBySubjectAndAspects,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsByComplementaryDescription,
     fetchRequirementsByMandatorySentences,
@@ -543,6 +543,26 @@ export default function Requirement() {
       [handleFilter, handleClear, resetStatesAndMunicipalities]
     );
 
+    const handleFilterByAspects = useCallback(
+      (selectedIds) => {
+        setSelectedAspects(selectedIds);
+        if (selectedIds.size === 0) {
+          if (selectedSubject) {
+            handleFilter("subject", selectedSubject);
+          } else {
+            handleClear();
+          }
+          return;
+        }
+        const value = {
+          subjectId: selectedSubject,
+          aspectsIds: Array.from(selectedIds),
+        };
+        handleFilter("subjectAndAspects", value);
+      },
+      [handleFilter, handleClear, selectedSubject]
+    );
+
     const handleFilterByMandatoryDescription = useCallback(
       (value) => {
         if (value.trim() === "") {
@@ -714,25 +734,7 @@ export default function Requirement() {
     
     
     
-    const handleFilterByAspects = useCallback(
-      (selectedIds) => {
-        setSelectedAspects(selectedIds);
-        if (selectedIds.size === 0) {
-          if (selectedSubject) {
-            handleFilter("subject", selectedSubject);
-          } else {
-            handleClear();
-          }
-          return;
-        }
-        const value = {
-          subjectId: selectedSubject,
-          aspectsIds: Array.from(selectedIds),
-        };
-        handleFilter("subjectAndAspects", value);
-      },
-      [handleFilter, handleClear, selectedSubject]
-    );
+
 
     const totalPages = useMemo(
       () => Math.ceil(requirements.length / rowsPerPage),

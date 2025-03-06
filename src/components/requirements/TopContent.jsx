@@ -399,51 +399,50 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByComplementarySentences}
         />
-
-                <Tooltip
-                  content="Debes seleccionar una materia"
-                  isDisabled={!!selectedSubject}
-                >
-                  <div className="w-full">
-                    <Select
-                      color="primary"
-                      items={aspects}
-                      onClear={onClear}
-                      variant="faded"
-                      placeholder="Buscar por aspecto..."
-                      startContent={
-                        <img
-                          src={search_icon}
-                          alt="Search Icon"
-                          className="w-4 h-4 flex-shrink-0"
-                        />
-                      }
-                      className="w-full"
-                      isLoading={
-                        aspectsLoading 
-                      }
-                      selectionMode="multiple"
-                      selectedKeys={selectedAspects}
-                      listboxProps={{
-                        emptyContent: "Aspectos no encontrados",
-                      }}
-                      isDisabled={!selectedSubject}
-                      onSelectionChange={onFilterByAspects}
-                      renderValue={(selected) =>
-                        !selected || selected.length === 0
-                          ? "Buscar por aspecto..."
-                          : `${selected.length} aspecto${selected.length > 1 ? "s" : ""
-                          } seleccionado${selected.length > 1 ? "s" : ""}`
-                      }
-                    >
-                      {(aspect) => (
-                        <SelectItem key={aspect.id} value={aspect.id}>
-                          {aspect.aspect_name}
-                        </SelectItem>
-                      )}
-                    </Select>
-                  </div>
-                </Tooltip>
+        <Tooltip
+          content="Debes seleccionar una materia"
+          isDisabled={!!selectedSubject}
+        >
+          <div className="w-full">
+            <Select
+              color="primary"
+              items={aspects}
+              onClear={onClear}
+              variant="faded"
+              placeholder="Buscar por aspecto..."
+              startContent={
+                <img
+                  src={search_icon}
+                  alt="Search Icon"
+                  className="w-4 h-4 flex-shrink-0"
+                />
+              }
+              className="w-full"
+              isLoading={
+              aspectsLoading
+              }
+              selectionMode="multiple"
+              selectedKeys={selectedAspects}
+              listboxProps={{
+                emptyContent: "Aspectos no encontrados",
+              }}
+              isDisabled={!selectedSubject}
+              onSelectionChange={onFilterByAspects}
+              renderValue={(selected) =>
+                !selected || selected.length === 0
+                  ? "Buscar por aspecto..."
+                  : `${selected.length} aspecto${selected.length > 1 ? "s" : ""
+                  } seleccionado${selected.length > 1 ? "s" : ""}`
+              }
+           >
+            {(aspect) => (
+              <SelectItem key={aspect.id} value={aspect.id}>
+                {aspect.aspect_name}
+                </SelectItem>
+              )}
+              </Select>
+            </div>
+        </Tooltip>
 
         <Input
           color="primary"

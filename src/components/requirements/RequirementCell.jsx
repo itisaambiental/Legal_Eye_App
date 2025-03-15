@@ -34,38 +34,29 @@ const RequirementCell = ({
 }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
-      case "requirementNumber":
+      case "requirement_number":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.requirementNumber || "N/A"}
+              {requirement.requirement_number || "N/A"}
             </p>
           </div>
         );
 
-      case "requirementName":
+      case "requirement_name":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.requirementName || "N/A"}
+              {requirement.requirement_name || "N/A"}
             </p>
           </div>
         );
 
-      case "mandatoryDescription":
+      case "requirement_condition":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.mandatoryDescription || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "condition":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.condition || "N/A"}
+              {requirement.requirement_condition || "N/A"}
             </p>
           </div>
         );
@@ -88,14 +79,14 @@ const RequirementCell = ({
           </div>
         );
 
-        case "requirement_type":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">
-                {requirement.requirementType || "N/A"}
-              </p>
-            </div>
-          );
+      case "requirement_type":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.requirement_type || "N/A"}
+            </p>
+          </div>
+        );
 
       case "jurisdiction":
         return (
@@ -123,42 +114,83 @@ const RequirementCell = ({
             </p>
           </div>
         );
-        case "mandatory_sentences":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">
-                {requirement.mandatorySentences || "N/A"}
-              </p>
-            </div>
-          );
 
-        case "complementary_sentences":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">
-                {requirement.complementarySentences || "N/A"}
-              </p>
-            </div>
-          );
+      case "subject":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.subject?.subject_name || "N/A"}
+            </p>
+          </div>
+        );
 
-        case "mandatory_keywords":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">
-                {requirement.mandatoryKeywords || "N/A"}
-              </p>
-            </div>
-          );
+      case "aspects":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.aspects?.map((aspect, index) => (
+                <span key={aspect.aspect_id}>
+                  {aspect.aspect_name}
+                  {index < requirement.aspects.length - 1 ? ", " : ""}
+                </span>
+              )) || "N/A"}
+            </p>
+          </div>
+        );
 
-        case "complementary_keywords":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">
-                {requirement.complementaryKeywords || "N/A"}
-              </p>
-            </div>
-          );
-     
+      case "mandatory_description":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.mandatory_description || "N/A"}
+            </p>
+          </div>
+        );
+      case "complementary_description":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.complementary_description || "N/A"}
+            </p>
+          </div>
+        );
+
+      case "mandatory_sentences":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.mandatory_sentences || "N/A"}
+            </p>
+          </div>
+        );
+
+      case "complementary_sentences":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.complementary_sentences || "N/A"}
+            </p>
+          </div>
+        );
+
+      case "mandatory_keywords":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.mandatory_keywords || "N/A"}
+            </p>
+          </div>
+        );
+
+      case "complementary_keywords":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">
+              {requirement.complementary_keywords || "N/A"}
+            </p>
+          </div>
+        );
+
 
       case "actions":
         return (
@@ -228,20 +260,31 @@ const RequirementCell = ({
 RequirementCell.propTypes = {
   requirement: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    requirementNumber: PropTypes.string,
-    requirementName: PropTypes.string,
-    mandatoryDescription: PropTypes.string,
-    condition: PropTypes.string,
+    requirement_number: PropTypes.string,
+    requirement_name: PropTypes.string,
+    requirement_condition: PropTypes.string,
     evidence: PropTypes.string,
     periodicity: PropTypes.string,
-    requirementType: PropTypes.string,
+    requirement_type: PropTypes.string,
     jurisdiction: PropTypes.string,
     state: PropTypes.string,
     municipality: PropTypes.string,
-    mandatorySentences: PropTypes.string,
-    complementarySentences: PropTypes.string,
-    mandatoryKeywords: PropTypes.string,
-    complementaryKeywords: PropTypes.string,
+    subject: PropTypes.shape({
+      subject_name: PropTypes.string,
+    }),
+    aspects: PropTypes.arrayOf(
+      PropTypes.shape({
+        aspect_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+          .isRequired,
+        aspect_name: PropTypes.string.isRequired,
+      })
+    ),
+    mandatory_description: PropTypes.string,
+    complementary_description: PropTypes.string,
+    mandatory_sentences: PropTypes.string,
+    complementary_sentences: PropTypes.string,
+    mandatory_keywords: PropTypes.string,
+    complementary_keywords: PropTypes.string,
   }).isRequired,
   columnKey: PropTypes.string.isRequired,
   openEditModal: PropTypes.func.isRequired,

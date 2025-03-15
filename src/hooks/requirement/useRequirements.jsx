@@ -838,10 +838,10 @@ const removeRequirement = useCallback(
 /**
  * Deletes multiple Requirements in batch.
  * @async
- * @function removeRequirementsBatch
+ * @function removeRequirementBatch
  * @param {Array<number>} requirementIds - The IDs of the requirements to delete.
  */
-const removeRequirementsBatch = useCallback(
+const removeRequirementBatch = useCallback(
   async (requirementIds) => {
     try {
       await delereRequirementBatch({ requirementIds, token: jwt });
@@ -894,7 +894,7 @@ const removeRequirementsBatch = useCallback(
     addRequirement,
     modifyRequirement,
     removeRequirement,
-    removeRequirementsBatch,
+    removeRequirementBatch,
   };
 
 }

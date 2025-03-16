@@ -12,8 +12,8 @@
     "start": "serve dist -s -n -L -p $PORT"
   },
   "engines": {
-    "node": "20.x",
-    "npm": "10.x"
+    "node": ">=18 <21",
+    "npm": ">=10 <11"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.24.0",

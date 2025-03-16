@@ -6,8 +6,6 @@ import {
     ModalHeader,
     ModalBody,
     Tooltip,
-    Select,
-    SelectItem,
     Button,
     Spinner,
     Autocomplete,
@@ -193,15 +191,6 @@ const CreateModal = ({ config }) => {
             } else {
                 setPeriodicityError(null);
             }
-
-            if (formData.requirementType === "") {
-                setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
-                setIsLoading(false);
-                return;
-            } else {
-                setRequirementTypeError(null);
-            }
-
             if (formData.jurisdiction === "") {
                 setJurisdictionError("Este campo es obligatorio");
                 setIsLoading(false);
@@ -244,12 +233,19 @@ const CreateModal = ({ config }) => {
                 setSubjectError(null);
             }
 
-            if (!formData.aspects || formData.aspects.length === 0) {
+            if (!formData.aspect === "") {
                 setAspectInputError("Debes seleccionar al menos un aspecto");
                 setIsLoading(false);
                 return;
             } else {
                 setAspectInputError(null);
+            }
+            if (formData.requirementType === "") {
+                setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
+                setIsLoading(false);
+                return;
+            } else {
+                setRequirementTypeError(null);
             }
 
             // Si pasa todas las validaciones, avanzar al segundo paso
@@ -315,7 +311,7 @@ const CreateModal = ({ config }) => {
             state: formData.state,
             municipality: formData.municipality,
             subjectId: formData.subject,
-            aspectId: formData.aspects[0],
+            aspectId: formData.aspect,
             mandatoryDescription: formData.mandatoryDescription,
             complementaryDescription: formData.complementaryDescription,
             mandatorySentences: formData.mandatorySentences,
@@ -628,26 +624,33 @@ const CreateModal = ({ config }) => {
                                             isDisabled={isAspectsActive || errorAspects}
                                         >
                                             <div className="w-full">
-                                                <Select
+                                                <Autocomplete
                                                     size="sm"
                                                     variant="bordered"
-                                                    label="Aspectos"
-                                                    selectionMode="multiple"
+                                                    label="Aspecto"
                                                     isLoading={aspectsLoading}
-                                                    selectedKeys={formData.aspects}
-                                                    onSelectionChange={handleAspectsChange}
-                                                    isDisabled={!isAspectsActive || !!errorAspects}
-                                                    items={aspects}
+                                                    selectedKey={formData.aspect}
                                                     listboxProps={{
-                                                        emptyContent: "Aspectos no encontrados",
+                                                        emptyContent: "Aspecto no encontrados",
                                                     }}
+                                                    onSelectionChange={handleAspectsChange}
+                                                    isDisabled={
+                                                        !isAspectsActive || !!errorAspects
+                                                    }
+                                                    defaultItems={aspects.map((aspect) => ({
+                                                        id: aspect.id,
+                                                        name: aspect.aspect_name,
+                                                    }))}
                                                 >
                                                     {(aspect) => (
-                                                        <SelectItem key={aspect.id} value={aspect.id}>
-                                                            {aspect.aspect_name}
-                                                        </SelectItem>
+                                                        <AutocompleteItem
+                                                            key={aspect.id}
+                                                            value={aspect.id}
+                                                        >
+                                                            {aspect.name}
+                                                        </AutocompleteItem>
                                                     )}
-                                                </Select>
+                                                </Autocomplete>
                                             </div>
                                         </Tooltip>
 

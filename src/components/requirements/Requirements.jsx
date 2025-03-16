@@ -18,6 +18,7 @@ import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import TopContent from "./TopContent.jsx";
 import RequirementCell from "./RequirementCell.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
+import DescriptionModal from "./TextArea/DescriptionModal.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
@@ -37,7 +38,7 @@ const columns = [
   { name: "Estado", uid: "state", align: "start" },
   { name: "Municipio", uid: "municipality", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
-  { name: "Aspectos", uid: "aspects", align: "start" },
+  { name: "Aspecto", uid: "aspect", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -128,6 +129,7 @@ export default function Requirement() {
   const [filterByComplementarySentences, setFilterByComplementarySentences] = useState("");
   const [filterByMandatoryKeywords, setFilterByMandatoryKeywords] = useState("");
   const [filterByComplementaryKeywords, setFilterByComplementaryKeywords] = useState("");
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -168,7 +170,7 @@ export default function Requirement() {
     state: "",
     municipality: "",
     subject: "",
-    aspects: [],
+    aspect: "",
     mandatoryDescription: "",
     complementaryDescription: "",
     mandatorySentences: "",
@@ -265,7 +267,7 @@ export default function Requirement() {
           case "stateAndMunicipalities": {
             const { state, municipalities } = value;
             await fetchRequirementsByStateAndMunicipalities(
-              state, 
+              state,
               municipalities
             );
             break;
@@ -803,7 +805,7 @@ export default function Requirement() {
       state: "",
       municipality: "",
       subject: "",
-      aspects: [],
+      aspect: "",
       mandatoryDescription: "",
       complementaryDescription: "",
       mandatorySentences: "",
@@ -837,7 +839,7 @@ export default function Requirement() {
     setMandatorySentencesInputError("");
     setComplementarySentencesInputError("");
     setMandatoryKeywordsInputError("");
-    setComplementaryKeywordsInputError(""); 
+    setComplementaryKeywordsInputError("");
   };
 
   const openEditModal = (requirement) => {
@@ -869,7 +871,7 @@ export default function Requirement() {
     setMandatorySentencesInputError("");
     setComplementarySentencesInputError("");
     setMandatoryKeywordsInputError("");
-    setComplementaryKeywordsInputError(""); 
+    setComplementaryKeywordsInputError("");
   }
 
   const handleNumberChange = useCallback(
@@ -1142,17 +1144,30 @@ export default function Requirement() {
   );
 
   const handleAspectsChange = useCallback(
-    (selectedIds) => {
+    (value) => {
+      console.log(value)
+      if (!value) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          aspect: "",
+        }));
+        if (aspectInputError) {
+          setAspectInputError(null);
+        }
+        return;
+      }
       setFormData((prevFormData) => ({
         ...prevFormData,
-        aspects: Array.from(selectedIds),
+        aspect: value,
       }));
-      if (aspectInputError && selectedIds.size > 0) {
+
+      if (aspectInputError && value.trim() !== "") {
         setAspectInputError(null);
       }
     },
     [aspectInputError, setFormData, setAspectInputError]
   );
+
 
   const handleMandatoryDescriptionChange = useCallback(
     (e) => {
@@ -1250,6 +1265,20 @@ export default function Requirement() {
     setPage(1);
   }, []);
 
+  const openModalDescription = (requirement, field, title) => {
+    setSelectedRequirement({
+      title: title,
+      description: requirement[field] || "No hay información disponible"
+    });
+    setShowDescriptionModal(true);
+  };
+  
+
+  const closeModalDescription = () => {
+    setShowDescriptionModal(false);
+    setSelectedRequirement(null);
+  };
+
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const onPageChange = (newPage) => setPage(newPage);
@@ -1303,35 +1332,35 @@ export default function Requirement() {
     [removeRequirement]
   );
 
-
   if (loading && isFirstRender) {
-    return (
-      <div role="status" 
-      className="fixed inset-0 flex items-center justify-center"
-      >
-        <Spinner 
-        className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32" 
-        color="secondary" />
-      </div>
-    );
-  }
-
-  if (error) return <Error title={error.title} message={error.message} />;
-  if (subjectError)
-    return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError)
-    return <Error title={aspectError.title} message={aspectError.message} />;
-  if (errorStates)
-    return <Error title={errorStates.title} message={errorStates.message} />;
-
-  if (errorMunicipalities) {
-    return (
-      <Error
-        title={errorMunicipalities.title}
-        message={errorMunicipalities.message}
-      />
-    );
-  }
+     return (
+       <div
+         role="status"
+         className="fixed inset-0 flex items-center justify-center"
+       >
+         <Spinner
+           className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
+           color="secondary"
+         />
+       </div>
+     );
+   }
+   if (error) return <Error title={error.title} message={error.message} />;
+   if (subjectError)
+     return <Error title={subjectError.title} message={subjectError.message} />;
+   if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+     return <Error title={aspectError.title} message={aspectError.message} />;
+   if (errorStates)
+     return <Error title={errorStates.title} message={errorStates.message} />;
+ 
+   if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
+     return (
+       <Error
+         title={errorMunicipalities.title}
+         message={errorMunicipalities.message}
+       />
+     );
+   }
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
@@ -1425,6 +1454,7 @@ export default function Requirement() {
                         columnKey={columnKey}
                         openEditModal={openEditModal}
                         handleDelete={handleDelete}
+                        openModalDescription={openModalDescription}
                       />
                     </TableCell>
                   )}
@@ -1463,6 +1493,15 @@ export default function Requirement() {
             filteredItems: requirements,
           }}
         />
+        {selectedRequirement && (
+          <DescriptionModal
+          isOpen={showDescriptionModal}
+          onClose={closeModalDescription}
+          title={selectedRequirement?.title || ""}
+          description={selectedRequirement?.description || ""}
+        />
+        )}
+
         {isCreateModalOpen && (
           <CreateModal
             config={{
@@ -1502,6 +1541,8 @@ export default function Requirement() {
               municipalityError: municipalityInputError,
               setMunicipalityError: setMunicipalityInputError,
               isMunicipalityActive: isMunicipalityActive,
+              loadingMunicipalities: loadingMunicipalities,
+              errorMunicipalities: errorMunicipalities,
               handleMunicipalityChange: handleMunicipalityChange,
               subjects: subjects,
               subjectInputError: subjectInputError,
@@ -1542,7 +1583,7 @@ export default function Requirement() {
               closeModalEdit: closeEditModal,
               formData: formData,
               setFormData: setFormData,
-              editRequirement:modifyRequirement, 
+              editRequirement: modifyRequirement,
               selectedRequirement: selectedRequirement,
               numberError: numberInputError,
               setNumberError: setNumberInputError,

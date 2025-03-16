@@ -20,7 +20,8 @@ import mas_icon from "../../assets/mas.png";
  * @component
  * @param {Object} props - Component properties.
  * @param {Object} props.config - Configuration object for the component.
- * @param {boolean} props.config.isCreateModalOpen - Indicates if the create modal is open.
+ * @param {boolean} props.config.isCreateModalOpen - Indicates whether the create modal is open.
+ * @param {boolean} props.config.isEditModalOpen - Indicates whether the edit modal is open.
  * @param {Function} props.config.onRowsPerPageChange - Callback for changing rows per page.
  * @param {number} props.config.totalRequirements - Total number of requirements.
  * @param {Function} props.config.openModalCreate - Function to open the create modal.
@@ -75,7 +76,8 @@ import mas_icon from "../../assets/mas.png";
 
 function TopContent({ config }) {
   const {
-    //isCreateModalOpen,
+    isCreateModalOpen,
+    isEditModalOpen,
     onRowsPerPageChange,
     totalRequirements,
     openModalCreate,
@@ -161,6 +163,7 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           placeholder="Seleccionar condición..."
           className="w-full"
           listboxProps={{
@@ -180,6 +183,7 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           placeholder="Seleccionar evidencia..."
           className="w-full"
           listboxProps={{
@@ -199,6 +203,7 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           placeholder="Seleccionar periodicidad..."
           className="w-full"
           listboxProps={{
@@ -218,6 +223,7 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           placeholder="Buscar por tipo de requerimiento..."
           className="w-full"
           listboxProps={{
@@ -240,6 +246,7 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           placeholder="Seleccionar jurisdicción..."
           className="w-full"
           listboxProps={{
@@ -258,9 +265,9 @@ function TopContent({ config }) {
         <Autocomplete
           color="primary"
           variant="faded"
+          onClear={onClear}
           defaultItems={states.map((estado) => ({ id: estado, name: estado }))}
           isLoading={stateLoading}
-          onClear={onClear}
           placeholder="Buscar por estado..."
           startContent={
             <img
@@ -305,7 +312,9 @@ function TopContent({ config }) {
               />
             }
               className="w-full"
-              isLoading={municipalitiesLoading}
+              isLoading={
+                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen
+              }
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
               listboxProps={{
@@ -434,7 +443,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-              aspectsLoading
+                aspectsLoading && !isCreateModalOpen && !isEditModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedAspects}
@@ -513,7 +522,8 @@ function TopContent({ config }) {
 
 TopContent.propTypes = {
   config: PropTypes.shape({
-    isCreateModalOpen: PropTypes.bool, 
+    isCreateModalOpen: PropTypes.bool.isRequired,
+    isEditModalOpen: PropTypes.bool.isRequired, 
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalRequirements: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,

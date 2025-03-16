@@ -503,7 +503,7 @@ function TopContent({ config }) {
             onPress={openModalCreate}
             endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4" />}
           >
-            Nuevo Requerimiento
+            Nuevo Requerimientos
           </Button>
         </div>
       </div>

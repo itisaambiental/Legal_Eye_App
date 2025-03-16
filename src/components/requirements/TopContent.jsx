@@ -163,6 +163,9 @@ function TopContent({ config }) {
           variant="faded"
           placeholder="Seleccionar condición..."
           className="w-full"
+          listboxProps={{
+            emptyContent: "Condición no encontrada",
+          }}
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedCondition}
           onSelectionChange={onFilterByCondition}
@@ -179,6 +182,9 @@ function TopContent({ config }) {
           variant="faded"
           placeholder="Seleccionar evidencia..."
           className="w-full"
+          listboxProps={{
+            emptyContent: "Evidencia no encontrada",
+          }}
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedEvidence}
           onSelectionChange={onFilterByEvidence}
@@ -195,6 +201,9 @@ function TopContent({ config }) {
           variant="faded"
           placeholder="Seleccionar periodicidad..."
           className="w-full"
+          listboxProps={{
+            emptyContent: "Periodicidad no encontrada",
+          }}
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedPeriodicity}
           onSelectionChange={onFilterByPeriodicity}
@@ -211,6 +220,9 @@ function TopContent({ config }) {
           variant="faded"
           placeholder="Buscar por tipo de requerimiento..."
           className="w-full"
+          listboxProps={{
+            emptyContent: "Tipo de requerimiento no encontrado",
+          }}
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedRequirementType}
           onSelectionChange={onFilterByRequirementType}
@@ -230,6 +242,9 @@ function TopContent({ config }) {
           variant="faded"
           placeholder="Seleccionar jurisdicción..."
           className="w-full"
+          listboxProps={{
+            emptyContent: "Jurisdicción no encontrada",
+          }}
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           selectedKey={selectedJurisdiction}
           onSelectionChange={onFilterByJurisdiction}
@@ -536,7 +551,6 @@ TopContent.propTypes = {
     onFilterByMandatoryKeywords: PropTypes.func,
     filterByComplementaryKeywords: PropTypes.string,
     onFilterByComplementaryKeywords: PropTypes.func,
-
     subjects: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -552,12 +566,13 @@ TopContent.propTypes = {
         aspect_name: PropTypes.string.isRequired,
       })
     ).isRequired,
-    selectedAspects: PropTypes.arrayOf(PropTypes.string),
+    selectedAspects: PropTypes.arrayOf(PropTypes.string), 
     aspectsLoading: PropTypes.bool.isRequired,
     onFilterByAspects: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
   }).isRequired,
 };
+
 
 export default TopContent;
 

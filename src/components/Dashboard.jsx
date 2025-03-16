@@ -238,7 +238,7 @@ function Dashboard() {
                   src={think_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
-                <span className="ms-3 font-medium">Análisis Posterior</span>
+                <span className="ms-3 font-medium">Identifación de Requerimientos</span>
               </Link>
             </li>
             <li>

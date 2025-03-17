@@ -10,7 +10,6 @@ import {
   Button,
   Tooltip,
 } from "@heroui/react";
-//import { useNavigate } from "react-router-dom";
 import useRequirement from "../../hooks/requirement/useRequirements.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
@@ -134,7 +133,6 @@ export default function Requirement() {
   const debounceTimeout = useRef(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRequirement, setSelectedRequirement] = useState(null);
   const [numberInputError, setNumberInputError] = useState("");
   const [nameInputError, setNameInputError] = useState("");
@@ -158,6 +156,7 @@ export default function Requirement() {
   const [complementaryKeywordsInputError, setComplementaryKeywordsInputError] = useState("");
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     number: "",
@@ -1667,7 +1666,7 @@ export default function Requirement() {
             setIsDeletingBatch: setIsDeletingBatch,
             isDeletingBatch: isDeletingBatch,
             selectedKeys: selectedKeys,
-            requirement: requirements,
+            requirements: requirements,
             deleteRequirementBatch: removeRequirementBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,

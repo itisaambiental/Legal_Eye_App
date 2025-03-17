@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 /**
  * DeleteModal component
  *
- * This component displays a modal dialog to confirm the deletion of one or multiple legal basis.
+ * This component displays a modal dialog to confirm the deletion of one or multiple requirements.
  * It includes options to proceed with deletion or cancel the action, with appropriate feedback
  * displayed to the user upon success or failure.
  *
@@ -25,10 +25,10 @@ import { toast } from "react-toastify";
  * @param {Function} props.config.closeDeleteModal - Function to close the modal.
  * @param {Function} props.config.setIsDeletingBatch - Function to set the loading state for batch deletion.
  * @param {boolean} props.config.isDeletingBatch - Indicates whether the deletion process is ongoing.
- * @param {Set|string} props.config.selectedKeys - Set of selected legalBasis IDs for deletion or "all" for all legalBasis.
- * @param {Array} props.config.legalBasis - Array of all legalBasis objects.
- * @param {Function} props.config.deleteLegalBasisBatch - Function to delete multiple legalBasis by their IDs.
- * @param {Function} props.config.setSelectedKeys - Function to reset selected legalBasis after deletion.
+ * @param {Set|string} props.config.selectedKeys - Set of selected Requirement IDs for deletion or "all" for all Requirements.
+ * @param {Array} props.config.requirements - Array of all Requirement objects.
+ * @param {Function} props.config.deleteRequirementBatch - Function to delete multiple Requirements by their IDs.
+ * @param {Function} props.config.setSelectedKeys - Function to reset selected Requirements after deletion.
  * @param {string} props.config.check - URL or path for the success icon displayed on toast notifications.
  *
  * @returns {JSX.Element} Rendered DeleteModal component with deletion confirmation and feedback.
@@ -41,25 +41,25 @@ function DeleteModal({ config }) {
     setIsDeletingBatch,
     isDeletingBatch,
     selectedKeys,
-    legalBasis,
-    deleteLegalBasisBatch,
+    requirements,
+    deleteRequirementBatch,
     setSelectedKeys,
     check,
   } = config;
 
   const handleDeleteBatch = useCallback(async () => {
     setIsDeletingBatch(true);
-    const legalBasisIds =
+    const requirementIds =
       selectedKeys === "all"
-        ? legalBasis.map((legalBase) => legalBase.id)
+        ? requirements.map((req) => req.id)
         : Array.from(selectedKeys).map((id) => Number(id));
     try {
-      const { success, error } = await deleteLegalBasisBatch(legalBasisIds);
+      const { success, error } = await deleteRequirementBatch(requirementIds);
       if (success) {
         toast.info(
-          legalBasisIds.length <= 1
-            ? "Fundamento legal eliminado con éxito"
-            : "Fundamentos legales eliminados con éxito",
+          requirementIds.length <= 1
+            ? "Requerimiento eliminado con éxito"
+            : "Requerimientos eliminados con éxito",
           {
             icon: () => <img src={check} alt="Success Icon" />,
             progressStyle: { background: "#113c53" },
@@ -73,15 +73,15 @@ function DeleteModal({ config }) {
     } catch (error) {
       console.error(error);
       toast.error(
-        "Algo salió mal al eliminar los fundamentos legales. Intente de nuevo"
+        "Algo salió mal al eliminar los requerimientos. Intente de nuevo"
       );
     } finally {
       setIsDeletingBatch(false);
     }
   }, [
     selectedKeys,
-    deleteLegalBasisBatch,
-    legalBasis,
+    deleteRequirementBatch,
+    requirements,
     setIsDeletingBatch,
     setSelectedKeys,
     closeDeleteModal,
@@ -103,10 +103,10 @@ function DeleteModal({ config }) {
           <>
             <ModalHeader className="text-center">
               {selectedKeys === "all"
-                ? "¿Estás seguro de que deseas eliminar TODOS los Fundamentos Legales?"
+                ? "¿Estás seguro de que deseas eliminar TODOS los Requerimientos?"
                 : selectedKeys.size <= 1
-                ? "¿Estás seguro de que deseas eliminar este Fundamento Legal?"
-                : "¿Estás seguro de que deseas eliminar estos Fundamentos Legales?"}
+                ? "¿Estás seguro de que deseas eliminar este Requerimiento?"
+                : "¿Estás seguro de que deseas eliminar estos Requerimientos?"}
             </ModalHeader>
             <ModalBody className="text-center">
               <p className="mb-5 text-lg font-normal text-primary">
@@ -154,8 +154,8 @@ DeleteModal.propTypes = {
       PropTypes.string,
       PropTypes.instanceOf(Set),
     ]).isRequired,
-    legalBasis: PropTypes.array.isRequired,
-    deleteLegalBasisBatch: PropTypes.func.isRequired,
+    requirements: PropTypes.array.isRequired,
+    deleteRequirementBatch: PropTypes.func.isRequired,
     setSelectedKeys: PropTypes.func.isRequired,
     check: PropTypes.string.isRequired,
   }).isRequired,

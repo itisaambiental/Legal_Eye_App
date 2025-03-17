@@ -20,7 +20,6 @@ export default async function resetPassword(gmail) {
     if (response.status !== 200) {
       throw new Error("Response is NOT ok");
     }
-
     return true;
   } catch (error) {
     console.error("Error initiating password reset:", error);

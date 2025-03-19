@@ -32,12 +32,12 @@ const columns = [
   { name: "Condición", uid: "requirement_condition", align: "start" },
   { name: "Evidencia", uid: "evidence", align: "start" },
   { name: "Periodicidad", uid: "periodicity", align: "start" },
-  { name: "Tipo", uid: "requirement_type", align: "start" },
   { name: "Jurisdicción", uid: "jurisdiction", align: "start" },
   { name: "Estado", uid: "state", align: "start" },
   { name: "Municipio", uid: "municipality", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
   { name: "Aspecto", uid: "aspect", align: "start" },
+  { name: "Tipo", uid: "requirement_type", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -1109,7 +1109,7 @@ export default function Requirement() {
         setFormData((prevFormData) => ({
           ...prevFormData,
           subject: "",
-          aspects: [],
+          aspect: "",
         }));
         if (subjectInputError) {
           setSubjectInputError(null);
@@ -1122,7 +1122,7 @@ export default function Requirement() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         subject: value,
-        aspects: [],
+        aspect: "",
       }));
       if (subjectInputError && value.trim() !== "") {
         setSubjectInputError(null);
@@ -1144,7 +1144,6 @@ export default function Requirement() {
 
   const handleAspectsChange = useCallback(
     (value) => {
-      console.log(value)
       if (!value) {
         setFormData((prevFormData) => ({
           ...prevFormData,

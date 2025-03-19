@@ -149,11 +149,10 @@ const CreateModal = ({ config }) => {
     const handleCreate = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-
         if (step === 1) {
             // Validaciones del Primer Modal
             if (formData.number === "") {
-                setNumberError("El campo es obligatorio.");
+                setNumberError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
@@ -161,7 +160,7 @@ const CreateModal = ({ config }) => {
             }
 
             if (!formData.name.trim()) {
-                setNameError("El nombre es obligatorio.");
+                setNameError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
@@ -192,7 +191,7 @@ const CreateModal = ({ config }) => {
                 setPeriodicityError(null);
             }
             if (formData.jurisdiction === "") {
-                setJurisdictionError("Este campo es obligatorio");
+                setJurisdictionError("Debes seleccionar una jurisdicción.");
                 setIsLoading(false);
                 return;
             } else {
@@ -226,15 +225,15 @@ const CreateModal = ({ config }) => {
             }
 
             if (formData.subject === "") {
-                setSubjectError("Este campo es obligatorio");
+                setSubjectError("Debes seleccionar una materia.");
                 setIsLoading(false);
                 return;
             } else {
                 setSubjectError(null);
             }
 
-            if (!formData.aspect === "") {
-                setAspectInputError("Debes seleccionar al menos un aspecto");
+            if (formData.aspect === "") {
+                setAspectInputError("Debes seleccionar un aspecto.");
                 setIsLoading(false);
                 return;
             } else {
@@ -257,7 +256,7 @@ const CreateModal = ({ config }) => {
         if (step === 2) {
             // Validaciones del Segundo Modal
             if (formData.mandatoryDescription === "") {
-                setMandatoryDescriptionError("Este campo es obligatorio");
+                setMandatoryDescriptionError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
@@ -265,35 +264,35 @@ const CreateModal = ({ config }) => {
             }
 
             if (formData.complementaryDescription === "") {
-                setComplementaryDescriptionError("Este campo es obligatorio");
+                setComplementaryDescriptionError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setComplementaryDescriptionError(null);
             }
             if (formData.mandatorySentences === "") {
-                setMandatorySentencesError("Este campo es obligatorio");
+                setMandatorySentencesError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setMandatorySentencesError(null);
             }
             if (formData.complementarySentences === "") {
-                setComplementarySentencesError("Este campo es obligatorio");
+                setComplementarySentencesError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setComplementarySentencesError(null);
             }
             if (formData.mandatoryKeywords === "") {
-                setMandatoryKeywordsError("Este campo es obligatorio");
+                setMandatoryKeywordsError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setMandatoryKeywordsError(null);
             }
             if (formData.complementaryKeywords === "") {
-                setComplementaryKeywordsError("Este campo es obligatorio");
+                setComplementaryKeywordsError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
@@ -386,15 +385,15 @@ const CreateModal = ({ config }) => {
                                     <div className="relative z-0 w-full group">
                                         <input
                                             type="text"
-                                            name="nombre"
-                                            id="floating_nombre"
+                                            name="number"
+                                            id="floating_number"
                                             value={formData.number}
                                             onChange={handleNumberChange}
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
                                             placeholder=""
                                         />
                                         <label
-                                            htmlFor="floating_nombre"
+                                            htmlFor="floating_number"
                                             className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                         >
                                             Número
@@ -743,7 +742,7 @@ const CreateModal = ({ config }) => {
                                             variant="bordered"
                                         />
                                         {complementaryDescriptionError && (
-                                            <p className="text-red-500">{complementaryDescriptionError}</p>
+                                            <p className="mt-2 text-sm text-red">{complementaryDescriptionError}</p>
                                         )}
                                     </div>
 
@@ -762,7 +761,7 @@ const CreateModal = ({ config }) => {
                                             variant="bordered"
                                         />
                                         {mandatorySentencesError && (
-                                            <p className="text-red">{mandatorySentencesError}</p>
+                                            <p className="mt-2 text-sm text-red">{mandatorySentencesError}</p>
                                         )}
                                     </div>
 
@@ -781,7 +780,7 @@ const CreateModal = ({ config }) => {
                                             variant="bordered"
                                         />
                                         {complementarySentencesError && (
-                                            <p className="text-red">{complementarySentencesError}</p>
+                                            <p className="mt-2 text-sm text-red">{complementarySentencesError}</p>
                                         )}
                                     </div>
 
@@ -800,7 +799,7 @@ const CreateModal = ({ config }) => {
                                             variant="bordered"
                                         />
                                         {mandatoryKeywordsError && (
-                                            <p className="text-red">{mandatoryKeywordsError}</p>
+                                            <p className="mt-2 text-sm text-red">{mandatoryKeywordsError}</p>
                                         )}
                                     </div>
 
@@ -819,7 +818,7 @@ const CreateModal = ({ config }) => {
                                             variant="bordered"
                                         />
                                         {complementaryKeywordsError && (
-                                            <p className="text-red">{complementaryKeywordsError}</p>
+                                            <p className="mt-2 text-sm text-red">{complementaryKeywordsError}</p>
                                         )}
                                     </div>
 

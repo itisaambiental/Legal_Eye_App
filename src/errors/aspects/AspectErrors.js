@@ -129,7 +129,6 @@ class AspectErrors {
    * @returns {Object} - A user-friendly error object containing a title and message.
    */
   static handleError({ code, error, httpError, items }) {
-    console.log(code, error, httpError, items)
     const message = error || httpError;
     if (message && AspectErrors.ErrorMessagesMap[message]) {
       const key = AspectErrors.ErrorMessagesMap[message];

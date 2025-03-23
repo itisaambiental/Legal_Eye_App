@@ -15,8 +15,8 @@ class LegalBasisErrors {
   static DUPLICATED_NAME = "DUPLICATED_NAME";
   static DUPLICATED_ABBREVIATION = "DUPLICATED_ABBREVIATION";
   static DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
-  static PENDING_JOBS_CONFLICT = "PENDING_JOBS_CONFLICT";
-  static MULTIPLE_PENDING_JOBS_CONFLICT = "MULTIPLE_PENDING_JOBS_CONFLICT";
+  static ARTICLE_EXTRACTION_JOBS_CONFLICT = "ARTICLE_EXTRACTION_JOBS_CONFLICT";
+  static MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT = "MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT";
   static ARTICLES_EXTRACTION_CONFLICT = "ARTICLES_EXTRACTION_CONFLICT";
   static DOCUMENT_CONFLICT = "DOCUMENT_CONFLICT";
   static REMOVE_DOCUMENT_PENDING_CONFLICT = "REMOVE_DOCUMENT_PENDING_CONFLICT";
@@ -71,11 +71,11 @@ class LegalBasisErrors {
       title: "Documento requerido",
       message: "Debe proporcionarse un documento si se desea extraer artículos.",
     },
-    [LegalBasisErrors.PENDING_JOBS_CONFLICT]: {
+    [LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
       message: "El fundamento legal no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
     },
-    [LegalBasisErrors.MULTIPLE_PENDING_JOBS_CONFLICT]: {
+    [LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
       message: ({ items }) =>
         items.length === 1
@@ -122,8 +122,8 @@ class LegalBasisErrors {
     "A new document cannot be uploaded because there are pending jobs for this Legal Basis": LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT,
     "Subject not found": LegalBasisErrors.SUBJECT_NOT_FOUND,
     "Aspects not found for IDs": LegalBasisErrors.ASPECTS_NOT_FOUND,
-    "Cannot delete LegalBasis with pending jobs": LegalBasisErrors.PENDING_JOBS_CONFLICT,
-    "Cannot delete Legal Bases with pending jobs": LegalBasisErrors.MULTIPLE_PENDING_JOBS_CONFLICT,
+    "Cannot delete LegalBasis with pending Article Extraction jobs": LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT,
+    "Cannot delete Legal Bases with pending Article Extraction jobs": LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT,
   };
 
   /**
@@ -142,7 +142,7 @@ class LegalBasisErrors {
       const key = LegalBasisErrors.ErrorMessagesMap[message];
       const errorConfig = LegalBasisErrors.errorMap[key];
       if (
-        key === LegalBasisErrors.MULTIPLE_PENDING_JOBS_CONFLICT &&
+        key === LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT &&
         items &&
         items.length > 0
       ) {

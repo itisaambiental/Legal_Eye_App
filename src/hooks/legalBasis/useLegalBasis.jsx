@@ -615,7 +615,7 @@ const modifyLegalBasis = useCallback(
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
         const legalBases =
-          error.response?.data?.errors?.LegalBases?.map(
+          error.response?.data?.errors?.legalBases?.map(
             (legalBase) => legalBase.name
           ) || legalBasisIds;
         const handledError = LegalBasisErrors.handleError({

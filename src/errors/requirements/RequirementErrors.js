@@ -38,7 +38,7 @@ class RequirementErrors {
       },
       [RequirementErrors.NOT_FOUND]: {
         title: "Requerimiento no encontrado",
-        message: "El requerimiento solicitado no existe. Verifique su existencia recargando la app e intente de nuevo.",
+        message: "El requerimiento no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.",
       },
       [RequirementErrors.MULTIPLE_NOT_FOUND]: {
         title: "Varios requerimientos legales no encontrados",

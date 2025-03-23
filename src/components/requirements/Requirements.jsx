@@ -232,7 +232,6 @@ export default function Requirement() {
 
   const handleFilter = useCallback(
     (field, value) => {
-      console.log(field, value)
       if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
       debounceTimeout.current = setTimeout(async () => {
         setPage(1);
@@ -362,7 +361,6 @@ export default function Requirement() {
 
   const handleFilterByName = useCallback(
     (value) => {
-      console.log("Name", value)
       if (value.trim() === "") {
         handleClear();
         return;

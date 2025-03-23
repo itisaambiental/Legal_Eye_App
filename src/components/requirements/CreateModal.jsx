@@ -17,30 +17,82 @@ import check from "../../assets/check.png";
 import go_back from "../../assets/volver.png";
 
 /**
- * CreateModal component
+ * CreateModal Component
  *
- * Functional component used for rendering the modal to create a new requirement.
- *
+ * Functional component that renders a multi-step modal for creating new requirements.
+ * 
  * @component
- * @param {Object} props - Component properties.
- * @param {Object} props.config - Configuration object for the component.
- * @param {boolean} props.config.isOpen - Indicates whether the modal is open.
+ * @param {Object} props - Component props.
+ * @param {Object} props.config - Configuration object containing modal state, form data, handlers, and validation setters.
+ * @param {boolean} props.config.isOpen - Whether the modal is currently open.
  * @param {Function} props.config.closeModalCreate - Function to close the modal.
- * @param {Object} props.config.formData - Form data for the requirement.
- * @param {Function} props.config.addRequirement - Function to add a new requirement.
- * @param {string|null} props.config.numberError - Error message for "Number" field.
- * @param {Function} props.config.setNumberError - Function to set "Number" field error.
- * @param {Function} props.config.handleNumberChange - Function to handle changes in "Number" field.
- * @param {string|null} props.config.nameError - Error message for "Name" field.
- * @param {Function} props.config.setNameError - Function to set "Name" field error.
- * @param {Function} props.config.handleNameChange - Function to handle changes in "Name" field.
- * @param {Function} props.config.handleConditionChange - Function to handle changes in "Condition" field.
- * @param {Function} props.config.handleEvidenceChange - Function to handle changes in "Evidence" field.
- * @param {Function} props.config.handlePeriodicityChange - Function to handle changes in "Periodicity" field.
- * @param {Function} props.config.handleRequirementType - Function to handle changes in "Requirement Type" field.
- * @param {Function} props.config.fetchRequirements - Function to fetch updated requirements.
- *@param {Function} props.config.setJurisdictionError 
- * @returns {JSX.Element} - Rendered CreateModal component.
+ * @param {Object} props.config.formData - Object containing the values for all form fields.
+ * @param {Function} props.config.addRequirement - Function to submit and create a new requirement.
+ * @param {string|null} props.config.numberError - Error message for the "Number" input field.
+ * @param {Function} props.config.setNumberError - Setter for the "Number" field error.
+ * @param {Function} props.config.handleNumberChange - Handler for changes in the "Number" input field.
+ * @param {string|null} props.config.nameError - Error message for the "Name" input field.
+ * @param {Function} props.config.setNameError - Setter for the "Name" field error.
+ * @param {Function} props.config.handleNameChange - Handler for changes in the "Name" input field.
+ * @param {string|null} props.config.conditionError - Error message for the "Condition" autocomplete field.
+ * @param {Function} props.config.handleConditionChange - Handler for changes in the "Condition" autocomplete field.
+ * @param {string|null} props.config.evidenceError - Error message for the "Evidence" autocomplete field.
+ * @param {Function} props.config.handleEvidenceChange - Handler for changes in the "Evidence" autocomplete field.
+ * @param {string|null} props.config.periodicityError - Error message for the "Periodicity" autocomplete field.
+ * @param {Function} props.config.handlePeriodicityChange - Handler for changes in the "Periodicity" autocomplete field.
+ * @param {string|null} props.config.requirementTypeError - Error message for the "Requirement Type" autocomplete field.
+ * @param {Function} props.config.handleRequirementType - Handler for changes in the "Requirement Type" autocomplete field.
+ * @param {Function} props.config.setConditionError - Setter for the "Condition" field error.
+ * @param {Function} props.config.setEvidenceError - Setter for the "Evidence" field error.
+ * @param {Function} props.config.setPeriodicityError - Setter for the "Periodicity" field error.
+ * @param {Function} props.config.setRequirementTypeError - Setter for the "Requirement Type" field error.
+ * @param {string|null} props.config.jurisdictionError - Error message for the "Jurisdiction" autocomplete field.
+ * @param {Function} props.config.setJurisdictionError - Setter for the "Jurisdiction" field error.
+ * @param {Function} props.config.handleJurisdictionChange - Handler for changes in the "Jurisdiction" autocomplete field.
+ * @param {Array} props.config.states - List of available states for the "State" autocomplete.
+ * @param {string|null} props.config.stateError - Error message for the "State" autocomplete.
+ * @param {Function} props.config.setStateError - Setter for the "State" field error.
+ * @param {boolean} props.config.isStateActive - Enables/disables the "State" autocomplete depending on jurisdiction.
+ * @param {Function} props.config.handleStateChange - Handler for changes in the "State" autocomplete.
+ * @param {Function} props.config.clearMunicipalities - Function to clear municipalities when the state changes.
+ * @param {Array} props.config.municipalities - List of available municipalities for the "Municipality" autocomplete.
+ * @param {string|null} props.config.municipalityError - Error message for the "Municipality" autocomplete.
+ * @param {Function} props.config.setMunicipalityError - Setter for the "Municipality" field error.
+ * @param {boolean} props.config.isMunicipalityActive - Enables/disables the "Municipality" autocomplete.
+ * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are being loaded.
+ * @param {Object|null} props.config.errorMunicipalities - Error object when fetching municipalities.
+ * @param {Function} props.config.handleMunicipalityChange - Handler for changes in the "Municipality" autocomplete.
+ * @param {Array} props.config.subjects - List of available subjects for the "Subject" autocomplete.
+ * @param {string|null} props.config.subjectInputError - Error message for the "Subject" autocomplete.
+ * @param {Function} props.config.setSubjectError - Setter for the "Subject" field error.
+ * @param {Function} props.config.handleSubjectChange - Handler for changes in the "Subject" autocomplete.
+ * @param {Array} props.config.aspects - List of available aspects for the "Aspect" autocomplete.
+ * @param {string|null} props.config.aspectError - Error message for the "Aspect" autocomplete.
+ * @param {Function} props.config.setAspectInputError - Setter for the "Aspect" field error.
+ * @param {boolean} props.config.isAspectsActive - Enables/disables the "Aspect" autocomplete depending on subject selection.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are being loaded.
+ * @param {Object|null} props.config.errorAspects - Error object when fetching aspects.
+ * @param {Function} props.config.handleAspectsChange - Handler for changes in the "Aspect" autocomplete.
+ * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for the "Mandatory Description" textarea.
+ * @param {string|null} props.config.mandatoryDescriptionError - Error message for the "Mandatory Description" textarea.
+ * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" field error.
+ * @param {Function} props.config.handleComplementaryDescriptionChange - Handler for the "Complementary Description" textarea.
+ * @param {string|null} props.config.complementaryDescriptionError - Error message for the "Complementary Description" textarea.
+ * @param {Function} props.config.setComplementaryDescriptionError - Setter for the "Complementary Description" field error.
+ * @param {Function} props.config.handleMandatorySentencesChange - Handler for the "Mandatory Sentences" textarea.
+ * @param {string|null} props.config.mandatorySentencesError - Error message for the "Mandatory Sentences" textarea.
+ * @param {Function} props.config.setMandatorySentencesError - Setter for the "Mandatory Sentences" field error.
+ * @param {Function} props.config.handleComplementarySentencesChange - Handler for the "Complementary Sentences" textarea.
+ * @param {string|null} props.config.complementarySentencesError - Error message for the "Complementary Sentences" textarea.
+ * @param {Function} props.config.setComplementarySentencesError - Setter for the "Complementary Sentences" field error.
+ * @param {Function} props.config.handleMandatoryKeywordsChange - Handler for the "Mandatory Keywords" textarea.
+ * @param {string|null} props.config.mandatoryKeywordsError - Error message for the "Mandatory Keywords" textarea.
+ * @param {Function} props.config.setMandatoryKeywordsError - Setter for the "Mandatory Keywords" field error.
+ * @param {Function} props.config.handleComplementaryKeywordsChange - Handler for the "Complementary Keywords" textarea.
+ * @param {string|null} props.config.complementaryKeywordsError - Error message for the "Complementary Keywords" textarea.
+ * @param {Function} props.config.setComplementaryKeywordsError - Setter for the "Complementary Keywords" field error.
+ *
+ * @returns {JSX.Element} Rendered modal for creating a new requirement.
  */
 
 const CreateModal = ({ config }) => {
@@ -119,7 +171,6 @@ const CreateModal = ({ config }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
 
-
     const getTooltipContentForState = () => {
         if (formData.jurisdiction === "Federal") {
             return "La jurisdicción debe ser estatal o local para habilitar este campo";
@@ -150,7 +201,6 @@ const CreateModal = ({ config }) => {
         e.preventDefault();
         setIsLoading(true);
         if (step === 1) {
-            // Validaciones del Primer Modal
             if (formData.number === "") {
                 setNumberError("Este campo es obligatorio.");
                 setIsLoading(false);
@@ -246,15 +296,12 @@ const CreateModal = ({ config }) => {
             } else {
                 setRequirementTypeError(null);
             }
-
-            // Si pasa todas las validaciones, avanzar al segundo paso
             setIsLoading(false);
             setStep(2);
             return;
         }
 
         if (step === 2) {
-            // Validaciones del Segundo Modal
             if (formData.mandatoryDescription === "") {
                 setMandatoryDescriptionError("Este campo es obligatorio.");
                 setIsLoading(false);
@@ -320,9 +367,7 @@ const CreateModal = ({ config }) => {
         };
 
         try {
-            // Envío de los datos (esto se puede conectar a una API o backend)
             const { success, error } = await addRequirement(requirementData);
-            console.log(requirementData)
             if (success) {
                 toast.info("El requerimiento ha sido registrado correctamente", {
                     icon: () => <img src={check} alt="Success Icon" />,
@@ -330,8 +375,7 @@ const CreateModal = ({ config }) => {
                         background: "#113c53",
                     },
                 });
-
-                closeModalCreate(); // Cerrar el modal después de registrar
+                closeModalCreate();
             } else {
                 toast.error(error);
             }
@@ -344,7 +388,7 @@ const CreateModal = ({ config }) => {
     }
 
     const handleBack = () => {
-        setStep(1); // Volver al primer paso
+        setStep(1);
     };
 
     return (

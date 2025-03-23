@@ -18,7 +18,6 @@ import microsoft from "../../../assets/microsoft.png";
  *
  * @param {Function} onLogin - Optional callback function triggered after successful login.
  * @example
- * <Login onLogin={() => console.log("User logged in")} />
  *
  *
  * @returns {JSX.Element} - Rendered Login component.

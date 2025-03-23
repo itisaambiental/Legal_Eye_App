@@ -16,6 +16,7 @@ import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
 import LegalBasisErrors from "../../errors/legalBasis/LegalBasisErrors";
+
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
  * @returns {Object} - Contains LegalBasis list, loading state, error state, and functions for LegalBasis operations.

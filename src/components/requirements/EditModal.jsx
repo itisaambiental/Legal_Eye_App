@@ -16,6 +16,92 @@ import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import go_back from "../../assets/volver.png";
 
+/**
+ * EditModal component
+ *
+ * This component allows users to edit a legal basis.
+ * It includes dynamic validations based on jurisdiction, management of
+ * aspects, states, and municipalities, and supports file uploads.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Object} props.config - Configuration object for the component.
+ * @param {boolean} props.config.isOpen - Whether the modal is open.
+ * @param {Function} props.config.closeModalEdit - Function to close the modal.
+ * @param {Object} props.config.selectedRequirement - The selected requirement to be edited.
+ * @param {Function} props.config.setFormData - Setter function to populate form data.
+ * @param {Object} props.config.formData - Object holding all form field values.
+ * @param {Function} props.config.editRequirement - Function to submit the updated requirement.
+ * @param {string|null} props.config.numberError - Error message for the "Number" input field.
+ * @param {Function} props.config.setNumberError - Setter for "Number" field error.
+ * @param {Function} props.config.handleNumberChange - Change handler for the "Number" input field.
+ * @param {string|null} props.config.nameError - Error message for the "Name" input field.
+ * @param {Function} props.config.setNameError - Setter for "Name" field error.
+ * @param {Function} props.config.handleNameChange - Change handler for the "Name" input field.
+ * @param {string|null} props.config.conditionError - Error message for the "Condition" dropdown.
+ * @param {Function} props.config.setConditionError - Setter for "Condition" field error.
+ * @param {Function} props.config.handleConditionChange - Change handler for the "Condition" dropdown.
+ * @param {string|null} props.config.evidenceError - Error message for the "Evidence" dropdown.
+ * @param {Function} props.config.setEvidenceError - Setter for "Evidence" field error.
+ * @param {Function} props.config.handleEvidenceChange - Change handler for the "Evidence" dropdown.
+ * @param {string|null} props.config.periodicityError - Error message for the "Periodicity" dropdown.
+ * @param {Function} props.config.setPeriodicityError - Setter for "Periodicity" field error.
+ * @param {Function} props.config.handlePeriodicityChange - Change handler for the "Periodicity" dropdown.
+ * @param {string|null} props.config.jurisdictionError - Error message for the "Jurisdiction" dropdown.
+ * @param {Function} props.config.setJurisdictionError - Setter for "Jurisdiction" field error.
+ * @param {Function} props.config.handleJurisdictionChange - Change handler for the "Jurisdiction" dropdown.
+ * @param {string|null} props.config.stateError - Error message for the "State" dropdown.
+ * @param {Function} props.config.setStateError - Setter for "State" field error.
+ * @param {Function} props.config.handleStateChange - Change handler for the "State" dropdown.
+ * @param {string|null} props.config.municipalityError - Error message for the "Municipality" dropdown.
+ * @param {Function} props.config.setMunicipalityError - Setter for "Municipality" field error.
+ * @param {Function} props.config.handleMunicipalityChange - Change handler for the "Municipality" dropdown.
+ * @param {string|null} props.config.subjectInputError - Error message for the "Subject" dropdown.
+ * @param {Function} props.config.setSubjectError - Setter for "Subject" field error.
+ * @param {Function} props.config.handleSubjectChange - Change handler for the "Subject" dropdown.
+ * @param {string|null} props.config.aspectError - Error message for the "Aspect" dropdown.
+ * @param {Function} props.config.setAspectInputError - Setter for "Aspect" field error.
+ * @param {Function} props.config.handleAspectsChange - Change handler for the "Aspect" dropdown.
+ * @param {string|null} props.config.requirementTypeError - Error message for the "Requirement Type" dropdown.
+ * @param {Function} props.config.setRequirementTypeError - Setter for "Requirement Type" field error.
+ * @param {Function} props.config.handleRequirementType - Change handler for the "Requirement Type" dropdown.
+ * @param {string|null} props.config.mandatoryDescriptionError - Error for the "Mandatory Description" textarea.
+ * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" error.
+ * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for "Mandatory Description" textarea.
+ * @param {string|null} props.config.complementaryDescriptionError - Error for the "Complementary Description" textarea.
+ * @param {Function} props.config.setComplementaryDescriptionError - Setter for the "Complementary Description" error.
+ * @param {Function} props.config.handleComplementaryDescriptionChange - Handler for "Complementary Description" textarea.
+ * @param {string|null} props.config.mandatorySentencesError - Error for the "Mandatory Sentences" textarea.
+ * @param {Function} props.config.setMandatorySentencesError - Setter for the "Mandatory Sentences" error.
+ * @param {Function} props.config.handleMandatorySentencesChange - Handler for "Mandatory Sentences" textarea.
+ * @param {string|null} props.config.complementarySentencesError - Error for the "Complementary Sentences" textarea.
+ * @param {Function} props.config.setComplementarySentencesError - Setter for the "Complementary Sentences" error.
+ * @param {Function} props.config.handleComplementarySentencesChange - Handler for "Complementary Sentences" textarea.
+ * @param {string|null} props.config.mandatoryKeywordsError - Error for the "Mandatory Keywords" textarea.
+ * @param {Function} props.config.setMandatoryKeywordsError - Setter for the "Mandatory Keywords" error.
+ * @param {Function} props.config.handleMandatoryKeywordsChange - Handler for "Mandatory Keywords" textarea.
+ * @param {string|null} props.config.complementaryKeywordsError - Error for the "Complementary Keywords" textarea.
+ * @param {Function} props.config.setComplementaryKeywordsError - Setter for the "Complementary Keywords" error.
+ * @param {Function} props.config.handleComplementaryKeywordsChange - Handler for "Complementary Keywords" textarea.
+ * @param {Array} props.config.states - List of available states.
+ * @param {boolean} props.config.isStateActive - Enables/disables the "State" dropdown.
+ * @param {Function} props.config.clearMunicipalities - Clears municipalities when the state is changed.
+ * @param {Array} props.config.municipalities - List of available municipalities.
+ * @param {boolean} props.config.isMunicipalityActive - Enables/disables the "Municipality" dropdown.
+ * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are loading.
+ * @param {Object|null} props.config.errorMunicipalities - Error object related to municipality fetching.
+ * @param {Array} props.config.subjects - List of available subjects.
+ * @param {boolean} props.config.isAspectsActive - Enables/disables the "Aspect" dropdown.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
+ * @param {Array} props.config.aspects - List of available aspects.
+ * @param {Object|null} props.config.errorAspects - Error object related to aspect fetching.
+ * @param {Function} props.config.setIsStateActive - Setter to enable/disable state input.
+ * @param {Function} props.config.setIsMunicipalityActive - Setter to enable/disable municipality input.
+ * @param {Function} props.config.setIsAspectsActive - Setter to enable/disable aspect input.
+ * @param {Function} props.config.clearAspects - Clears the aspect list.
+ * @param {Function} props.config.fetchMunicipalities - Fetches municipalities based on the state.
+ * @param {Function} props.config.fetchAspects - Fetches aspects based on the subject.
+ */
 const EditModal = ({ config }) => {
   const {
     isOpen,
@@ -111,9 +197,7 @@ const EditModal = ({ config }) => {
         state: selectedRequirement.state,
         municipality: selectedRequirement.municipality,
         subject: selectedRequirement.subject?.subject_id.toString(),
-        aspect: selectedRequirement.aspects?.map((aspect) =>
-          aspect.aspect_id.toString()
-        ),
+        aspect: selectedRequirement.aspect.aspect_id.toString(),
         requirementType: selectedRequirement.requirement_type,
         mandatoryDescription: selectedRequirement.mandatory_description,
         complementaryDescription: selectedRequirement.complementary_description,
@@ -191,6 +275,8 @@ const EditModal = ({ config }) => {
     }
     return null;
   };
+
+
 
   const handleBack = () => setStep(1);
 
@@ -349,6 +435,7 @@ const EditModal = ({ config }) => {
     }
     try {
       const requirementData = {
+        id: formData.id,
         requirementNumber: formData.number,
         requirementName: formData.name,
         condition: formData.condition,
@@ -371,19 +458,20 @@ const EditModal = ({ config }) => {
         requirementData
       );
       if (success) {
-        toast.info("El fundamento legal ha sido actualizado correctamente", {
+        toast.info("El requerimiento ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
           progressStyle: {
             background: "#113c53",
           },
         });
+        closeModalEdit()
       } else {
         toast.error(error);
       }
     } catch (error) {
       console.error(error);
       toast.error(
-        "Algo mal sucedió al actualizar el fundamento. Intente de nuevo."
+        "Algo mal sucedió al actualizar el requerimiento. Intente de nuevo."
       );
     } finally {
       setIsLoading(false);
@@ -395,6 +483,9 @@ const EditModal = ({ config }) => {
     <Modal
       isOpen={isOpen}
       onClose={closeModalEdit}
+      backdrop="opaque"
+      placement="center"
+      isDismissable={false}
       className="w-[60vw] max-w-2xl"
       classNames={{
         closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",

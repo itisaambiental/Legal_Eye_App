@@ -19,7 +19,7 @@ import go_back from "../../assets/volver.png";
 /**
  * EditModal component
  *
- * This component allows users to edit a legal basis.
+ * This component allows users to edit a requirement.
  * It includes dynamic validations based on jurisdiction, management of
  * aspects, states, and municipalities, and supports file uploads.
  *
@@ -380,15 +380,12 @@ const EditModal = ({ config }) => {
       } else {
         setRequirementTypeError(null);
       }
-
-      // Si pasa todas las validaciones, avanzar al segundo paso
       setIsLoading(false);
       setStep(2);
       return;
     }
 
     if (step === 2) {
-      // Validaciones del Segundo Modal
       if (formData.mandatoryDescription === "") {
         setMandatoryDescriptionError("Este campo es obligatorio.");
         setIsLoading(false);

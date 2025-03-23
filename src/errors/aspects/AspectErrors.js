@@ -134,7 +134,8 @@ class AspectErrors {
       const key = AspectErrors.ErrorMessagesMap[message];
       const errorConfig = AspectErrors.errorMap[key];
       if (
-        key === AspectErrors.MULTIPLE_ASSOCIATED_BASES &&
+        (key === AspectErrors.MULTIPLE_ASSOCIATED_BASES ||
+          key === AspectErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS) &&
         items &&
         items.length > 0
       ) {
@@ -143,6 +144,7 @@ class AspectErrors {
           message: errorConfig.message({ items }),
         };
       }
+
       return errorConfig;
     }
     switch (code) {

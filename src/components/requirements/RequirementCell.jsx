@@ -6,10 +6,12 @@ import {
   Button,
   DropdownTrigger,
   DropdownMenu,
+  Tooltip,
 } from "@heroui/react";
 import menu_icon from "../../assets/aplicaciones.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
+import watch_icon from "../../assets/ver.png";
 
 /**
  * RequirementCell component
@@ -31,6 +33,7 @@ const RequirementCell = ({
   columnKey,
   openEditModal,
   handleDelete,
+  openModalDescription
 }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
@@ -56,7 +59,7 @@ const RequirementCell = ({
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.requirement_condition || "N/A"}
+              {requirement.condition || "N/A"}
             </p>
           </div>
         );
@@ -124,72 +127,117 @@ const RequirementCell = ({
           </div>
         );
 
-      case "aspects":
+      case "aspect":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.aspects?.map((aspect, index) => (
-                <span key={aspect.aspect_id}>
-                  {aspect.aspect_name}
-                  {index < requirement.aspects.length - 1 ? ", " : ""}
-                </span>
-              )) || "N/A"}
+            {requirement.aspect?.aspect_name || "N/A"}
             </p>
           </div>
         );
 
       case "mandatory_description":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.mandatory_description || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Descripción Obligatoria">
+              <Button
+                isIconOnly
+                aria-label="Ver Descripción Obligatoria"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "mandatory_description", "Descripción Obligatoria")}
+              >
+                <img src={watch_icon} alt="Ver" className="w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
+
       case "complementary_description":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.complementary_description || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Descripción Complementaria">
+              <Button
+                isIconOnly
+                aria-label="Ver Descripción Complementaria"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "complementary_description", "Descripción Complementaria")}
+              >
+                <img src={watch_icon} alt="Ver" className="flex items-center w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
 
       case "mandatory_sentences":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.mandatory_sentences || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Frases Obligatorias">
+              <Button
+                isIconOnly
+                aria-label="Ver Frases Obligatorias"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "mandatory_sentences", "Frases Obligatorias")}
+              >
+                <img src={watch_icon} alt="Ver" className="flex items-center w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
 
       case "complementary_sentences":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.complementary_sentences || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Frases Complementarias">
+              <Button
+                isIconOnly
+                aria-label="Ver Frases Complementarias"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "complementary_sentences", "Frases Complementarias")}
+              >
+                <img src={watch_icon} alt="Ver" className="flex items-center w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
 
       case "mandatory_keywords":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.mandatory_keywords || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Palabras Clave Obligatorias">
+              <Button
+                isIconOnly
+                aria-label="Ver Palabras Clave Obligatorias"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "mandatory_keywords", "Palabras Clave Obligatorias")}
+              >
+                <img src={watch_icon} alt="Ver" className="flex items-center w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
 
       case "complementary_keywords":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.complementary_keywords || "N/A"}
-            </p>
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Palabras Clave Complementarias">
+              <Button
+                isIconOnly
+                aria-label="Ver Palabras Clave Complementarias"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "complementary_keywords", "Palabras Clave Complementarias")}
+              >
+                <img src={watch_icon} alt="Ver" className="flex items-center w-5 h-5" />
+              </Button>
+            </Tooltip>
           </div>
         );
+
 
 
       case "actions":
@@ -252,7 +300,7 @@ const RequirementCell = ({
       default:
         return null;
     }
-  }, [requirement, columnKey, openEditModal, handleDelete]);
+  }, [requirement, columnKey, openEditModal, handleDelete, openModalDescription]);
 
   return renderCell();
 };

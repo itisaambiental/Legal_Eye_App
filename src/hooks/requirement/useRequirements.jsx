@@ -5,7 +5,7 @@ import getRequirements from "../../services/requirementService/getRequirements";
 import getRequirementById from "../../services/requirementService/getRequirementById";
 import getRequirementsByName from "../../services/requirementService/getRequirementsByName";
 import getRequirementsByNumber from "../../services/requirementService/getRequirementsByNumber";
-import getRequirementsBySubject from "../../services/requirementService/getRequirementsBySubject";  
+import getRequirementsBySubject from "../../services/requirementService/getRequirementsBySubject";
 import getRequirementsBySubjectAndAspects from "../../services/requirementService/getRequirementsBySubjectAndAspects";
 import getRequirementsByComplementaryDescription from "../../services/requirementService/getRequirementsByComplementaryDescription";
 import getRequirementsByComplementaryKeywords from "../../services/requirementService/getRequirementsByComplementaryKeywords";
@@ -23,7 +23,7 @@ import getRequirementsByStateAndMunicipalities from "../../services/requirementS
 import updateRequirement from "../../services/requirementService/updateRequirement";
 import deleteRequirement from "../../services/requirementService/deleteRequirement";
 import delereRequirementBatch from "../../services/requirementService/deleteRequirementBatch";
-import RequirementErrors from "../../errors/requirements/RequirementErrors"; 
+import RequirementErrors from "../../errors/requirements/RequirementErrors";
 /**
  * Custom hook for managing Requirements and performing CRUD operations.
  * @returns {Object} - Contains  Requirements list, loading state, error state, and functions for Requirements operations.
@@ -62,60 +62,60 @@ export default function useRequirement() {
   */
   const addRequirement = useCallback(
     async ({
-    subjectId,
-    aspectId,
-    requirementNumber,
-    requirementName,
-    mandatoryDescription,
-    complementaryDescription = null,
-    mandatorySentences = null,
-    complementarySentences = null,
-    mandatoryKeywords = null,
-    complementaryKeywords = null,
-    condition,
-    evidence,
-    periodicity,
-    requirementType,
-    jurisdiction,
-    state = null,
-    municipality = null,
-  }) => {
-    try {
-      const newRequirement = await createRequirement({
-        subjectId,
-        aspectId,
-        requirementNumber,
-        requirementName,
-        mandatoryDescription,
-        complementaryDescription,
-        mandatorySentences,
-        complementarySentences,
-        mandatoryKeywords,
-        complementaryKeywords,
-        condition,
-        evidence,
-        periodicity,
-        requirementType,
-        jurisdiction,
-        state,
-        municipality,
-        token: jwt,
-      });
-      setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
-      return { success: true }; 
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      return { success: false, error: handledError.message };
-    }
-  }, [jwt]
-);
+      subjectId,
+      aspectId,
+      requirementNumber,
+      requirementName,
+      mandatoryDescription,
+      complementaryDescription = null,
+      mandatorySentences = null,
+      complementarySentences = null,
+      mandatoryKeywords = null,
+      complementaryKeywords = null,
+      condition,
+      evidence,
+      periodicity,
+      requirementType,
+      jurisdiction,
+      state = null,
+      municipality = null,
+    }) => {
+      try {
+        const newRequirement = await createRequirement({
+          subjectId,
+          aspectId,
+          requirementNumber,
+          requirementName,
+          mandatoryDescription,
+          complementaryDescription,
+          mandatorySentences,
+          complementarySentences,
+          mandatoryKeywords,
+          complementaryKeywords,
+          condition,
+          evidence,
+          periodicity,
+          requirementType,
+          jurisdiction,
+          state,
+          municipality,
+          token: jwt,
+        });
+        setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
+        return { success: true };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        return { success: false, error: handledError.message };
+      }
+    }, [jwt]
+  );
 
   /**
    * Fetches the complete list of Requirements.
@@ -131,17 +131,17 @@ export default function useRequirement() {
       setRequirements(requirements.reverse());
       setStateRequirements({ loading: false, error: null });
     } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-      setStateRequirements({ 
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = RequirementErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
+      setStateRequirements({
         loading: false,
-         error: handledError 
+        error: handledError
       });
     }
   }, [jwt]);
@@ -154,31 +154,31 @@ export default function useRequirement() {
    * @returns {Promise<Object|null>} - The retrieved requirement data or null if an error occurs.
    */
   const fetchRequirementById = useCallback(
-      async (requirementId) => {
-        try {
-          const requirements = await getRequirementById({
-            id: requirementId, 
-            token: jwt,
-          });
-          return { success: true, data: requirements };
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-            items: [requirementId],
-          });
-          return {
-            success: false,
-            error: handledError,
-          };
-        }
-      },
-      [jwt]
-    );
+    async (requirementId) => {
+      try {
+        const requirements = await getRequirementById({
+          id: requirementId,
+          token: jwt,
+        });
+        return { success: true, data: requirements };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [requirementId],
+        });
+        return {
+          success: false,
+          error: handledError,
+        };
+      }
+    },
+    [jwt]
+  );
 
   /**
    * Fetches the list of Requiremeent by name. 
@@ -190,60 +190,61 @@ export default function useRequirement() {
    */
   const fetchRequirementsByName = useCallback(
     async (requirementName) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByName({ name: requirementName, token: jwt });  
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError });
-    }
-  }, [jwt]);
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByName({ name: requirementName, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError
+        });
+      }
+    }, [jwt]);
 
-   /**
-   * Fetches the list of Requiremeent by number. 
-   * @async
-   * @function fetchRequirementsByNumber
-   * @param {string} requirementNumber - The number of the requirement to retrieve.
-   * @returns {Promise<void>} - Updates the requirement list and loading state.
-   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
-   */
+  /**
+  * Fetches the list of Requiremeent by number. 
+  * @async
+  * @function fetchRequirementsByNumber
+  * @param {string} requirementNumber - The number of the requirement to retrieve.
+  * @returns {Promise<void>} - Updates the requirement list and loading state.
+  * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
+  */
   const fetchRequirementsByNumber = useCallback(
     async (requirementNumber) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByNumber({ 
-        number: requirementNumber,
-        token: jwt
-       });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError, 
-      });
-    }
-  }, [jwt]);
-  
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByNumber({
+          number: requirementNumber,
+          token: jwt
+        });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
+
   /**
    * Fetches the list of Requirements by Subject.
    * @async
@@ -254,31 +255,31 @@ export default function useRequirement() {
    */
   const fetchRequirementsBySubject = useCallback(
     async (subjectId) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsBySubject({ 
-        subjectId, 
-        token: jwt
-       });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError 
-      });
-    }
-  }, 
-  [jwt]
-);
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsBySubject({
+          subjectId,
+          token: jwt
+        });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError
+        });
+      }
+    },
+    [jwt]
+  );
 
   /**
    * Fetches the list of Requirements by Subject and Aspects.
@@ -291,48 +292,13 @@ export default function useRequirement() {
    */
   const fetchRequirementsBySubjectAndAspects = useCallback(
     async (subjectId, aspectIds) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsBySubjectAndAspects({ 
-        subjectId,
-        aspectIds, 
-        token: jwt
-       });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, 
-  [jwt]
-);
-    /**
-   * Fetches the list of Requirements by Complementary Description.
-   * @async
-   * @function fetchRequirementsByType
-   * @param {string} requirementType - The complementary description of the requirement.
-   * @returns {Promise<void>} - Updates the requirements list and loading state.
-   */
-
-    const fetchRequirementsByType = useCallback(
-      async (requirementType) => {
       setStateRequirements({ loading: true, error: null });
       try {
-        const requirements = await getRequirementsByType({ 
-          requirementType, 
+        const requirements = await getRequirementsBySubjectAndAspects({
+          subjectId,
+          aspectIds,
           token: jwt
-         });
+        });
         setRequirements(requirements.reverse());
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
@@ -344,10 +310,45 @@ export default function useRequirement() {
           error: serverMessage,
           httpError: clientMessage,
         });
-        setStateRequirements({ 
-          loading: false, 
+        setStateRequirements({
+          loading: false,
           error: handledError,
-         });
+        });
+      }
+    },
+    [jwt]
+  );
+  /**
+ * Fetches the list of Requirements by Complementary Description.
+ * @async
+ * @function fetchRequirementsByType
+ * @param {string} requirementType - The complementary description of the requirement.
+ * @returns {Promise<void>} - Updates the requirements list and loading state.
+ */
+
+  const fetchRequirementsByType = useCallback(
+    async (requirementType) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByType({
+          requirementType,
+          token: jwt
+        });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
       }
     },
     [jwt]
@@ -363,31 +364,31 @@ export default function useRequirement() {
    * @param {string} complementaryDescription - The complementary description of the requirement.
    * @returns {Promise<void>} - Updates the requirements list and loading state.
    */
-const fetchRequirementsByComplementaryDescription = useCallback(
-  async (complementaryDescription) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByComplementaryDescription({ 
-        description: complementaryDescription, 
-        token: jwt
-       });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+  const fetchRequirementsByComplementaryDescription = useCallback(
+    async (complementaryDescription) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByComplementaryDescription({
+          description: complementaryDescription,
+          token: jwt
+        });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Complementary Keywords.
@@ -395,28 +396,28 @@ const fetchRequirementsByComplementaryDescription = useCallback(
    * @function fetchRequirementsByComplementaryKeywords
    * @param {string} complementaryKeywords - The complementary keywords of the requirement.
    */
-const fetchRequirementsByComplementaryKeywords = useCallback(
-  async (complementaryKeywords) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByComplementaryKeywords({ keyword: complementaryKeywords, token: jwt });  
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+  const fetchRequirementsByComplementaryKeywords = useCallback(
+    async (complementaryKeywords) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByComplementaryKeywords({ keyword: complementaryKeywords, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
 
 
 
@@ -427,57 +428,57 @@ const fetchRequirementsByComplementaryKeywords = useCallback(
    * @param {string} complementarySentences - The complementary sentences of the requirement.
    * @returns {Promise<void>} - Updates the requirements list and loading state.
    */
-    const fetchRequirementsByComplementarySentences = useCallback(
-      async (complementarySentences) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByComplementarySentences({ sentence: complementarySentences, token: jwt }); 
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-          setStateRequirements({ 
-            loading: false, 
-            error: handledError,
-           });
-        }
-      }, [jwt]);
-  
+  const fetchRequirementsByComplementarySentences = useCallback(
+    async (complementarySentences) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByComplementarySentences({ sentence: complementarySentences, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
+
   /**
    * Fetches the list of Requirements by Condition.
    * @async
    * @function fetchRequirementsByCondition
    * @param {string} condition - The condition of the requirement.
    */
-const fetchRequirementsByCondition = useCallback(
-  async (condition) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByCondition({ condition, token: jwt });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+  const fetchRequirementsByCondition = useCallback(
+    async (condition) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByCondition({ condition, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Evidence.
@@ -486,27 +487,27 @@ const fetchRequirementsByCondition = useCallback(
    * @param {string} evidence - The type of evidence required for the requirement.
    */
   const fetchRequirementsByEvidence = useCallback(
-   async (evidence) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByEvidence({ evidence, token: jwt });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+    async (evidence) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByEvidence({ evidence, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Jurisdiction.
@@ -515,27 +516,27 @@ const fetchRequirementsByCondition = useCallback(
    * @param {string} jurisdiction - The jurisdiction of the requirement.
    */
   const fetchRequirementsByJurisdiction = useCallback(
-   async (jurisdiction) => {
-    setStateRequirements({ loading: true, error: null });
-    try {
-      const requirements = await getRequirementsByJurisdiction({ jurisdiction, token: jwt });
-      setRequirements(requirements.reverse());
-      setStateRequirements({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+    async (jurisdiction) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByJurisdiction({ jurisdiction, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError,
+        });
+      }
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Mandatory Description.
@@ -544,28 +545,28 @@ const fetchRequirementsByCondition = useCallback(
    * @param {string} mandatoryDescription - The mandatory description of the requirement.
    * @returns {Promise<void>} - Updates the requirements list and loading state.
    */
-    const fetchRequirementsByMandatoryDescription = useCallback(
-      async (mandatoryDescription) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByMandatoryDescription({ description: mandatoryDescription, token: jwt });
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByMandatoryDescription = useCallback(
+    async (mandatoryDescription) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByMandatoryDescription({ description: mandatoryDescription, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);      
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Mandatory Keywords.
@@ -573,28 +574,28 @@ const fetchRequirementsByCondition = useCallback(
    * @function fetchRequirementsByMandatoryKeywords
    * @param {string} mandatoryKeywords - The mandatory keywords of the requirement.
    */
-    const fetchRequirementsByMandatoryKeywords = useCallback(
-      async (mandatoryKeywords) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByMandatoryKeywords({ keyword: mandatoryKeywords, token: jwt }); 
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByMandatoryKeywords = useCallback(
+    async (mandatoryKeywords) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByMandatoryKeywords({ keyword: mandatoryKeywords, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Mandatory Sentences.
@@ -602,28 +603,28 @@ const fetchRequirementsByCondition = useCallback(
    * @function fetchRequirementsByMandatorySentences
    * @param {string} mandatorySentences - The mandatory sentences of the requirement.
    */
-    const fetchRequirementsByMandatorySentences = useCallback(
-      async (mandatorySentences) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByMandatorySentences({ sentence: mandatorySentences, token: jwt }); 
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByMandatorySentences = useCallback(
+    async (mandatorySentences) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByMandatorySentences({ sentence: mandatorySentences, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Periodicity.
@@ -631,28 +632,28 @@ const fetchRequirementsByCondition = useCallback(
    * @function fetchRequirementsByPeriodicity
    * @param {string} periodicity - The periodicity of the requirement.
    */
-    const fetchRequirementsByPeriodicity = useCallback(
-      async (periodicity) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByPeriodicity({ periodicity, token: jwt });
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByPeriodicity = useCallback(
+    async (periodicity) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByPeriodicity({ periodicity, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);   
+    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by State.
@@ -660,28 +661,28 @@ const fetchRequirementsByCondition = useCallback(
    * @function fetchRequirementsByState
    * @param {string} state - The state where the requirement applies.
    */
-    const fetchRequirementsByState = useCallback(
-      async (state) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByState({ state, token: jwt });
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByState = useCallback(
+    async (state) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByState({ state, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);
+    }, [jwt]);
   /**
    * Fetches the list of Requirements by State and Municipalities.
    * @async
@@ -689,180 +690,171 @@ const fetchRequirementsByCondition = useCallback(
    * @param {string} state - The state where the requirement applies.
    * @param {Array<string>} municipalities - The municipalities where the requirement applies.
    */
-    const fetchRequirementsByStateAndMunicipalities = useCallback(
-      async (state, municipalities) => {
-        setStateRequirements({ loading: true, error: null });
-        try {
-          const requirements = await getRequirementsByStateAndMunicipalities({ state, municipalities, token: jwt });
-          setRequirements(requirements.reverse());
-          setStateRequirements({ loading: false, error: null });
-        } catch (error) {
-          const errorCode = error.response?.status;
-          const serverMessage = error.response?.data?.message;
-          const clientMessage = error.message;
-          const handledError = RequirementErrors.handleError({
-            code: errorCode,
-            error: serverMessage,
-            httpError: clientMessage,
-          });
-        setStateRequirements({ 
+  const fetchRequirementsByStateAndMunicipalities = useCallback(
+    async (state, municipalities) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByStateAndMunicipalities({ state, municipalities, token: jwt });
+        setRequirements(requirements.reverse());
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
           loading: false,
-           error: handledError 
+          error: handledError
         });
       }
-      }, [jwt]);
+    }, [jwt]);
 
- /**
- * Updates an existing Requirement by ID.
- * @async
- * @function modifyRequirement
- * @param {Object} params - The data to update an existing Requirement.
- * @param {string} params.id - The ID of the requirement to update.
- * @param {string} [params.subjectId] - The new subject ID (optional).
- * @param {string} [params.aspectId] - The new aspect ID (optional).
- * @param {string} [params.requirementNumber] - The new requirement number (optional).
- * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
- * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
- * @param {string} [params.complementaryDescription] - The new complementary description (optional).
- * @param {string} [params.mandatorySentences] - The new mandatory sentences (optional).
- * @param {string} [params.complementarySentences] - The new complementary sentences (optional).
- * @param {string} [params.mandatoryKeywords] - The new mandatory keywords (optional).
- * @param {string} [params.complementaryKeywords] - The new complementary keywords (optional).
- * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
- * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
- * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
- * @param {string} [params.requirementType] - The new type of requirement (optional).
- * @param {string} [params.jurisdiction] - The new jurisdiction ('Federal', 'Estatal', 'Local') (optional).
- * @param {string} [params.state] - The new state associated with the requirement (optional).
- * @param {string} [params.municipality] - The new municipality associated with the requirement (optional).
- * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
- * @throws {Object} - Returns an error message if the update fails.
- */
-const modifyRequirement = useCallback(
-  async ({
-    id,
-    subjectId,
-    aspectId,
-    requirementNumber,
-    requirementName,
-    mandatoryDescription,
-    complementaryDescription,
-    mandatorySentences,
-    complementarySentences,
-    mandatoryKeywords,
-    complementaryKeywords,
-    condition,
-    evidence,
-    periodicity,
-    requirementType,
-    jurisdiction,
-    state,
-    municipality,
-  }) => {
-    try {
-      const requirement = await updateRequirement({ 
-        id,
-        subjectId,
-        aspectId,
-        requirementNumber,
-        requirementName,
-        mandatoryDescription,
-        complementaryDescription,
-        mandatorySentences,
-        complementarySentences,
-        mandatoryKeywords,
-        complementaryKeywords,
-        condition,
-        evidence,
-        periodicity,
-        requirementType,
-        jurisdiction,
-        state,
-        municipality,
-        token: jwt,
-      });
+  /**
+  * Updates an existing Requirement by ID.
+  * @async
+  * @function modifyRequirement
+  * @param {Object} params - The data to update an existing Requirement.
+  * @param {string} params.id - The ID of the requirement to update.
+  * @param {string} [params.subjectId] - The new subject ID (optional).
+  * @param {string} [params.aspectId] - The new aspect ID (optional).
+  * @param {string} [params.requirementNumber] - The new requirement number (optional).
+  * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
+  * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
+  * @param {string} [params.complementaryDescription] - The new complementary description (optional).
+  * @param {string} [params.mandatorySentences] - The new mandatory sentences (optional).
+  * @param {string} [params.complementarySentences] - The new complementary sentences (optional).
+  * @param {string} [params.mandatoryKeywords] - The new mandatory keywords (optional).
+  * @param {string} [params.complementaryKeywords] - The new complementary keywords (optional).
+  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
+  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
+  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
+  * @param {string} [params.requirementType] - The new type of requirement (optional).
+  * @param {string} [params.jurisdiction] - The new jurisdiction ('Federal', 'Estatal', 'Local') (optional).
+  * @param {string} [params.state] - The new state associated with the requirement (optional).
+  * @param {string} [params.municipality] - The new municipality associated with the requirement (optional).
+  * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
+  * @throws {Object} - Returns an error message if the update fails.
+  */
+  const modifyRequirement = useCallback(
+    async ({
+      id,
+      subjectId,
+      aspectId,
+      requirementNumber,
+      requirementName,
+      mandatoryDescription,
+      complementaryDescription,
+      mandatorySentences,
+      complementarySentences,
+      mandatoryKeywords,
+      complementaryKeywords,
+      condition,
+      evidence,
+      periodicity,
+      requirementType,
+      jurisdiction,
+      state,
+      municipality,
+    }) => {
+      try {
+        const requirement = await updateRequirement({
+          id,
+          subjectId,
+          aspectId,
+          requirementNumber,
+          requirementName,
+          mandatoryDescription,
+          complementaryDescription,
+          mandatorySentences,
+          complementarySentences,
+          mandatoryKeywords,
+          complementaryKeywords,
+          condition,
+          evidence,
+          periodicity,
+          requirementType,
+          jurisdiction,
+          state,
+          municipality,
+          token: jwt,
+        });
+        setRequirements((prevRequirements) =>
+          prevRequirements.map((prevRequirement) =>
+            prevRequirement.id === requirement.id ? requirement : prevRequirement
+          )
+        );
+        return { success: true };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [id],
+        });
+        return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
 
-      setRequirements((prevRequirements) =>
-        prevRequirements.map((prevRequirement) =>
-          prevRequirement.id === requirement.id ? requirement : prevRequirement
-        )
-      );
+  /**
+   * Deletes a single Requirement.
+   * @async
+   * @function removeRequirement
+   * @param {number} id - The ID of the requirement to delete.
+   */
+  const removeRequirement = useCallback(
+    async (id) => {
+      try {
+        await deleteRequirement({ id, token: jwt });
+        setRequirements((prev) => prev.filter((req) => req.id !== id));
+        return { success: true };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [id],
+        });
+        return { success: false, error: handledError.message };
+      }
+    }, [jwt]);
 
-      return { success: true };
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-        items: [id],
-      });
-
-      return { success: false, error: handledError.message };
-    }
-  },
-  [jwt]
-);
-
-/**
- * Deletes a single Requirement.
- * @async
- * @function removeRequirement
- * @param {number} requirementId - The ID of the requirement to delete.
- */
-const removeRequirement = useCallback(
-  async (requirementId) => {
-    try {
-      await deleteRequirement({ id: requirementId, token: jwt });
-      setRequirements((prev) => prev.filter((req) => req.id !== requirementId));
-      return { success: true };
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage, 
-        items: [requirementId], 
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
-
-/**
- * Deletes multiple Requirements in batch.
- * @async
- * @function removeRequirementBatch
- * @param {Array<number>} requirementIds - The IDs of the requirements to delete.
- */
-const removeRequirementBatch = useCallback(
-  async (requirementIds) => {
-    try {
-      await delereRequirementBatch({ requirementIds, token: jwt });
-      setRequirements((prev) => prev.filter((req) => !requirementIds.includes(req.id)));
-      return { success: true };
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = RequirementErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage, 
-        items: requirementIds, 
-      });
-      setStateRequirements({ 
-        loading: false, 
-        error: handledError,
-       });
-    }
-  }, [jwt]);
+  /**
+   * Deletes multiple Requirements in batch.
+   * @async
+   * @function removeRequirementBatch
+   * @param {Array<number>} requirementIds - The IDs of the requirements to delete.
+   */
+  const removeRequirementBatch = useCallback(
+    async (requirementIds) => {
+      try {
+        await delereRequirementBatch({ requirementIds, token: jwt });
+        setRequirements((prev) => prev.filter((req) => !requirementIds.includes(req.id)));
+        return { success: true };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: requirementIds,
+        });
+        return { success: false, error: handledError.message };
+      }
+    }, [jwt]);
 
   useEffect(() => {
     fetchRequirements();

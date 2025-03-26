@@ -129,7 +129,6 @@ function TopContent({ config }) {
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {/* Número de requerimiento */}
         <Input
           color="primary"
           variant="faded"
@@ -141,8 +140,6 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByNumber}
         />
-
-        {/* Nombre del requerimiento */}
         <Input
           color="primary"
           variant="faded"
@@ -159,7 +156,6 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByName}
         />
-        {/* Condición */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -178,8 +174,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Recomendación">Recomendación</AutocompleteItem>
           <AutocompleteItem key="Pendiente">Pendiente</AutocompleteItem>
         </Autocomplete>
-
-        {/* Evidencia */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -198,8 +192,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Específico">Específico</AutocompleteItem>
           <AutocompleteItem key="Documento">Documento</AutocompleteItem>
         </Autocomplete>
-
-        {/* Periodicidad */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -218,8 +210,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
           <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
         </Autocomplete>
-
-        {/* Tipo de requerimiento */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -241,8 +231,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
           <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
         </Autocomplete>
-
-        {/* Jurisdicción */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -260,8 +248,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
           <AutocompleteItem key="Local">Local</AutocompleteItem>
         </Autocomplete>
-
-        {/* Estado */}
         <Autocomplete
           color="primary"
           variant="faded"
@@ -289,8 +275,6 @@ function TopContent({ config }) {
             </AutocompleteItem>
           )}
         </Autocomplete>
-
-        {/* Municipio */}
         <Tooltip content="Debes seleccionar un estado" 
         isDisabled={!!selectedState}
         >
@@ -337,7 +321,6 @@ function TopContent({ config }) {
             </Select>
           </div>
         </Tooltip>
-
         <Autocomplete
           color="primary"  
           variant="faded"
@@ -512,7 +495,7 @@ function TopContent({ config }) {
             onPress={openModalCreate}
             endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4" />}
           >
-            Nuevo Requerimientos
+            Nuevo Requerimiento
           </Button>
         </div>
       </div>

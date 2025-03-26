@@ -14,7 +14,7 @@ import {
   /**
    * DescriptionModal Component
    *
-   * This component renders a modal to display the description of an article.
+   * This component renders a modal to display descriptions of an requirement.
    * It sanitizes HTML content to prevent XSS attacks before rendering.
    *
    * @component

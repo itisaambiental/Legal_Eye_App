@@ -387,7 +387,18 @@ const CreateModal = ({ config }) => {
         }
     }
 
+    const resetStepTwoErrors = () => {
+        setMandatoryDescriptionError(null);
+        setComplementaryDescriptionError(null);
+        setMandatorySentencesError(null);
+        setComplementarySentencesError(null);
+        setMandatoryKeywordsError(null);
+        setComplementaryKeywordsError(null);
+    };
+
+
     const handleBack = () => {
+        resetStepTwoErrors();
         setStep(1);
     };
 
@@ -764,7 +775,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Descripción Obligatoria"
-                                            placeholder=""
+                                            placeholder="Escribir la descripción."
                                             variant="bordered"
                                         />
                                         {mandatoryDescriptionError && (
@@ -782,7 +793,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Descripción Complementaria"
-                                            placeholder=""
+                                            placeholder="Escribir la descripción."
                                             variant="bordered"
                                         />
                                         {complementaryDescriptionError && (
@@ -801,7 +812,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Frases Obligatorias"
-                                            placeholder=""
+                                            placeholder="Escribir las frases separadas por espacio."
                                             variant="bordered"
                                         />
                                         {mandatorySentencesError && (
@@ -820,7 +831,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Frases Complementarias"
-                                            placeholder=""
+                                            placeholder="Escribir las frases separadas por espacio."
                                             variant="bordered"
                                         />
                                         {complementarySentencesError && (
@@ -839,7 +850,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Palabras Clave Obligatorias"
-                                            placeholder=""
+                                            placeholder="Escribir las palabras claves separadas por coma."
                                             variant="bordered"
                                         />
                                         {mandatoryKeywordsError && (
@@ -858,7 +869,7 @@ const CreateModal = ({ config }) => {
                                                 input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Palabras Clave Complementarias"
-                                            placeholder=""
+                                            placeholder="Escribir las palabras claves separadas por coma."
                                             variant="bordered"
                                         />
                                         {complementaryKeywordsError && (

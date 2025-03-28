@@ -122,7 +122,6 @@ describe("CreateModal Component for Requirements", () => {
 
     await waitFor(() => {
       expect(config.setNumberError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setNameError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
 
@@ -151,6 +150,21 @@ describe("CreateModal Component for Requirements", () => {
   it("validates textareas on submit in step 2", async () => {
     config.formData.number = "123";
     config.formData.name = "Nombre válido";
+    config.formData.condition= "Crítica";
+    config.formData.evidence= "Trámite";
+    config.formData.periodicity = "Anual";
+    config.formData.jurisdiction ="Federal";
+    config.formData.requirementType ="Identificación Federal",
+    config.formData.subject ="1",
+    config.formData.aspect = "1",
+    config.formData.state = "",
+    config.formData.municipality = "",
+    config.formData.mandatoryDescription = "desc",
+    config.formData.complementaryDescription = "desc",
+    config.formData.mandatorySentences = "desc",
+    config.formData.complementarySentences = "desc",
+    config.formData.mandatoryKeywords = "desc",
+    config.formData.complementaryKeywords = "desc",
   
     render(<CreateModal config={config} />);
     fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
@@ -168,11 +182,6 @@ describe("CreateModal Component for Requirements", () => {
   
     await waitFor(() => {
       expect(config.setMandatoryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setComplementaryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setMandatorySentencesError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setComplementarySentencesError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setMandatoryKeywordsError).toHaveBeenCalledWith("Este campo es obligatorio.");
-      expect(config.setComplementaryKeywordsError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
   

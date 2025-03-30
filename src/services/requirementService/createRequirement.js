@@ -19,7 +19,9 @@ import server from "../../config/server.js";
  * @param {string} [params.complementaryKeywords] - The complementary keywords related to the requirement (optional).
  * @param {string} params.condition - The requirement condition.
  * @param {string} params.evidence - The type of evidence required.
+ * @param {string} params.specifyEvidence - The type of specify Evidence required.
  * @param {string} params.periodicity - The periodicity of the requirement.
+ * @param {string} params.specifyPeriodicity - The specify periodicity of the requirement.
  * @param {string} params.requirementType - The type of requirement.
  * @param {string} params.jurisdiction - The jurisdiction.
  * @param {string} [params.state] - The state associated with the requirement (optional).
@@ -41,7 +43,9 @@ export default async function createRequirement({
   complementaryKeywords = null,
   condition,
   evidence,
+  specifyEvidence,
   periodicity,
+  specifyPeriodicity,
   requirementType,
   jurisdiction,
   state = null,
@@ -62,7 +66,9 @@ export default async function createRequirement({
       complementaryKeywords,
       condition,
       evidence,
+      specifyEvidence,
       periodicity,
+      specifyPeriodicity,
       requirementType,
       jurisdiction,
       state,

@@ -163,7 +163,9 @@ export default function Requirement() {
     name: "",
     condition: "",
     evidence: "",
+    evidenceSpecification: "",
     periodicity: "",
+    periodicitySpecification: "",
     requirementType: "",
     jurisdiction: "",
     state: "",
@@ -926,9 +928,10 @@ export default function Requirement() {
 
   const handleEvidenceChange = useCallback(
     (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setFormData((prev) => ({
+        ...prev,
         evidence: value,
+        evidenceSpecification: value === "Específica" ? prev.evidenceSpecification : "",
       }));
       if (evidenceInputError && value.trim() !== "") {
         setEvidenceInputError(null);
@@ -939,9 +942,10 @@ export default function Requirement() {
 
   const handlePeriodicityChange = useCallback(
     (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setFormData((prev) => ({
+        ...prev,
         periodicity: value,
+        periodicitySpecification: value === "Especifíca" ? prev.periodicitySpecification : "",
       }));
       if (periodicityInputError && value.trim() !== "") {
         setPeriodicityInputError(null);
@@ -949,6 +953,22 @@ export default function Requirement() {
     },
     [periodicityInputError, setFormData, setPeriodicityInputError]
   );
+
+  const handleEvidenceSpecificationChange = useCallback((e) => {
+    setFormData((prev) => ({
+      ...prev,
+      evidenceSpecification: e.target.value,
+    }));
+  }, []);
+
+  const handlePeriodicitySpecificationChange = useCallback((e) => {
+    setFormData((prev) => ({
+      ...prev,
+      periodicitySpecification: e.target.value,
+    }));
+  }, []);
+
+
 
 
   const handleRequirementType = useCallback(
@@ -1255,7 +1275,7 @@ export default function Requirement() {
     });
     setShowDescriptionModal(true);
   };
-  
+
 
   const closeModalDescription = () => {
     setShowDescriptionModal(false);
@@ -1316,34 +1336,34 @@ export default function Requirement() {
   );
 
   if (loading && isFirstRender) {
-     return (
-       <div
-         role="status"
-         className="fixed inset-0 flex items-center justify-center"
-       >
-         <Spinner
-           className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
-           color="secondary"
-         />
-       </div>
-     );
-   }
-   if (error) return <Error title={error.title} message={error.message} />;
-   if (subjectError)
-     return <Error title={subjectError.title} message={subjectError.message} />;
-   if (aspectError && !isCreateModalOpen && !isEditModalOpen)
-     return <Error title={aspectError.title} message={aspectError.message} />;
-   if (errorStates)
-     return <Error title={errorStates.title} message={errorStates.message} />;
- 
-   if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
-     return (
-       <Error
-         title={errorMunicipalities.title}
-         message={errorMunicipalities.message}
-       />
-     );
-   }
+    return (
+      <div
+        role="status"
+        className="fixed inset-0 flex items-center justify-center"
+      >
+        <Spinner
+          className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
+          color="secondary"
+        />
+      </div>
+    );
+  }
+  if (error) return <Error title={error.title} message={error.message} />;
+  if (subjectError)
+    return <Error title={subjectError.title} message={subjectError.message} />;
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+    return <Error title={aspectError.title} message={aspectError.message} />;
+  if (errorStates)
+    return <Error title={errorStates.title} message={errorStates.message} />;
+
+  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
+    return (
+      <Error
+        title={errorMunicipalities.title}
+        message={errorMunicipalities.message}
+      />
+    );
+  }
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
@@ -1478,11 +1498,11 @@ export default function Requirement() {
         />
         {selectedRequirement && (
           <DescriptionModal
-          isOpen={showDescriptionModal}
-          onClose={closeModalDescription}
-          title={selectedRequirement?.title || ""}
-          description={selectedRequirement?.description || ""}
-        />
+            isOpen={showDescriptionModal}
+            onClose={closeModalDescription}
+            title={selectedRequirement?.title || ""}
+            description={selectedRequirement?.description || ""}
+          />
         )}
 
         {isCreateModalOpen && (
@@ -1507,6 +1527,10 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
+              handleEvidenceSpecificationChange,
+              handlePeriodicitySpecificationChange,
+              evidenceSpecification: formData.evidenceSpecification,
+              periodicitySpecification: formData.periodicitySpecification,
               requirementTypeError: requirementTypeInputError,
               setRequirementTypeError: setRequirementTypeInputError,
               handleRequirementType: handleRequirementType,

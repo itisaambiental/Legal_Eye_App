@@ -410,7 +410,7 @@ const CreateModal = ({ config }) => {
         <Modal
             isOpen={isOpen}
             onClose={closeModalCreate}
-            className="w-[60vw] max-w-2xl"
+            className="w-[60vw] max-w-4xl"
             classNames={{
                 closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
             }}
@@ -455,7 +455,7 @@ const CreateModal = ({ config }) => {
                                             htmlFor="floating_number"
                                             className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                         >
-                                            Número
+                                            Orden
                                         </label>
                                         {numberError && (
                                             <p className="mt-2 text-sm text-red">{numberError}</p>
@@ -475,7 +475,7 @@ const CreateModal = ({ config }) => {
                                             htmlFor="floating_nombre"
                                             className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                                         >
-                                            Nombre
+                                            Requerimiento/Nombre
                                         </label>
                                         {nameError && (
                                             <p className="mt-2 text-sm text-red">{nameError}</p>
@@ -516,7 +516,7 @@ const CreateModal = ({ config }) => {
                                         >
                                             <AutocompleteItem key="Trámite">Trámite</AutocompleteItem>
                                             <AutocompleteItem key="Registro">Registro</AutocompleteItem>
-                                            <AutocompleteItem key="Específico">Específico</AutocompleteItem>
+                                            <AutocompleteItem key="Específica">Específica</AutocompleteItem>
                                             <AutocompleteItem key="Documento">Documento</AutocompleteItem>
                                         </Autocomplete>
                                         {evidenceError && (
@@ -541,7 +541,7 @@ const CreateModal = ({ config }) => {
                                             <AutocompleteItem key="2 años">2 años</AutocompleteItem>
                                             <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
                                             <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
-                                            <AutocompleteItem key="Única vez">Especifíca</AutocompleteItem>
+                                            <AutocompleteItem key="Especifíca">Especifíca</AutocompleteItem>
                                         </Autocomplete>
                                         {periodicityError && (
                                             <p className="mt-2 text-sm text-red">
@@ -571,6 +571,7 @@ const CreateModal = ({ config }) => {
                                             </p>
                                         )}
                                     </div>
+                                    <div className="w-full">
                                     <Tooltip
                                         content={getTooltipContentForState()}
                                         isDisabled={isStateActive}
@@ -580,10 +581,9 @@ const CreateModal = ({ config }) => {
                                                 size="sm"
                                                 variant="bordered"
                                                 label="Estado"
-                                                placeholder="Buscar estado"
+                                                placeholder="Buscar Estado"
                                                 isDisabled={!isStateActive}
                                                 onClear={clearMunicipalities}
-                                                className="max-w-xs"
                                                 defaultItems={states.map((estado) => ({
                                                     id: estado,
                                                     name: estado,
@@ -605,6 +605,7 @@ const CreateModal = ({ config }) => {
                                             )}
                                         </div>
                                     </Tooltip>
+                                    </div>
 
                                     <div className="w-full">
                                         <Tooltip
@@ -616,6 +617,7 @@ const CreateModal = ({ config }) => {
                                                     size="sm"
                                                     variant="bordered"
                                                     label="Municipio"
+                                                    placeholder="Buscar Municipio"
                                                     isLoading={loadingMunicipalities}
                                                     selectedKey={formData.municipality}
                                                     listboxProps={{
@@ -770,7 +772,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleMandatoryDescriptionChange}
                                             classNames={{
                                                 base: "max-w-lg",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Descripción Obligatoria"
                                             placeholder="Escribir la descripción."
@@ -788,7 +790,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleComplementaryDescriptionChange}
                                             classNames={{
                                                 base: "max-w",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Descripción Complementaria"
                                             placeholder="Escribir la descripción."
@@ -807,7 +809,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleMandatorySentencesChange}
                                             classNames={{
                                                 base: "max-w",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Frases Obligatorias"
                                             placeholder="Escribir las frases separadas por espacio."
@@ -826,7 +828,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleComplementarySentencesChange}
                                             classNames={{
                                                 base: "max-w",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Frases Complementarias"
                                             placeholder="Escribir las frases separadas por espacio."
@@ -845,7 +847,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleMandatoryKeywordsChange}
                                             classNames={{
                                                 base: "max-w",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Palabras Clave Obligatorias"
                                             placeholder="Escribir las palabras claves separadas por coma."
@@ -864,7 +866,7 @@ const CreateModal = ({ config }) => {
                                             onChange={handleComplementaryKeywordsChange}
                                             classNames={{
                                                 base: "max-w",
-                                                input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                                input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                             }}
                                             label="Palabras Clave Complementarias"
                                             placeholder="Escribir las palabras claves separadas por coma."

@@ -75,7 +75,7 @@ describe("TopContent Component for Requirements", () => {
 
   test("calls onFilterByNumber when number input changes", () => {
     render(<TopContent config={baseMockConfig} />);
-    const input = screen.getByPlaceholderText("Buscar por número...");
+    const input = screen.getByPlaceholderText("Buscar por orden...");
     fireEvent.change(input, { target: { value: "123" } });
     expect(baseMockConfig.onFilterByNumber).toHaveBeenCalledWith("123");
   });
@@ -87,7 +87,7 @@ describe("TopContent Component for Requirements", () => {
       onClear: vi.fn(),
     };
     const { container } = render(<TopContent config={updatedConfig} />);
-    const wrapper = container.querySelector('input[placeholder="Buscar por número..."]')?.closest("div");
+    const wrapper = container.querySelector('input[placeholder="Buscar por orden..."]')?.closest("div");
     const clearButton = wrapper?.querySelector("button");
     fireEvent.click(clearButton);
     expect(updatedConfig.onClear).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe("TopContent Component for Requirements", () => {
 
   test("calls onFilterByName when name input changes", () => {
     render(<TopContent config={baseMockConfig} />);
-    const input = screen.getByPlaceholderText("Buscar por nombre...");
+    const input = screen.getByPlaceholderText("Buscar por Requerimiento...");
     fireEvent.change(input, { target: { value: "test name" } });
     expect(baseMockConfig.onFilterByName).toHaveBeenCalledWith("test name");
   });

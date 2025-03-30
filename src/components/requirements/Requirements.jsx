@@ -27,8 +27,8 @@ import check from "../../assets/check.png";
 import trash_icon from "../../assets/papelera-mas.png";
 
 const columns = [
-  { name: "Número", uid: "requirement_number", align: "start" },
-  { name: "Nombre", uid: "requirement_name", align: "start" },
+  { name: "Orden", uid: "requirement_number", align: "start" },
+  { name: "Requerimiento/Nombre", uid: "requirement_name", align: "start" },
   { name: "Condición", uid: "requirement_condition", align: "start" },
   { name: "Evidencia", uid: "evidence", align: "start" },
   { name: "Periodicidad", uid: "periodicity", align: "start" },

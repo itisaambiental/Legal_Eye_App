@@ -135,7 +135,7 @@ function TopContent({ config }) {
           isClearable
           value={filterByNumber}
           className="w-full"
-          placeholder="Buscar por número..."
+          placeholder="Buscar por orden..."
           startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
           onClear={onClear}
           onValueChange={onFilterByNumber}
@@ -146,7 +146,7 @@ function TopContent({ config }) {
           isClearable
           value={filterByName}
           className="w-full"
-          placeholder="Buscar por nombre..."
+          placeholder="Buscar por Requerimiento..."
           startContent={
             <img 
               src={search_icon} 

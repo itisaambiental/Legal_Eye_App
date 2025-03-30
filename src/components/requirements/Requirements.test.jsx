@@ -95,8 +95,8 @@ describe("Requirement Component", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Número")).toBeInTheDocument();
-    expect(screen.getByText("Nombre")).toBeInTheDocument();
+    expect(screen.getByText("Orden")).toBeInTheDocument();
+    expect(screen.getByText("Requerimiento/Nombre")).toBeInTheDocument();
     expect(screen.getByText("Jurisdicción")).toBeInTheDocument();
   });
 

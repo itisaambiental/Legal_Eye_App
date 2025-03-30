@@ -31,7 +31,7 @@ import server from "../../config/server.js";
  */
 export default async function createRequirement({
   subjectId,
-  aspectId,
+  aspectsIds,
   requirementNumber,
   requirementName,
   mandatoryDescription,
@@ -52,7 +52,7 @@ export default async function createRequirement({
   try {
     const data = {
       subjectId,
-      aspectId,
+      aspectsIds,
       requirementNumber,
       requirementName,
       mandatoryDescription,

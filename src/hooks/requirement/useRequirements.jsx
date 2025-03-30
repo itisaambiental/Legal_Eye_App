@@ -42,7 +42,7 @@ export default function useRequirement() {
   * @function addRequirement
   * @param {Object} params - Parameters for creating a requirement.
   * @param {string} params.subjectId - ID of the subject linked to the requirement.
-  * @param {string} params.aspectId - ID of the aspect linked to the requirement.
+  * @param {string} params.aspectsIds - An array of aspect IDs linked to the requirement.
   * @param {string} params.requirementNumber - Unique number of the requirement.
   * @param {string} params.requirementName - Name/title of the requirement.
   * @param {string} params.mandatoryDescription - Mandatory description.
@@ -63,7 +63,7 @@ export default function useRequirement() {
   const addRequirement = useCallback(
     async ({
       subjectId,
-      aspectId,
+      aspectsIds,
       requirementNumber,
       requirementName,
       mandatoryDescription,
@@ -83,7 +83,7 @@ export default function useRequirement() {
       try {
         const newRequirement = await createRequirement({
           subjectId,
-          aspectId,
+          aspectsIds,
           requirementNumber,
           requirementName,
           mandatoryDescription,
@@ -291,12 +291,12 @@ export default function useRequirement() {
    * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
    */
   const fetchRequirementsBySubjectAndAspects = useCallback(
-    async (subjectId, aspectIds) => {
+    async (subjectId, aspectsIds) => {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsBySubjectAndAspects({
           subjectId,
-          aspectIds,
+          aspectsIds,
           token: jwt
         });
         setRequirements(requirements.reverse());
@@ -312,7 +312,7 @@ export default function useRequirement() {
         });
         setStateRequirements({
           loading: false,
-          error: handledError,
+          error: handledError,aspectsIds
         });
       }
     },
@@ -720,7 +720,7 @@ export default function useRequirement() {
   * @param {Object} params - The data to update an existing Requirement.
   * @param {string} params.id - The ID of the requirement to update.
   * @param {string} [params.subjectId] - The new subject ID (optional).
-  * @param {string} [params.aspectId] - The new aspect ID (optional).
+   * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
   * @param {string} [params.requirementNumber] - The new requirement number (optional).
   * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
   * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
@@ -743,7 +743,7 @@ export default function useRequirement() {
     async ({
       id,
       subjectId,
-      aspectId,
+      aspectsIds,
       requirementNumber,
       requirementName,
       mandatoryDescription,
@@ -764,7 +764,7 @@ export default function useRequirement() {
         const requirement = await updateRequirement({
           id,
           subjectId,
-          aspectId,
+          aspectsIds,
           requirementNumber,
           requirementName,
           mandatoryDescription,

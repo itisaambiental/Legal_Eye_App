@@ -33,7 +33,7 @@ import server from "../../config/server.js";
 export default async function updateRequirement({
   id,
   subjectId,
-  aspectId,
+  aspectsIds,
   requirementNumber,
   requirementName,
   mandatoryDescription,
@@ -54,7 +54,7 @@ export default async function updateRequirement({
   try {
     const data = {
       ...(subjectId && { subjectId }),
-      ...(aspectId && { aspectId }),
+      ...(aspectsIds && { aspects: aspectsIds }),
       ...(requirementNumber && { requirementNumber }),
       ...(requirementName && { requirementName }),
       ...(mandatoryDescription && { mandatoryDescription }),

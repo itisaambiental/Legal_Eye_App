@@ -11,6 +11,8 @@ import {
     Autocomplete,
     AutocompleteItem,
     Textarea,
+    Select,
+    SelectItem,
 } from "@heroui/react";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
@@ -20,6 +22,8 @@ import go_back from "../../assets/volver.png";
  * CreateModal Component
  *
  * Functional component that renders a multi-step modal for creating new requirements.
+ * It includes dynamic validations based on jurisdiction, management of
+ * aspects, states, and municipalities, and supports file uploads.
  * 
  * @component
  * @param {Object} props - Component props.
@@ -66,13 +70,13 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.subjectInputError - Error message for the "Subject" autocomplete.
  * @param {Function} props.config.setSubjectError - Setter for the "Subject" field error.
  * @param {Function} props.config.handleSubjectChange - Handler for changes in the "Subject" autocomplete.
- * @param {Array} props.config.aspects - List of available aspects for the "Aspect" autocomplete.
- * @param {string|null} props.config.aspectError - Error message for the "Aspect" autocomplete.
- * @param {Function} props.config.setAspectInputError - Setter for the "Aspect" field error.
- * @param {boolean} props.config.isAspectsActive - Enables/disables the "Aspect" autocomplete depending on subject selection.
- * @param {boolean} props.config.aspectsLoading - Indicates if aspects are being loaded.
- * @param {Object|null} props.config.errorAspects - Error object when fetching aspects.
- * @param {Function} props.config.handleAspectsChange - Handler for changes in the "Aspect" autocomplete.
+ * @param {Array<Object>} props.config.aspects - List of aspects available for selection.
+ * @param {string|null} props.config.aspectError - Error message for the "Aspects" field.
+ * @param {Function} props.config.setAspectInputError - Function to set the "Aspects" field error message.
+ * @param {boolean} props.config.isAspectsActive - Indicates whether the aspects field is active.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
+ * @param {string|null} props.config.errorAspects - Error message when aspects cannot be loaded.
+ * @param {Function} props.config.handleAspectsChange - Function to handle changes in the "Aspects" field.
  * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for the "Mandatory Description" textarea.
  * @param {string|null} props.config.mandatoryDescriptionError - Error message for the "Mandatory Description" textarea.
  * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" field error.
@@ -282,13 +286,13 @@ const CreateModal = ({ config }) => {
                 setSubjectError(null);
             }
 
-            if (formData.aspect === "") {
-                setAspectInputError("Debes seleccionar un aspecto.");
+            if (!formData.aspects || formData.aspects.length === 0) {
+                setAspectInputError("Debes seleccionar al menos un aspecto");
                 setIsLoading(false);
                 return;
-            } else {
+              } else {
                 setAspectInputError(null);
-            }
+              }
             if (formData.requirementType === "") {
                 setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
                 setIsLoading(false);
@@ -357,7 +361,7 @@ const CreateModal = ({ config }) => {
             state: formData.state,
             municipality: formData.municipality,
             subjectId: formData.subject,
-            aspectId: formData.aspect,
+            aspectsIds: formData.aspects,
             mandatoryDescription: formData.mandatoryDescription,
             complementaryDescription: formData.complementaryDescription,
             mandatorySentences: formData.mandatorySentences,
@@ -537,6 +541,7 @@ const CreateModal = ({ config }) => {
                                             <AutocompleteItem key="2 años">2 años</AutocompleteItem>
                                             <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
                                             <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                                            <AutocompleteItem key="Única vez">Especifíca</AutocompleteItem>
                                         </Autocomplete>
                                         {periodicityError && (
                                             <p className="mt-2 text-sm text-red">
@@ -673,40 +678,33 @@ const CreateModal = ({ config }) => {
                                         )}
                                     </div>
                                     <div className="w-full">
-                                        <Tooltip
-                                            content="Debes seleccionar una materia para habilitar este campo."
-                                            isDisabled={isAspectsActive || errorAspects}
-                                        >
-                                            <div className="w-full">
-                                                <Autocomplete
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    label="Aspecto"
-                                                    isLoading={aspectsLoading}
-                                                    selectedKey={formData.aspect}
-                                                    listboxProps={{
-                                                        emptyContent: "Aspecto no encontrados",
-                                                    }}
-                                                    onSelectionChange={handleAspectsChange}
-                                                    isDisabled={
-                                                        !isAspectsActive || !!errorAspects
-                                                    }
-                                                    defaultItems={aspects.map((aspect) => ({
-                                                        id: aspect.id,
-                                                        name: aspect.aspect_name,
-                                                    }))}
-                                                >
-                                                    {(aspect) => (
-                                                        <AutocompleteItem
-                                                            key={aspect.id}
-                                                            value={aspect.id}
-                                                        >
-                                                            {aspect.name}
-                                                        </AutocompleteItem>
-                                                    )}
-                                                </Autocomplete>
-                                            </div>
-                                        </Tooltip>
+                                    <Tooltip
+                      content="Debes seleccionar una materia para habilitar este campo."
+                      isDisabled={isAspectsActive || errorAspects}
+                    >
+                      <div className="w-full">
+                        <Select
+                          size="sm"
+                          variant="bordered"
+                          label="Aspectos"
+                          selectionMode="multiple"
+                          isLoading={aspectsLoading}
+                          selectedKeys={formData.aspects}
+                          onSelectionChange={handleAspectsChange}
+                          isDisabled={!isAspectsActive || !!errorAspects}
+                          items={aspects}
+                          listboxProps={{
+                            emptyContent: "Aspectos no encontrados",
+                          }}
+                        >
+                          {(aspect) => (
+                            <SelectItem key={aspect.id} value={aspect.id}>
+                              {aspect.aspect_name}
+                            </SelectItem>
+                          )}
+                        </Select>
+                      </div>
+                    </Tooltip>
 
                                         {errorAspects && (
                                             <p className="mt-2 text-sm text-red">

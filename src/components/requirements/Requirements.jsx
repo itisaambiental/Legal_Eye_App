@@ -169,7 +169,7 @@ export default function Requirement() {
     state: "",
     municipality: "",
     subject: "",
-    aspect: "",
+    aspects: [],
     mandatoryDescription: "",
     complementaryDescription: "",
     mandatorySentences: "",
@@ -802,7 +802,7 @@ export default function Requirement() {
       state: "",
       municipality: "",
       subject: "",
-      aspect: "",
+      aspects: [],
       mandatoryDescription: "",
       complementaryDescription: "",
       mandatorySentences: "",
@@ -1107,7 +1107,7 @@ export default function Requirement() {
         setFormData((prevFormData) => ({
           ...prevFormData,
           subject: "",
-          aspect: "",
+          aspects: [],
         }));
         if (subjectInputError) {
           setSubjectInputError(null);
@@ -1120,7 +1120,7 @@ export default function Requirement() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         subject: value,
-        aspect: "",
+        aspects: [],
       }));
       if (subjectInputError && value.trim() !== "") {
         setSubjectInputError(null);
@@ -1139,31 +1139,18 @@ export default function Requirement() {
       subjectInputError,
     ]
   );
-
   const handleAspectsChange = useCallback(
-    (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          aspect: "",
-        }));
-        if (aspectInputError) {
-          setAspectInputError(null);
-        }
-        return;
-      }
+    (selectedIds) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        aspect: value,
+        aspects: Array.from(selectedIds),
       }));
-
-      if (aspectInputError && value.trim() !== "") {
+      if (aspectInputError && selectedIds.size > 0) {
         setAspectInputError(null);
       }
     },
     [aspectInputError, setFormData, setAspectInputError]
   );
-
 
   const handleMandatoryDescriptionChange = useCallback(
     (e) => {

@@ -9,6 +9,8 @@ import {
   AutocompleteItem,
   Tooltip,
   Textarea,
+  Select,
+  SelectItem,
   Button,
   Spinner,
 } from "@heroui/react";
@@ -197,7 +199,9 @@ const EditModal = ({ config }) => {
         state: selectedRequirement.state,
         municipality: selectedRequirement.municipality,
         subject: selectedRequirement.subject?.subject_id.toString(),
-        aspect: selectedRequirement.aspect.aspect_id.toString(),
+        aspects: selectedRequirement.aspects?.map((aspect) =>
+          aspect.aspect_id.toString()
+        ),
         requirementType: selectedRequirement.requirement_type,
         mandatoryDescription: selectedRequirement.mandatory_description,
         complementaryDescription: selectedRequirement.complementary_description,
@@ -366,8 +370,8 @@ const EditModal = ({ config }) => {
         setSubjectError(null);
       }
 
-      if (formData.aspect === "") {
-        setAspectInputError("Debes seleccionar un aspecto.");
+      if (!formData.aspects || formData.aspects.length === 0) {
+        setAspectInputError("Debes seleccionar al menos un aspecto");
         setIsLoading(false);
         return;
       } else {
@@ -443,7 +447,7 @@ const EditModal = ({ config }) => {
         state: formData.state,
         municipality: formData.municipality,
         subjectId: formData.subject,
-        aspectId: formData.aspect,
+        aspectsIds: formData.aspects,
         mandatoryDescription: formData.mandatoryDescription,
         complementaryDescription: formData.complementaryDescription,
         mandatorySentences: formData.mandatorySentences,
@@ -752,33 +756,26 @@ const EditModal = ({ config }) => {
                       isDisabled={isAspectsActive || errorAspects}
                     >
                       <div className="w-full">
-                        <Autocomplete
+                        <Select
                           size="sm"
                           variant="bordered"
-                          label="Aspecto"
+                          label="Aspectos"
+                          selectionMode="multiple"
                           isLoading={aspectsLoading}
-                          selectedKey={formData.aspect}
-                          listboxProps={{
-                            emptyContent: "Aspecto no encontrados",
-                          }}
+                          selectedKeys={formData.aspects}
                           onSelectionChange={handleAspectsChange}
-                          isDisabled={
-                            !isAspectsActive || !!errorAspects
-                          }
-                          defaultItems={aspects.map((aspect) => ({
-                            id: aspect.id,
-                            name: aspect.aspect_name,
-                          }))}
+                          isDisabled={!isAspectsActive || !!errorAspects}
+                          items={aspects}
+                          listboxProps={{
+                            emptyContent: "Aspectos no encontrados",
+                          }}
                         >
                           {(aspect) => (
-                            <AutocompleteItem
-                              key={aspect.id}
-                              value={aspect.id}
-                            >
-                              {aspect.name}
-                            </AutocompleteItem>
+                            <SelectItem key={aspect.id} value={aspect.id}>
+                              {aspect.aspect_name}
+                            </SelectItem>
                           )}
-                        </Autocomplete>
+                        </Select>
                       </div>
                     </Tooltip>
 

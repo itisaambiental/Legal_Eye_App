@@ -9,7 +9,7 @@ import server from "../../config/server.js";
  * @param {Object} params - Parameters for updating a requirement.
  * @param {string} params.id - The ID of the requirement to update.
  * @param {string} [params.subjectId] - The ID of the subject linked to the requirement (optional).
- * @param {string} [params.aspectId] - The ID of the aspect linked to the requirement (optional).
+ * @param {Array<string>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
  * @param {string} [params.requirementNumber] - The unique number identifying the requirement (optional).
  * @param {string} [params.requirementName] - The name/title of the requirement (optional).
  * @param {string} [params.mandatoryDescription] - The mandatory description of the requirement (optional).
@@ -54,7 +54,7 @@ export default async function updateRequirement({
   try {
     const data = {
       ...(subjectId && { subjectId }),
-      ...(aspectsIds && { aspects: aspectsIds }),
+      ...(aspectsIds && { aspectsIds: JSON.stringify(aspectsIds.map(Number)) }), 
       ...(requirementNumber && { requirementNumber }),
       ...(requirementName && { requirementName }),
       ...(mandatoryDescription && { mandatoryDescription }),
@@ -71,7 +71,6 @@ export default async function updateRequirement({
       ...(state && { state }),
       ...(municipality && { municipality }),
     };
-
     const response = await server.patch(`/requirement/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,

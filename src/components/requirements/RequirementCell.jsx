@@ -126,16 +126,19 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
-      case "aspect":
+      case "aspects":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-            {requirement.aspect?.aspect_name || "N/A"}
+              {requirement.aspects?.map((aspect, index) => (
+                <span key={aspect.aspect_id}>
+                  {aspect.aspect_name}
+                  {index < requirement.aspects.length - 1 ? ", " : ""}
+                </span>
+              )) || "N/A"}
             </p>
           </div>
         );
-
       case "mandatory_description":
         return (
           <div className="flex items-center justify-center">

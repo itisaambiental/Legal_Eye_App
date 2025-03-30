@@ -36,7 +36,7 @@ const columns = [
   { name: "Estado", uid: "state", align: "start" },
   { name: "Municipio", uid: "municipality", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
-  { name: "Aspecto", uid: "aspect", align: "start" },
+  { name: "Aspectos", uid: "aspects", align: "start" },
   { name: "Tipo", uid: "requirement_type", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },

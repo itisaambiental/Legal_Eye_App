@@ -7,8 +7,8 @@ import server from "../../config/server.js";
  * @async
  * @function createRequirement
  * @param {Object} params - Parameters for creating a new requirement.
- * @param {string} params.subjectId - The ID of the subject linked to the requirement.
- * @param {string} params.aspectId - The ID of the aspect linked to the requirement.
+ * @param {string|number} params.subjectId - The ID of the subject linked to the requirement.
+ * @param {Array<string|number>} params.aspectsIds - An array of aspect IDs linked to the requirement.
  * @param {string} params.requirementNumber - The unique number identifying the requirement.
  * @param {string} params.requirementName - The name/title of the requirement.
  * @param {string} params.mandatoryDescription - The mandatory description of the requirement.
@@ -17,15 +17,14 @@ import server from "../../config/server.js";
  * @param {string} [params.complementarySentences] - The complementary sentences (optional).
  * @param {string} [params.mandatoryKeywords] - The mandatory keywords related to the requirement (optional).
  * @param {string} [params.complementaryKeywords] - The complementary keywords related to the requirement (optional).
- * @param {string} params.condition - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente').
- * @param {string} params.evidence - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento').
- * @param {string} params.periodicity - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez').
+ * @param {string} params.condition - The requirement condition.
+ * @param {string} params.evidence - The type of evidence required.
+ * @param {string} params.periodicity - The periodicity of the requirement.
  * @param {string} params.requirementType - The type of requirement.
- * @param {string} params.jurisdiction - The jurisdiction ('Federal', 'Estatal', 'Local').
+ * @param {string} params.jurisdiction - The jurisdiction.
  * @param {string} [params.state] - The state associated with the requirement (optional).
  * @param {string} [params.municipality] - The municipality associated with the requirement (optional).
- * @param {string} params.token - The authorization token for the request.
- *
+ * @param {string} params.token - The authorization token.
  * @returns {Promise<Object>} - The created requirement data returned from the server.
  * @throws {Error} - If the response status is not 201 or if there is an error with the request.
  */
@@ -52,7 +51,7 @@ export default async function createRequirement({
   try {
     const data = {
       subjectId,
-      aspectsIds,
+      aspectsIds: JSON.stringify(aspectsIds.map(Number)),
       requirementNumber,
       requirementName,
       mandatoryDescription,
@@ -69,15 +68,18 @@ export default async function createRequirement({
       state,
       municipality,
     };
+
     const response = await server.post("/requirements", data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
+
     if (response.status !== 201) {
       throw new Error("Failed to create requirement");
     }
+
     const { requirement } = response.data;
     return requirement;
   } catch (error) {

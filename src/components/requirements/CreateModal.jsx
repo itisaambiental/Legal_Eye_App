@@ -290,9 +290,9 @@ const CreateModal = ({ config }) => {
                 setAspectInputError("Debes seleccionar al menos un aspecto");
                 setIsLoading(false);
                 return;
-              } else {
+            } else {
                 setAspectInputError(null);
-              }
+            }
             if (formData.requirementType === "") {
                 setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
                 setIsLoading(false);
@@ -678,33 +678,33 @@ const CreateModal = ({ config }) => {
                                         )}
                                     </div>
                                     <div className="w-full">
-                                    <Tooltip
-                      content="Debes seleccionar una materia para habilitar este campo."
-                      isDisabled={isAspectsActive || errorAspects}
-                    >
-                      <div className="w-full">
-                        <Select
-                          size="sm"
-                          variant="bordered"
-                          label="Aspectos"
-                          selectionMode="multiple"
-                          isLoading={aspectsLoading}
-                          selectedKeys={formData.aspects}
-                          onSelectionChange={handleAspectsChange}
-                          isDisabled={!isAspectsActive || !!errorAspects}
-                          items={aspects}
-                          listboxProps={{
-                            emptyContent: "Aspectos no encontrados",
-                          }}
-                        >
-                          {(aspect) => (
-                            <SelectItem key={aspect.id} value={aspect.id}>
-                              {aspect.aspect_name}
-                            </SelectItem>
-                          )}
-                        </Select>
-                      </div>
-                    </Tooltip>
+                                        <Tooltip
+                                            content="Debes seleccionar una materia para habilitar este campo."
+                                            isDisabled={isAspectsActive || errorAspects}
+                                        >
+                                            <div className="w-full">
+                                                <Select
+                                                    size="sm"
+                                                    variant="bordered"
+                                                    label="Aspectos"
+                                                    selectionMode="multiple"
+                                                    isLoading={aspectsLoading}
+                                                    selectedKeys={formData.aspects}
+                                                    onSelectionChange={handleAspectsChange}
+                                                    isDisabled={!isAspectsActive || !!errorAspects}
+                                                    items={aspects}
+                                                    listboxProps={{
+                                                        emptyContent: "Aspectos no encontrados",
+                                                    }}
+                                                >
+                                                    {(aspect) => (
+                                                        <SelectItem key={aspect.id} value={aspect.id}>
+                                                            {aspect.aspect_name}
+                                                        </SelectItem>
+                                                    )}
+                                                </Select>
+                                            </div>
+                                        </Tooltip>
 
                                         {errorAspects && (
                                             <p className="mt-2 text-sm text-red">

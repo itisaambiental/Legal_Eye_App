@@ -13,7 +13,7 @@ class RequirementErrors {
     static NAME_DUPLICATED_REQUIREMENT = "NAME_DUPLICATED_REQUIREMENT";
     static CONFLICT = "CONFLICT";
     static SUBJECT_NOT_FOUND = "SUBJECT_NOT_FOUND";
-    static ASPECT_NOT_FOUND = "ASPECT_NOT_FOUND";
+    static ASPECTS_NOT_FOUND = "ASPECTS_NOT_FOUND";
     static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   
   /**
@@ -60,9 +60,9 @@ class RequirementErrors {
         title: "Materia no encontrada",
         message: "La materia seleccionada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
       },
-      [RequirementErrors.ASPECT_NOT_FOUND]: {
-        title: "Aspecto no encontrados",
-        message: "El aspecto seleccionado no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.",
+      [RequirementErrors.ASPECTS_NOT_FOUND]: {
+        title: "Aspectos no encontrados",
+        message: "Algunos aspectos seleccionados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
       },
       [RequirementErrors.UNEXPECTED_ERROR]: {
         title: "Error inesperado",
@@ -80,7 +80,7 @@ class RequirementErrors {
       "Requirement name already exists": RequirementErrors.NAME_DUPLICATED_REQUIREMENT,
       "Requirement not found": RequirementErrors.NOT_FOUND,
       "Subject not found": RequirementErrors.SUBJECT_NOT_FOUND,
-      "Aspect not found": RequirementErrors.ASPECT_NOT_FOUND,
+      "Aspects not found for IDs": RequirementErrors.ASPECTS_NOT_FOUND,
     };
   
    /**

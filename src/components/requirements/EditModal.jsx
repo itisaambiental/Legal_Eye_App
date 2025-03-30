@@ -532,7 +532,7 @@ const EditModal = ({ config }) => {
                       htmlFor="floating_number"
                       className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                      Número
+                      Orden
                     </label>
                     {numberError && (
                       <p className="mt-2 text-sm text-red">{numberError}</p>
@@ -552,7 +552,7 @@ const EditModal = ({ config }) => {
                       htmlFor="floating_nombre"
                       className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                      Nombre
+                     Requerimiento/Nombre
                     </label>
                     {nameError && (
                       <p className="mt-2 text-sm text-red">{nameError}</p>

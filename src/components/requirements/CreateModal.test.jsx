@@ -57,22 +57,16 @@ describe("CreateModal Component for Requirements", () => {
       aspectsLoading: false,
       errorAspects: null,
       handleAspectsChange: vi.fn(),
-      handleMandatoryDescriptionChange: vi.fn(),
       mandatoryDescriptionError: null,
       setMandatoryDescriptionError: vi.fn(),
-      handleComplementaryDescriptionChange: vi.fn(),
       complementaryDescriptionError: null,
       setComplementaryDescriptionError: vi.fn(),
-      handleMandatorySentencesChange: vi.fn(),
       mandatorySentencesError: null,
       setMandatorySentencesError: vi.fn(),
-      handleComplementarySentencesChange: vi.fn(),
       complementarySentencesError: null,
       setComplementarySentencesError: vi.fn(),
-      handleMandatoryKeywordsChange: vi.fn(),
       mandatoryKeywordsError: null,
       setMandatoryKeywordsError: vi.fn(),
-      handleComplementaryKeywordsChange: vi.fn(),
       complementaryKeywordsError: null,
       setComplementaryKeywordsError: vi.fn(),
 
@@ -87,13 +81,31 @@ describe("CreateModal Component for Requirements", () => {
         state: "",
         municipality: "",
         subject: "",
-        aspect: "",
+        aspects: ["1"],
         mandatoryDescription: "",
         complementaryDescription: "",
         mandatorySentences: "",
         complementarySentences: "",
         mandatoryKeywords: "",
         complementaryKeywords: "",
+      },
+      handleMandatoryDescriptionChange: (e) => {
+        config.formData.mandatoryDescription = e.target.value;
+      },
+      handleComplementaryDescriptionChange: (e) => {
+        config.formData.complementaryDescription = e.target.value;
+      },
+      handleMandatorySentencesChange: (e) => {
+        config.formData.mandatorySentences = e.target.value;
+      },
+      handleComplementarySentencesChange: (e) => {
+        config.formData.complementarySentences = e.target.value;
+      },
+      handleMandatoryKeywordsChange: (e) => {
+        config.formData.mandatoryKeywords = e.target.value;
+      },
+      handleComplementaryKeywordsChange: (e) => {
+        config.formData.complementaryKeywords = e.target.value;
       },
     };
   });
@@ -112,7 +124,7 @@ describe("CreateModal Component for Requirements", () => {
       jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
-      aspect: "1",
+      aspects: ["1"],
       number: "",
       name: "",
     };
@@ -136,7 +148,7 @@ describe("CreateModal Component for Requirements", () => {
       jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
-      aspect: "1",
+      aspects: ["1"],
     };
 
     render(<CreateModal config={config} />);
@@ -156,7 +168,7 @@ describe("CreateModal Component for Requirements", () => {
     config.formData.jurisdiction ="Federal";
     config.formData.requirementType ="Identificación Federal",
     config.formData.subject ="1",
-    config.formData.aspect = "1",
+    config.formData.aspects =["1"]
     config.formData.state = "",
     config.formData.municipality = "",
     config.formData.mandatoryDescription = "desc",
@@ -169,14 +181,19 @@ describe("CreateModal Component for Requirements", () => {
     render(<CreateModal config={config} />);
     fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
   
-    await waitFor(() => screen.getByText("Detalles Adicionales"));
+    await waitFor(() => {
+      expect(screen.getByText("Detalles Adicionales")).toBeInTheDocument();
+    });
+    
   
     fireEvent.change(screen.getByLabelText("Descripción Obligatoria"), { target: { value: "" } });
     fireEvent.change(screen.getByLabelText("Descripción Complementaria"), { target: { value: "" } });
     fireEvent.change(screen.getByLabelText("Frases Obligatorias"), { target: { value: "" } });
     fireEvent.change(screen.getByLabelText("Frases Complementarias"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Palabras clave obligatorias"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Palabras clave complementarias"), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText("Palabras Clave Obligatorias"), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText("Palabras Clave Complementarias"), { target: { value: "" } });
+    
+    
   
     fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
   
@@ -196,7 +213,7 @@ describe("CreateModal Component for Requirements", () => {
       jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
-      aspect: "1",
+      aspects: ["1"],
       state: "",
       municipality: "",
       mandatoryDescription: "desc",
@@ -232,7 +249,7 @@ describe("CreateModal Component for Requirements", () => {
       jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
-      aspect: "1",
+      aspects: ["1"],
       state: "",
       municipality: "",
       mandatoryDescription: "desc",
@@ -244,6 +261,7 @@ describe("CreateModal Component for Requirements", () => {
     };
 
     config.addRequirement = vi.fn().mockResolvedValue({ success: true });
+
 
     render(
       <>
@@ -263,6 +281,12 @@ describe("CreateModal Component for Requirements", () => {
     await waitFor(() => {
       expect(screen.getByText("El requerimiento ha sido registrado correctamente")).toBeInTheDocument();
     });
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Enviar" })).toBeInTheDocument();
+    });
+    
+    
+    
   });
 
   it("does NOT close modal if addRequirement returns error", async () => {
@@ -280,7 +304,7 @@ describe("CreateModal Component for Requirements", () => {
       jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
-      aspect: "1",
+      aspects: ["1"],
       state: "",
       municipality: "",
       mandatoryDescription: "desc",
@@ -294,7 +318,7 @@ describe("CreateModal Component for Requirements", () => {
     render(<CreateModal config={config} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
-    await waitFor(() => screen.getByText("Detalles Adicionales"));
+    await waitFor(() => expect(screen.queryByText("Detalles Adicionales")).toBeInTheDocument());
 
     fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
 

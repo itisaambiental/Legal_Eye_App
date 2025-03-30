@@ -883,7 +883,7 @@ const CreateModal = ({ config }) => {
                                         disabled={isLoading}
                                         className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                                     >
-                                        {isLoading ? <Spinner size="sm" color="white" /> : "Enviar"}
+                                        {isLoading ? <Spinner size="sm" color="white" /> : "Crear Requerimiento"}
                                     </Button>
                                 </div>
                             </form>

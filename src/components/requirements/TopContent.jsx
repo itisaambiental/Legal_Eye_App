@@ -189,7 +189,7 @@ function TopContent({ config }) {
         >
           <AutocompleteItem key="Trámite">Trámite</AutocompleteItem>
           <AutocompleteItem key="Registro">Registro</AutocompleteItem>
-          <AutocompleteItem key="Específico">Específico</AutocompleteItem>
+          <AutocompleteItem key="Específica">Específica</AutocompleteItem>
           <AutocompleteItem key="Documento">Documento</AutocompleteItem>
         </Autocomplete>
         <Autocomplete
@@ -209,6 +209,7 @@ function TopContent({ config }) {
           <AutocompleteItem key="2 años">2 años</AutocompleteItem>
           <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
           <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+          <AutocompleteItem key="Específica">Específica</AutocompleteItem>
         </Autocomplete>
         <Autocomplete
           color="primary"

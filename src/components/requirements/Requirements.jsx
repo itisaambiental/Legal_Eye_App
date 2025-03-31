@@ -139,6 +139,8 @@ export default function Requirement() {
   const [conditionInputError, setConditionInputError] = useState("");
   const [evidenceInputError, setEvidenceInputError] = useState("");
   const [periodicityInputError, setPeriodicityInputError] = useState("");
+  const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState ("");
+  const [specifyPeriodicityInputError, setSpecifyPeriodicityInputError] = useState (""); 
   const [requirementTypeInputError, setRequirementTypeInputError] = useState("");
   const [jurisdictionInputError, setJurisdictionInputError] = useState("");
   const [stateInputError, setStateInputError] = useState("");
@@ -163,9 +165,9 @@ export default function Requirement() {
     name: "",
     condition: "",
     evidence: "",
-    evidenceSpecification: "",
+    specifyEvidence: "",
     periodicity: "",
-    periodicitySpecification: "",
+    specifyPeriodicity: "",
     requirementType: "",
     jurisdiction: "",
     state: "",
@@ -798,7 +800,9 @@ export default function Requirement() {
       name: "",
       condition: "",
       evidence: "",
+      specifyEvidence: "", 
       periodicity: "",
+      specifyPeriodicity: "", 
       requirementType: "",
       jurisdiction: "",
       state: "",
@@ -813,7 +817,7 @@ export default function Requirement() {
       complementaryKeywords: "",
     });
     setIsCreateModalOpen(true);
-  };
+  };  
 
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
@@ -931,7 +935,7 @@ export default function Requirement() {
       setFormData((prev) => ({
         ...prev,
         evidence: value,
-        evidenceSpecification: value === "Específica" ? prev.evidenceSpecification : "",
+        specifyEvidence: value === "Específica" ? prev.specifyEvidence : "",
       }));
       if (evidenceInputError && value.trim() !== "") {
         setEvidenceInputError(null);
@@ -945,7 +949,7 @@ export default function Requirement() {
       setFormData((prev) => ({
         ...prev,
         periodicity: value,
-        periodicitySpecification: value === "Especifíca" ? prev.periodicitySpecification : "",
+        specifyPeriodicity: value === "Específica" ? prev.specifyPeriodicity : "",
       }));
       if (periodicityInputError && value.trim() !== "") {
         setPeriodicityInputError(null);
@@ -954,23 +958,29 @@ export default function Requirement() {
     [periodicityInputError, setFormData, setPeriodicityInputError]
   );
 
-  const handleEvidenceSpecificationChange = useCallback((e) => {
+  const handlSpecifyEvidenceChange = useCallback((e) => {
+    const value = e.target.value;
     setFormData((prev) => ({
       ...prev,
-      evidenceSpecification: e.target.value,
+      specifyEvidence: value,
     }));
-  }, []);
-
-  const handlePeriodicitySpecificationChange = useCallback((e) => {
+    if (specifyEvidenceInputError && value.trim() !== "") {
+      setSpecifyEvidenceInputError(null);
+    }
+  }, [specifyEvidenceInputError, setFormData, setSpecifyEvidenceInputError]);
+  
+  const handleSpecifyPeriodicityChange = useCallback((e) => {
+    const value = e.target.value;
     setFormData((prev) => ({
       ...prev,
-      periodicitySpecification: e.target.value,
+      specifyPeriodicity: value,
     }));
-  }, []);
-
-
-
-
+    if (specifyPeriodicityInputError && value.trim() !== "") {
+      setSpecifyPeriodicityInputError(null);
+    }
+  }, [specifyPeriodicityInputError, setFormData, setSpecifyPeriodicityInputError]);
+  
+  
   const handleRequirementType = useCallback(
 
     (value) => {
@@ -1527,10 +1537,17 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
-              handleEvidenceSpecificationChange,
-              handlePeriodicitySpecificationChange,
-              evidenceSpecification: formData.evidenceSpecification,
-              periodicitySpecification: formData.periodicitySpecification,
+
+              specifyEvidenceError: specifyEvidenceInputError,
+              setSpecifyEvidenceError: setSpecifyEvidenceInputError,
+              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+
+
+              specifyPeriodicityError: specifyPeriodicityInputError,
+              setSpecifyPeriodicityError: setSpecifyPeriodicityInputError,
+              handleSpecifyPeriodicityChange:handleSpecifyPeriodicityChange,
+              specifyEvidence: formData.specifyEvidence,
+              specifyPeriodicity: formData.specifyPeriodicity,
               requirementTypeError: requirementTypeInputError,
               setRequirementTypeError: setRequirementTypeInputError,
               handleRequirementType: handleRequirementType,
@@ -1607,6 +1624,14 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
+              specifyEvidenceError: specifyEvidenceInputError,
+              setSpecifyEvidenceError: setSpecifyEvidenceInputError,
+              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+              specifyPeriodicityError: specifyPeriodicityInputError,
+              setSpecifyPeriodicityError: setSpecifyPeriodicityInputError,
+              handleSpecifyPeriodicityChange:handleSpecifyPeriodicityChange,
+              specifyEvidence: formData.specifyEvidence,
+              specifyPeriodicity: formData.specifyPeriodicity,
               requirementTypeError: requirementTypeInputError,
               setRequirementTypeError: setRequirementTypeInputError,
               handleRequirementType: handleRequirementType,

@@ -124,9 +124,15 @@ const EditModal = ({ config }) => {
     evidenceError,
     setEvidenceError,
     handleEvidenceChange,
+    specifyEvidenceError,
+    handlSpecifyEvidenceChange,
+    setSpecifyEvidenceError,
     periodicityError,
     setPeriodicityError,
     handlePeriodicityChange,
+    setSpecifyPeriodicityError,
+    handleSpecifyPeriodicityChange,
+    specifyPeriodicityError,
     jurisdictionError,
     setJurisdictionError,
     handleJurisdictionChange,
@@ -320,13 +326,33 @@ const EditModal = ({ config }) => {
       } else {
         setEvidenceError(null);
       }
+      if (
+        formData.evidence === "Específica" &&
+        (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
+      ) {
 
+        setSpecifyEvidenceError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else {
+        setSpecifyEvidenceError(null);
+      }
       if (formData.periodicity === "") {
         setPeriodicityError("Debes seleccionar una periodicidad.");
         setIsLoading(false);
         return;
       } else {
         setPeriodicityError(null);
+      }
+      if (
+        formData.periodicity === "Específica" &&
+        (!formData.specifyPeriodicity || formData.specifyPeriodicity.trim() === "")
+      ) {
+        setSpecifyPeriodicityError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else {
+        setSpecifyPeriodicityError(null);
       }
       if (formData.jurisdiction === "") {
         setJurisdictionError("Debes seleccionar una jurisdicción.");
@@ -441,7 +467,9 @@ const EditModal = ({ config }) => {
         requirementName: formData.name,
         condition: formData.condition,
         evidence: formData.evidence,
+        specifyEvidence: formData.specifyEvidence,
         periodicity: formData.periodicity,
+        specifyPeriodicity: formData.specifyPeriodicity,
         requirementType: formData.requirementType,
         jurisdiction: formData.jurisdiction,
         state: formData.state,
@@ -455,6 +483,7 @@ const EditModal = ({ config }) => {
         mandatoryKeywords: formData.mandatoryKeywords,
         complementaryKeywords: formData.complementaryKeywords,
       };
+
       const { success, error } = await editRequirement(
         requirementData
       );
@@ -552,7 +581,7 @@ const EditModal = ({ config }) => {
                       htmlFor="floating_nombre"
                       className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                     Requerimiento/Nombre
+                      Requerimiento/Nombre
                     </label>
                     {nameError && (
                       <p className="mt-2 text-sm text-red">{nameError}</p>
@@ -593,7 +622,7 @@ const EditModal = ({ config }) => {
                     >
                       <AutocompleteItem key="Trámite">Trámite</AutocompleteItem>
                       <AutocompleteItem key="Registro">Registro</AutocompleteItem>
-                      <AutocompleteItem key="Específico">Específico</AutocompleteItem>
+                      <AutocompleteItem key="Específica">Específica</AutocompleteItem>
                       <AutocompleteItem key="Documento">Documento</AutocompleteItem>
                     </Autocomplete>
                     {evidenceError && (
@@ -602,6 +631,7 @@ const EditModal = ({ config }) => {
                       </p>
                     )}
                   </div>
+
                   <div className="w-full">
                     <Autocomplete
                       size="sm"
@@ -617,6 +647,7 @@ const EditModal = ({ config }) => {
                       <AutocompleteItem key="2 años">2 años</AutocompleteItem>
                       <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
                       <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                      <AutocompleteItem key="Específica">Específica</AutocompleteItem>
                     </Autocomplete>
                     {periodicityError && (
                       <p className="mt-2 text-sm text-red">
@@ -624,6 +655,56 @@ const EditModal = ({ config }) => {
                       </p>
                     )}
                   </div>
+
+
+                  {formData.evidence === "Específica" && (
+                    <div className="relative z-0 w-full group">
+                      <input
+                        type="text"
+                        name="specifyEvidence"
+                        id="floating_specify_evidence"
+                        value={formData.specifyEvidence}
+                        onChange={handlSpecifyEvidenceChange}
+                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
+                        placeholder=""
+                      />
+                      <label
+                        htmlFor="floating_specify_evidence"
+                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                      >
+                        Especificar Evidencia
+                      </label>
+                      {specifyEvidenceError && (
+                        <p className="mt-2 text-sm text-red">{specifyEvidenceError}</p>
+                      )}
+
+                    </div>
+                  )}
+
+                  {formData.periodicity === "Específica" && (
+                    <div className="relative z-0 w-full group">
+                      <input
+                        type="text"
+                        name="specifyPeriodicity"
+                        id="floating_specify_periodicity"
+                        value={formData.specifyPeriodicity}
+                        onChange={handleSpecifyPeriodicityChange}
+                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
+                        placeholder=""
+                      />
+                      <label
+                        htmlFor="floating_specify_periodicity"
+                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                      >
+                        Especificar Periodicidad
+                      </label>
+                      {specifyPeriodicityError && (
+                        <p className="mt-2 text-sm text-red">{specifyPeriodicityError}</p>
+                      )}
+
+                    </div>
+                  )}
+
                   <div className="w-full">
                     <Autocomplete
                       size="sm"
@@ -645,6 +726,8 @@ const EditModal = ({ config }) => {
                       </p>
                     )}
                   </div>
+
+
                   <Tooltip
                     content={getTooltipContentForState()}
                     isDisabled={isStateActive}
@@ -991,9 +1074,17 @@ EditModal.propTypes = {
     setEvidenceError: PropTypes.func.isRequired,
     handleEvidenceChange: PropTypes.func.isRequired,
 
+    specifyEvidenceError: PropTypes.string,
+    setSpecifyEvidenceError: PropTypes.func.isRequired,
+    handlSpecifyEvidenceChange: PropTypes.func.isRequired,
+
     periodicityError: PropTypes.string,
     setPeriodicityError: PropTypes.func.isRequired,
     handlePeriodicityChange: PropTypes.func.isRequired,
+
+    specifyPeriodicityError: PropTypes.string,
+    setSpecifyPeriodicityError: PropTypes.func.isRequired,
+    handleSpecifyPeriodicityChange: PropTypes.func.isRequired,
 
     jurisdictionError: PropTypes.string,
     setJurisdictionError: PropTypes.func.isRequired,

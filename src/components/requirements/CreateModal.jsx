@@ -247,7 +247,7 @@ const CreateModal = ({ config }) => {
                 (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
             ) {
 
-                setSpecifyEvidenceError("Este campo es obligatorio.");
+                setSpecifyEvidenceError("Este campo es obligatorio si se selecciona el valor Específica.");
                 setIsLoading(false);
                 return;
             } else {
@@ -264,7 +264,7 @@ const CreateModal = ({ config }) => {
                 formData.periodicity === "Específica" &&
                 (!formData.specifyPeriodicity || formData.specifyPeriodicity.trim() === "")
             ) {
-                setSpecifyPeriodicityError("Este campo es obligatorio.");
+                setSpecifyPeriodicityError("Este campo es obligatorio si se selecciona el valor Específica.");
                 setIsLoading(false);
                 return;
             } else {

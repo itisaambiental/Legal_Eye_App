@@ -37,16 +37,6 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onFilterByPeriodicity - Callback for filtering by periodicity.
  * @param {string} props.config.selectedRequirementType - Selected requirement type filter.
  * @param {Function} props.config.onFilterByRequirementType - Callback for filtering by requirement type.
- * @param {string} props.config.selectedJurisdiction - Selected jurisdiction filter.
- * @param {Function} props.config.onFilterByJurisdiction - Callback for filtering by jurisdiction.
- * @param {string} props.config.selectedState - Selected state filter.
- * @param {boolean} props.config.stateLoading - Indicates if states are loading.
- * @param {Function} props.config.onFilterByState - Callback for filtering by state.
- * @param {Array<string>} props.config.states - List of available states.
- * @param {Array<string>} props.config.municipalities - List of available municipalities.
- * @param {Array<string>} props.config.selectedMunicipalities - List of selected municipalities.
- * @param {boolean} props.config.municipalitiesLoading - Indicates if municipalities are loading.
- * @param {Function} props.config.onFilterByMunicipalities - Callback for filtering by municipalities.
  * @param {string} props.config.filterByMandatoryDescription - Current value for filtering by mandatory description.
  * @param {Function} props.config.onFilterByMandatoryDescription - Callback for filtering by mandatory description.
  * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description.
@@ -93,16 +83,6 @@ function TopContent({ config }) {
     onFilterByPeriodicity,
     selectedRequirementType,
     onFilterByRequirementType,
-    selectedJurisdiction,
-    onFilterByJurisdiction,
-    selectedState,
-    stateLoading,
-    onFilterByState,
-    states,
-    selectedMunicipalities,
-    onFilterByMunicipalities,
-    municipalities,
-    municipalitiesLoading,
     onClear,
     subjects,
     subjectLoading,
@@ -232,96 +212,8 @@ function TopContent({ config }) {
           <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
           <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
         </Autocomplete>
-        <Autocomplete
-          color="primary"
-          variant="faded"
-          onClear={onClear}
-          placeholder="Seleccionar jurisdicción..."
-          className="w-full"
-          listboxProps={{
-            emptyContent: "Jurisdicción no encontrada",
-          }}
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          selectedKey={selectedJurisdiction}
-          onSelectionChange={onFilterByJurisdiction}
-        >
-          <AutocompleteItem key="Federal">Federal</AutocompleteItem>
-          <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
-          <AutocompleteItem key="Local">Local</AutocompleteItem>
-        </Autocomplete>
-        <Autocomplete
-          color="primary"
-          variant="faded"
-          onClear={onClear}
-          defaultItems={states.map((estado) => ({ id: estado, name: estado }))}
-          isLoading={stateLoading}
-          placeholder="Buscar por estado..."
-          startContent={
-            <img
-              src={search_icon}
-              alt="Search Icon"
-              className="w-4 h-4 flex-shrink-0"
-            />
-          }
-          className="w-full"
-          selectedKey={selectedState}
-          listboxProps={{
-            emptyContent: "Estado no encontrado",
-          }}
-          onSelectionChange={onFilterByState}
-        >
-          {(estado) => (
-            <AutocompleteItem key={estado.id} value={estado.id}>
-              {estado.name}
-            </AutocompleteItem>
-          )}
-        </Autocomplete>
-        <Tooltip content="Debes seleccionar un estado" 
-        isDisabled={!!selectedState}
-        >
-          <div className="w-full">
-            <Select
-              color="primary"  
-              items={municipalities.map((municipio) => ({
-                id: municipio,
-                name: municipio,
-              }))}
-              onClear={onClear}
-              variant="faded"
-              placeholder="Buscar por municipio..."
-              startContent={
-              <img 
-              src={search_icon} 
-              alt="Search Icon" 
-              className="w-4 h-4 flex-shrink-0" 
-              />
-            }
-              className="w-full"
-              isLoading={
-                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen
-              }
-              selectionMode="multiple"
-              selectedKeys={selectedMunicipalities}
-              listboxProps={{
-                emptyContent: "Municipios no encontrados",
-              }}
-              isDisabled={!selectedState}
-              onSelectionChange={onFilterByMunicipalities}
-              renderValue={(selected) =>
-                !selected || selected.length === 0
-                  ? "Buscar por municipio..."
-                  : `${selected.length} municipio${selected.length > 1 ? "s" : ""
-                  } seleccionado${selected.length > 1 ? "s" : ""}`
-              }
-            >
-              {(municipio) => (
-                <SelectItem key={municipio.id} value={municipio.id}>
-                  {municipio.name}
-                </SelectItem>
-              )}
-            </Select>
-          </div>
-        </Tooltip>
+
+   
         <Autocomplete
           color="primary"  
           variant="faded"
@@ -523,16 +415,6 @@ TopContent.propTypes = {
     onFilterByPeriodicity: PropTypes.func.isRequired,
     selectedRequirementType: PropTypes.string,
     onFilterByRequirementType: PropTypes.func.isRequired,
-    selectedJurisdiction: PropTypes.string,
-    onFilterByJurisdiction: PropTypes.func.isRequired,
-    selectedState: PropTypes.string,
-    stateLoading: PropTypes.bool.isRequired,
-    onFilterByState: PropTypes.func.isRequired,
-    states: PropTypes.arrayOf(PropTypes.string).isRequired,
-    selectedMunicipalities: PropTypes.arrayOf(PropTypes.string),
-    municipalities: PropTypes.arrayOf(PropTypes.string).isRequired,
-    municipalitiesLoading: PropTypes.bool.isRequired,
-    onFilterByMunicipalities: PropTypes.func.isRequired,
     filterByMandatoryDescription: PropTypes.string,
     onFilterByMandatoryDescription: PropTypes.func,
     filterByComplementaryDescription: PropTypes.string,

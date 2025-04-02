@@ -49,15 +49,6 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.periodicityError - Error message for the "Periodicity" dropdown.
  * @param {Function} props.config.setPeriodicityError - Setter for "Periodicity" field error.
  * @param {Function} props.config.handlePeriodicityChange - Change handler for the "Periodicity" dropdown.
- * @param {string|null} props.config.jurisdictionError - Error message for the "Jurisdiction" dropdown.
- * @param {Function} props.config.setJurisdictionError - Setter for "Jurisdiction" field error.
- * @param {Function} props.config.handleJurisdictionChange - Change handler for the "Jurisdiction" dropdown.
- * @param {string|null} props.config.stateError - Error message for the "State" dropdown.
- * @param {Function} props.config.setStateError - Setter for "State" field error.
- * @param {Function} props.config.handleStateChange - Change handler for the "State" dropdown.
- * @param {string|null} props.config.municipalityError - Error message for the "Municipality" dropdown.
- * @param {Function} props.config.setMunicipalityError - Setter for "Municipality" field error.
- * @param {Function} props.config.handleMunicipalityChange - Change handler for the "Municipality" dropdown.
  * @param {string|null} props.config.subjectInputError - Error message for the "Subject" dropdown.
  * @param {Function} props.config.setSubjectError - Setter for "Subject" field error.
  * @param {Function} props.config.handleSubjectChange - Change handler for the "Subject" dropdown.
@@ -85,19 +76,11 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.complementaryKeywordsError - Error for the "Complementary Keywords" textarea.
  * @param {Function} props.config.setComplementaryKeywordsError - Setter for the "Complementary Keywords" error.
  * @param {Function} props.config.handleComplementaryKeywordsChange - Handler for "Complementary Keywords" textarea.
- * @param {Array} props.config.states - List of available states.
- * @param {boolean} props.config.isStateActive - Enables/disables the "State" dropdown.
- * @param {Function} props.config.clearMunicipalities - Clears municipalities when the state is changed.
- * @param {Array} props.config.municipalities - List of available municipalities.
- * @param {boolean} props.config.isMunicipalityActive - Enables/disables the "Municipality" dropdown.
- * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are loading.
- * @param {Object|null} props.config.errorMunicipalities - Error object related to municipality fetching.
  * @param {Array} props.config.subjects - List of available subjects.
  * @param {boolean} props.config.isAspectsActive - Enables/disables the "Aspect" dropdown.
  * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {Array} props.config.aspects - List of available aspects.
  * @param {Object|null} props.config.errorAspects - Error object related to aspect fetching.
- * @param {Function} props.config.setIsStateActive - Setter to enable/disable state input.
  * @param {Function} props.config.setIsMunicipalityActive - Setter to enable/disable municipality input.
  * @param {Function} props.config.setIsAspectsActive - Setter to enable/disable aspect input.
  * @param {Function} props.config.clearAspects - Clears the aspect list.
@@ -130,18 +113,6 @@ const EditModal = ({ config }) => {
     periodicityError,
     setPeriodicityError,
     handlePeriodicityChange,
-    setSpecifyPeriodicityError,
-    handleSpecifyPeriodicityChange,
-    specifyPeriodicityError,
-    jurisdictionError,
-    setJurisdictionError,
-    handleJurisdictionChange,
-    stateError,
-    setStateError,
-    handleStateChange,
-    municipalityError,
-    setMunicipalityError,
-    handleMunicipalityChange,
     subjectInputError,
     setSubjectError,
     handleSubjectChange,
@@ -169,21 +140,11 @@ const EditModal = ({ config }) => {
     complementaryKeywordsError,
     setComplementaryKeywordsError,
     handleComplementaryKeywordsChange,
-    states,
-    isStateActive,
-    clearMunicipalities,
-    municipalities,
-    isMunicipalityActive,
-    loadingMunicipalities,
-    fetchMunicipalities,
-    errorMunicipalities,
     subjects,
     fetchAspects,
     clearAspects,
     isAspectsActive,
-    setIsMunicipalityActive,
     aspectsLoading,
-    setIsStateActive,
     setIsAspectsActive,
     aspects,
     errorAspects,
@@ -200,10 +161,8 @@ const EditModal = ({ config }) => {
         name: selectedRequirement.requirement_name,
         condition: selectedRequirement.condition,
         evidence: selectedRequirement.evidence,
+        specifyEvidence: selectedRequirement.specify_evidence || "",
         periodicity: selectedRequirement.periodicity,
-        jurisdiction: selectedRequirement.jurisdiction,
-        state: selectedRequirement.state,
-        municipality: selectedRequirement.municipality,
         subject: selectedRequirement.subject?.subject_id.toString(),
         aspects: selectedRequirement.aspects?.map((aspect) =>
           aspect.aspect_id.toString()
@@ -216,30 +175,7 @@ const EditModal = ({ config }) => {
         mandatoryKeywords: selectedRequirement.mandatory_keywords,
         complementaryKeywords: selectedRequirement.complementary_keywords,
       });
-      switch (selectedRequirement.jurisdiction) {
-        case "Federal":
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Estatal":
-          setIsStateActive(true);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Local":
-          setIsStateActive(true);
-          setIsMunicipalityActive(!!selectedRequirement.state);
-          if (selectedRequirement.state) {
-            fetchMunicipalities(selectedRequirement.state);
-          }
-          break;
-        default:
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-      }
+
 
       if (selectedRequirement.subject) {
         setIsAspectsActive(true);
@@ -251,41 +187,10 @@ const EditModal = ({ config }) => {
     }
   }, [selectedRequirement,
     setFormData,
-    setIsStateActive,
-    setIsMunicipalityActive,
     setIsAspectsActive,
-    clearMunicipalities,
-    fetchMunicipalities,
     fetchAspects,
     clearAspects,
   ]);
-
-  const getTooltipContentForState = () => {
-    if (formData.jurisdiction === "Federal") {
-      return "La jurisdicción debe ser estatal o local para habilitar este campo";
-    }
-    if (!formData.jurisdiction) {
-      return "Debes seleccionar una jurisdicción para habilitar este campo.";
-    }
-    return null;
-  };
-
-  const getTooltipContentForMunicipality = () => {
-    if (formData.jurisdiction === "Federal") {
-      return "La jurisdicción debe ser local para habilitar este campo.";
-    }
-    if (formData.jurisdiction === "Estatal") {
-      return "La jurisdicción debe ser local para habilitar este campo.";
-    }
-    if (formData.jurisdiction === "Local" && !formData.state) {
-      return "Debes seleccionar un estado para habilitar este campo.";
-    }
-    if (!formData.jurisdiction) {
-      return "Debes seleccionar una jurisdicción para habilitar este campo.";
-    }
-    return null;
-  };
-
 
 
   const handleBack = () => setStep(1);
@@ -331,7 +236,7 @@ const EditModal = ({ config }) => {
         (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
       ) {
 
-        setSpecifyEvidenceError("Este campo es obligatorio.");
+        setSpecifyEvidenceError("Este campo es obligatorio si se selecciona el valor Específica.");
         setIsLoading(false);
         return;
       } else {
@@ -344,49 +249,7 @@ const EditModal = ({ config }) => {
       } else {
         setPeriodicityError(null);
       }
-      if (
-        formData.periodicity === "Específica" &&
-        (!formData.specifyPeriodicity || formData.specifyPeriodicity.trim() === "")
-      ) {
-        setSpecifyPeriodicityError("Este campo es obligatorio.");
-        setIsLoading(false);
-        return;
-      } else {
-        setSpecifyPeriodicityError(null);
-      }
-      if (formData.jurisdiction === "") {
-        setJurisdictionError("Debes seleccionar una jurisdicción.");
-        setIsLoading(false);
-        return;
-      } else {
-        setJurisdictionError(null);
-      }
-
-      if (formData.jurisdiction === "Estatal" && formData.state === "") {
-        setStateError("Este campo es obligatorio para la jurisdicción Estatal.");
-        setIsLoading(false);
-        return;
-      } else {
-        setStateError(null);
-      }
-
-      if (formData.jurisdiction === "Local") {
-        if (formData.state === "") {
-          setStateError("Este campo es obligatorio para la jurisdicción Local.");
-          setIsLoading(false);
-          return;
-        } else {
-          setStateError(null);
-        }
-
-        if (formData.municipality === "") {
-          setMunicipalityError("Este campo es obligatorio para la jurisdicción Local.");
-          setIsLoading(false);
-          return;
-        } else {
-          setMunicipalityError(null);
-        }
-      }
+      
 
       if (formData.subject === "") {
         setSubjectError("Debes seleccionar una materia.");
@@ -469,11 +332,7 @@ const EditModal = ({ config }) => {
         evidence: formData.evidence,
         specifyEvidence: formData.specifyEvidence,
         periodicity: formData.periodicity,
-        specifyPeriodicity: formData.specifyPeriodicity,
         requirementType: formData.requirementType,
-        jurisdiction: formData.jurisdiction,
-        state: formData.state,
-        municipality: formData.municipality,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
         mandatoryDescription: formData.mandatoryDescription,
@@ -657,7 +516,7 @@ const EditModal = ({ config }) => {
                   </div>
 
 
-                  {formData.evidence === "Específica" && (
+                  {(formData.evidence === "Específica" || formData.specifyEvidence) && (
                     <div className="relative z-0 w-full group">
                       <input
                         type="text"
@@ -677,138 +536,8 @@ const EditModal = ({ config }) => {
                       {specifyEvidenceError && (
                         <p className="mt-2 text-sm text-red">{specifyEvidenceError}</p>
                       )}
-
                     </div>
                   )}
-
-                  {formData.periodicity === "Específica" && (
-                    <div className="relative z-0 w-full group">
-                      <input
-                        type="text"
-                        name="specifyPeriodicity"
-                        id="floating_specify_periodicity"
-                        value={formData.specifyPeriodicity}
-                        onChange={handleSpecifyPeriodicityChange}
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
-                        placeholder=""
-                      />
-                      <label
-                        htmlFor="floating_specify_periodicity"
-                        className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                      >
-                        Especificar Periodicidad
-                      </label>
-                      {specifyPeriodicityError && (
-                        <p className="mt-2 text-sm text-red">{specifyPeriodicityError}</p>
-                      )}
-
-                    </div>
-                  )}
-
-                  <div className="w-full">
-                    <Autocomplete
-                      size="sm"
-                      variant="bordered"
-                      label="Jurisdicción"
-                      selectedKey={formData.jurisdiction}
-                      onSelectionChange={handleJurisdictionChange}
-                      listboxProps={{
-                        emptyContent: "Jurisdicción no encontrada",
-                      }}
-                    >
-                      <AutocompleteItem key="Federal">Federal</AutocompleteItem>
-                      <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
-                      <AutocompleteItem key="Local">Local</AutocompleteItem>
-                    </Autocomplete>
-                    {jurisdictionError && (
-                      <p className="mt-2 text-sm text-red">
-                        {jurisdictionError}
-                      </p>
-                    )}
-                  </div>
-
-
-                  <Tooltip
-                    content={getTooltipContentForState()}
-                    isDisabled={isStateActive}
-                  >
-                    <div className="w-full">
-                      <Autocomplete
-                        size="sm"
-                        variant="bordered"
-                        label="Estado"
-                        placeholder="Buscar estado"
-                        isDisabled={!isStateActive}
-                        onClear={clearMunicipalities}
-                        className="max-w-xs"
-                        defaultItems={states.map((estado) => ({
-                          id: estado,
-                          name: estado,
-                        }))}
-                        selectedKey={formData.state}
-                        onSelectionChange={handleStateChange}
-                        listboxProps={{
-                          emptyContent: "Estados no encontrados",
-                        }}
-                      >
-                        {(estado) => (
-                          <AutocompleteItem key={estado.id} value={estado.id}>
-                            {estado.name}
-                          </AutocompleteItem>
-                        )}
-                      </Autocomplete>
-                      {stateError && (
-                        <p className="mt-2 text-sm text-red">{stateError}</p>
-                      )}
-                    </div>
-                  </Tooltip>
-                  <div className="w-full">
-                    <Tooltip
-                      content={getTooltipContentForMunicipality()}
-                      isDisabled={isMunicipalityActive || errorMunicipalities}
-                    >
-                      <div className="w-full">
-                        <Autocomplete
-                          size="sm"
-                          variant="bordered"
-                          label="Municipio"
-                          isLoading={loadingMunicipalities}
-                          selectedKey={formData.municipality}
-                          listboxProps={{
-                            emptyContent: "Municipios no encontrados",
-                          }}
-                          onSelectionChange={handleMunicipalityChange}
-                          isDisabled={
-                            !isMunicipalityActive || !!errorMunicipalities
-                          }
-                          defaultItems={municipalities.map((municipio) => ({
-                            id: municipio,
-                            name: municipio,
-                          }))}
-                        >
-                          {(municipio) => (
-                            <AutocompleteItem
-                              key={municipio.id}
-                              value={municipio.id}
-                            >
-                              {municipio.name}
-                            </AutocompleteItem>
-                          )}
-                        </Autocomplete>
-                      </div>
-                    </Tooltip>
-
-                    {errorMunicipalities && (
-                      <p className="mt-2 text-sm text-red">
-                        {errorMunicipalities.message}
-                      </p>
-                    )}
-                    {!errorMunicipalities && municipalityError && (
-                      <p className="mt-2 text-sm text-red">
-                        {municipalityError}
-                      </p>
-                    )}
-                  </div>
                   <div className="w-full">
                     <Autocomplete
                       size="sm"
@@ -1081,22 +810,6 @@ EditModal.propTypes = {
     periodicityError: PropTypes.string,
     setPeriodicityError: PropTypes.func.isRequired,
     handlePeriodicityChange: PropTypes.func.isRequired,
-
-    specifyPeriodicityError: PropTypes.string,
-    setSpecifyPeriodicityError: PropTypes.func.isRequired,
-    handleSpecifyPeriodicityChange: PropTypes.func.isRequired,
-
-    jurisdictionError: PropTypes.string,
-    setJurisdictionError: PropTypes.func.isRequired,
-    handleJurisdictionChange: PropTypes.func.isRequired,
-
-    stateError: PropTypes.string,
-    setStateError: PropTypes.func.isRequired,
-    handleStateChange: PropTypes.func.isRequired,
-
-    municipalityError: PropTypes.string,
-    setMunicipalityError: PropTypes.func.isRequired,
-    handleMunicipalityChange: PropTypes.func.isRequired,
 
     subjectInputError: PropTypes.string,
     setSubjectError: PropTypes.func.isRequired,

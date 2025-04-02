@@ -32,9 +32,6 @@ const columns = [
   { name: "Condición", uid: "requirement_condition", align: "start" },
   { name: "Evidencia", uid: "evidence", align: "start" },
   { name: "Periodicidad", uid: "periodicity", align: "start" },
-  { name: "Jurisdicción", uid: "jurisdiction", align: "start" },
-  { name: "Estado", uid: "state", align: "start" },
-  { name: "Municipio", uid: "municipality", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
   { name: "Aspectos", uid: "aspects", align: "start" },
   { name: "Tipo", uid: "requirement_type", align: "start" },
@@ -140,13 +137,7 @@ export default function Requirement() {
   const [evidenceInputError, setEvidenceInputError] = useState("");
   const [periodicityInputError, setPeriodicityInputError] = useState("");
   const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState ("");
-  const [specifyPeriodicityInputError, setSpecifyPeriodicityInputError] = useState (""); 
   const [requirementTypeInputError, setRequirementTypeInputError] = useState("");
-  const [jurisdictionInputError, setJurisdictionInputError] = useState("");
-  const [stateInputError, setStateInputError] = useState("");
-  const [municipalityInputError, setMunicipalityInputError] = useState("");
-  const [isStateActive, setIsStateActive] = useState(false);
-  const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
   const [subjectInputError, setSubjectInputError] = useState("");
   const [aspectInputError, setAspectInputError] = useState(null);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
@@ -827,13 +818,8 @@ export default function Requirement() {
     setEvidenceInputError("");
     setPeriodicityInputError("");
     setRequirementTypeInputError("");
-    setJurisdictionInputError(null);
-    setStateInputError(null);
-    setMunicipalityInputError(null);
     setSubjectInputError(null);
     setAspectInputError(null);
-    setIsStateActive(false);
-    setIsMunicipalityActive(false);
     setIsAspectsActive(false);
     clearMunicipalities();
     clearAspects();
@@ -859,13 +845,8 @@ export default function Requirement() {
     setEvidenceInputError("");
     setPeriodicityInputError("");
     setRequirementTypeInputError("");
-    setJurisdictionInputError(null);
-    setStateInputError(null);
-    setMunicipalityInputError(null);
     setSubjectInputError(null);
     setAspectInputError(null);
-    setIsStateActive(false);
-    setIsMunicipalityActive(false);
     setIsAspectsActive(false);
     clearMunicipalities();
     clearAspects();
@@ -944,20 +925,6 @@ export default function Requirement() {
     [evidenceInputError, setFormData, setEvidenceInputError]
   );
 
-  const handlePeriodicityChange = useCallback(
-    (value) => {
-      setFormData((prev) => ({
-        ...prev,
-        periodicity: value,
-        specifyPeriodicity: value === "Específica" ? prev.specifyPeriodicity : "",
-      }));
-      if (periodicityInputError && value.trim() !== "") {
-        setPeriodicityInputError(null);
-      }
-    },
-    [periodicityInputError, setFormData, setPeriodicityInputError]
-  );
-
   const handlSpecifyEvidenceChange = useCallback((e) => {
     const value = e.target.value;
     setFormData((prev) => ({
@@ -968,20 +935,24 @@ export default function Requirement() {
       setSpecifyEvidenceInputError(null);
     }
   }, [specifyEvidenceInputError, setFormData, setSpecifyEvidenceInputError]);
+
+  const handlePeriodicityChange = useCallback(
+    (value) => {
+      setFormData((prev) => ({
+        ...prev,
+        periodicity: value,
+      }));
+      if (periodicityInputError && value.trim() !== "") {
+        setPeriodicityInputError(null);
+      }
+    },
+    [periodicityInputError, setFormData, setPeriodicityInputError]
+  );
+
+
   
-  const handleSpecifyPeriodicityChange = useCallback((e) => {
-    const value = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      specifyPeriodicity: value,
-    }));
-    if (specifyPeriodicityInputError && value.trim() !== "") {
-      setSpecifyPeriodicityInputError(null);
-    }
-  }, [specifyPeriodicityInputError, setFormData, setSpecifyPeriodicityInputError]);
   
-  
-  const handleRequirementType = useCallback(
+const handleRequirementType = useCallback(
 
     (value) => {
       setFormData((prevFormData) => ({
@@ -995,142 +966,7 @@ export default function Requirement() {
     [requirementTypeInputError, setFormData, setRequirementTypeInputError]
   );
 
-  const handleJurisdictionChange = useCallback(
-    (value) => {
-      if (!value) {
-        setStateInputError(null);
-        setMunicipalityInputError(null);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          jurisdiction: "",
-          state: "",
-          municipality: "",
-        }));
-        setIsStateActive(false);
-        setIsMunicipalityActive(false);
-        clearMunicipalities();
-        if (jurisdictionInputError) {
-          setJurisdictionInputError(null);
-        }
-        return;
-      }
-      setStateInputError(null);
-      setMunicipalityInputError(null);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        jurisdiction: value,
-        state: "",
-        municipality: "",
-      }));
-      if (jurisdictionInputError && value.trim() !== "") {
-        setJurisdictionInputError(null);
-      }
-      switch (value) {
-        case "Federal":
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Estatal":
-          setIsStateActive(true);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Local":
-          setIsStateActive(true);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        default:
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-      }
-    },
-    [
-      clearMunicipalities,
-      jurisdictionInputError,
-      setFormData,
-      setIsMunicipalityActive,
-      setIsStateActive,
-      setJurisdictionInputError,
-      setMunicipalityInputError,
-      setStateInputError,
-    ]
-  );
-
-  const handleStateChange = useCallback(
-    async (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          state: "",
-          municipality: "",
-        }));
-        if (stateInputError) {
-          setStateInputError(null);
-        }
-        if (municipalityInputError) {
-          setMunicipalityInputError(null);
-        }
-        clearMunicipalities();
-        setIsMunicipalityActive(false);
-        return;
-      }
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        state: value,
-        municipality: "",
-      }));
-      if (stateInputError && value.trim() !== "") {
-        setStateInputError(null);
-      }
-      if (formData.jurisdiction === "Local") {
-        setIsMunicipalityActive(true);
-        await fetchMunicipalities(value);
-      } else {
-        setIsMunicipalityActive(false);
-        clearMunicipalities();
-      }
-    },
-    [
-      clearMunicipalities,
-      fetchMunicipalities,
-      formData.jurisdiction,
-      municipalityInputError,
-      setFormData,
-      setIsMunicipalityActive,
-      setMunicipalityInputError,
-      setStateInputError,
-      stateInputError,
-    ]
-  );
-
-  const handleMunicipalityChange = useCallback(
-    (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          municipality: "",
-        }));
-        if (municipalityInputError) {
-          setMunicipalityInputError(null);
-        }
-        return;
-      }
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        municipality: value,
-      }));
-
-      if (municipalityInputError && value.trim() !== "") {
-        setMunicipalityInputError(null);
-      }
-    },
-    [municipalityInputError, setFormData, setMunicipalityInputError]
-  );
-
+  
   const handleSubjectChange = useCallback(
     async (value) => {
       if (!value) {
@@ -1537,37 +1373,14 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
-
               specifyEvidenceError: specifyEvidenceInputError,
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
               handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
-
-
-              specifyPeriodicityError: specifyPeriodicityInputError,
-              setSpecifyPeriodicityError: setSpecifyPeriodicityInputError,
-              handleSpecifyPeriodicityChange:handleSpecifyPeriodicityChange,
               specifyEvidence: formData.specifyEvidence,
-              specifyPeriodicity: formData.specifyPeriodicity,
               requirementTypeError: requirementTypeInputError,
               setRequirementTypeError: setRequirementTypeInputError,
               handleRequirementType: handleRequirementType,
-              jurisdictionError: jurisdictionInputError,
-              setJurisdictionError: setJurisdictionInputError,
-              handleJurisdictionChange: handleJurisdictionChange,
-              states: states,
-              stateError: stateInputError,
-              setStateError: setStateInputError,
               fetchRequirements: fetchRequirements,
-              isStateActive: isStateActive,
-              handleStateChange: handleStateChange,
-              clearMunicipalities: clearMunicipalities,
-              municipalities: municipalities,
-              municipalityError: municipalityInputError,
-              setMunicipalityError: setMunicipalityInputError,
-              isMunicipalityActive: isMunicipalityActive,
-              loadingMunicipalities: loadingMunicipalities,
-              errorMunicipalities: errorMunicipalities,
-              handleMunicipalityChange: handleMunicipalityChange,
               subjects: subjects,
               subjectInputError: subjectInputError,
               setSubjectError: setSubjectInputError,
@@ -1627,30 +1440,10 @@ export default function Requirement() {
               specifyEvidenceError: specifyEvidenceInputError,
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
               handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
-              specifyPeriodicityError: specifyPeriodicityInputError,
-              setSpecifyPeriodicityError: setSpecifyPeriodicityInputError,
-              handleSpecifyPeriodicityChange:handleSpecifyPeriodicityChange,
               specifyEvidence: formData.specifyEvidence,
-              specifyPeriodicity: formData.specifyPeriodicity,
               requirementTypeError: requirementTypeInputError,
               setRequirementTypeError: setRequirementTypeInputError,
               handleRequirementType: handleRequirementType,
-              jurisdictionError: jurisdictionInputError,
-              setJurisdictionError: setJurisdictionInputError,
-              handleJurisdictionChange: handleJurisdictionChange,
-              states: states,
-              stateError: stateInputError,
-              setStateError: setStateInputError,
-              isStateActive: isStateActive,
-              handleStateChange: handleStateChange,
-              clearMunicipalities: clearMunicipalities,
-              municipalities: municipalities,
-              municipalityError: municipalityInputError,
-              setMunicipalityError: setMunicipalityInputError,
-              isMunicipalityActive: isMunicipalityActive,
-              loadingMunicipalities: loadingMunicipalities,
-              errorMunicipalities: errorMunicipalities,
-              handleMunicipalityChange: handleMunicipalityChange,
               subjects: subjects,
               subjectInputError: subjectInputError,
               setSubjectError: setSubjectInputError,
@@ -1661,8 +1454,6 @@ export default function Requirement() {
               isAspectsActive: isAspectsActive,
               aspectsLoading: aspectsLoading,
               errorAspects: aspectError,
-              setIsStateActive: setIsStateActive,
-              setIsMunicipalityActive: setIsMunicipalityActive,
               setIsAspectsActive: setIsAspectsActive,
               clearAspects: clearAspects,
               fetchMunicipalities: fetchMunicipalities,

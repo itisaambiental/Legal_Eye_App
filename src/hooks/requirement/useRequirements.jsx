@@ -55,9 +55,6 @@ export default function useRequirement() {
   * @param {string} params.evidence - Type of evidence required ('Procedure', 'Record', 'Specific', 'Document').
   * @param {string} params.periodicity - Periodicity ('Annual', '2 years', 'Per event', 'One-time').
   * @param {string} params.requirementType - Type of requirement.
-  * @param {string} params.jurisdiction - Jurisdiction ('Federal', 'State', 'Local').
-  * @param {string} [params.state] - State associated with the requirement (optional).
-  * @param {string} [params.municipality] - Municipality associated with the requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with `success` and `data` or `error`.
   */
   const addRequirement = useCallback(
@@ -76,7 +73,6 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
-      specifyPeriodicity,
       requirementType,
       jurisdiction,
       state = null,
@@ -98,7 +94,6 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
-          specifyPeriodicity,
           requirementType,
           jurisdiction,
           state,
@@ -760,7 +755,6 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
-      specifyPeriodicity,
       requirementType,
       jurisdiction,
       state,
@@ -783,7 +777,6 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
-          specifyPeriodicity,
           requirementType,
           jurisdiction,
           state,

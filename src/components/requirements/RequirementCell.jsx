@@ -68,11 +68,12 @@ const RequirementCell = ({
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.evidence || "N/A"}
+              {requirement.evidence === "Específica"
+                ? `${requirement.evidence}: ${requirement.specify_evidence || "N/A"}`
+                : requirement.evidence || "N/A"}
             </p>
           </div>
         );
-
       case "periodicity":
         return (
           <div className="flex flex-col">
@@ -90,34 +91,6 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
-      case "jurisdiction":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.jurisdiction || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "state":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.state || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "municipality":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.municipality || "N/A"}
-            </p>
-          </div>
-        );
-
       case "subject":
         return (
           <div className="flex flex-col">
@@ -317,9 +290,6 @@ RequirementCell.propTypes = {
     evidence: PropTypes.string,
     periodicity: PropTypes.string,
     requirement_type: PropTypes.string,
-    jurisdiction: PropTypes.string,
-    state: PropTypes.string,
-    municipality: PropTypes.string,
     subject: PropTypes.shape({
       subject_name: PropTypes.string,
     }),

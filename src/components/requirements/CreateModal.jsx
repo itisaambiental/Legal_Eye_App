@@ -50,22 +50,6 @@ import go_back from "../../assets/volver.png";
  * @param {Function} props.config.setEvidenceError - Setter for the "Evidence" field error.
  * @param {Function} props.config.setPeriodicityError - Setter for the "Periodicity" field error.
  * @param {Function} props.config.setRequirementTypeError - Setter for the "Requirement Type" field error.
- * @param {string|null} props.config.jurisdictionError - Error message for the "Jurisdiction" autocomplete field.
- * @param {Function} props.config.setJurisdictionError - Setter for the "Jurisdiction" field error.
- * @param {Function} props.config.handleJurisdictionChange - Handler for changes in the "Jurisdiction" autocomplete field.
- * @param {Array} props.config.states - List of available states for the "State" autocomplete.
- * @param {string|null} props.config.stateError - Error message for the "State" autocomplete.
- * @param {Function} props.config.setStateError - Setter for the "State" field error.
- * @param {boolean} props.config.isStateActive - Enables/disables the "State" autocomplete depending on jurisdiction.
- * @param {Function} props.config.handleStateChange - Handler for changes in the "State" autocomplete.
- * @param {Function} props.config.clearMunicipalities - Function to clear municipalities when the state changes.
- * @param {Array} props.config.municipalities - List of available municipalities for the "Municipality" autocomplete.
- * @param {string|null} props.config.municipalityError - Error message for the "Municipality" autocomplete.
- * @param {Function} props.config.setMunicipalityError - Setter for the "Municipality" field error.
- * @param {boolean} props.config.isMunicipalityActive - Enables/disables the "Municipality" autocomplete.
- * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are being loaded.
- * @param {Object|null} props.config.errorMunicipalities - Error object when fetching municipalities.
- * @param {Function} props.config.handleMunicipalityChange - Handler for changes in the "Municipality" autocomplete.
  * @param {Array} props.config.subjects - List of available subjects for the "Subject" autocomplete.
  * @param {string|null} props.config.subjectInputError - Error message for the "Subject" autocomplete.
  * @param {Function} props.config.setSubjectError - Setter for the "Subject" field error.
@@ -120,31 +104,12 @@ const CreateModal = ({ config }) => {
         periodicityError,
         handlePeriodicityChange,
         specifyEvidenceError,
-        setSpecifyPeriodicityError,
-        handleSpecifyPeriodicityChange,
-        specifyPeriodicityError,
         requirementTypeError,
         handleRequirementType,
         setConditionError,
         setEvidenceError,
         setPeriodicityError,
         setRequirementTypeError,
-        jurisdictionError,
-        setJurisdictionError,
-        handleJurisdictionChange,
-        states,
-        stateError,
-        setStateError,
-        isStateActive,
-        handleStateChange,
-        clearMunicipalities,
-        municipalities,
-        municipalityError,
-        setMunicipalityError,
-        isMunicipalityActive,
-        loadingMunicipalities,
-        errorMunicipalities,
-        handleMunicipalityChange,
         subjects,
         subjectInputError,
         setSubjectError,
@@ -180,32 +145,6 @@ const CreateModal = ({ config }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
-
-    const getTooltipContentForState = () => {
-        if (formData.jurisdiction === "Federal") {
-            return "La jurisdicción debe ser estatal o local para habilitar este campo";
-        }
-        if (!formData.jurisdiction) {
-            return "Debes seleccionar una jurisdicción para habilitar este campo.";
-        }
-        return null;
-    };
-
-    const getTooltipContentForMunicipality = () => {
-        if (formData.jurisdiction === "Federal") {
-            return "La jurisdicción debe ser local para habilitar este campo.";
-        }
-        if (formData.jurisdiction === "Estatal") {
-            return "La jurisdicción debe ser local para habilitar este campo.";
-        }
-        if (formData.jurisdiction === "Local" && !formData.state) {
-            return "Debes seleccionar un estado para habilitar este campo.";
-        }
-        if (!formData.jurisdiction) {
-            return "Debes seleccionar una jurisdicción para habilitar este campo.";
-        }
-        return null;
-    };
 
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -260,51 +199,7 @@ const CreateModal = ({ config }) => {
             } else {
                 setPeriodicityError(null);
             }
-            if (
-                formData.periodicity === "Específica" &&
-                (!formData.specifyPeriodicity || formData.specifyPeriodicity.trim() === "")
-            ) {
-                setSpecifyPeriodicityError("Este campo es obligatorio si se selecciona el valor Específica.");
-                setIsLoading(false);
-                return;
-            } else {
-                setSpecifyPeriodicityError(null);
-            }
 
-
-            if (formData.jurisdiction === "") {
-                setJurisdictionError("Debes seleccionar una jurisdicción.");
-                setIsLoading(false);
-                return;
-            } else {
-                setJurisdictionError(null);
-            }
-
-            if (formData.jurisdiction === "Estatal" && formData.state === "") {
-                setStateError("Este campo es obligatorio para la jurisdicción Estatal.");
-                setIsLoading(false);
-                return;
-            } else {
-                setStateError(null);
-            }
-
-            if (formData.jurisdiction === "Local") {
-                if (formData.state === "") {
-                    setStateError("Este campo es obligatorio para la jurisdicción Local.");
-                    setIsLoading(false);
-                    return;
-                } else {
-                    setStateError(null);
-                }
-
-                if (formData.municipality === "") {
-                    setMunicipalityError("Este campo es obligatorio para la jurisdicción Local.");
-                    setIsLoading(false);
-                    return;
-                } else {
-                    setMunicipalityError(null);
-                }
-            }
 
             if (formData.subject === "") {
                 setSubjectError("Debes seleccionar una materia.");
@@ -385,11 +280,7 @@ const CreateModal = ({ config }) => {
             evidence: formData.evidence,
             specifyEvidence: formData.specifyEvidence,
             periodicity: formData.periodicity,
-            specifyPeriodicity: formData.specifyPeriodicity,
             requirementType: formData.requirementType,
-            jurisdiction: formData.jurisdiction,
-            state: formData.state,
-            municipality: formData.municipality,
             subjectId: formData.subject,
             aspectsIds: formData.aspects,
             mandatoryDescription: formData.mandatoryDescription,
@@ -556,10 +447,6 @@ const CreateModal = ({ config }) => {
                                             </p>
                                         )}
                                     </div>
-
-
-
-
                                     <div className="w-full">
                                         <Autocomplete
                                             size="sm"
@@ -583,8 +470,6 @@ const CreateModal = ({ config }) => {
                                             </p>
                                         )}
                                     </div>
-
-
                                     {formData.evidence === "Específica" && (
                                         <div className="relative z-0 w-full group">
                                             <input
@@ -608,137 +493,7 @@ const CreateModal = ({ config }) => {
 
                                         </div>
                                     )}
-                                    {formData.periodicity === "Específica" && (
-                                        <div className="relative z-0 w-full group">
-                                            <input
-                                                type="text"
-                                                name="specifyPeriodicity"
-                                                id="floating_specify_periodicity"
-                                                value={formData.specifyPeriodicity}
-                                                onChange={handleSpecifyPeriodicityChange}
-                                                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
-                                                placeholder=""
-                                            />
-                                            <label
-                                                htmlFor="floating_specify_periodicity"
-                                                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                                            >
-                                                Especificar Periodicidad
-                                            </label>
-                                            {specifyPeriodicityError && (
-                                                <p className="mt-2 text-sm text-red">{specifyPeriodicityError}</p>
-                                            )}
 
-                                        </div>
-                                    )}
-
-                                    <div className="w-full">
-                                        <Autocomplete
-                                            size="sm"
-                                            variant="bordered"
-                                            label="Jurisdicción"
-                                            selectedKey={formData.jurisdiction}
-                                            onSelectionChange={handleJurisdictionChange}
-                                            listboxProps={{
-                                                emptyContent: "Jurisdicción no encontrada",
-                                            }}
-                                        >
-                                            <AutocompleteItem key="Federal">Federal</AutocompleteItem>
-                                            <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
-                                            <AutocompleteItem key="Local">Local</AutocompleteItem>
-                                        </Autocomplete>
-                                        {jurisdictionError && (
-                                            <p className="mt-2 text-sm text-red">
-                                                {jurisdictionError}
-                                            </p>
-                                        )}
-                                    </div>
-
-
-                                    <div className="w-full">
-                                        <Tooltip
-                                            content={getTooltipContentForState()}
-                                            isDisabled={isStateActive}
-                                        >
-                                            <div className="w-full">
-                                                <Autocomplete
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    label="Estado"
-                                                    placeholder="Buscar Estado"
-                                                    isDisabled={!isStateActive}
-                                                    onClear={clearMunicipalities}
-                                                    defaultItems={states.map((estado) => ({
-                                                        id: estado,
-                                                        name: estado,
-                                                    }))}
-                                                    selectedKey={formData.state}
-                                                    onSelectionChange={handleStateChange}
-                                                    listboxProps={{
-                                                        emptyContent: "Estados no encontrados",
-                                                    }}
-                                                >
-                                                    {(estado) => (
-                                                        <AutocompleteItem key={estado.id} value={estado.id}>
-                                                            {estado.name}
-                                                        </AutocompleteItem>
-                                                    )}
-                                                </Autocomplete>
-                                                {stateError && (
-                                                    <p className="mt-2 text-sm text-red">{stateError}</p>
-                                                )}
-                                            </div>
-                                        </Tooltip>
-                                    </div>
-
-                                    <div className="w-full">
-                                        <Tooltip
-                                            content={getTooltipContentForMunicipality()}
-                                            isDisabled={isMunicipalityActive || errorMunicipalities}
-                                        >
-                                            <div className="w-full">
-                                                <Autocomplete
-                                                    size="sm"
-                                                    variant="bordered"
-                                                    label="Municipio"
-                                                    placeholder="Buscar Municipio"
-                                                    isLoading={loadingMunicipalities}
-                                                    selectedKey={formData.municipality}
-                                                    listboxProps={{
-                                                        emptyContent: "Municipios no encontrados",
-                                                    }}
-                                                    onSelectionChange={handleMunicipalityChange}
-                                                    isDisabled={
-                                                        !isMunicipalityActive || !!errorMunicipalities
-                                                    }
-                                                    defaultItems={municipalities.map((municipio) => ({
-                                                        id: municipio,
-                                                        name: municipio,
-                                                    }))}
-                                                >
-                                                    {(municipio) => (
-                                                        <AutocompleteItem
-                                                            key={municipio.id}
-                                                            value={municipio.id}
-                                                        >
-                                                            {municipio.name}
-                                                        </AutocompleteItem>
-                                                    )}
-                                                </Autocomplete>
-                                            </div>
-                                        </Tooltip>
-
-                                        {errorMunicipalities && (
-                                            <p className="mt-2 text-sm text-red">
-                                                {errorMunicipalities.message}
-                                            </p>
-                                        )}
-                                        {!errorMunicipalities && municipalityError && (
-                                            <p className="mt-2 text-sm text-red">
-                                                {municipalityError}
-                                            </p>
-                                        )}
-                                    </div>
                                     <div className="w-full">
                                         <Autocomplete
                                             size="sm"
@@ -1000,7 +755,6 @@ CreateModal.propTypes = {
         handlSpecifyEvidenceChange: PropTypes.func.isRequired,
         periodicityError: PropTypes.string,
         handlePeriodicityChange: PropTypes.func.isRequired,
-        handleSpecifyPeriodicityChange: PropTypes.func.isRequired,
         requirementTypeError: PropTypes.string,
         handleRequirementType: PropTypes.func.isRequired,
         fetchRequirements: PropTypes.func.isRequired,
@@ -1009,25 +763,7 @@ CreateModal.propTypes = {
         setPeriodicityError: PropTypes.func.isRequired,
         specifyEvidenceError: PropTypes.string,
         setSpecifyEvidenceError: PropTypes.func.isRequired,
-        specifyPeriodicityError: PropTypes.string,
-        setSpecifyPeriodicityError: PropTypes.func.isRequired,
         setRequirementTypeError: PropTypes.func.isRequired,
-        jurisdictionError: PropTypes.string,
-        setJurisdictionError: PropTypes.func.isRequired,
-        handleJurisdictionChange: PropTypes.func.isRequired,
-        states: PropTypes.array.isRequired,
-        stateError: PropTypes.string,
-        setStateError: PropTypes.func.isRequired,
-        isStateActive: PropTypes.bool.isRequired,
-        handleStateChange: PropTypes.func.isRequired,
-        clearMunicipalities: PropTypes.func.isRequired,
-        municipalities: PropTypes.array.isRequired,
-        municipalityError: PropTypes.string,
-        setMunicipalityError: PropTypes.func.isRequired,
-        isMunicipalityActive: PropTypes.bool.isRequired,
-        loadingMunicipalities: PropTypes.bool.isRequired,
-        errorMunicipalities: PropTypes.object,
-        handleMunicipalityChange: PropTypes.func.isRequired,
         subjects: PropTypes.array.isRequired,
         subjectInputError: PropTypes.string,
         setSubjectError: PropTypes.func.isRequired,

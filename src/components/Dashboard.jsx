@@ -224,10 +224,10 @@ function Dashboard() {
                 }`}
               >
                 <img
-                  src={requirement_icon}
+                  src={think_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
-                <span className="ms-3 font-medium">Requerimientos Legales</span>
+                <span className="ms-3 font-medium"> Instrucciones de Análisis</span>
               </Link>
             </li>
             <li>
@@ -235,10 +235,10 @@ function Dashboard() {
                 className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
               >
                 <img
-                  src={think_icon}
+                  src={requirement_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
-                <span className="ms-3 font-medium">Identifación de Requerimientos</span>
+                <span className="ms-3 font-medium">Requerimiento Legales</span>
               </Link>
             </li>
             <li>

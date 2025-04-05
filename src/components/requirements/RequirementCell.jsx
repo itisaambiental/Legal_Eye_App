@@ -63,14 +63,11 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
       case "evidence":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.evidence === "Específica"
-                ? `${requirement.evidence}: ${requirement.specify_evidence || "N/A"}`
-                : requirement.evidence || "N/A"}
+              {requirement.formatted_evidence || requirement.evidence || "N/A"}
             </p>
           </div>
         );

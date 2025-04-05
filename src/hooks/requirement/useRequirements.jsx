@@ -13,13 +13,10 @@ import getRequirementsByType from "../../services/requirementService/ getRequire
 import getRequirementsByComplementarySentences from "../../services/requirementService/getRequirementsByComplementarySentences";
 import getRequirementsByCondition from "../../services/requirementService/getRequirementsByCondition";
 import getRequirementsByEvidence from "../../services/requirementService/getRequirementsByEvidence";
-import getRequirementsByJurisdiction from "../../services/requirementService/getRequirementsByJurisdiction";
 import getRequirementsByMandatoryDescription from "../../services/requirementService/getRequirementsByMandatoryDescription";
 import getRequirementsByMandatoryKeywords from "../../services/requirementService/getRequirementsByMandatoryKeywords";
 import getRequirementsByMandatorySentences from "../../services/requirementService/getRequirementsByMandatorySentences";
 import getRequirementsByPeriodicity from "../../services/requirementService/getRequirementsByPeriodicity";
-import getRequirementsByState from "../../services/requirementService/getRequirementsByState";
-import getRequirementsByStateAndMunicipalities from "../../services/requirementService/getRequirementsByStateAndMunicipalities";
 import updateRequirement from "../../services/requirementService/updateRequirement";
 import deleteRequirement from "../../services/requirementService/deleteRequirement";
 import delereRequirementBatch from "../../services/requirementService/deleteRequirementBatch";
@@ -74,9 +71,6 @@ export default function useRequirement() {
       specifyEvidence,
       periodicity,
       requirementType,
-      jurisdiction,
-      state = null,
-      municipality = null,
     }) => {
       try {
         const newRequirement = await createRequirement({
@@ -95,9 +89,6 @@ export default function useRequirement() {
           specifyEvidence,
           periodicity,
           requirementType,
-          jurisdiction,
-          state,
-          municipality,
           token: jwt,
         });
         setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
@@ -508,34 +499,6 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
-  /**
-   * Fetches the list of Requirements by Jurisdiction.
-   * @async
-   * @function fetchRequirementsByJurisdiction
-   * @param {string} jurisdiction - The jurisdiction of the requirement.
-   */
-  const fetchRequirementsByJurisdiction = useCallback(
-    async (jurisdiction) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByJurisdiction({ jurisdiction, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError,
-        });
-      }
-    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Mandatory Description.
@@ -654,63 +617,6 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
-  /**
-   * Fetches the list of Requirements by State.
-   * @async
-   * @function fetchRequirementsByState
-   * @param {string} state - The state where the requirement applies.
-   */
-  const fetchRequirementsByState = useCallback(
-    async (state) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByState({ state, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError
-        });
-      }
-    }, [jwt]);
-  /**
-   * Fetches the list of Requirements by State and Municipalities.
-   * @async
-   * @function fetchRequirementsByStateAndMunicipalities
-   * @param {string} state - The state where the requirement applies.
-   * @param {Array<string>} municipalities - The municipalities where the requirement applies.
-   */
-  const fetchRequirementsByStateAndMunicipalities = useCallback(
-    async (state, municipalities) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByStateAndMunicipalities({ state, municipalities, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError
-        });
-      }
-    }, [jwt]);
 
   /**
   * Updates an existing Requirement by ID.
@@ -732,9 +638,6 @@ export default function useRequirement() {
   * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
   * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
   * @param {string} [params.requirementType] - The new type of requirement (optional).
-  * @param {string} [params.jurisdiction] - The new jurisdiction ('Federal', 'Estatal', 'Local') (optional).
-  * @param {string} [params.state] - The new state associated with the requirement (optional).
-  * @param {string} [params.municipality] - The new municipality associated with the requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
   * @throws {Object} - Returns an error message if the update fails.
   */
@@ -755,10 +658,7 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
-      requirementType,
-      jurisdiction,
-      state,
-      municipality,
+      requirementType
     }) => {
       try {
         const requirement = await updateRequirement({
@@ -778,9 +678,6 @@ export default function useRequirement() {
           specifyEvidence,
           periodicity,
           requirementType,
-          jurisdiction,
-          state,
-          municipality,
           token: jwt,
         });
         setRequirements((prevRequirements) =>
@@ -873,7 +770,6 @@ export default function useRequirement() {
     fetchRequirementsBySubjectAndAspects,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsByEvidence,
-    fetchRequirementsByJurisdiction,
     fetchRequirementsByType,
     fetchRequirementsByComplementaryDescription,
     fetchRequirementsByComplementaryKeywords,
@@ -882,8 +778,6 @@ export default function useRequirement() {
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByMandatorySentences,
     fetchRequirementsByPeriodicity,
-    fetchRequirementsByState,
-    fetchRequirementsByStateAndMunicipalities,
     addRequirement,
     modifyRequirement,
     removeRequirement,

@@ -23,9 +23,6 @@ import server from "../../config/server.js";
  * @param {string} params.periodicity - The periodicity of the requirement.
  * @param {string} params.specifyPeriodicity - The specify periodicity of the requirement.
  * @param {string} params.requirementType - The type of requirement.
- * @param {string} params.jurisdiction - The jurisdiction.
- * @param {string} [params.state] - The state associated with the requirement (optional).
- * @param {string} [params.municipality] - The municipality associated with the requirement (optional).
  * @param {string} params.token - The authorization token.
  * @returns {Promise<Object>} - The created requirement data returned from the server.
  * @throws {Error} - If the response status is not 201 or if there is an error with the request.
@@ -47,9 +44,6 @@ export default async function createRequirement({
   periodicity,
   specifyPeriodicity,
   requirementType,
-  jurisdiction,
-  state = null,
-  municipality = null,
   token,
 }) {
   try {
@@ -70,9 +64,6 @@ export default async function createRequirement({
       periodicity,
       specifyPeriodicity,
       requirementType,
-      jurisdiction,
-      state,
-      municipality,
     };
 
     const response = await server.post("/requirements", data, {

@@ -22,9 +22,6 @@ import server from "../../config/server.js";
  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
  * @param {string} [params.requirementType] - The type of requirement (optional).
- * @param {string} [params.jurisdiction] - The jurisdiction ('Federal', 'Estatal', 'Local') (optional).
- * @param {string} [params.state] - The state associated with the requirement (optional).
- * @param {string} [params.municipality] - The municipality associated with the requirement (optional).
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} - The updated requirement data returned from the server.
@@ -48,9 +45,6 @@ export default async function updateRequirement({
   periodicity,
   specifyPeriodicity,
   requirementType,
-  jurisdiction,
-  state,
-  municipality,
   token,
 }) {
   try {
@@ -70,10 +64,7 @@ export default async function updateRequirement({
       ...(specifyEvidence && { specifyEvidence }),
       ...(periodicity && { periodicity }),
       ...(specifyPeriodicity && { specifyPeriodicity }),
-      ...(requirementType && { requirementType }),
-      ...(jurisdiction && { jurisdiction }),
-      ...(state && { state }),
-      ...(municipality && { municipality }),
+      ...(requirementType && { requirementType })
     };
     const response = await server.patch(`/requirement/${id}`, data, {
       headers: {

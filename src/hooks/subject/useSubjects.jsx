@@ -82,14 +82,17 @@ export default function useSubjects() {
    * Adds a new subject to the list.
    * @async
    * @function addSubject
-   * @param {string} subjectName - The name of the subject to add.
+   * @param {Object} params - Parameters for the subject to add.
+   * @param {string} params.subjectName - The name of the subject.
+   * @param {number} params.order - The order number of the subject.
+   * @param {string} params.abbreviation - The abbreviation of the subject.
    * @returns {Promise<Object>} - Result of the operation with success status and subject or error message.
    * @throws {Object} - Returns an error message if the addition fails.
    */
   const addSubject = useCallback(
-    async (subjectName) => {
+    async ({ subjectName, order, abbreviation }) => {
       try {
-        const newSubject = await createNewSubject({ subjectName, token: jwt });
+        const newSubject = await createNewSubject({ subjectName, order, abbreviation, token: jwt });
         setSubjects((prevSubjects) => [newSubject, ...prevSubjects]);
         return { success: true };
       } catch (error) {
@@ -106,6 +109,7 @@ export default function useSubjects() {
     },
     [jwt]
   );
+
 
   /**
    * Fetches a specific subject by its name.

@@ -13,7 +13,6 @@ import {
 import useRequirement from "../../hooks/requirement/useRequirements.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
-import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import TopContent from "./TopContent.jsx";
 import RequirementCell from "./RequirementCell.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
@@ -68,9 +67,6 @@ export default function Requirement() {
     fetchRequirementsByEvidence,
     fetchRequirementsByPeriodicity,
     fetchRequirementsByType,
-    fetchRequirementsByJurisdiction,
-    fetchRequirementsByState,
-    fetchRequirementsByStateAndMunicipalities,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsBySubject,
     fetchRequirementsBySubjectAndAspects,
@@ -95,16 +91,6 @@ export default function Requirement() {
     clearAspects,
     fetchAspects,
   } = useAspects();
-  const {
-    states,
-    loadingStates,
-    errorStates,
-    municipalities,
-    loadingMunicipalities,
-    fetchMunicipalities,
-    errorMunicipalities,
-    clearMunicipalities,
-  } = useCopomex();
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -114,9 +100,6 @@ export default function Requirement() {
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [selectedPeriodicity, setSelectedPeriodicity] = useState(null);
   const [selectedRequirementType, setSelectedRequirementType] = useState(null);
-  const [selectedJurisdiction, setSelectedJurisdiction] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedMunicipalities, setSelectedMunicipalities] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAspects, setSelectedAspects] = useState([]);
   const [filterByMandatoryDescription, setFilterByMandatoryDescription] = useState("");
@@ -160,9 +143,6 @@ export default function Requirement() {
     periodicity: "",
     specifyPeriodicity: "",
     requirementType: "",
-    jurisdiction: "",
-    state: "",
-    municipality: "",
     subject: "",
     aspects: [],
     mandatoryDescription: "",
@@ -187,11 +167,7 @@ export default function Requirement() {
     setSelectedEvidence(null);
     setSelectedPeriodicity(null);
     setSelectedRequirementType(null);
-    setSelectedJurisdiction(null);
-    setSelectedState(null);
     clearAspects();
-    clearMunicipalities();
-    setSelectedMunicipalities([]);
     setFilterByMandatoryDescription("");
     setFilterByComplementaryDescription("");
     setFilterByMandatorySentences("");
@@ -205,7 +181,7 @@ export default function Requirement() {
     setFilterByMandatoryKeywords("");
     setFilterByComplementaryKeywords("");
     fetchRequirements();
-  }, [fetchRequirements, clearMunicipalities, clearAspects]);
+  }, [fetchRequirements, clearAspects]);
 
   const resetSubjectAndAspects = useCallback(() => {
     if (selectedSubject) {
@@ -214,15 +190,6 @@ export default function Requirement() {
       clearAspects();
     }
   }, [selectedSubject, clearAspects]);
-
-  const resetStatesAndMunicipalities = useCallback(() => {
-    if (selectedState) {
-      setSelectedState(null);
-      setSelectedMunicipalities([]);
-      clearMunicipalities();
-    }
-  }, [selectedState, clearMunicipalities]);
-
 
 
   const handleFilter = useCallback(
@@ -250,21 +217,6 @@ export default function Requirement() {
           case "requirementType":
             await fetchRequirementsByType(value);
             break;
-          case "jurisdiction":
-            await fetchRequirementsByJurisdiction(value);
-            break;
-          case "state":
-            await fetchRequirementsByState(value);
-            await fetchMunicipalities(value);
-            break;
-          case "stateAndMunicipalities": {
-            const { state, municipalities } = value;
-            await fetchRequirementsByStateAndMunicipalities(
-              state,
-              municipalities
-            );
-            break;
-          }
           case "subject":
             await fetchRequirementsBySubject(value);
             await fetchAspects(value);
@@ -305,10 +257,6 @@ export default function Requirement() {
       fetchRequirementsByEvidence,
       fetchRequirementsByPeriodicity,
       fetchRequirementsByType,
-      fetchRequirementsByJurisdiction,
-      fetchRequirementsByState,
-      fetchMunicipalities,
-      fetchRequirementsByStateAndMunicipalities,
       fetchRequirementsBySubject,
       fetchAspects,
       fetchRequirementsBySubjectAndAspects,
@@ -339,18 +287,13 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("number", value);
     },
     [
       handleFilter,
       handleClear,
       resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
     ]
   );
 
@@ -372,18 +315,13 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("name", value);
     },
     [
       handleFilter,
       handleClear,
       resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
     ]
   );
 
@@ -405,14 +343,10 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("condition", condition);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByEvidence = useCallback(
@@ -433,14 +367,10 @@ export default function Requirement() {
       setSelectedEvidence(evidence);
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("evidence", evidence);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByPeriodicity = useCallback(
@@ -460,15 +390,11 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity(periodicity);
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
+      setSelectedRequirementType("")
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("periodicity", periodicity);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByRequirementType = useCallback(
@@ -489,95 +415,10 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType(requirementType);
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("requirementType", requirementType);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
-  );
-
-  const handleFilterByJurisdiction = useCallback(
-    (jurisdiction) => {
-      if (!jurisdiction) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction(jurisdiction);
-      setSelectedState("");
-      setSelectedMunicipalities([]);
-      resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
-      handleFilter("jurisdiction", jurisdiction);
-    },
-    [
-      handleClear,
-      handleFilter,
-      resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
-    ]
-  );
-
-  const handleFilterByState = useCallback(
-    (state) => {
-      if (!state) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState(state);
-      setSelectedMunicipalities([]);
-      resetSubjectAndAspects();
-      handleFilter("state", state);
-    },
     [handleFilter, handleClear, resetSubjectAndAspects]
-  );
-
-  const handleFilterByMunicipalities = useCallback(
-    (selectedIds) => {
-      setSelectedMunicipalities(selectedIds);
-      if (selectedIds.size === 0) {
-        if (selectedState) {
-          handleFilter("state", selectedState);
-        } else {
-          handleClear();
-        }
-        return;
-      }
-      const municipalitiesArray = Array.from(selectedIds);
-      const value = {
-        state: selectedState,
-        municipalities: municipalitiesArray,
-      };
-      handleFilter("stateAndMunicipalities", value);
-    },
-    [handleFilter, handleClear, selectedState]
   );
 
   const handleFilterBySubject = useCallback(
@@ -587,12 +428,10 @@ export default function Requirement() {
         return;
       }
       setFilterByName("");
-      setSelectedJurisdiction("");
-      resetStatesAndMunicipalities();
       setSelectedSubject(selectedId);
       handleFilter("subject", selectedId);
     },
-    [handleFilter, handleClear, resetStatesAndMunicipalities]
+    [handleFilter, handleClear]
   );
 
   const handleFilterByAspects = useCallback(
@@ -627,20 +466,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatoryDescription(value);
       handleFilter("mandatoryDescription", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByComplementaryDescription = useCallback(
@@ -655,20 +490,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementaryDescription(value);
       handleFilter("complementaryDescription", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
 
@@ -684,20 +515,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatorySentences(value);
       handleFilter("mandatorySentences", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByComplementarySentences = useCallback(
@@ -712,20 +539,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementarySentences(value);
       handleFilter("complementarySentences", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByMandatoryKeywords = useCallback(
@@ -740,20 +563,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatoryKeywords(value);
       handleFilter("mandatoryKeywords", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects,]
   );
 
   const handleFilterByComplementaryKeywords = useCallback(
@@ -768,20 +587,16 @@ export default function Requirement() {
       setSelectedEvidence("");
       setSelectedPeriodicity("");
       setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementaryKeywords(value);
       handleFilter("complementaryKeywords", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const openModalCreate = () => {
@@ -795,9 +610,6 @@ export default function Requirement() {
       periodicity: "",
       specifyPeriodicity: "", 
       requirementType: "",
-      jurisdiction: "",
-      state: "",
-      municipality: "",
       subject: "",
       aspects: [],
       mandatoryDescription: "",
@@ -821,7 +633,6 @@ export default function Requirement() {
     setSubjectInputError(null);
     setAspectInputError(null);
     setIsAspectsActive(false);
-    clearMunicipalities();
     clearAspects();
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
@@ -848,7 +659,6 @@ export default function Requirement() {
     setSubjectInputError(null);
     setAspectInputError(null);
     setIsAspectsActive(false);
-    clearMunicipalities();
     clearAspects();
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
@@ -1199,17 +1009,7 @@ const handleRequirementType = useCallback(
     return <Error title={subjectError.title} message={subjectError.message} />;
   if (aspectError && !isCreateModalOpen && !isEditModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
-  if (errorStates)
-    return <Error title={errorStates.title} message={errorStates.message} />;
 
-  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
-    return (
-      <Error
-        title={errorMunicipalities.title}
-        message={errorMunicipalities.message}
-      />
-    );
-  }
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
@@ -1238,16 +1038,6 @@ const handleRequirementType = useCallback(
           onFilterByEvidence: handleFilterByEvidence,
           selectedPeriodicity: selectedPeriodicity,
           onFilterByPeriodicity: handleFilterByPeriodicity,
-          selectedJurisdiction: selectedJurisdiction,
-          onFilterByJurisdiction: handleFilterByJurisdiction,
-          states: states,
-          selectedState: selectedState,
-          stateLoading: loadingStates,
-          onFilterByState: handleFilterByState,
-          municipalities: municipalities,
-          selectedMunicipalities: selectedMunicipalities,
-          municipalitiesLoading: loadingMunicipalities,
-          onFilterByMunicipalities: handleFilterByMunicipalities,
           selectedRequirementType: selectedRequirementType,
           onFilterByMandatoryDescription: handleFilterByMandatoryDescription,
           onFilterByRequirementType: handleFilterByRequirementType,
@@ -1456,7 +1246,6 @@ const handleRequirementType = useCallback(
               errorAspects: aspectError,
               setIsAspectsActive: setIsAspectsActive,
               clearAspects: clearAspects,
-              fetchMunicipalities: fetchMunicipalities,
               fetchAspects: fetchAspects,
               handleAspectsChange: handleAspectsChange,
               mandatoryDescriptionError: mandatoryDescriptionInputError,

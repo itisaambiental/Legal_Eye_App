@@ -1,18 +1,16 @@
 /* eslint-disable no-undef */
-//import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Requirement from "./Requirements";
 import useRequirements from "../../hooks/requirement/useRequirements";
 import useSubjects from "../../hooks/subject/useSubjects";
 import useAspects from "../../hooks/aspect/useAspects";
-import useCopomex from "../../hooks/copomex/useCopomex";
 import { vi } from "vitest";
+
 
 vi.mock("../../hooks/requirement/useRequirements");
 vi.mock("../../hooks/subject/useSubjects");
 vi.mock("../../hooks/aspect/useAspects");
-vi.mock("../../hooks/copomex/useCopomex");
 
 describe("Requirement Component", () => {
   const defaultRequirementMock = {
@@ -20,14 +18,40 @@ describe("Requirement Component", () => {
       {
         id: 1,
         requirement_name: "Ley General",
-        abbreviation: "LG",
-        classification: "Federal",
+        requirement_number: "REQ-001",
+        requirement_type: "Identificación Federal",
+        subject: { subject_name: "Fiscal" },
+        aspects: [{ aspect_name: "Aspecto A" }],
+        evidence: "Trámite",
+        formatted_evidence: "Trámite",
+        periodicity: "Anual",
+        formatted_periodicity: "Anual",
+        requirement_condition: "Crítica",
+        mandatory_description: "Desc obligatoria",
+        complementary_description: "Desc complementaria",
+        mandatory_sentences: "Frase obligatoria",
+        complementary_sentences: "Frase complementaria",
+        mandatory_keywords: "clave1, clave2",
+        complementary_keywords: "clave3, clave4",
       },
       {
         id: 2,
         requirement_name: "Reglamento Ambiental",
-        abbreviation: "RA",
-        classification: "Local",
+        requirement_number: "REQ-002",
+        requirement_type: "Requerimiento Estatal",
+        subject: { subject_name: "Ambiental" },
+        aspects: [{ aspect_name: "Aspecto B" }],
+        evidence: "Específica",
+        formatted_evidence: "Específica - Informe técnico",
+        periodicity: "Específica",
+        formatted_periodicity: "Específica - Cada 6 meses",
+        requirement_condition: "Operativa",
+        mandatory_description: "Obligatoria 2",
+        complementary_description: "Complementaria 2",
+        mandatory_sentences: "Frase 2",
+        complementary_sentences: "Frase 2 comp",
+        mandatory_keywords: "claveX",
+        complementary_keywords: "claveY",
       },
     ],
     loading: false,
@@ -40,12 +64,9 @@ describe("Requirement Component", () => {
     fetchRequirementsByEvidence: vi.fn(),
     fetchRequirementsByPeriodicity: vi.fn(),
     fetchRequirementsByType: vi.fn(),
-    fetchRequirementsByJurisdiction: vi.fn(),
-    fetchRequirementsByState: vi.fn(),
-    fetchRequirementsByStateAndMunicipalities: vi.fn(),
-    fetchRequirementsByMandatoryDescription: vi.fn(),
     fetchRequirementsBySubject: vi.fn(),
     fetchRequirementsBySubjectAndAspects: vi.fn(),
+    fetchRequirementsByMandatoryDescription: vi.fn(),
     fetchRequirementsByComplementaryDescription: vi.fn(),
     fetchRequirementsByMandatorySentences: vi.fn(),
     fetchRequirementsByComplementarySentences: vi.fn(),
@@ -70,34 +91,26 @@ describe("Requirement Component", () => {
     fetchAspects: vi.fn(),
   };
 
-  const defaultCopomex = {
-    states: [],
-    loadingStates: false,
-    errorStates: null,
-    municipalities: [],
-    loadingMunicipalities: false,
-    fetchMunicipalities: vi.fn(),
-    errorMunicipalities: null,
-    clearMunicipalities: vi.fn(),
-  };
-
   beforeEach(() => {
     useRequirements.mockReturnValue(defaultRequirementMock);
     useSubjects.mockReturnValue(defaultSubjects);
     useAspects.mockReturnValue(defaultAspects);
-    useCopomex.mockReturnValue(defaultCopomex);
   });
 
-  test("renders Requirement component", () => {
+  test("renders Requirement component headers", () => {
     render(
       <MemoryRouter>
         <Requirement />
       </MemoryRouter>
     );
-
     expect(screen.getByText("Orden")).toBeInTheDocument();
     expect(screen.getByText("Requerimiento/Nombre")).toBeInTheDocument();
-    expect(screen.getByText("Jurisdicción")).toBeInTheDocument();
+    expect(screen.getByText("Condición")).toBeInTheDocument();
+    expect(screen.getByText("Evidencia")).toBeInTheDocument();
+    expect(screen.getByText("Periodicidad")).toBeInTheDocument();
+    expect(screen.getByText("Materia")).toBeInTheDocument();
+    expect(screen.getByText("Aspectos")).toBeInTheDocument();
+    expect(screen.getByText("Tipo")).toBeInTheDocument();
   });
 
   test("renders requirement data correctly in the table", () => {
@@ -109,8 +122,9 @@ describe("Requirement Component", () => {
 
     expect(screen.getByText("Ley General")).toBeInTheDocument();
     expect(screen.getByText("Reglamento Ambiental")).toBeInTheDocument();
+    expect(screen.getByText("Trámite")).toBeInTheDocument();
+    expect(screen.getByText("Específica - Informe técnico")).toBeInTheDocument();
   });
-
 
   test("shows loading indicator when requirements are loading", () => {
     useRequirements.mockReturnValueOnce({
@@ -126,6 +140,4 @@ describe("Requirement Component", () => {
 
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
-
-
 });

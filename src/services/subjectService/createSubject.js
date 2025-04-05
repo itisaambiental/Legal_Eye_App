@@ -8,16 +8,18 @@ import server from "../../config/server.js";
  * @function createNewSubject
  * @param {Object} params - Parameters for creating a new subject.
  * @param {string} params.subjectName - The name of the subject.
+ * @param {number} params.order - The order number of the subject.
+ * @param {string} params.abbreviation - The abbreviation of the subject.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} The created subject data returned from the server.
  * @throws {Error} If the response status is not 201 or if there is an error with the request.
  */
-export default async function createNewSubject({ subjectName, token }) {
+export default async function createNewSubject({ subjectName, order, abbreviation, token }) {
   try {
     const response = await server.post(
       "/subjects",
-      { subjectName },
+      { subjectName, order, abbreviation },
       {
         headers: {
           Authorization: `Bearer ${token}`,

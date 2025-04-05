@@ -30,22 +30,9 @@ describe("CreateModal Component for Requirements", () => {
       setEvidenceError: vi.fn(),
       setPeriodicityError: vi.fn(),
       setRequirementTypeError: vi.fn(),
-      jurisdictionError: null,
-      setJurisdictionError: vi.fn(),
-      handleJurisdictionChange: vi.fn(),
-      states: ["Nuevo León"],
-      stateError: null,
-      setStateError: vi.fn(),
-      isStateActive: true,
-      handleStateChange: vi.fn(),
-      clearMunicipalities: vi.fn(),
-      municipalities: ["San Pedro"],
-      municipalityError: null,
-      setMunicipalityError: vi.fn(),
-      isMunicipalityActive: true,
-      loadingMunicipalities: false,
-      errorMunicipalities: null,
-      handleMunicipalityChange: vi.fn(),
+      specifyEvidenceError: null,
+      handlSpecifyEvidenceChange: vi.fn(),
+      setSpecifyEvidenceError: vi.fn(),
       subjects: [{ id: "1", subject_name: "Ambiental" }],
       subjectInputError: null,
       setSubjectError: vi.fn(),
@@ -75,11 +62,9 @@ describe("CreateModal Component for Requirements", () => {
         name: "",
         condition: "",
         evidence: "",
+        specifyEvidence: "",
         periodicity: "",
         requirementType: "",
-        jurisdiction: "",
-        state: "",
-        municipality: "",
         subject: "",
         aspects: ["1"],
         mandatoryDescription: "",
@@ -121,7 +106,6 @@ describe("CreateModal Component for Requirements", () => {
       condition: "Crítica",
       evidence: "Trámite",
       periodicity: "Anual",
-      jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
       aspects: ["1"],
@@ -145,7 +129,6 @@ describe("CreateModal Component for Requirements", () => {
       condition: "Crítica",
       evidence: "Trámite",
       periodicity: "Anual",
-      jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
       aspects: ["1"],
@@ -160,62 +143,49 @@ describe("CreateModal Component for Requirements", () => {
   });
 
   it("validates textareas on submit in step 2", async () => {
-    config.formData.number = "123";
-    config.formData.name = "Nombre válido";
-    config.formData.condition= "Crítica";
-    config.formData.evidence= "Trámite";
-    config.formData.periodicity = "Anual";
-    config.formData.jurisdiction ="Federal";
-    config.formData.requirementType ="Identificación Federal",
-    config.formData.subject ="1",
-    config.formData.aspects =["1"]
-    config.formData.state = "",
-    config.formData.municipality = "",
-    config.formData.mandatoryDescription = "desc",
-    config.formData.complementaryDescription = "desc",
-    config.formData.mandatorySentences = "desc",
-    config.formData.complementarySentences = "desc",
-    config.formData.mandatoryKeywords = "desc",
-    config.formData.complementaryKeywords = "desc",
-  
+    config.formData = {
+      ...config.formData,
+      number: "123",
+      name: "Nombre válido",
+      condition: "Crítica",
+      evidence: "Trámite",
+      periodicity: "Anual",
+      requirementType: "Identificación Federal",
+      subject: "1",
+      aspects: ["1"],
+      mandatoryDescription: "",
+      complementaryDescription: "",
+      mandatorySentences: "",
+      complementarySentences: "",
+      mandatoryKeywords: "",
+      complementaryKeywords: "",
+    };
+
     render(<CreateModal config={config} />);
     fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
-  
+
     await waitFor(() => {
       expect(screen.getByText("Detalles Adicionales")).toBeInTheDocument();
     });
-    
-  
-    fireEvent.change(screen.getByLabelText("Descripción Obligatoria"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Descripción Complementaria"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Frases Obligatorias"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Frases Complementarias"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Palabras Clave Obligatorias"), { target: { value: "" } });
-    fireEvent.change(screen.getByLabelText("Palabras Clave Complementarias"), { target: { value: "" } });
-    
-    
-  
-    fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
-  
+
+    fireEvent.click(screen.getByRole("button", { name: "Crear Requerimiento" }));
+
     await waitFor(() => {
       expect(config.setMandatoryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
-  
 
   it("calls addRequirement and closes modal on valid submission", async () => {
     config.formData = {
+      ...config.formData,
       number: "001",
       name: "Req Test",
       condition: "Crítica",
       evidence: "Trámite",
       periodicity: "Anual",
-      jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
       aspects: ["1"],
-      state: "",
-      municipality: "",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -231,7 +201,7 @@ describe("CreateModal Component for Requirements", () => {
       expect(screen.getByText("Detalles Adicionales")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Crear Requerimiento" }));
 
     await waitFor(() => {
       expect(config.addRequirement).toHaveBeenCalled();
@@ -241,17 +211,15 @@ describe("CreateModal Component for Requirements", () => {
 
   it("shows success toast after creating requirement", async () => {
     config.formData = {
+      ...config.formData,
       number: "001",
       name: "Req Test",
       condition: "Crítica",
       evidence: "Trámite",
       periodicity: "Anual",
-      jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
       aspects: ["1"],
-      state: "",
-      municipality: "",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -261,7 +229,6 @@ describe("CreateModal Component for Requirements", () => {
     };
 
     config.addRequirement = vi.fn().mockResolvedValue({ success: true });
-
 
     render(
       <>
@@ -276,17 +243,11 @@ describe("CreateModal Component for Requirements", () => {
       expect(screen.getByText("Detalles Adicionales")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Crear Requerimiento" }));
 
     await waitFor(() => {
       expect(screen.getByText("El requerimiento ha sido registrado correctamente")).toBeInTheDocument();
     });
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Enviar" })).toBeInTheDocument();
-    });
-    
-    
-    
   });
 
   it("does NOT close modal if addRequirement returns error", async () => {
@@ -296,17 +257,15 @@ describe("CreateModal Component for Requirements", () => {
     });
 
     config.formData = {
+      ...config.formData,
       number: "001",
       name: "Req Test",
       condition: "Crítica",
       evidence: "Trámite",
       periodicity: "Anual",
-      jurisdiction: "Federal",
       requirementType: "Identificación Federal",
       subject: "1",
       aspects: ["1"],
-      state: "",
-      municipality: "",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -320,7 +279,7 @@ describe("CreateModal Component for Requirements", () => {
     fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
     await waitFor(() => expect(screen.queryByText("Detalles Adicionales")).toBeInTheDocument());
 
-    fireEvent.click(screen.getByRole("button", { name: "Enviar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Crear Requerimiento" }));
 
     await waitFor(() => {
       expect(config.closeModalCreate).not.toHaveBeenCalled();

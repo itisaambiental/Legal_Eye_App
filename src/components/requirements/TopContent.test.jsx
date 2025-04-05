@@ -1,4 +1,4 @@
-import { render, screen, fireEvent} from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, test, expect, vi } from "vitest";
 import TopContent from "./TopContent";
@@ -21,16 +21,6 @@ const baseMockConfig = {
   onFilterByPeriodicity: vi.fn(),
   selectedRequirementType: "",
   onFilterByRequirementType: vi.fn(),
-  selectedJurisdiction: "",
-  onFilterByJurisdiction: vi.fn(),
-  selectedState: "",
-  stateLoading: false,
-  onFilterByState: vi.fn(),
-  states: ["Nuevo León", "Jalisco"],
-  selectedMunicipalities: [],
-  municipalities: ["Monterrey", "Guadalupe"],
-  municipalitiesLoading: false,
-  onFilterByMunicipalities: vi.fn(),
   filterByMandatoryDescription: "",
   onFilterByMandatoryDescription: vi.fn(),
   filterByComplementaryDescription: "",
@@ -67,9 +57,9 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.onRowsPerPageChange).toHaveBeenCalled();
   });
 
-  test("calls openModalCreate when 'Nuevo Requerimiento' is clicked", () => {
+  test("calls openModalCreate when 'Nueva Requerimiento' is clicked", () => {
     render(<TopContent config={baseMockConfig} />);
-    fireEvent.click(screen.getByText("Nuevo Requerimiento"));
+    fireEvent.click(screen.getByText("Nueva Requerimiento"));
     expect(baseMockConfig.openModalCreate).toHaveBeenCalled();
   });
 
@@ -84,7 +74,6 @@ describe("TopContent Component for Requirements", () => {
     const updatedConfig = {
       ...baseMockConfig,
       filterByNumber: "123",
-      onClear: vi.fn(),
     };
     const { container } = render(<TopContent config={updatedConfig} />);
     const wrapper = container.querySelector('input[placeholder="Buscar por orden..."]')?.closest("div");
@@ -116,20 +105,20 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.onFilterByEvidence).toHaveBeenCalled();
   });
 
-  test("calls onFilterByJurisdiction when a jurisdiction is selected", async () => {
+  test("calls onFilterByPeriodicity when periodicity is selected", async () => {
     render(<TopContent config={baseMockConfig} />);
-    const combo = screen.getByPlaceholderText("Seleccionar jurisdicción...");
+    const combo = screen.getByPlaceholderText("Seleccionar periodicidad...");
     fireEvent.keyDown(combo, { key: "ArrowDown" });
-    fireEvent.click(await screen.findByText("Federal"));
-    expect(baseMockConfig.onFilterByJurisdiction).toHaveBeenCalled();
+    fireEvent.click(await screen.findByText("Anual"));
+    expect(baseMockConfig.onFilterByPeriodicity).toHaveBeenCalled();
   });
 
-  test("calls onFilterByState when a state is selected", async () => {
+  test("calls onFilterByRequirementType when type is selected", async () => {
     render(<TopContent config={baseMockConfig} />);
-    const combo = screen.getByPlaceholderText("Buscar por estado...");
+    const combo = screen.getByPlaceholderText("Buscar por tipo de requerimiento...");
     fireEvent.keyDown(combo, { key: "ArrowDown" });
-    fireEvent.click(await screen.findByText("Nuevo León"));
-    expect(baseMockConfig.onFilterByState).toHaveBeenCalled();
+    fireEvent.click(await screen.findByText("Requerimiento Estatal"));
+    expect(baseMockConfig.onFilterByRequirementType).toHaveBeenCalled();
   });
 
   test("calls onFilterBySubject when a subject is selected", async () => {

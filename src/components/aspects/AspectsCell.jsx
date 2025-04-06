@@ -15,7 +15,7 @@ import delete_icon from "../../assets/eliminar.png";
  * AspectCell component
  *
  * Functional component used for rendering table cells for the "aspect" data type.
- * It supports rendering based on specific column keys such as "aspect_name" and "actions".
+ * It supports rendering based on specific column keys such as "aspect_order", "aspect_name", "aspect_abbreviation" and "actions".
  * Actions include editing and deleting aspects.
  *
  * @component
@@ -31,9 +31,19 @@ import delete_icon from "../../assets/eliminar.png";
 const AspectCell = ({ aspect, columnKey, openEditModal, handleDelete }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
+      case "aspect_order":
+        return (
+          <p className="text-sm font-normal">{aspect.order_index || "N/A"}</p>
+        );
+
       case "aspect_name":
         return (
           <p className="text-sm font-normal">{aspect.aspect_name || "N/A"}</p>
+        );
+
+      case "aspect_abbreviation":
+        return (
+          <p className="text-sm font-normal">{aspect.abbreviation || "N/A"}</p>
         );
 
       case "actions":
@@ -100,7 +110,9 @@ const AspectCell = ({ aspect, columnKey, openEditModal, handleDelete }) => {
 AspectCell.propTypes = {
   aspect: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    order_index: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     aspect_name: PropTypes.string,
+    abbreviation: PropTypes.string,
   }).isRequired,
   columnKey: PropTypes.string.isRequired,
   openEditModal: PropTypes.func.isRequired,

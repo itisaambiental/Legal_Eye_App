@@ -200,7 +200,7 @@ const EditModal = ({ config }) => {
     setIsLoading(true);
 
     if (step === 1) {
-      if (formData.number === "") {
+      if (!formData.number.trim()) {
         setNumberError("Este campo es obligatorio.");
         setIsLoading(false);
         return;

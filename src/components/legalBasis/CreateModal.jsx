@@ -200,7 +200,7 @@ const CreateModal = ({ config }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (formData.name === "") {
+    if (!formData.name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -208,7 +208,7 @@ const CreateModal = ({ config }) => {
       setNameError(null);
     }
 
-    if (formData.abbreviation === "") {
+    if (!formData.abbreviation.trim()) {
       setAbbreviationError("Este campo es obligatorio");
       setIsLoading(false);
       return;

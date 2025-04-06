@@ -4,95 +4,147 @@ import CreateModal from "./CreateModal";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
+vi.mock("react-toastify", () => ({
+  toast: {
+    error: vi.fn(),
+    info: vi.fn(),
+  },
+}));
+
 describe("CreateModal Component for Aspects", () => {
   const mockCloseModalCreate = vi.fn();
   const mockAddAspect = vi.fn();
-  const mockSetNameError = vi.fn();
-
-  vi.mock("react-toastify", () => ({
-    toast: {
-      error: vi.fn(),
-      info: vi.fn(),
-    },
-  }));
 
   const TestCreateModalComponent = () => {
-    const [formData, setFormData] = useState({ name: "", subject_id: 1 });
+    const [formData, setFormData] = useState({
+      name: "",
+      order: "",
+      abbreviation: "",
+      subject_id: 1,
+    });
+    const [nameError, setNameError] = useState(null);
+    const [orderError, setOrderError] = useState(null);
+    const [abbreviationError, setAbbreviationError] = useState(null);
+
     const handleNameChange = (e) => {
       setFormData({ ...formData, name: e.target.value });
     };
 
-    return (
-      <CreateModal
-        config={{
-          isOpen: true,
-          closeModalCreate: mockCloseModalCreate,
-          addAspect: mockAddAspect,
-          handleNameChange,
-          formData,
-          nameError: null,
-          setNameError: mockSetNameError,
-        }}
-      />
-    );
+    const handleOrderChange = (e) => {
+      setFormData({ ...formData, order: e.target.value });
+    };
+
+    const handleAbbreviationChange = (e) => {
+      setFormData({ ...formData, abbreviation: e.target.value });
+    };
+
+    const config = {
+      isOpen: true,
+      closeModalCreate: mockCloseModalCreate,
+      addAspect: mockAddAspect,
+      nameError,
+      setNameError,
+      handleNameChange,
+      orderError,
+      setOrderError,
+      handleOrderChange,
+      abbreviationError,
+      setAbbreviationError,
+      handleAbbreviationChange,
+      formData,
+    };
+
+    return <CreateModal config={config} />;
   };
 
   beforeEach(() => {
-    mockSetNameError.mockClear();
+    mockCloseModalCreate.mockClear();
+    mockAddAspect.mockClear();
+    toast.error.mockClear();
+    toast.info.mockClear();
     render(<TestCreateModalComponent />);
   });
 
   test("modal opens with empty fields", () => {
     expect(screen.getByLabelText("Nombre del Aspecto")).toHaveValue("");
+    expect(screen.getByLabelText("Orden")).toHaveValue(null);
+    expect(screen.getByLabelText("Abreviatura")).toHaveValue("");
   });
 
-  test("displays error message when submitting without filling name field", () => {
+  test("shows validation errors when submitting empty", async () => {
     const submitButton = screen.getByText("Registrar Aspecto");
-    fireEvent.click(submitButton);
-    expect(mockSetNameError).toHaveBeenCalledWith("Este campo es obligatorio");
-  });
 
-  test("updates name on input change", async () => {
-    const nameInput = screen.getByLabelText("Nombre del Aspecto");
-    fireEvent.change(nameInput, { target: { value: "Seguridad" } });
-    expect(nameInput).toHaveValue("Seguridad");
-    const submitButton = screen.getByText("Registrar Aspecto");
     await act(async () => {
       fireEvent.click(submitButton);
     });
-    expect(mockSetNameError).not.toHaveBeenCalledWith(
-      "Este campo es obligatorio"
-    );
+
+    expect(screen.getByText("Este campo es obligatorio")).toBeInTheDocument();
+  });
+
+  test("updates all fields on input change", () => {
+    fireEvent.change(screen.getByLabelText("Nombre del Aspecto"), {
+      target: { value: "Calidad del Aire" },
+    });
+    fireEvent.change(screen.getByLabelText("Orden"), {
+      target: { value: "2" },
+    });
+    fireEvent.change(screen.getByLabelText("Abreviatura"), {
+      target: { value: "CA" },
+    });
+
+    expect(screen.getByLabelText("Nombre del Aspecto")).toHaveValue("Calidad del Aire");
+    expect(screen.getByLabelText("Orden")).toHaveValue(2);
+    expect(screen.getByLabelText("Abreviatura")).toHaveValue("CA");
   });
 
   test("closes the modal on successful aspect creation", async () => {
     mockAddAspect.mockResolvedValueOnce({ success: true });
-    const nameInput = screen.getByLabelText("Nombre del Aspecto");
-    fireEvent.change(nameInput, { target: { value: "Seguridad" } });
+
+    fireEvent.change(screen.getByLabelText("Nombre del Aspecto"), {
+      target: { value: "Seguridad" },
+    });
+    fireEvent.change(screen.getByLabelText("Orden"), {
+      target: { value: "3" },
+    });
+    fireEvent.change(screen.getByLabelText("Abreviatura"), {
+      target: { value: "SEG" },
+    });
+
     const submitButton = screen.getByText("Registrar Aspecto");
     await act(async () => {
       fireEvent.click(submitButton);
     });
+
+    expect(mockAddAspect).toHaveBeenCalled();
     expect(mockCloseModalCreate).toHaveBeenCalled();
+    expect(toast.info).toHaveBeenCalledWith(
+      "El aspecto ha sido registrado correctamente",
+      expect.anything()
+    );
   });
 
   test("shows error toast when aspect already exists", async () => {
     mockAddAspect.mockResolvedValueOnce({
       success: false,
-      error:
-        "El aspecto ya existe. Por favor cambie el nombre e intente de nuevo.",
+      error: "El aspecto ya existe.",
     });
-    const nameInput = screen.getByLabelText("Nombre del Aspecto");
-    fireEvent.change(nameInput, { target: { value: "Seguridad" } });
+
+    fireEvent.change(screen.getByLabelText("Nombre del Aspecto"), {
+      target: { value: "Seguridad" },
+    });
+    fireEvent.change(screen.getByLabelText("Orden"), {
+      target: { value: "1" },
+    });
+    fireEvent.change(screen.getByLabelText("Abreviatura"), {
+      target: { value: "SEG" },
+    });
+
     const submitButton = screen.getByText("Registrar Aspecto");
     await act(async () => {
       fireEvent.click(submitButton);
     });
-    expect(toast.error).toHaveBeenCalledWith(
-      "El aspecto ya existe. Por favor cambie el nombre e intente de nuevo."
-    );
-    expect(mockSetNameError).not.toHaveBeenCalledWith(
-      "Este campo es obligatorio"
-    );
+
+    expect(toast.error).toHaveBeenCalledWith("El aspecto ya existe.");
+    expect(mockCloseModalCreate).not.toHaveBeenCalled();
   });
 });

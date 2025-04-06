@@ -99,13 +99,14 @@ function EditModal({ config }) {
     e.preventDefault();
     setIsLoading(true);
 
-    if (formData.name === "") {
+    if (!formData.name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
     } else {
       setNameError(null);
     }
+
     if (formData.user_type === "") {
       setusertypeError("Este campo es obligatorio");
       setIsLoading(false);

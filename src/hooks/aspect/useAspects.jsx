@@ -43,7 +43,7 @@ export default function useAspects() {
       setStateAspects({ loading: true, loadingState: true, error: null });
       try {
         const aspects = await getAspectsBySubject({ subjectId, token: jwt });
-        setAspects(aspects.reverse());
+        setAspects(aspects);
         setStateAspects({ loading: false, loadingState: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -66,33 +66,62 @@ export default function useAspects() {
   );
 
   /**
-   * Adds a new aspect to a specific subject.
-   * @async
-   * @function addAspect
-   * @param {number} subjectId - The ID of the subject to link this aspect to.
-   * @param {string} aspectName - The name of the aspect to add.
-   * @returns {Promise<Object>}
-   */
+ * Adds a new aspect to a specific subject in the correct order.
+ *
+ * @async
+ * @function addAspect
+ * @param {Object} params - Parameters for creating a new aspect.
+ * @param {number} params.subjectId - The ID of the subject to link this aspect to.
+ * @param {string} params.aspectName - The name of the aspect.
+ * @param {number} params.order - The order number of the aspect.
+ * @param {string} params.abbreviation - The abbreviation of the aspect.
+ *
+ * @returns {Promise<Object>} - Result of the operation with success status or error message.
+ */
   const addAspect = useCallback(
-    async (subjectId, aspectName) => {
+    async ({ subjectId, aspectName, order, abbreviation }) => {
       try {
         const newAspect = await createNewAspect({
           subjectId,
           aspectName,
+          order,
+          abbreviation,
           token: jwt,
         });
-        setAspects((prevAspects) => [newAspect, ...prevAspects]);
+        setAspects((prevAspects) => {
+          const updatedAspects = [...prevAspects];
+          const findInsertIndex = (items, newOrderIndex) => {
+            let left = 0;
+            let right = items.length;
+            while (left < right) {
+              const mid = Math.floor((left + right) / 2);
+              if (items[mid].order_index < newOrderIndex) {
+                left = mid + 1;
+              } else {
+                right = mid;
+              }
+            }
+            return left;
+          };
+
+          const insertIndex = findInsertIndex(updatedAspects, newAspect.order_index);
+          updatedAspects.splice(insertIndex, 0, newAspect);
+          return updatedAspects;
+        });
+
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+
         const handledError = AspectErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
           items: [subjectId],
         });
+
         return { success: false, error: handledError.message };
       }
     },
@@ -117,7 +146,7 @@ export default function useAspects() {
           aspectName,
           token: jwt,
         });
-        setAspects(aspects.reverse());
+        setAspects(aspects);
         setStateAspects({ loading: false, loadingState: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -140,37 +169,64 @@ export default function useAspects() {
   );
 
   /**
-   * Updates an existing aspect by ID.
+   * Updates an existing aspect by ID and reorders the aspects list if the order is updated.
+   *
    * @async
    * @function modifyAspect
-   * @param {number} aspectId - The ID of the aspect to update.
-   * @param {string} aspectName - The new name of the aspect.
-   * @returns {Promise<Object>}
+   * @param {Object} params - Parameters for the aspect to update.
+   * @param {number} params.id - The ID of the aspect to update.
+   * @param {string} params.aspectName - The new name of the aspect.
+   * @param {number} params.order - The new order number of the aspect.
+   * @param {string} params.abbreviation - The abbreviation of the aspect.
+   * @returns {Promise<Object>} - Result of the operation with success status and updated aspect or error message.
    */
   const modifyAspect = useCallback(
-    async (aspectId, aspectName) => {
+    async ({ id, aspectName, order, abbreviation }) => {
       try {
         const updatedAspect = await updateAspect({
-          aspectId,
+          id,
           aspectName,
+          order,
+          abbreviation,
           token: jwt,
         });
-        setAspects((prevAspects) =>
-          prevAspects.map((aspect) =>
-            aspect.id === aspectId ? updatedAspect : aspect
-          )
-        );
+
+        setAspects((prevAspects) => {
+          const filteredAspects = prevAspects.filter((a) => a.id !== id);
+
+          const findInsertIndex = (items, newOrderIndex) => {
+            let left = 0;
+            let right = items.length;
+            while (left < right) {
+              const mid = Math.floor((left + right) / 2);
+              if (items[mid].order_index < newOrderIndex) {
+                left = mid + 1;
+              } else {
+                right = mid;
+              }
+            }
+            return left;
+          };
+
+          const insertIndex = findInsertIndex(filteredAspects, updatedAspect.order_index);
+          filteredAspects.splice(insertIndex, 0, updatedAspect);
+
+          return filteredAspects;
+        });
+
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+
         const handledError = AspectErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: [aspectId],
+          items: [id],
         });
+
         return { success: false, error: handledError.message };
       }
     },

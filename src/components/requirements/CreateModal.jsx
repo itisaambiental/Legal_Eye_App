@@ -150,7 +150,7 @@ const CreateModal = ({ config }) => {
         e.preventDefault();
         setIsLoading(true);
         if (step === 1) {
-            if (formData.number === "") {
+            if (!formData.number.trim()) {
                 setNumberError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
@@ -757,7 +757,6 @@ CreateModal.propTypes = {
         handlePeriodicityChange: PropTypes.func.isRequired,
         requirementTypeError: PropTypes.string,
         handleRequirementType: PropTypes.func.isRequired,
-        fetchRequirements: PropTypes.func.isRequired,
         setConditionError: PropTypes.func.isRequired,
         setEvidenceError: PropTypes.func.isRequired,
         setPeriodicityError: PropTypes.func.isRequired,

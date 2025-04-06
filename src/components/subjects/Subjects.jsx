@@ -24,7 +24,9 @@ import EditModal from "./EditModal.jsx";
 import { useNavigate } from "react-router-dom";
 
 const columns = [
+  { name: "Orden", uid: "subject_order", align: "start" },
   { name: "Materia", uid: "subject_name", align: "start" },
+  { name: "Abreviatura", uid: "subject_abbreviation", align: "start" },
   { name: "Acciones", uid: "actions", align: "center" },
 ];
 
@@ -63,11 +65,15 @@ export default function Subjects() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [nameError, setNameError] = useState(null);
+  const [orderError, setOrderError] = useState(null);
+  const [abbreviationError, setAbbreviationError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
+    order: "",
+    abbreviation: "",
   });
 
   useEffect(() => {
@@ -121,10 +127,35 @@ export default function Subjects() {
     }
   };
 
+  const handleOrderChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      order: value,
+    }));
+    if (orderError && value.trim() !== "") {
+      setOrderError(null);
+    }
+  };
+
+  const handleAbbreviationChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      abbreviation: value,
+    }));
+    if (abbreviationError && value.trim() !== "") {
+      setAbbreviationError(null);
+    }
+  };
+
+
   const openModalCreate = () => {
     setFormData({
       id: "",
       name: "",
+      order: "",
+      abbreviation: "",
     });
     setIsCreateModalOpen(true);
   };
@@ -132,6 +163,8 @@ export default function Subjects() {
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
     setNameError(null);
+    setOrderError(null);
+    setAbbreviationError(null);
   };
 
   const openEditModal = (subject) => {
@@ -143,6 +176,8 @@ export default function Subjects() {
     setIsEditModalOpen(false);
     setSelectedSubject(null);
     setNameError(null);
+    setOrderError(null);
+    setAbbreviationError(null);
   };
 
   const goToAspects = (subjectId) => {
@@ -227,6 +262,7 @@ export default function Subjects() {
   }
 
   if (error) return <Error title={error.title} message={error.message} />;
+  
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
@@ -241,7 +277,7 @@ export default function Subjects() {
         }}
       />
       <>
-      {isSearching || loading ? (
+        {isSearching || loading ? (
           <div
             role="status"
             className="flex justify-center items-center w-full h-40"
@@ -325,6 +361,12 @@ export default function Subjects() {
             nameError: nameError,
             setNameError: setNameError,
             handleNameChange: handleNameChange,
+            orderError: orderError,
+            setOrderError: setOrderError,
+            handleOrderChange: handleOrderChange,
+            abbreviationError: abbreviationError,
+            setAbbreviationError: setAbbreviationError,
+            handleAbbreviationChange: handleAbbreviationChange,
           }}
         />
       )}
@@ -340,6 +382,12 @@ export default function Subjects() {
             nameError: nameError,
             setNameError: setNameError,
             handleNameChange: handleNameChange,
+            orderError: orderError,
+            setOrderError: setOrderError,
+            handleOrderChange: handleOrderChange,
+            abbreviationError: abbreviationError,
+            setAbbreviationError: setAbbreviationError,
+            handleAbbreviationChange: handleAbbreviationChange,
           }}
         />
       )}

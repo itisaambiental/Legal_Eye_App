@@ -25,9 +25,12 @@ import { toast } from "react-toastify";
 import EditModal from "./EditModal.jsx";
 
 const columns = [
+  { name: "Orden", uid: "aspect_order", align: "start" },
   { name: "Aspecto", uid: "aspect_name", align: "start" },
+  { name: "Abreviatura", uid: "aspect_abbreviation", align: "start" },
   { name: "Acciones", uid: "actions", align: "center" },
 ];
+
 /**
  * Aspects component
  *
@@ -67,12 +70,16 @@ export default function Aspects() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAspect, setSelectedAspect] = useState(null);
   const [nameError, setNameError] = useState(null);
+  const [orderError, setOrderError] = useState(null);
+  const [abbreviationError, setAbbreviationError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
-    subject_id: "",
+    order: "",
+    abbreviation: "",
+    subject_id: id,
   });
 
   useEffect(() => {
@@ -143,10 +150,34 @@ export default function Aspects() {
     }
   };
 
+  const handleOrderChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      order: value,
+    }));
+    if (orderError && value.trim() !== "") {
+      setOrderError(null);
+    }
+  };
+
+  const handleAbbreviationChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      abbreviation: value,
+    }));
+    if (abbreviationError && value.trim() !== "") {
+      setAbbreviationError(null);
+    }
+  };
+
   const openModalCreate = () => {
     setFormData({
       id: "",
       name: "",
+      order: "",
+      abbreviation: "",
       subject_id: id,
     });
     setIsCreateModalOpen(true);
@@ -155,6 +186,8 @@ export default function Aspects() {
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
     setNameError(null);
+    setOrderError(null);
+    setAbbreviationError(null);
   };
 
   const openEditModal = (aspect) => {
@@ -166,6 +199,8 @@ export default function Aspects() {
     setIsEditModalOpen(false);
     setSelectedAspect(null);
     setNameError(null);
+    setOrderError(null);
+    setAbbreviationError(null);
   };
 
   const totalPages = useMemo(
@@ -350,6 +385,12 @@ export default function Aspects() {
                 formData: formData,
                 nameError: nameError,
                 setNameError: setNameError,
+                orderError: orderError,
+                setOrderError: setOrderError,
+                handleOrderChange: handleOrderChange,
+                abbreviationError: abbreviationError,
+                setAbbreviationError: setAbbreviationError,
+                handleAbbreviationChange: handleAbbreviationChange,
                 handleNameChange: handleNameChange,
               }}
             />
@@ -365,6 +406,12 @@ export default function Aspects() {
                 updateAspect: modifyAspect,
                 nameError: nameError,
                 setNameError: setNameError,
+                orderError: orderError,
+                setOrderError: setOrderError,
+                handleOrderChange: handleOrderChange,
+                abbreviationError: abbreviationError,
+                setAbbreviationError: setAbbreviationError,
+                handleAbbreviationChange: handleAbbreviationChange,
                 handleNameChange: handleNameChange,
               }}
             />
@@ -387,5 +434,5 @@ export default function Aspects() {
         </>
       )}
     </div>
-  );  
+  );
 }

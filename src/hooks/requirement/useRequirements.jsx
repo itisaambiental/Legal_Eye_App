@@ -658,7 +658,7 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
-      requirementType
+      requirementType,
     }) => {
       try {
         const requirement = await updateRequirement({

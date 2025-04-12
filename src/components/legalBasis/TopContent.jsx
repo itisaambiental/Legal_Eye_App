@@ -28,6 +28,7 @@ import { I18nProvider } from "@react-aria/i18n";
  * @param {Function} props.config.onRowsPerPageChange - Callback to handle changes in rows per page.
  * @param {number} props.config.totalLegalBasis - Total number of legal basis entries.
  * @param {Function} props.config.openModalCreate - Function to open the create modal.
+ * @param {Function} props.config.openFilterModal, - Function to open the filter modal.
  * @param {string} props.config.filterByName - Current value of the name filter.
  * @param {Function} props.config.onFilterByName - Callback for name filter changes.
  * @param {string} props.config.filterByAbbreviation - Current value of the abbreviation filter.
@@ -67,6 +68,7 @@ function TopContent({ config }) {
     onRowsPerPageChange,
     totalLegalBasis,
     openModalCreate,
+    openFilterModal,
     filterByName,
     filterByAbbreviation,
     onFilterByName,
@@ -380,6 +382,13 @@ function TopContent({ config }) {
           >
             Nuevo Fundamento
           </Button>
+          <Button
+            className="bg-secondary text-white"
+            onPress={openFilterModal}
+          >
+            Búsqueda Avanzada
+          </Button>
+
         </div>
       </div>
     </div>
@@ -393,6 +402,7 @@ TopContent.propTypes = {
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalLegalBasis: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
+    openFilterModal: PropTypes.func.isRequired,
     filterByName: PropTypes.string.isRequired,
     onFilterByName: PropTypes.func.isRequired,
     filterByAbbreviation: PropTypes.string.isRequired,

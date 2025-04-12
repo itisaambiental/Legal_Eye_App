@@ -18,6 +18,7 @@ import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import { useFiles } from "../../hooks/files/useFiles.jsx";
 import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
+import FilterModal from "./FilterModal.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
@@ -69,6 +70,7 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    fetchLegalBasisBySubjectAndFilters,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,
@@ -138,6 +140,7 @@ export default function LegalBasis() {
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -526,6 +529,32 @@ export default function LegalBasis() {
     setIsExtracArticlesChecked(false);
     setIntelligenceLevelInputError(null);
   };
+
+  const openFilterModal = () => {
+    setFormData({
+      jurisdiction: "",
+      state: "",
+      municipality: "",
+      subject: "",
+      aspects: [],
+    });
+    setIsFilterModalOpen(true);
+  };
+
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false);
+    setJurisdictionInputError(null);
+    setStateInputError(null);
+    setMunicipalityInputError(null);
+    setSubjectInputError(null);
+    setAspectInputError(null);
+    setIsStateActive(false);
+    setIsMunicipalityActive(false);
+    setIsAspectsActive(false);
+    clearMunicipalities();
+    clearAspects();
+  };
+
 
   const handleNameChange = useCallback(
     (e) => {
@@ -1011,6 +1040,7 @@ export default function LegalBasis() {
         config={{
           isCreateModalOpen: isCreateModalOpen,
           isEditModalOpen: isEditModalOpen,
+          openFilterModal: openFilterModal,
           onRowsPerPageChange: onRowsPerPageChange,
           totalLegalBasis: legalBasis.length,
           openModalCreate: openModalCreate,
@@ -1286,6 +1316,45 @@ export default function LegalBasis() {
           }}
         />
       )}
+      {isFilterModalOpen && (
+        <FilterModal
+          config={{
+            formData: formData,
+            getLegalBasisBySubjectAndFilters: fetchLegalBasisBySubjectAndFilters,
+            isOpen: openFilterModal,
+            onClose: closeFilterModal,
+            jurisdictionError: jurisdictionInputError,
+            setJurisdictionError: setJurisdictionInputError,
+            handleJurisdictionChange: handleJurisdictionChange,
+            states: states,
+            stateError: stateInputError,
+            setStateError: setStateInputError,
+            isStateActive: isStateActive,
+            handleStateChange: handleStateChange,
+            clearMunicipalities: clearMunicipalities,
+            municipalities: municipalities,
+            municipalityError: municipalityInputError,
+            setMunicipalityError: setMunicipalityInputError,
+            isMunicipalityActive: isMunicipalityActive,
+            loadingMunicipalities: loadingMunicipalities,
+            errorMunicipalities: errorMunicipalities,
+            handleMunicipalityChange: handleMunicipalityChange,
+            subjects: subjects,
+            subjectInputError: subjectInputError,
+            setSubjectError: setSubjectInputError,
+            handleSubjectChange: handleSubjectChange,
+            aspects: aspects,
+            aspectError: aspectInputError,
+            setAspectInputError: setAspectInputError,
+            isAspectsActive: isAspectsActive,
+            aspectsLoading: aspectsLoading,
+            errorAspects: aspectError,
+            handleAspectsChange: handleAspectsChange,
+          }}
+        />
+      )}
+
+
     </div>
   );
 }

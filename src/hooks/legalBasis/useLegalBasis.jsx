@@ -11,6 +11,7 @@ import getLegalBasisByState from "../../services/legalBaseService/getLegalBasisB
 import getLegalBasisByStateAndMunicipalities from "../../services/legalBaseService/getLegalBasisByStateAndMunicipalities";
 import getLegalBasisBySubject from "../../services/legalBaseService/getLegalBasisBySubject";
 import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/getLegalBasisBySubjectAndAspects";
+import getLegalBasisBySubjectAndFilters from "../../services/legalBaseService/getLegalBasisBySubjectAndFilters";
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
@@ -445,6 +446,47 @@ export default function useLegalBasis() {
   );
 
   /**
+ * Fetches legal basis records filtered by subject, aspects, jurisdiction, state, and municipalities.
+ * @async
+ * @function fetchLegalBasisBySubjectAndFilters
+ * @param {Object} params - Filtering options.
+ * @param {number} params.subjectId - Subject ID (required).
+ * @param {Array<number>} [params.aspectIds] - Optional aspect IDs.
+ * @param {string} [params.jurisdiction] - Optional jurisdiction: 'Federal', 'Estatal', 'Local'.
+ * @param {string} [params.state] - Optional state name.
+ * @param {Array<string>} [params.municipalities] - Optional municipalities.
+ * @returns {Promise<void>} Updates the legalBasis state and handles loading/error.
+ */
+const fetchLegalBasisBySubjectAndFilters = useCallback(
+  async ({ subjectId, aspectIds, jurisdiction, state, municipalities }) => {
+    setStateLegalBasis({ loading: true, error: null });
+    try {
+      const legalBasis = await getLegalBasisBySubjectAndFilters({
+        subjectId,
+        aspectIds,
+        jurisdiction,
+        state,
+        municipalities,
+        token: jwt,
+      });
+      setLegalBasis(legalBasis.reverse());
+      setStateLegalBasis({ loading: false, error: null });
+    } catch (error) {
+      const errorCode = error.response?.status;
+      const serverMessage = error.response?.data?.message;
+      const clientMessage = error.message;
+      const handledError = LegalBasisErrors.handleError({
+        code: errorCode,
+        error: serverMessage,
+        httpError: clientMessage,
+      });
+      setStateLegalBasis({ loading: false, error: handledError });
+    }
+  },
+  [jwt]
+);
+
+  /**
    * Fetches legal basis records filtered by a date range and updates the state.
    *
    * @async
@@ -652,6 +694,7 @@ const modifyLegalBasis = useCallback(
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    fetchLegalBasisBySubjectAndFilters,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,

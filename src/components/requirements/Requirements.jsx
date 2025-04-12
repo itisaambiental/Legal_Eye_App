@@ -167,10 +167,6 @@ export default function Requirement() {
     setSelectedEvidence(null);
     setSelectedPeriodicity(null);
     setSelectedRequirementType(null);
-<<<<<<< HEAD
-    clearAspects();
-=======
->>>>>>> f431ca0 (Git init)
     setFilterByMandatoryDescription("");
     setFilterByComplementaryDescription("");
     setFilterByMandatorySentences("");
@@ -184,11 +180,7 @@ export default function Requirement() {
     setFilterByMandatoryKeywords("");
     setFilterByComplementaryKeywords("");
     fetchRequirements();
-<<<<<<< HEAD
-  }, [fetchRequirements, clearAspects]);
-=======
   }, [fetchRequirements]);
->>>>>>> f431ca0 (Git init)
 
   const resetSubjectAndAspects = useCallback(() => {
     if (selectedSubject) {
@@ -397,11 +389,7 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity(periodicity);
-<<<<<<< HEAD
-      setSelectedRequirementType("")
-=======
       setSelectedRequirementType("");
->>>>>>> f431ca0 (Git init)
       resetSubjectAndAspects();
       handleFilter("periodicity", periodicity);
     },
@@ -432,15 +420,12 @@ export default function Requirement() {
     [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
-<<<<<<< HEAD
-=======
 
 
 
 
 
 
->>>>>>> f431ca0 (Git init)
   const handleFilterBySubject = useCallback(
     (selectedId) => {
       if (!selectedId) {
@@ -592,11 +577,7 @@ export default function Requirement() {
       setFilterByMandatoryKeywords(value);
       handleFilter("mandatoryKeywords", value);
     },
-<<<<<<< HEAD
-    [handleFilter, handleClear, resetSubjectAndAspects,]
-=======
     [handleFilter, handleClear, resetSubjectAndAspects]
->>>>>>> f431ca0 (Git init)
   );
 
   const handleFilterByComplementaryKeywords = useCallback(

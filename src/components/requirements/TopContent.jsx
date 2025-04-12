@@ -35,8 +35,6 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onFilterByEvidence - Callback for filtering by evidence.
  * @param {string} props.config.selectedPeriodicity - Selected periodicity filter.
  * @param {Function} props.config.onFilterByPeriodicity - Callback for filtering by periodicity.
- * @param {string} props.config.selectedRequirementType - Selected requirement type filter.
- * @param {Function} props.config.onFilterByRequirementType - Callback for filtering by requirement type.
  * @param {string} props.config.filterByMandatoryDescription - Current value for filtering by mandatory description.
  * @param {Function} props.config.onFilterByMandatoryDescription - Callback for filtering by mandatory description.
  * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description.
@@ -81,8 +79,6 @@ function TopContent({ config }) {
     onFilterByEvidence,
     selectedPeriodicity,
     onFilterByPeriodicity,
-    selectedRequirementType,
-    onFilterByRequirementType,
     onClear,
     subjects,
     subjectLoading,
@@ -191,29 +187,6 @@ function TopContent({ config }) {
           <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
           <AutocompleteItem key="Específica">Específica</AutocompleteItem>
         </Autocomplete>
-        <Autocomplete
-          color="primary"
-          variant="faded"
-          onClear={onClear}
-          placeholder="Buscar por tipo de requerimiento..."
-          className="w-full"
-          listboxProps={{
-            emptyContent: "Tipo de requerimiento no encontrado",
-          }}
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          selectedKey={selectedRequirementType}
-          onSelectionChange={onFilterByRequirementType}
-        >
-          <AutocompleteItem key="Identificación Estatal">Identificación Estatal</AutocompleteItem>
-          <AutocompleteItem key="Identificación Federal">Identificación Federal</AutocompleteItem>
-          <AutocompleteItem key="Identificación Local">Identificación Local</AutocompleteItem>
-          <AutocompleteItem key="Requerimiento Compuesto">Requerimiento Compuesto</AutocompleteItem>
-          <AutocompleteItem key="Requerimiento Compuesto e Identificación">Requerimiento Compuesto e Identificación</AutocompleteItem>
-          <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
-          <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
-        </Autocomplete>
-
-   
         <Autocomplete
           color="primary"  
           variant="faded"
@@ -413,8 +386,6 @@ TopContent.propTypes = {
     onFilterByEvidence: PropTypes.func.isRequired,
     selectedPeriodicity: PropTypes.string,
     onFilterByPeriodicity: PropTypes.func.isRequired,
-    selectedRequirementType: PropTypes.string,
-    onFilterByRequirementType: PropTypes.func.isRequired,
     filterByMandatoryDescription: PropTypes.string,
     onFilterByMandatoryDescription: PropTypes.func,
     filterByComplementaryDescription: PropTypes.string,

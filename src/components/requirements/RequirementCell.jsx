@@ -79,15 +79,6 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
-      case "requirement_type":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.requirement_type || "N/A"}
-            </p>
-          </div>
-        );
       case "subject":
         return (
           <div className="flex flex-col">
@@ -286,7 +277,6 @@ RequirementCell.propTypes = {
     requirement_condition: PropTypes.string,
     evidence: PropTypes.string,
     periodicity: PropTypes.string,
-    requirement_type: PropTypes.string,
     subject: PropTypes.shape({
       subject_name: PropTypes.string,
     }),

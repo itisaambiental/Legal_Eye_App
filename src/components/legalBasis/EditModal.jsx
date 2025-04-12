@@ -610,14 +610,6 @@ function EditModal({ config }) {
                       listboxProps={{
                         emptyContent: "Clasificación no encontrada",
                       }}
-                      disabledKeys={[
-                        "Norma",
-                        "Acuerdos",
-                        "Código",
-                        "Decreto",
-                        "Lineamiento",
-                        "Aviso",
-                      ]}
                     >
                       <AutocompleteItem key="Ley">Ley</AutocompleteItem>
                       <AutocompleteItem key="Reglamento">

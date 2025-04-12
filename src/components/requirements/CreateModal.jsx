@@ -42,14 +42,14 @@ import go_back from "../../assets/volver.png";
  * @param {Function} props.config.handleConditionChange - Handler for changes in the "Condition" autocomplete field.
  * @param {string|null} props.config.evidenceError - Error message for the "Evidence" autocomplete field.
  * @param {Function} props.config.handleEvidenceChange - Handler for changes in the "Evidence" autocomplete field.
+ * @param {string|null} props.config.specifyEvidenceError - Error message for the "Specify Evidence" input field (shown when evidence is set to "Específica").
+ * @param {Function} props.config.setSpecifyEvidenceError - Setter function for the "Specify Evidence" input error.
+ * @param {Function} props.config.handlSpecifyEvidenceChange - Handler for changes in the "Specify Evidence" input field.
  * @param {string|null} props.config.periodicityError - Error message for the "Periodicity" autocomplete field.
  * @param {Function} props.config.handlePeriodicityChange - Handler for changes in the "Periodicity" autocomplete field.
- * @param {string|null} props.config.requirementTypeError - Error message for the "Requirement Type" autocomplete field.
- * @param {Function} props.config.handleRequirementType - Handler for changes in the "Requirement Type" autocomplete field.
  * @param {Function} props.config.setConditionError - Setter for the "Condition" field error.
  * @param {Function} props.config.setEvidenceError - Setter for the "Evidence" field error.
  * @param {Function} props.config.setPeriodicityError - Setter for the "Periodicity" field error.
- * @param {Function} props.config.setRequirementTypeError - Setter for the "Requirement Type" field error.
  * @param {Array} props.config.subjects - List of available subjects for the "Subject" autocomplete.
  * @param {string|null} props.config.subjectInputError - Error message for the "Subject" autocomplete.
  * @param {Function} props.config.setSubjectError - Setter for the "Subject" field error.
@@ -100,16 +100,13 @@ const CreateModal = ({ config }) => {
         evidenceError,
         handleEvidenceChange,
         handlSpecifyEvidenceChange,
+        specifyEvidenceError,
         setSpecifyEvidenceError,
         periodicityError,
         handlePeriodicityChange,
-        specifyEvidenceError,
-        requirementTypeError,
-        handleRequirementType,
         setConditionError,
         setEvidenceError,
         setPeriodicityError,
-        setRequirementTypeError,
         subjects,
         subjectInputError,
         setSubjectError,
@@ -139,8 +136,6 @@ const CreateModal = ({ config }) => {
         handleComplementaryKeywordsChange,
         complementaryKeywordsError,
         setComplementaryKeywordsError,
-
-
     } = config;
 
     const [isLoading, setIsLoading] = useState(false);
@@ -192,14 +187,6 @@ const CreateModal = ({ config }) => {
             } else {
                 setSpecifyEvidenceError(null);
             }
-            if (formData.periodicity === "") {
-                setPeriodicityError("Debes seleccionar una periodicidad.");
-                setIsLoading(false);
-                return;
-            } else {
-                setPeriodicityError(null);
-            }
-
 
             if (formData.subject === "") {
                 setSubjectError("Debes seleccionar una materia.");
@@ -216,12 +203,12 @@ const CreateModal = ({ config }) => {
             } else {
                 setAspectInputError(null);
             }
-            if (formData.requirementType === "") {
-                setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
+            if (formData.periodicity === "") {
+                setPeriodicityError("Debes seleccionar una periodicidad.");
                 setIsLoading(false);
                 return;
             } else {
-                setRequirementTypeError(null);
+                setPeriodicityError(null);
             }
             setIsLoading(false);
             setStep(2);
@@ -280,7 +267,6 @@ const CreateModal = ({ config }) => {
             evidence: formData.evidence,
             specifyEvidence: formData.specifyEvidence,
             periodicity: formData.periodicity,
-            requirementType: formData.requirementType,
             subjectId: formData.subject,
             aspectsIds: formData.aspects,
             mandatoryDescription: formData.mandatoryDescription,
@@ -290,8 +276,6 @@ const CreateModal = ({ config }) => {
             mandatoryKeywords: formData.mandatoryKeywords,
             complementaryKeywords: formData.complementaryKeywords,
         };
-
-
         try {
             const { success, error } = await addRequirement(requirementData);
             if (success) {
@@ -447,29 +431,6 @@ const CreateModal = ({ config }) => {
                                             </p>
                                         )}
                                     </div>
-                                    <div className="w-full">
-                                        <Autocomplete
-                                            size="sm"
-                                            variant="bordered"
-                                            label="Periodicidad"
-                                            selectedKey={formData.periodicity}
-                                            onSelectionChange={handlePeriodicityChange}
-                                            listboxProps={{
-                                                emptyContent: "Periodicidad no encontrada",
-                                            }}
-                                        >
-                                            <AutocompleteItem key="Anual">Anual</AutocompleteItem>
-                                            <AutocompleteItem key="2 años">2 años</AutocompleteItem>
-                                            <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
-                                            <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
-                                            <AutocompleteItem key="Específica">Específica</AutocompleteItem>
-                                        </Autocomplete>
-                                        {periodicityError && (
-                                            <p className="mt-2 text-sm text-red">
-                                                {periodicityError}
-                                            </p>
-                                        )}
-                                    </div>
                                     {formData.evidence === "Específica" && (
                                         <div className="relative z-0 w-full group">
                                             <input
@@ -558,31 +519,28 @@ const CreateModal = ({ config }) => {
                                     </div>
                                 </div>
                                 <div className="w-full mt-4">
-                                    <Autocomplete
-                                        size="sm"
-                                        variant="bordered"
-                                        className="w-full py-2"
-                                        label="Tipo de Requerimiento"
-                                        selectedKey={formData.requirementType}
-                                        onSelectionChange={handleRequirementType}
-                                        listboxProps={{
-                                            emptyContent: "Tipo de Requerimiento no encontrada",
-                                        }}
-                                    >
-                                        <AutocompleteItem key="Identificación Estatal">Identificación Estatal</AutocompleteItem>
-                                        <AutocompleteItem key="Identificación Federal">Identificación Federal</AutocompleteItem>
-                                        <AutocompleteItem key="Identificación Local">Identificación Local</AutocompleteItem>
-                                        <AutocompleteItem key="Requerimiento Compuesto">Requerimiento Compuesto</AutocompleteItem>
-                                        <AutocompleteItem key="Requerimiento Compuesto e Identificación">Requerimiento Compuesto e Identificación</AutocompleteItem>
-                                        <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
-                                        <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
-                                    </Autocomplete>
-                                    {requirementTypeError && (
-                                        <p className="mt-2 text-sm text-red">
-                                            {requirementTypeError}
-                                        </p>
-                                    )}
-                                </div>
+                                        <Autocomplete
+                                            size="sm"
+                                            variant="bordered"
+                                            label="Periodicidad"
+                                            selectedKey={formData.periodicity}
+                                            onSelectionChange={handlePeriodicityChange}
+                                            listboxProps={{
+                                                emptyContent: "Periodicidad no encontrada",
+                                            }}
+                                        >
+                                            <AutocompleteItem key="Anual">Anual</AutocompleteItem>
+                                            <AutocompleteItem key="2 años">2 años</AutocompleteItem>
+                                            <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
+                                            <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                                            <AutocompleteItem key="Específica">Específica</AutocompleteItem>
+                                        </Autocomplete>
+                                        {periodicityError && (
+                                            <p className="mt-2 text-sm text-red">
+                                                {periodicityError}
+                                            </p>
+                                        )}
+                                    </div>
                                 <div className="w-full mt-4">
                                     <Button
                                         type="submit"
@@ -755,14 +713,11 @@ CreateModal.propTypes = {
         handlSpecifyEvidenceChange: PropTypes.func.isRequired,
         periodicityError: PropTypes.string,
         handlePeriodicityChange: PropTypes.func.isRequired,
-        requirementTypeError: PropTypes.string,
-        handleRequirementType: PropTypes.func.isRequired,
         setConditionError: PropTypes.func.isRequired,
         setEvidenceError: PropTypes.func.isRequired,
         setPeriodicityError: PropTypes.func.isRequired,
         specifyEvidenceError: PropTypes.string,
         setSpecifyEvidenceError: PropTypes.func.isRequired,
-        setRequirementTypeError: PropTypes.func.isRequired,
         subjects: PropTypes.array.isRequired,
         subjectInputError: PropTypes.string,
         setSubjectError: PropTypes.func.isRequired,

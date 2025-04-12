@@ -21,8 +21,6 @@ import server from "../../config/server.js";
  * @param {string} params.evidence - The type of evidence required.
  * @param {string} params.specifyEvidence - The type of specify Evidence required.
  * @param {string} params.periodicity - The periodicity of the requirement.
- * @param {string} params.specifyPeriodicity - The specify periodicity of the requirement.
- * @param {string} params.requirementType - The type of requirement.
  * @param {string} params.token - The authorization token.
  * @returns {Promise<Object>} - The created requirement data returned from the server.
  * @throws {Error} - If the response status is not 201 or if there is an error with the request.
@@ -42,8 +40,6 @@ export default async function createRequirement({
   evidence,
   specifyEvidence,
   periodicity,
-  specifyPeriodicity,
-  requirementType,
   token,
 }) {
   try {
@@ -61,9 +57,7 @@ export default async function createRequirement({
       condition,
       evidence,
       specifyEvidence,
-      periodicity,
-      specifyPeriodicity,
-      requirementType,
+      periodicity
     };
 
     const response = await server.post("/requirements", data, {

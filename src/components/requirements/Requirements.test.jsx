@@ -19,7 +19,6 @@ describe("Requirement Component", () => {
         id: 1,
         requirement_name: "Ley General",
         requirement_number: "REQ-001",
-        requirement_type: "Identificación Federal",
         subject: { subject_name: "Fiscal" },
         aspects: [{ aspect_name: "Aspecto A" }],
         evidence: "Trámite",
@@ -38,7 +37,6 @@ describe("Requirement Component", () => {
         id: 2,
         requirement_name: "Reglamento Ambiental",
         requirement_number: "REQ-002",
-        requirement_type: "Requerimiento Estatal",
         subject: { subject_name: "Ambiental" },
         aspects: [{ aspect_name: "Aspecto B" }],
         evidence: "Específica",
@@ -63,7 +61,6 @@ describe("Requirement Component", () => {
     fetchRequirementsByCondition: vi.fn(),
     fetchRequirementsByEvidence: vi.fn(),
     fetchRequirementsByPeriodicity: vi.fn(),
-    fetchRequirementsByType: vi.fn(),
     fetchRequirementsBySubject: vi.fn(),
     fetchRequirementsBySubjectAndAspects: vi.fn(),
     fetchRequirementsByMandatoryDescription: vi.fn(),
@@ -110,7 +107,6 @@ describe("Requirement Component", () => {
     expect(screen.getByText("Periodicidad")).toBeInTheDocument();
     expect(screen.getByText("Materia")).toBeInTheDocument();
     expect(screen.getByText("Aspectos")).toBeInTheDocument();
-    expect(screen.getByText("Tipo")).toBeInTheDocument();
   });
 
   test("renders requirement data correctly in the table", () => {

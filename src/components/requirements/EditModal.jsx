@@ -46,6 +46,9 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.evidenceError - Error message for the "Evidence" dropdown.
  * @param {Function} props.config.setEvidenceError - Setter for "Evidence" field error.
  * @param {Function} props.config.handleEvidenceChange - Change handler for the "Evidence" dropdown.
+ * @param {string|null} props.config.specifyEvidenceError - Error message for the "Specify Evidence" input field (shown when evidence is set to "Específica").
+ * @param {Function} props.config.setSpecifyEvidenceError - Setter function for the "Specify Evidence" input error.
+ * @param {Function} props.config.handlSpecifyEvidenceChange - Handler for changes in the "Specify Evidence" input field.
  * @param {string|null} props.config.periodicityError - Error message for the "Periodicity" dropdown.
  * @param {Function} props.config.setPeriodicityError - Setter for "Periodicity" field error.
  * @param {Function} props.config.handlePeriodicityChange - Change handler for the "Periodicity" dropdown.
@@ -55,9 +58,6 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.aspectError - Error message for the "Aspect" dropdown.
  * @param {Function} props.config.setAspectInputError - Setter for "Aspect" field error.
  * @param {Function} props.config.handleAspectsChange - Change handler for the "Aspect" dropdown.
- * @param {string|null} props.config.requirementTypeError - Error message for the "Requirement Type" dropdown.
- * @param {Function} props.config.setRequirementTypeError - Setter for "Requirement Type" field error.
- * @param {Function} props.config.handleRequirementType - Change handler for the "Requirement Type" dropdown.
  * @param {string|null} props.config.mandatoryDescriptionError - Error for the "Mandatory Description" textarea.
  * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" error.
  * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for "Mandatory Description" textarea.
@@ -119,9 +119,6 @@ const EditModal = ({ config }) => {
     aspectError,
     setAspectInputError,
     handleAspectsChange,
-    requirementTypeError,
-    setRequirementTypeError,
-    handleRequirementType,
     mandatoryDescriptionError,
     setMandatoryDescriptionError,
     handleMandatoryDescriptionChange,
@@ -167,7 +164,6 @@ const EditModal = ({ config }) => {
         aspects: selectedRequirement.aspects?.map((aspect) =>
           aspect.aspect_id.toString()
         ),
-        requirementType: selectedRequirement.requirement_type,
         mandatoryDescription: selectedRequirement.mandatory_description,
         complementaryDescription: selectedRequirement.complementary_description,
         mandatorySentences: selectedRequirement.mandatory_sentences,
@@ -242,15 +238,7 @@ const EditModal = ({ config }) => {
       } else {
         setSpecifyEvidenceError(null);
       }
-      if (formData.periodicity === "") {
-        setPeriodicityError("Debes seleccionar una periodicidad.");
-        setIsLoading(false);
-        return;
-      } else {
-        setPeriodicityError(null);
-      }
       
-
       if (formData.subject === "") {
         setSubjectError("Debes seleccionar una materia.");
         setIsLoading(false);
@@ -266,12 +254,13 @@ const EditModal = ({ config }) => {
       } else {
         setAspectInputError(null);
       }
-      if (formData.requirementType === "") {
-        setRequirementTypeError("Debes seleccionar un tipo de requerimiento.");
+
+      if (formData.periodicity === "") {
+        setPeriodicityError("Debes seleccionar una periodicidad.");
         setIsLoading(false);
         return;
       } else {
-        setRequirementTypeError(null);
+        setPeriodicityError(null);
       }
       setIsLoading(false);
       setStep(2);
@@ -332,7 +321,6 @@ const EditModal = ({ config }) => {
         evidence: formData.evidence,
         specifyEvidence: formData.specifyEvidence,
         periodicity: formData.periodicity,
-        requirementType: formData.requirementType,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
         mandatoryDescription: formData.mandatoryDescription,
@@ -491,31 +479,6 @@ const EditModal = ({ config }) => {
                     )}
                   </div>
 
-                  <div className="w-full">
-                    <Autocomplete
-                      size="sm"
-                      variant="bordered"
-                      label="Periodicidad"
-                      selectedKey={formData.periodicity}
-                      onSelectionChange={handlePeriodicityChange}
-                      listboxProps={{
-                        emptyContent: "Periodicidad no encontrada",
-                      }}
-                    >
-                      <AutocompleteItem key="Anual">Anual</AutocompleteItem>
-                      <AutocompleteItem key="2 años">2 años</AutocompleteItem>
-                      <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
-                      <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
-                      <AutocompleteItem key="Específica">Específica</AutocompleteItem>
-                    </Autocomplete>
-                    {periodicityError && (
-                      <p className="mt-2 text-sm text-red">
-                        {periodicityError}
-                      </p>
-                    )}
-                  </div>
-
-
                   {(formData.evidence === "Específica" || formData.specifyEvidence) && (
                     <div className="relative z-0 w-full group">
                       <input
@@ -602,31 +565,28 @@ const EditModal = ({ config }) => {
                   </div>
                 </div>
                 <div className="w-full mt-4">
-                  <Autocomplete
-                    size="sm"
-                    variant="bordered"
-                    className="w-full py-2"
-                    label="Tipo de Requerimiento"
-                    selectedKey={formData.requirementType}
-                    onSelectionChange={handleRequirementType}
-                    listboxProps={{
-                      emptyContent: "Tipo de Requerimiento no encontrada",
-                    }}
-                  >
-                    <AutocompleteItem key="Identificación Estatal">Identificación Estatal</AutocompleteItem>
-                    <AutocompleteItem key="Identificación Federal">Identificación Federal</AutocompleteItem>
-                    <AutocompleteItem key="Identificación Local">Identificación Local</AutocompleteItem>
-                    <AutocompleteItem key="Requerimiento Compuesto">Requerimiento Compuesto</AutocompleteItem>
-                    <AutocompleteItem key="Requerimiento Compuesto e Identificación">Requerimiento Compuesto e Identificación</AutocompleteItem>
-                    <AutocompleteItem key="Requerimiento Estatal">Requerimiento Estatal</AutocompleteItem>
-                    <AutocompleteItem key="Requerimiento Local">Requerimiento Local</AutocompleteItem>
-                  </Autocomplete>
-                  {requirementTypeError && (
-                    <p className="mt-2 text-sm text-red">
-                      {requirementTypeError}
-                    </p>
-                  )}
-                </div>
+                    <Autocomplete
+                      size="sm"
+                      variant="bordered"
+                      label="Periodicidad"
+                      selectedKey={formData.periodicity}
+                      onSelectionChange={handlePeriodicityChange}
+                      listboxProps={{
+                        emptyContent: "Periodicidad no encontrada",
+                      }}
+                    >
+                      <AutocompleteItem key="Anual">Anual</AutocompleteItem>
+                      <AutocompleteItem key="2 años">2 años</AutocompleteItem>
+                      <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
+                      <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                      <AutocompleteItem key="Específica">Específica</AutocompleteItem>
+                    </Autocomplete>
+                    {periodicityError && (
+                      <p className="mt-2 text-sm text-red">
+                        {periodicityError}
+                      </p>
+                    )}
+                  </div>
                 <div className="w-full mt-4">
                   <Button
                     type="submit"
@@ -818,10 +778,6 @@ EditModal.propTypes = {
     aspectError: PropTypes.string,
     setAspectInputError: PropTypes.func.isRequired,
     handleAspectsChange: PropTypes.func.isRequired,
-
-    requirementTypeError: PropTypes.string,
-    setRequirementTypeError: PropTypes.func.isRequired,
-    handleRequirementType: PropTypes.func.isRequired,
 
     mandatoryDescriptionError: PropTypes.string,
     setMandatoryDescriptionError: PropTypes.func.isRequired,

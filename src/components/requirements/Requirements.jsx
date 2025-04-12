@@ -33,7 +33,6 @@ const columns = [
   { name: "Periodicidad", uid: "periodicity", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
   { name: "Aspectos", uid: "aspects", align: "start" },
-  { name: "Tipo", uid: "requirement_type", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -66,7 +65,6 @@ export default function Requirement() {
     fetchRequirementsByCondition,
     fetchRequirementsByEvidence,
     fetchRequirementsByPeriodicity,
-    fetchRequirementsByType,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsBySubject,
     fetchRequirementsBySubjectAndAspects,
@@ -99,7 +97,6 @@ export default function Requirement() {
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [selectedPeriodicity, setSelectedPeriodicity] = useState(null);
-  const [selectedRequirementType, setSelectedRequirementType] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAspects, setSelectedAspects] = useState([]);
   const [filterByMandatoryDescription, setFilterByMandatoryDescription] = useState("");
@@ -120,7 +117,6 @@ export default function Requirement() {
   const [evidenceInputError, setEvidenceInputError] = useState("");
   const [periodicityInputError, setPeriodicityInputError] = useState("");
   const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState ("");
-  const [requirementTypeInputError, setRequirementTypeInputError] = useState("");
   const [subjectInputError, setSubjectInputError] = useState("");
   const [aspectInputError, setAspectInputError] = useState(null);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
@@ -141,8 +137,6 @@ export default function Requirement() {
     evidence: "",
     specifyEvidence: "",
     periodicity: "",
-    specifyPeriodicity: "",
-    requirementType: "",
     subject: "",
     aspects: [],
     mandatoryDescription: "",
@@ -166,7 +160,6 @@ export default function Requirement() {
     setSelectedCondition(null);
     setSelectedEvidence(null);
     setSelectedPeriodicity(null);
-    setSelectedRequirementType(null);
     setFilterByMandatoryDescription("");
     setFilterByComplementaryDescription("");
     setFilterByMandatorySentences("");
@@ -213,9 +206,6 @@ export default function Requirement() {
           case "periodicity":
             await fetchRequirementsByPeriodicity(value);
             break;
-          case "requirementType":
-            await fetchRequirementsByType(value);
-            break;
           case "subject":
             await fetchRequirementsBySubject(value);
             await fetchAspects(value);
@@ -255,7 +245,6 @@ export default function Requirement() {
       fetchRequirementsByCondition,
       fetchRequirementsByEvidence,
       fetchRequirementsByPeriodicity,
-      fetchRequirementsByType,
       fetchRequirementsBySubject,
       fetchAspects,
       fetchRequirementsBySubjectAndAspects,
@@ -285,7 +274,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       resetSubjectAndAspects();
       handleFilter("number", value);
     },
@@ -313,7 +301,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       resetSubjectAndAspects();
       handleFilter("name", value);
     },
@@ -341,7 +328,6 @@ export default function Requirement() {
       setSelectedCondition(condition);
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       resetSubjectAndAspects();
       handleFilter("condition", condition);
     },
@@ -365,7 +351,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence(evidence);
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       resetSubjectAndAspects();
       handleFilter("evidence", evidence);
     },
@@ -389,42 +374,11 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity(periodicity);
-      setSelectedRequirementType("");
       resetSubjectAndAspects();
       handleFilter("periodicity", periodicity);
     },
     [handleFilter, handleClear, resetSubjectAndAspects]
   );
-
-  const handleFilterByRequirementType = useCallback(
-    (requirementType) => {
-      if (!requirementType) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType(requirementType);
-      resetSubjectAndAspects();
-      handleFilter("requirementType", requirementType);
-    },
-    [handleFilter, handleClear, resetSubjectAndAspects]
-  );
-
-
-
-
-
-
 
   const handleFilterBySubject = useCallback(
     (selectedId) => {
@@ -470,7 +424,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
@@ -494,7 +447,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByMandatoryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
@@ -519,7 +471,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByComplementarySentences("");
@@ -543,7 +494,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
@@ -567,7 +517,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
@@ -591,7 +540,6 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
@@ -613,8 +561,6 @@ export default function Requirement() {
       evidence: "",
       specifyEvidence: "", 
       periodicity: "",
-      specifyPeriodicity: "", 
-      requirementType: "",
       subject: "",
       aspects: [],
       mandatoryDescription: "",
@@ -634,7 +580,6 @@ export default function Requirement() {
     setConditionInputError("");
     setEvidenceInputError("");
     setPeriodicityInputError("");
-    setRequirementTypeInputError("");
     setSubjectInputError(null);
     setAspectInputError(null);
     setIsAspectsActive(false);
@@ -660,7 +605,6 @@ export default function Requirement() {
     setConditionInputError("");
     setEvidenceInputError("");
     setPeriodicityInputError("");
-    setRequirementTypeInputError("");
     setSubjectInputError(null);
     setAspectInputError(null);
     setIsAspectsActive(false);
@@ -764,21 +708,6 @@ export default function Requirement() {
     [periodicityInputError, setFormData, setPeriodicityInputError]
   );
 
-  const handleRequirementType = useCallback(
-
-    (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        requirementType: value,
-      }));
-      if (requirementTypeInputError && value.trim() !== "") {
-        setRequirementTypeInputError(null);
-      }
-    },
-    [requirementTypeInputError, setFormData, setRequirementTypeInputError]
-  );
-
-  
   const handleSubjectChange = useCallback(
     async (value) => {
       if (!value) {
@@ -1006,11 +935,11 @@ export default function Requirement() {
       </div>
     );
   }
-  if (error) return <Error title={error.title} message={error.message} />;
-  if (subjectError)
-    return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
-    return <Error title={aspectError.title} message={aspectError.message} />;
+  // if (error) return <Error title={error.title} message={error.message} />;
+  // if (subjectError)
+  //   return <Error title={subjectError.title} message={subjectError.message} />;
+  // if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+  //   return <Error title={aspectError.title} message={aspectError.message} />;
 
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
@@ -1040,9 +969,7 @@ export default function Requirement() {
           onFilterByEvidence: handleFilterByEvidence,
           selectedPeriodicity: selectedPeriodicity,
           onFilterByPeriodicity: handleFilterByPeriodicity,
-          selectedRequirementType: selectedRequirementType,
           onFilterByMandatoryDescription: handleFilterByMandatoryDescription,
-          onFilterByRequirementType: handleFilterByRequirementType,
           filterByMandatoryDescription: filterByMandatoryDescription,
           filterByComplementaryDescription: filterByComplementaryDescription,
           onFilterByComplementaryDescription: handleFilterByComplementaryDescription,
@@ -1169,9 +1096,6 @@ export default function Requirement() {
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
               handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
               specifyEvidence: formData.specifyEvidence,
-              requirementTypeError: requirementTypeInputError,
-              setRequirementTypeError: setRequirementTypeInputError,
-              handleRequirementType: handleRequirementType,
               fetchRequirements: fetchRequirements,
               subjects: subjects,
               subjectInputError: subjectInputError,
@@ -1233,9 +1157,6 @@ export default function Requirement() {
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
               handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
               specifyEvidence: formData.specifyEvidence,
-              requirementTypeError: requirementTypeInputError,
-              setRequirementTypeError: setRequirementTypeInputError,
-              handleRequirementType: handleRequirementType,
               subjects: subjects,
               subjectInputError: subjectInputError,
               setSubjectError: setSubjectInputError,

@@ -19,8 +19,6 @@ const baseMockConfig = {
   onFilterByEvidence: vi.fn(),
   selectedPeriodicity: "",
   onFilterByPeriodicity: vi.fn(),
-  selectedRequirementType: "",
-  onFilterByRequirementType: vi.fn(),
   filterByMandatoryDescription: "",
   onFilterByMandatoryDescription: vi.fn(),
   filterByComplementaryDescription: "",
@@ -113,13 +111,6 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.onFilterByPeriodicity).toHaveBeenCalled();
   });
 
-  test("calls onFilterByRequirementType when type is selected", async () => {
-    render(<TopContent config={baseMockConfig} />);
-    const combo = screen.getByPlaceholderText("Buscar por tipo de requerimiento...");
-    fireEvent.keyDown(combo, { key: "ArrowDown" });
-    fireEvent.click(await screen.findByText("Requerimiento Estatal"));
-    expect(baseMockConfig.onFilterByRequirementType).toHaveBeenCalled();
-  });
 
   test("calls onFilterBySubject when a subject is selected", async () => {
     render(<TopContent config={baseMockConfig} />);

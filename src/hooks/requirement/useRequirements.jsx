@@ -9,7 +9,6 @@ import getRequirementsBySubject from "../../services/requirementService/getRequi
 import getRequirementsBySubjectAndAspects from "../../services/requirementService/getRequirementsBySubjectAndAspects";
 import getRequirementsByComplementaryDescription from "../../services/requirementService/getRequirementsByComplementaryDescription";
 import getRequirementsByComplementaryKeywords from "../../services/requirementService/getRequirementsByComplementaryKeywords";
-import getRequirementsByType from "../../services/requirementService/ getRequirementsByType"
 import getRequirementsByComplementarySentences from "../../services/requirementService/getRequirementsByComplementarySentences";
 import getRequirementsByCondition from "../../services/requirementService/getRequirementsByCondition";
 import getRequirementsByEvidence from "../../services/requirementService/getRequirementsByEvidence";
@@ -51,7 +50,6 @@ export default function useRequirement() {
   * @param {string} params.condition - Requirement condition ('Critical', 'Operational', 'Recommendation', 'Pending').
   * @param {string} params.evidence - Type of evidence required ('Procedure', 'Record', 'Specific', 'Document').
   * @param {string} params.periodicity - Periodicity ('Annual', '2 years', 'Per event', 'One-time').
-  * @param {string} params.requirementType - Type of requirement.
   * @returns {Promise<Object>} - Result of the operation with `success` and `data` or `error`.
   */
   const addRequirement = useCallback(
@@ -69,8 +67,7 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity,
-      requirementType,
+      periodicity
     }) => {
       try {
         const newRequirement = await createRequirement({
@@ -88,7 +85,6 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
-          requirementType,
           token: jwt,
         });
         setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
@@ -308,44 +304,6 @@ export default function useRequirement() {
     },
     [jwt]
   );
-  /**
- * Fetches the list of Requirements by Complementary Description.
- * @async
- * @function fetchRequirementsByType
- * @param {string} requirementType - The complementary description of the requirement.
- * @returns {Promise<void>} - Updates the requirements list and loading state.
- */
-
-  const fetchRequirementsByType = useCallback(
-    async (requirementType) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByType({
-          requirementType,
-          token: jwt
-        });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError,
-        });
-      }
-    },
-    [jwt]
-  );
-
-
-
 
   /**
    * Fetches the list of Requirements by Complementary Description.
@@ -637,7 +595,6 @@ export default function useRequirement() {
   * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
   * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
   * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
-  * @param {string} [params.requirementType] - The new type of requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
   * @throws {Object} - Returns an error message if the update fails.
   */
@@ -657,8 +614,7 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity,
-      requirementType,
+      periodicity
     }) => {
       try {
         const requirement = await updateRequirement({
@@ -677,7 +633,6 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
-          requirementType,
           token: jwt,
         });
         setRequirements((prevRequirements) =>
@@ -770,7 +725,6 @@ export default function useRequirement() {
     fetchRequirementsBySubjectAndAspects,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsByEvidence,
-    fetchRequirementsByType,
     fetchRequirementsByComplementaryDescription,
     fetchRequirementsByComplementaryKeywords,
     fetchRequirementsByComplementarySentences,

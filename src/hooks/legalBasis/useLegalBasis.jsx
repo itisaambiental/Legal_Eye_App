@@ -11,7 +11,7 @@ import getLegalBasisByState from "../../services/legalBaseService/getLegalBasisB
 import getLegalBasisByStateAndMunicipalities from "../../services/legalBaseService/getLegalBasisByStateAndMunicipalities";
 import getLegalBasisBySubject from "../../services/legalBaseService/getLegalBasisBySubject";
 import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/getLegalBasisBySubjectAndAspects";
-import getLegalBasisBySubjectAndFilters from "../../services/legalBaseService/getLegalBasisBySubjectAndFilters";
+import getLegalBasisByCriteria from "../../services/legalBaseService/getLegalBasisByCriteria";
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
@@ -446,45 +446,48 @@ export default function useLegalBasis() {
   );
 
   /**
- * Fetches legal basis records filtered by subject, aspects, jurisdiction, state, and municipalities.
- * @async
- * @function fetchLegalBasisBySubjectAndFilters
- * @param {Object} params - Filtering options.
- * @param {number} params.subjectId - Subject ID (required).
- * @param {Array<number>} [params.aspectIds] - Optional aspect IDs.
- * @param {string} [params.jurisdiction] - Optional jurisdiction: 'Federal', 'Estatal', 'Local'.
- * @param {string} [params.state] - Optional state name.
- * @param {Array<string>} [params.municipalities] - Optional municipalities.
- * @returns {Promise<void>} Updates the legalBasis state and handles loading/error.
- */
-const fetchLegalBasisBySubjectAndFilters = useCallback(
-  async ({ subjectId, aspectIds, jurisdiction, state, municipalities }) => {
-    setStateLegalBasis({ loading: true, error: null });
-    try {
-      const legalBasis = await getLegalBasisBySubjectAndFilters({
-        subjectId,
-        aspectIds,
-        jurisdiction,
-        state,
-        municipalities,
-        token: jwt,
-      });
-      setLegalBasis(legalBasis.reverse());
-      setStateLegalBasis({ loading: false, error: null });
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = LegalBasisErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-      });
-      setStateLegalBasis({ loading: false, error: handledError });
-    }
-  },
-  [jwt]
-);
+   * Fetches legal basis by dynamic filters.
+   * @async
+   * @function fetchLegalBasisByCriteria
+   * @param {Object} params - Filtering options.
+   * @param {string} [params.jurisdiction] - Optional jurisdiction: 'Federal', 'Estatal', 'Local'.
+   * @param {string} [params.state] - Optional state name.
+   * @param {Array<string>} [params.municipalities] - Optional municipalities.
+   * @param {number} [params.subjectId] - Optional subject ID.
+   * @param {Array<number>} [params.aspectIds] - Optional aspect IDs.
+   * @returns {Promise<void>} Updates the legalBasis state and handles loading/error.
+   */
+  const fetchLegalBasisByCriteria = useCallback(
+    async ({ jurisdiction, state, municipalities, subjectId, aspectIds }) => {
+      setStateLegalBasis({ loading: true, error: null });
+      try {
+        const legalBasis = await getLegalBasisByCriteria({
+          jurisdiction,
+          state,
+          municipalities,
+          subjectId,
+          aspectIds,
+          token: jwt,
+        });
+        setLegalBasis(legalBasis.reverse());
+        setStateLegalBasis({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+
+        setStateLegalBasis({ loading: false, error: handledError });
+      }
+    },
+    [jwt]
+  );
+
 
   /**
    * Fetches legal basis records filtered by a date range and updates the state.
@@ -525,84 +528,84 @@ const fetchLegalBasisBySubjectAndFilters = useCallback(
     [jwt]
   );
 
- /**
- * Updates an existing Legal Basis by ID.
- * @async
- * @function modifyLegalBasis
- * @param {Object} params - The data to update an existing Legal Base.
- * @param {string} params.id - The ID of the legal basis to update.
- * @param {string} [params.legalName] - The new legal name (optional).
- * @param {string} [params.abbreviation] - The new abbreviation (optional).
- * @param {string} [params.subjectId] - The new subject ID (optional).
- * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
- * @param {string} [params.classification] - The new classification (optional).
- * @param {string} [params.jurisdiction] - The new jurisdiction (optional).
- * @param {string} [params.state] - The new state (optional).
- * @param {string} [params.municipality] - The new municipality (optional).
- * @param {string} [params.lastReform] - The last reform date (optional).
- * @param {boolean} [params.extractArticles] - Whether to extract articles from the document.
- * @param {string} [params.intelligenceLevel] - Intelligence level ("High" or "Low") for article extraction.
- * @param {boolean} [params.removeDocument] - Flag to indicate whether to remove the document (optional).
- * @param {File|null} [params.document] - The new document file (optional).
- * @returns {Promise<Object>} - Result of the operation with success status and updated Legal Base or error message.
- * @throws {Object} - Returns an error message if the update fails.
- */
-const modifyLegalBasis = useCallback(
-  async ({
-    id,
-    legalName,
-    abbreviation,
-    subjectId,
-    aspectsIds,
-    classification,
-    jurisdiction,
-    state,
-    municipality,
-    lastReform,
-    extractArticles,
-    intelligenceLevel,
-    removeDocument,
-    document,
-  }) => {
-    try {
-      const { jobId, legalBasis } = await updateLegalBasis({
-        id,
-        legalName,
-        abbreviation,
-        subjectId,
-        aspectsIds,
-        classification,
-        jurisdiction,
-        state,
-        municipality,
-        lastReform,
-        extractArticles,
-        intelligenceLevel,
-        removeDocument,
-        document,
-        token: jwt,
-      });
-      setLegalBasis((prevLegalBases) =>
-        prevLegalBases.map((prevLegalBasis) =>
-          prevLegalBasis.id === legalBasis.id ? legalBasis : prevLegalBasis
-        )
-      );
-      return { success: true, jobId, legalBasis };
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const handledError = LegalBasisErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-        items: [id],
-      });
-      return { success: false, error: handledError.message };
-    }
-  },
-  [jwt]
-);
+  /**
+  * Updates an existing Legal Basis by ID.
+  * @async
+  * @function modifyLegalBasis
+  * @param {Object} params - The data to update an existing Legal Base.
+  * @param {string} params.id - The ID of the legal basis to update.
+  * @param {string} [params.legalName] - The new legal name (optional).
+  * @param {string} [params.abbreviation] - The new abbreviation (optional).
+  * @param {string} [params.subjectId] - The new subject ID (optional).
+  * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
+  * @param {string} [params.classification] - The new classification (optional).
+  * @param {string} [params.jurisdiction] - The new jurisdiction (optional).
+  * @param {string} [params.state] - The new state (optional).
+  * @param {string} [params.municipality] - The new municipality (optional).
+  * @param {string} [params.lastReform] - The last reform date (optional).
+  * @param {boolean} [params.extractArticles] - Whether to extract articles from the document.
+  * @param {string} [params.intelligenceLevel] - Intelligence level ("High" or "Low") for article extraction.
+  * @param {boolean} [params.removeDocument] - Flag to indicate whether to remove the document (optional).
+  * @param {File|null} [params.document] - The new document file (optional).
+  * @returns {Promise<Object>} - Result of the operation with success status and updated Legal Base or error message.
+  * @throws {Object} - Returns an error message if the update fails.
+  */
+  const modifyLegalBasis = useCallback(
+    async ({
+      id,
+      legalName,
+      abbreviation,
+      subjectId,
+      aspectsIds,
+      classification,
+      jurisdiction,
+      state,
+      municipality,
+      lastReform,
+      extractArticles,
+      intelligenceLevel,
+      removeDocument,
+      document,
+    }) => {
+      try {
+        const { jobId, legalBasis } = await updateLegalBasis({
+          id,
+          legalName,
+          abbreviation,
+          subjectId,
+          aspectsIds,
+          classification,
+          jurisdiction,
+          state,
+          municipality,
+          lastReform,
+          extractArticles,
+          intelligenceLevel,
+          removeDocument,
+          document,
+          token: jwt,
+        });
+        setLegalBasis((prevLegalBases) =>
+          prevLegalBases.map((prevLegalBasis) =>
+            prevLegalBasis.id === legalBasis.id ? legalBasis : prevLegalBasis
+          )
+        );
+        return { success: true, jobId, legalBasis };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [id],
+        });
+        return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
 
   /**
    * Deletes an existing legal basis by ID.
@@ -694,7 +697,7 @@ const modifyLegalBasis = useCallback(
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
-    fetchLegalBasisBySubjectAndFilters,
+    fetchLegalBasisByCriteria,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,

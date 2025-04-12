@@ -70,7 +70,7 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
-    fetchLegalBasisBySubjectAndFilters,
+    fetchLegalBasisByCriteria,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,
@@ -1021,12 +1021,12 @@ export default function LegalBasis() {
   if (error) return <Error title={error.title} message={error.message} />;
   if (subjectError)
     return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
   if (errorStates)
     return <Error title={errorStates.title} message={errorStates.message} />;
 
-  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
+  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen) {
     return (
       <Error
         title={errorMunicipalities.title}
@@ -1040,6 +1040,7 @@ export default function LegalBasis() {
         config={{
           isCreateModalOpen: isCreateModalOpen,
           isEditModalOpen: isEditModalOpen,
+          isFilterModalOpen: isFilterModalOpen,
           openFilterModal: openFilterModal,
           onRowsPerPageChange: onRowsPerPageChange,
           totalLegalBasis: legalBasis.length,
@@ -1319,42 +1320,30 @@ export default function LegalBasis() {
       {isFilterModalOpen && (
         <FilterModal
           config={{
-            formData: formData,
-            getLegalBasisBySubjectAndFilters: fetchLegalBasisBySubjectAndFilters,
-            isOpen: openFilterModal,
-            onClose: closeFilterModal,
-            jurisdictionError: jurisdictionInputError,
-            setJurisdictionError: setJurisdictionInputError,
-            handleJurisdictionChange: handleJurisdictionChange,
-            states: states,
-            stateError: stateInputError,
-            setStateError: setStateInputError,
-            isStateActive: isStateActive,
-            handleStateChange: handleStateChange,
-            clearMunicipalities: clearMunicipalities,
-            municipalities: municipalities,
-            municipalityError: municipalityInputError,
-            setMunicipalityError: setMunicipalityInputError,
-            isMunicipalityActive: isMunicipalityActive,
-            loadingMunicipalities: loadingMunicipalities,
-            errorMunicipalities: errorMunicipalities,
-            handleMunicipalityChange: handleMunicipalityChange,
-            subjects: subjects,
-            subjectInputError: subjectInputError,
-            setSubjectError: setSubjectInputError,
-            handleSubjectChange: handleSubjectChange,
             aspects: aspects,
-            aspectError: aspectInputError,
-            setAspectInputError: setAspectInputError,
-            isAspectsActive: isAspectsActive,
             aspectsLoading: aspectsLoading,
+            clearMunicipalities: clearMunicipalities,
             errorAspects: aspectError,
+            errorMunicipalities: errorMunicipalities,
+            fetchLegalBasisByCriteria: fetchLegalBasisByCriteria,
+            formData: formData,
             handleAspectsChange: handleAspectsChange,
+            handleJurisdictionChange: handleJurisdictionChange,
+            handleMunicipalityChange: handleMunicipalityChange,
+            handleStateChange: handleStateChange,
+            handleSubjectChange: handleSubjectChange,
+            isAspectsActive: isAspectsActive,
+            isMunicipalityActive: isMunicipalityActive,
+            isOpen: openFilterModal,
+            isStateActive: isStateActive,
+            loadingMunicipalities: loadingMunicipalities,
+            municipalities: municipalities,
+            onClose: closeFilterModal,
+            states: states,
+            subjects: subjects
           }}
         />
       )}
-
-
     </div>
   );
 }

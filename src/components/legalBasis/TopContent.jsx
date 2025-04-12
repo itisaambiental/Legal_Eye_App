@@ -10,6 +10,7 @@ import {
   DateRangePicker,
 } from "@heroui/react";
 import search_icon from "../../assets/busqueda_blue.png";
+import search_icon_white from "../../assets/busqueda.png";
 import mas_icon from "../../assets/mas.png";
 import { I18nProvider } from "@react-aria/i18n";
 
@@ -25,6 +26,7 @@ import { I18nProvider } from "@react-aria/i18n";
  * @param {Object} props.config - Configuration object for the component.
  * @param {boolean} props.config.isCreateModalOpen - Indicates whether the create modal is open.
  * @param {boolean} props.config.isEditModalOpen - Indicates whether the edit modal is open.
+ * @param {boolean} props.config.isFilterModalOpen - Indicates whether the filter modal is open.
  * @param {Function} props.config.onRowsPerPageChange - Callback to handle changes in rows per page.
  * @param {number} props.config.totalLegalBasis - Total number of legal basis entries.
  * @param {Function} props.config.openModalCreate - Function to open the create modal.
@@ -65,6 +67,7 @@ function TopContent({ config }) {
   const {
     isCreateModalOpen,
     isEditModalOpen,
+    isFilterModalOpen,
     onRowsPerPageChange,
     totalLegalBasis,
     openModalCreate,
@@ -265,7 +268,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen
+                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
@@ -309,7 +312,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-                aspectsLoading && !isCreateModalOpen && !isEditModalOpen
+                aspectsLoading && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedAspects}
@@ -385,6 +388,13 @@ function TopContent({ config }) {
           <Button
             className="bg-secondary text-white"
             onPress={openFilterModal}
+            endContent={
+              <img
+                src={search_icon_white}
+                alt="Add Icon"
+                className="w-4 h-4 flex-shrink-0"
+              />
+            }
           >
             Búsqueda Avanzada
           </Button>
@@ -399,6 +409,7 @@ TopContent.propTypes = {
   config: PropTypes.shape({
     isCreateModalOpen: PropTypes.bool.isRequired,
     isEditModalOpen: PropTypes.bool.isRequired,
+    isFilterModalOpen: PropTypes.bool.isRequired,
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalLegalBasis: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,

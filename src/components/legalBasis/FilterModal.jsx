@@ -13,35 +13,58 @@ import {
   Tooltip,
 } from "@heroui/react";
 
+/**
+ * FilterModal component
+ *
+ * This component renders a modal for advanced filtering of legal basis entries.
+ * It allows filtering by jurisdiction, state, municipality, subject, and aspects.
+ *
+ * @component
+ * @param {Object} props - Component properties.
+ * @param {Object} props.config - Configuration object for the modal.
+ * @param {Object} props.config.formData - Form state containing selected filter values.
+ * @param {Function} props.config.fetchLegalBasisByCriteria - Function to trigger filtered request.
+ * @param {boolean} props.config.isOpen - Indicates if the modal is open.
+ * @param {Function} props.config.onClose - Function to close the modal.
+ * @param {Function} props.config.handleJurisdictionChange - Callback for jurisdiction selection.
+ * @param {Array<string>} props.config.states - List of available states.
+ * @param {boolean} props.config.isStateActive - Whether the state selector is enabled.
+ * @param {Function} props.config.handleStateChange - Callback for state selection.
+ * @param {Function} props.config.clearMunicipalities - Clears selected municipalities when state changes.
+ * @param {Array<string>} props.config.municipalities - List of available municipalities.
+ * @param {boolean} props.config.isMunicipalityActive - Whether the municipality selector is enabled.
+ * @param {boolean} props.config.loadingMunicipalities - Indicates if municipalities are loading.
+ * @param {Object} [props.config.errorMunicipalities] - Error object for municipality loading.
+ * @param {Function} props.config.handleMunicipalityChange - Callback for municipality selection.
+ * @param {Array<Object>} props.config.subjects - List of available subjects.
+ * @param {Function} props.config.handleSubjectChange - Callback for subject selection.
+ * @param {Array<Object>} props.config.aspects - List of available aspects.
+ * @param {boolean} props.config.isAspectsActive - Whether the aspect selector is enabled.
+ * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
+ * @param {Object} [props.config.errorAspects] - Error object for aspects loading.
+ * @param {Function} props.config.handleAspectsChange - Callback for aspects selection.
+ *
+ * @returns {JSX.Element} Rendered modal for advanced filtering.
+ */
 export default function FilterModal({ config }) {
   const {
     formData,
-    getLegalBasisBySubjectAndFilters,
+    fetchLegalBasisByCriteria,
     isOpen,
     onClose,
-    jurisdictionError,
-    setJurisdictionError,
     handleJurisdictionChange,
     states,
-    stateError,
-    setStateError,
     isStateActive,
     handleStateChange,
     clearMunicipalities,
     municipalities,
-    municipalityError,
-    setMunicipalityError,
     isMunicipalityActive,
     loadingMunicipalities,
     errorMunicipalities,
     handleMunicipalityChange,
     subjects,
-    subjectInputError,
-    setSubjectError,
     handleSubjectChange,
     aspects,
-    aspectError,
-    setAspectInputError,
     isAspectsActive,
     aspectsLoading,
     errorAspects,
@@ -75,53 +98,6 @@ export default function FilterModal({ config }) {
   };
 
   const handleFilter = async () => {
-
-    if (formData.jurisdiction === "") {
-      setJurisdictionError("Este campo es obligatorio");
-      return;
-    } else {
-      setJurisdictionError(null);
-    }
-
-    if (formData.jurisdiction === "Estatal") {
-      if (formData.state === "") {
-        setStateError(
-          "Este campo es obligatorio para la jurisdicción Estatal."
-        );
-        return;
-      } else {
-        setStateError(null);
-      }
-    }
-
-    if (formData.jurisdiction === "Local") {
-      if (formData.state === "") {
-        setStateError("Este campo es obligatorio para la jurisdicción Local.");
-        return;
-      } else {
-        setStateError(null);
-      }
-      if (formData.municipality === "") {
-        setMunicipalityError(
-          "Este campo es obligatorio para la jurisdicción Local."
-        );
-        return;
-      } else {
-        setMunicipalityError(null);
-      }
-    }
-    if (formData.subject === "") {
-      setSubjectError("Este campo es obligatorio");
-      return;
-    } else {
-      setSubjectError(null);
-    }
-    if (!formData.aspects || formData.aspects.length === 0) {
-      setAspectInputError("Debes seleccionar al menos un aspecto");
-      return;
-    } else {
-      setAspectInputError(null);
-    }
     const filterData = {
       subjectId: formData.subject,
       aspectsIds: formData.aspects,
@@ -129,13 +105,9 @@ export default function FilterModal({ config }) {
       state: formData.state,
       municipality: formData.municipality,
     };
-    await getLegalBasisBySubjectAndFilters(
-      filterData
-    );
+    fetchLegalBasisByCriteria(filterData);
     onClose()
   };
-
-
 
   return (
     <Modal
@@ -162,11 +134,6 @@ export default function FilterModal({ config }) {
               <AutocompleteItem key="Estatal">Estatal</AutocompleteItem>
               <AutocompleteItem key="Local">Local</AutocompleteItem>
             </Autocomplete>
-            {jurisdictionError && (
-              <p className="mt-2 text-sm text-red">
-                {jurisdictionError}
-              </p>
-            )}
           </div>
           <div className="w-full">
             <Tooltip
@@ -197,9 +164,6 @@ export default function FilterModal({ config }) {
                     </AutocompleteItem>
                   )}
                 </Autocomplete>
-                {stateError && (
-                  <p className="mt-2 text-sm text-red">{stateError}</p>
-                )}
               </div>
             </Tooltip>
           </div>
@@ -244,11 +208,6 @@ export default function FilterModal({ config }) {
                 {errorMunicipalities.message}
               </p>
             )}
-            {!errorMunicipalities && municipalityError && (
-              <p className="mt-2 text-sm text-red">
-                {municipalityError}
-              </p>
-            )}
           </div>
           <div className="w-full">
             <Autocomplete
@@ -268,11 +227,6 @@ export default function FilterModal({ config }) {
                 </AutocompleteItem>
               )}
             </Autocomplete>
-            {subjectInputError && (
-              <p className="mt-2 text-sm text-red">
-                {subjectInputError}
-              </p>
-            )}
           </div>
           <div className="w-full">
             <Tooltip
@@ -302,14 +256,10 @@ export default function FilterModal({ config }) {
                 </Select>
               </div>
             </Tooltip>
-
             {errorAspects && (
               <p className="mt-2 text-sm text-red">
                 {errorAspects.message}
               </p>
-            )}
-            {!errorAspects && aspectError && (
-              <p className="mt-2 text-sm text-red">{aspectError}</p>
             )}
           </div>
         </ModalBody>
@@ -326,36 +276,35 @@ export default function FilterModal({ config }) {
   );
 }
 
-
 FilterModal.propTypes = {
   config: PropTypes.shape({
     formData: PropTypes.object.isRequired,
     getLegalBasisBySubjectAndFilters: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    jurisdictionError: PropTypes.string,
-    setJurisdictionError: PropTypes.func.isRequired,
     handleJurisdictionChange: PropTypes.func.isRequired,
-    states: PropTypes.array.isRequired,
-    stateError: PropTypes.string,
-    setStateError: PropTypes.func.isRequired,
+    states: PropTypes.arrayOf(PropTypes.string).isRequired,
     isStateActive: PropTypes.bool.isRequired,
     handleStateChange: PropTypes.func.isRequired,
     clearMunicipalities: PropTypes.func.isRequired,
-    municipalities: PropTypes.array.isRequired,
-    municipalityError: PropTypes.string,
-    setMunicipalityError: PropTypes.func.isRequired,
+    municipalities: PropTypes.arrayOf(PropTypes.string).isRequired,
     isMunicipalityActive: PropTypes.bool.isRequired,
     loadingMunicipalities: PropTypes.bool.isRequired,
     errorMunicipalities: PropTypes.object,
     handleMunicipalityChange: PropTypes.func.isRequired,
-    subjects: PropTypes.array.isRequired,
-    subjectInputError: PropTypes.string,
-    setSubjectError: PropTypes.func.isRequired,
+    subjects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        subject_name: PropTypes.string,
+      })
+    ).isRequired,
     handleSubjectChange: PropTypes.func.isRequired,
-    aspects: PropTypes.array.isRequired,
-    aspectError: PropTypes.string,
-    setAspectInputError: PropTypes.func.isRequired,
+    aspects: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        aspect_name: PropTypes.string,
+      })
+    ).isRequired,
     isAspectsActive: PropTypes.bool.isRequired,
     aspectsLoading: PropTypes.bool.isRequired,
     errorAspects: PropTypes.object,

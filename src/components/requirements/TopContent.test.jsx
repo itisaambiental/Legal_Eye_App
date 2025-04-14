@@ -55,9 +55,9 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.onRowsPerPageChange).toHaveBeenCalled();
   });
 
-  test("calls openModalCreate when 'Nueva Requerimiento' is clicked", () => {
+  test("calls openModalCreate when 'Nuevo Requerimiento' is clicked", () => {
     render(<TopContent config={baseMockConfig} />);
-    fireEvent.click(screen.getByText("Nueva Requerimiento"));
+    fireEvent.click(screen.getByText("Nuevo Requerimiento"));
     expect(baseMockConfig.openModalCreate).toHaveBeenCalled();
   });
 

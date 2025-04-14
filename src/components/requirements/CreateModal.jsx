@@ -316,7 +316,8 @@ const CreateModal = ({ config }) => {
         <Modal
             isOpen={isOpen}
             onClose={closeModalCreate}
-            className="w-[60vw] max-w-4xl"
+            placement="center"
+            className="w-full sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-4xl"
             classNames={{
                 closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
             }}

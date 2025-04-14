@@ -112,10 +112,14 @@ export default function FilterModal({ config }) {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
-      size="xl"
+      onOpenChange={onClose}
+      backdrop="opaque"
+      placement="center"
       isDismissable={false}
-      className="z-[200]">
+      classNames={{
+        closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
+      }}
+    >
       <ModalContent>
         <ModalHeader>Búsqueda Avanzada</ModalHeader>
         <ModalBody className="flex flex-col gap-4">
@@ -279,7 +283,7 @@ export default function FilterModal({ config }) {
 FilterModal.propTypes = {
   config: PropTypes.shape({
     formData: PropTypes.object.isRequired,
-    getLegalBasisBySubjectAndFilters: PropTypes.func.isRequired,
+    fetchLegalBasisByCriteria: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     handleJurisdictionChange: PropTypes.func.isRequired,

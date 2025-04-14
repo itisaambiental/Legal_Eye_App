@@ -87,7 +87,7 @@ function TopContent({ config }) {
     aspects,
     aspectsLoading,
     selectedAspects,
-    onFilterByAspects,    
+    onFilterByAspects,
     filterByComplementaryDescription,
     filterByMandatoryDescription,
     onFilterByMandatoryDescription,
@@ -124,9 +124,9 @@ function TopContent({ config }) {
           className="w-full"
           placeholder="Buscar por Requerimiento..."
           startContent={
-            <img 
-              src={search_icon} 
-              alt="Search Icon" 
+            <img
+              src={search_icon}
+              alt="Search Icon"
               className="w-4 h-4 flex-shrink-0"
             />}
           onClear={onClear}
@@ -188,7 +188,7 @@ function TopContent({ config }) {
           <AutocompleteItem key="Específica">Específica</AutocompleteItem>
         </Autocomplete>
         <Autocomplete
-          color="primary"  
+          color="primary"
           variant="faded"
           defaultItems={subjects}
           isLoading={subjectLoading}
@@ -223,12 +223,12 @@ function TopContent({ config }) {
           className="w-full"
           placeholder="Buscar por descripción obligatoria..."
           startContent={
-          <img 
-          src={search_icon} 
-          alt="Search Icon" 
-          className="w-4 h-4 flex-shrink-0" 
-          />
-        }
+            <img
+              src={search_icon}
+              alt="Search Icon"
+              className="w-4 h-4 flex-shrink-0"
+            />
+          }
           onClear={onClear}
           onValueChange={onFilterByMandatoryDescription}
         />
@@ -240,11 +240,11 @@ function TopContent({ config }) {
           className="w-full"
           placeholder="Buscar por descripción complementaria..."
           startContent={
-          <img 
-          src={search_icon} 
-          alt="Search Icon" 
-          className="w-4 h-4" 
-          />}
+            <img
+              src={search_icon}
+              alt="Search Icon"
+              className="w-4 h-4"
+            />}
           onClear={onClear}
           onValueChange={onFilterByComplementaryDescription}
         />
@@ -307,14 +307,14 @@ function TopContent({ config }) {
                   : `${selected.length} aspecto${selected.length > 1 ? "s" : ""
                   } seleccionado${selected.length > 1 ? "s" : ""}`
               }
-           >
-            {(aspect) => (
-              <SelectItem key={aspect.id} value={aspect.id}>
-                {aspect.aspect_name}
+            >
+              {(aspect) => (
+                <SelectItem key={aspect.id} value={aspect.id}>
+                  {aspect.aspect_name}
                 </SelectItem>
               )}
-              </Select>
-            </div>
+            </Select>
+          </div>
         </Tooltip>
 
         <Input
@@ -346,7 +346,7 @@ function TopContent({ config }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <span className="text-default-400">Requerimientos totales: {totalRequirements}</span>
 
-        <div className="flex items-center gap-4 w-full sm:w-auto sm:ml-auto">
+        <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto sm:ml-auto">
           <label className="flex items-center text-default-400 gap-2">
             Filas por página:
             <select className="bg-transparent outline-none text-default-400" onChange={onRowsPerPageChange}>
@@ -359,10 +359,12 @@ function TopContent({ config }) {
           <Button
             color="primary"
             onPress={openModalCreate}
+            className="w-full sm:w-auto"
             endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4" />}
           >
-            Nueva Requerimiento
+            Nuevo Requerimiento
           </Button>
+
         </div>
       </div>
     </div>
@@ -372,7 +374,7 @@ function TopContent({ config }) {
 TopContent.propTypes = {
   config: PropTypes.shape({
     isCreateModalOpen: PropTypes.bool.isRequired,
-    isEditModalOpen: PropTypes.bool.isRequired, 
+    isEditModalOpen: PropTypes.bool.isRequired,
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalRequirements: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
@@ -413,7 +415,7 @@ TopContent.propTypes = {
         aspect_name: PropTypes.string.isRequired,
       })
     ).isRequired,
-    selectedAspects: PropTypes.arrayOf(PropTypes.string), 
+    selectedAspects: PropTypes.arrayOf(PropTypes.string),
     aspectsLoading: PropTypes.bool.isRequired,
     onFilterByAspects: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,

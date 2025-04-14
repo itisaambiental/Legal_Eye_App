@@ -360,8 +360,8 @@ function TopContent({ config }) {
         <span className="text-default-400">
           Fundamentos totales: {totalLegalBasis}
         </span>
-        <div className="flex items-center gap-4 w-full sm:w-auto sm:ml-auto">
-          <label className="flex items-center text-default-400 gap-2">
+        <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto sm:ml-auto">
+          <label className="flex items-center text-default-400 gap-2 min-w-[150px]">
             Filas por página:
             <select
               className="bg-transparent outline-none text-default-400"
@@ -382,23 +382,23 @@ function TopContent({ config }) {
                 className="w-4 h-4 flex-shrink-0"
               />
             }
+            className="w-full sm:w-auto"
           >
             Nuevo Fundamento
           </Button>
           <Button
-            className="bg-secondary text-white"
+            className="bg-secondary text-white w-full sm:w-auto"
             onPress={openFilterModal}
             endContent={
               <img
                 src={search_icon_white}
-                alt="Add Icon"
+                alt="Search Icon"
                 className="w-4 h-4 flex-shrink-0"
               />
             }
           >
             Búsqueda Avanzada
           </Button>
-
         </div>
       </div>
     </div>

@@ -36,6 +36,7 @@ describe("LegalBasis Component", () => {
         fetchLegalBasisByLastReform: vi.fn(),
         fetchLegalBasisBySubject: vi.fn(),
         fetchLegalBasisBySubjectAndAspects: vi.fn(),
+        fetchLegalBasisByCriteria: vi.fn(),
         modifyLegalBasis: vi.fn(),
         removeLegalBasis: vi.fn(),
         removeLegalBasisBatch: vi.fn(),

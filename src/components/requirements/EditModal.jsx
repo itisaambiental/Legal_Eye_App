@@ -238,7 +238,7 @@ const EditModal = ({ config }) => {
       } else {
         setSpecifyEvidenceError(null);
       }
-      
+
       if (formData.subject === "") {
         setSubjectError("Debes seleccionar una materia.");
         setIsLoading(false);
@@ -363,7 +363,7 @@ const EditModal = ({ config }) => {
       backdrop="opaque"
       placement="center"
       isDismissable={false}
-      className="w-[60vw] max-w-2xl"
+      className="w-full sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-4xl"
       classNames={{
         closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
       }}
@@ -565,28 +565,28 @@ const EditModal = ({ config }) => {
                   </div>
                 </div>
                 <div className="w-full mt-4">
-                    <Autocomplete
-                      size="sm"
-                      variant="bordered"
-                      label="Periodicidad"
-                      selectedKey={formData.periodicity}
-                      onSelectionChange={handlePeriodicityChange}
-                      listboxProps={{
-                        emptyContent: "Periodicidad no encontrada",
-                      }}
-                    >
-                      <AutocompleteItem key="Anual">Anual</AutocompleteItem>
-                      <AutocompleteItem key="2 años">2 años</AutocompleteItem>
-                      <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
-                      <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
-                      <AutocompleteItem key="Específica">Específica</AutocompleteItem>
-                    </Autocomplete>
-                    {periodicityError && (
-                      <p className="mt-2 text-sm text-red">
-                        {periodicityError}
-                      </p>
-                    )}
-                  </div>
+                  <Autocomplete
+                    size="sm"
+                    variant="bordered"
+                    label="Periodicidad"
+                    selectedKey={formData.periodicity}
+                    onSelectionChange={handlePeriodicityChange}
+                    listboxProps={{
+                      emptyContent: "Periodicidad no encontrada",
+                    }}
+                  >
+                    <AutocompleteItem key="Anual">Anual</AutocompleteItem>
+                    <AutocompleteItem key="2 años">2 años</AutocompleteItem>
+                    <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
+                    <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                    <AutocompleteItem key="Específica">Específica</AutocompleteItem>
+                  </Autocomplete>
+                  {periodicityError && (
+                    <p className="mt-2 text-sm text-red">
+                      {periodicityError}
+                    </p>
+                  )}
+                </div>
                 <div className="w-full mt-4">
                   <Button
                     type="submit"

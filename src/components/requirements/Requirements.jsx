@@ -935,11 +935,12 @@ export default function Requirement() {
       </div>
     );
   }
-  // if (error) return <Error title={error.title} message={error.message} />;
-  // if (subjectError)
-  //   return <Error title={subjectError.title} message={subjectError.message} />;
-  // if (aspectError && !isCreateModalOpen && !isEditModalOpen)
-  //   return <Error title={aspectError.title} message={aspectError.message} />;
+  
+  if (error) return <Error title={error.title} message={error.message} />;
+  if (subjectError)
+    return <Error title={subjectError.title} message={subjectError.message} />;
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+    return <Error title={aspectError.title} message={aspectError.message} />;
 
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">

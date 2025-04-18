@@ -75,17 +75,15 @@ function CreateModal({ config }) {
     } else {
       setOrderError(null);
     }
-    if (!formData.abbreviation.trim()) {
-      setAbbreviationError("Este campo es obligatorio");
-      setIsLoading(false);
-      return;
-    } else if (formData.abbreviation.length > 10) {
+    
+    if (formData.abbreviation?.trim().length > 10) {
       setAbbreviationError("La abreviatura no puede tener más de 10 caracteres.");
       setIsLoading(false);
       return;
     } else {
       setAbbreviationError(null);
-    }
+    }    
+
     if (!formData.name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);

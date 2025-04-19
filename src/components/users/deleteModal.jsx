@@ -116,6 +116,7 @@ function DeleteModal({ config }) {
               <Button
                 onPress={handleDeleteBatch}
                 color="primary"
+                isDisabled={isDeletingBatch}
                 className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 mr-3"
                 auto
               >

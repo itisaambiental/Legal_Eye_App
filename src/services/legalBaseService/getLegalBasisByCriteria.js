@@ -20,7 +20,7 @@ import server from "../../config/server.js";
 export default async function getLegalBasisByCriteria({
   jurisdiction = "",
   state = "",
-  municipalities = [],
+  municipality = "",
   subjectId,
   aspectIds = [],
   token,
@@ -33,7 +33,7 @@ export default async function getLegalBasisByCriteria({
       params: {
         jurisdiction,
         state,
-        municipalities,
+        municipality,
         subjectId,
         aspectIds,
       },

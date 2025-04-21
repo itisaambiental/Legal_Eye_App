@@ -100,7 +100,7 @@ export default function FilterModal({ config }) {
   const handleFilter = async () => {
     const filterData = {
       subjectId: formData.subject,
-      aspectsIds: formData.aspects,
+      aspectIds: formData.aspects,
       jurisdiction: formData.jurisdiction,
       state: formData.state,
       municipality: formData.municipality,

@@ -458,13 +458,13 @@ export default function useLegalBasis() {
    * @returns {Promise<void>} Updates the legalBasis state and handles loading/error.
    */
   const fetchLegalBasisByCriteria = useCallback(
-    async ({ jurisdiction, state, municipalities, subjectId, aspectIds }) => {
+    async ({ jurisdiction, state, municipality, subjectId, aspectIds }) => {
       setStateLegalBasis({ loading: true, error: null });
       try {
         const legalBasis = await getLegalBasisByCriteria({
           jurisdiction,
           state,
-          municipalities,
+          municipality,
           subjectId,
           aspectIds,
           token: jwt,

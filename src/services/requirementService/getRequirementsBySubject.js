@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @async
  * @function getRequirementsBySubject
  * @param {Object} params - Parameters for the request.
- * @param {string} params.subjectId - The ID of the subject to filter by.
+ * @param {number} params.subjectId - The ID of the subject to filter by.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Array<Object>>} - A list of requirements filtered by subject.

@@ -7,8 +7,8 @@ import server from "../../config/server.js";
  * @async
  * @function getRequirementsBySubjectAndAspects
  * @param {Object} params - Parameters for the request.
- * @param {string} params.subjectId - The ID of the subject to filter by.
- * @param {Array<string>} [params.aspectIds] - Optional array of aspect IDs to further filter the requirements.
+ * @param {number} params.subjectId - The ID of the subject to filter by.
+ * @param {Array<number>} [params.aspectsIds] - Optional array of aspect IDs to further filter the requirements.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Array<Object>>} - A list of requirements filtered by subject and optionally by aspects.
@@ -16,7 +16,7 @@ import server from "../../config/server.js";
  */
 export default async function getRequirementsBySubjectAndAspects({
   subjectId,
-  aspectIds,
+  aspectsIds,
   token,
 }) {
   try {
@@ -27,7 +27,7 @@ export default async function getRequirementsBySubjectAndAspects({
           Authorization: `Bearer ${token}`,
         },
         params: {
-          aspectIds: aspectIds,
+          aspectIds: aspectsIds,
         },
       }
     );

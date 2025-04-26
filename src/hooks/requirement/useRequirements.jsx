@@ -320,7 +320,7 @@ export default function useRequirement() {
           description: complementaryDescription,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -349,7 +349,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByComplementaryKeywords({ keyword: complementaryKeywords, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -381,7 +381,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByComplementarySentences({ sentence: complementarySentences, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -470,7 +470,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatoryDescription({ description: mandatoryDescription, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -499,7 +499,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatoryKeywords({ keyword: mandatoryKeywords, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -528,7 +528,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatorySentences({ sentence: mandatorySentences, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;

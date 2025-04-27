@@ -38,6 +38,7 @@ const LegalBasisCell = ({
   goToArticles,
   handleDelete,
   handleDownloadDocument,
+  openSendModalFromRow,
 }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
@@ -195,6 +196,7 @@ const LegalBasisCell = ({
                   className="hover:bg-primary/20"
                   key="send"
                   textValue="Enviar Fundamento"
+                  onPress={() => openSendModalFromRow(legalBase.id)}
                 >
                   <p className="font-normal text-primary">Enviar Fundamento</p>
                 </DropdownItem>
@@ -208,7 +210,7 @@ const LegalBasisCell = ({
                     />
                   }
                   className="hover:bg-primary/20"
-                  key="send"
+                  key="send-requirements"
                   textValue="Identificar Requerimientos"
                 >
                   <p className="font-normal text-primary">Identificar Requerimientos</p>
@@ -260,6 +262,7 @@ const LegalBasisCell = ({
     goToArticles,
     handleDelete,
     handleDownloadDocument,
+    openSendModalFromRow,
   ]);
 
   return renderCell();

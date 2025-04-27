@@ -24,6 +24,7 @@ import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
+import SendModal from "./sendModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import trash_icon from "../../assets/papelera-mas.png";
@@ -140,6 +141,8 @@ export default function LegalBasis() {
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [isSendingBatch, setIsSendingBatch] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
@@ -896,6 +899,12 @@ export default function LegalBasis() {
 
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
+  const openSendModal = () => setShowSendModal(true);
+  const closeSendModal = () => setShowSendModal(false);
+  const openSendModalFromRow = (id) => {
+    setSelectedKeys(new Set([id]));
+    setShowSendModal(true);          
+  };  
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -946,6 +955,10 @@ export default function LegalBasis() {
     },
     [removeLegalBasis]
   );
+
+  const handleSendBatch = async () => {
+    return { success: true };
+  };
 
   const handleDownloadDocument = async (url, fileName) => {
     if (!url) {
@@ -1117,6 +1130,7 @@ export default function LegalBasis() {
                         goToArticles={goToArticles}
                         handleDelete={handleDelete}
                         handleDownloadDocument={handleDownloadDocument}
+                        openSendModalFromRow={openSendModalFromRow}
                       />
                     </TableCell>
                   )}
@@ -1155,6 +1169,7 @@ export default function LegalBasis() {
                   size="sm"
                   className="absolute left-24 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
                   aria-label="Enviar a ACM Suite"
+                  onPress={openSendModal}
                 >
                   <img src={send_icon} alt="send" className="w-5 h-5" />
                 </Button>
@@ -1312,6 +1327,21 @@ export default function LegalBasis() {
             selectedKeys: selectedKeys,
             legalBasis: legalBasis,
             deleteLegalBasisBatch: removeLegalBasisBatch,
+            setSelectedKeys: setSelectedKeys,
+            check: check,
+          }}
+        />
+      )}
+      {showSendModal && (
+        <SendModal
+          config={{
+            showSendModal: showSendModal,
+            closeSendModal: closeSendModal,
+            setIsSendingBatch: setIsSendingBatch,
+            isSendingBatch: isSendingBatch,
+            selectedKeys: selectedKeys,
+            items: legalBasis,
+            sendItemsBatch: handleSendBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,
           }}

@@ -94,6 +94,7 @@ function DeleteModal({ config }) {
       onOpenChange={closeDeleteModal}
       backdrop="opaque"
       placement="center"
+      isDismissable={false} 
       classNames={{
         closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
       }}

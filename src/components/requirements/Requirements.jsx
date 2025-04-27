@@ -160,6 +160,8 @@ export default function Requirement() {
     setSelectedCondition(null);
     setSelectedEvidence(null);
     setSelectedPeriodicity(null);
+    setSelectedSubject(null);
+    setSelectedAspects([]);
     setFilterByMandatoryDescription("");
     setFilterByComplementaryDescription("");
     setFilterByMandatorySentences("");

@@ -5,11 +5,8 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Button,
-    Spinner,
+    Button
 } from "@heroui/react";
-import { useCallback } from "react";
-import { toast } from "react-toastify";
 
 /**
  * SendModal component
@@ -38,55 +35,8 @@ function SendModal({ config }) {
     const {
         showSendModal,
         closeSendModal,
-        setIsSendingBatch,
-        isSendingBatch,
         selectedKeys,
-        items,
-        sendItemsBatch,
-        setSelectedKeys,
-        check,
     } = config;
-
-    const handleSendBatch = useCallback(async () => {
-        setIsSendingBatch(true);
-        const itemIds =
-            selectedKeys === "all"
-                ? items.map((item) => item.id)
-                : Array.from(selectedKeys).map((id) => Number(id));
-        try {
-            const { success, error } = await sendItemsBatch(itemIds);
-            if (success) {
-                toast.info(
-                    itemIds.length <= 1
-                        ? "Fundamento legal enviado con éxito"
-                        : "Fundamentos legales enviados con éxito",
-                    {
-                        icon: () => <img src={check} alt="Success Icon" />,
-                        progressStyle: { background: "#113c53" },
-                    }
-                );
-                setSelectedKeys(new Set());
-                closeSendModal();
-            } else {
-                toast.error(error);
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error(
-                "Algo salió mal al enviar los fundamentos legales. Intente de nuevo."
-            );
-        } finally {
-            setIsSendingBatch(false);
-        }
-    }, [
-        selectedKeys,
-        sendItemsBatch,
-        items,
-        setIsSendingBatch,
-        setSelectedKeys,
-        closeSendModal,
-        check,
-    ]);
 
     return (
         <Modal
@@ -117,17 +67,11 @@ function SendModal({ config }) {
                         </ModalBody>
                         <ModalFooter className="flex justify-center">
                             <Button
-                                onPress={handleSendBatch}
                                 color="primary"
-                                isDisabled={isSendingBatch}
                                 className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 mr-3"
                                 auto
                             >
-                                {isSendingBatch ? (
-                                    <Spinner size="sm" color="white" />
-                                ) : (
-                                    "Sí, enviar"
-                                )}
+                                Sí, enviar
                             </Button>
                             <Button
                                 onPress={closeSendModal}
@@ -150,16 +94,10 @@ SendModal.propTypes = {
     config: PropTypes.shape({
         showSendModal: PropTypes.bool.isRequired,
         closeSendModal: PropTypes.func.isRequired,
-        setIsSendingBatch: PropTypes.func.isRequired,
-        isSendingBatch: PropTypes.bool.isRequired,
         selectedKeys: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.instanceOf(Set),
         ]).isRequired,
-        items: PropTypes.array.isRequired,
-        sendItemsBatch: PropTypes.func.isRequired,
-        setSelectedKeys: PropTypes.func.isRequired,
-        check: PropTypes.string.isRequired,
     }).isRequired,
 };
 

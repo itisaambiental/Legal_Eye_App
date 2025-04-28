@@ -141,19 +141,19 @@ export class SendLegalBasisStatus {
       value,
       {
         [SendLegalBasisStatus.WAITING]:
-          "El envió de fundamentos legalos comenzará en un momento.",
+          "El envió de fundamentos legales comenzará en un momento.",
         [SendLegalBasisStatus.ACTIVE]:
-          "El envió de fundamentos legalos está en curso...",
+          "El envió de fundamentos legales está en curso...",
         [SendLegalBasisStatus.COMPLETED]:
-          "El envió de fundamentos legalos se completó con éxito.",
+          "El envió de fundamentos legales se completó con éxito.",
         [SendLegalBasisStatus.DELAYED]:
-          "El envió de fundamentos legalos está retrasado y se procesará más tarde.",
+          "El envió de fundamentos legales está retrasado y se procesará más tarde.",
         [SendLegalBasisStatus.PAUSED]:
-          "El envió de fundamentos legalos está en pausa. Comuníquese con los administradores del sistema para continuar.",
+          "El envió de fundamentos legales está en pausa. Comuníquese con los administradores del sistema para continuar.",
         [SendLegalBasisStatus.STUCK]:
-          "El envió de fundamentos legalos está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
+          "El envió de fundamentos legales está atascado y no puede continuar. Comuníquese con los administradores del sistema.",
         [SendLegalBasisStatus.UNKNOWN]:
-          "El envió de fundamentos legalos está en un estado desconocido. Comuníquese con los administradores del sistema.",
+          "El envió de fundamentos legales está en un estado desconocido. Comuníquese con los administradores del sistema.",
       }[value],
     ])
   );

@@ -13,10 +13,12 @@ import getLegalBasisBySubject from "../../services/legalBaseService/getLegalBasi
 import getLegalBasisBySubjectAndAspects from "../../services/legalBaseService/getLegalBasisBySubjectAndAspects";
 import getLegalBasisByCriteria from "../../services/legalBaseService/getLegalBasisByCriteria";
 import getLegalBasisByLastReform from "../../services/legalBaseService/getLegalBasisByLastReform";
+import sendLegalBasisService from "../../services/legalBaseService/sendLegalBasis/sendLegalBasis";
 import updateLegalBasis from "../../services/legalBaseService/updateLegalBasis";
 import deleteLegalBasis from "../../services/legalBaseService/deleteLegalBasis";
 import deleteLegalBasisBatch from "../../services/legalBaseService/deleteLegalBasisBatch";
 import LegalBasisErrors from "../../errors/legalBasis/LegalBasisErrors";
+
 
 /**
  * Custom hook for managing LegalBasis and performing CRUD operations.
@@ -529,6 +531,39 @@ export default function useLegalBasis() {
   );
 
   /**
+ * Sends selected Legal Basis entries to ACM Suite by sending their IDs.
+ * @async
+ * @function sendLegalBasis
+ * @param {Object} params - The data to send selected legal basis.
+ * @param {Array<number>} params.legalBasisIds - Array of Legal Basis IDs to send.
+ * @returns {Object} - Result of the sending process including success status and any errors.
+ */
+  const sendLegalBasis = useCallback(
+    async ({ legalBasisIds }) => {
+      try {
+        const { jobId } = await sendLegalBasisService({
+          legalBasisIds,
+          token: jwt,
+        });
+
+        return { success: true, jobId };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = LegalBasisErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: legalBasisIds,
+        });
+        return { success: false, error: handledError.message };
+      }
+    },
+    [jwt]
+  );
+
+  /**
   * Updates an existing Legal Basis by ID.
   * @async
   * @function modifyLegalBasis
@@ -698,6 +733,7 @@ export default function useLegalBasis() {
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
     fetchLegalBasisByCriteria,
+    sendLegalBasis,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,

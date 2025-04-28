@@ -72,6 +72,7 @@ export default function LegalBasis() {
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
     fetchLegalBasisByCriteria,
+    sendLegalBasis,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,
@@ -142,7 +143,6 @@ export default function LegalBasis() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
-  const [isSendingBatch, setIsSendingBatch] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
@@ -956,10 +956,6 @@ export default function LegalBasis() {
     [removeLegalBasis]
   );
 
-  const handleSendBatch = async () => {
-    return { success: true };
-  };
-
   const handleDownloadDocument = async (url, fileName) => {
     if (!url) {
       toast.error("No hay Documento disponible para este fundamento.");
@@ -1337,11 +1333,8 @@ export default function LegalBasis() {
           config={{
             showSendModal: showSendModal,
             closeSendModal: closeSendModal,
-            setIsSendingBatch: setIsSendingBatch,
-            isSendingBatch: isSendingBatch,
+            sendLegalBasis: sendLegalBasis,
             selectedKeys: selectedKeys,
-            items: legalBasis,
-            sendItemsBatch: handleSendBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,
           }}

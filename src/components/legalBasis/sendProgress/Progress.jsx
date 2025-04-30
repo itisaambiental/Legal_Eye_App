@@ -12,7 +12,7 @@ import Alerts from "./Alerts.jsx";
 import useSendLegalBasis from "../../../hooks/legalBasis/useSendLegalBasis.jsx";
 
 /**
- * Progress component to track and manage the state of a job.
+ * Progress component to track and manage the state of a job..
  *
  * @component
  * @param {Object} props - The properties passed to the component.

@@ -105,8 +105,6 @@ describe("Progress Component (Legal Basis)", () => {
         labelButton="Reintentar"
       />
     );
-
-    // Forzamos un error para activar el efecto de limpieza
     mockHookValues.error = { title: "Error", message: "Falló el envío" };
     rerender(
       <Progress
@@ -118,9 +116,7 @@ describe("Progress Component (Legal Basis)", () => {
       />
     );
 
-    expect(mockHookValues.cleanjobStatus).not.toHaveBeenCalled(); // La función no se llama sola
-    expect(mockHookValues.clearError).not.toHaveBeenCalled(); // Solo se llama al hacer retry desde Alerts
-
-    // El resto del efecto ya es cubierto por la integración con Alerts + onRetry
+    expect(mockHookValues.cleanjobStatus).not.toHaveBeenCalled();
+    expect(mockHookValues.clearError).not.toHaveBeenCalled(); 
   });
 });

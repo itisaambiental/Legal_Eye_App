@@ -99,7 +99,7 @@ describe("Alerts Component", () => {
 
     expect(screen.getByText("Error general")).toBeInTheDocument();
     expect(screen.getByText("Ha ocurrido un error inesperado.")).toBeInTheDocument();
-    
+
     fireEvent.click(screen.getByText("Reintentar"));
     expect(mockProps.onRetry).toHaveBeenCalled();
   });
@@ -116,7 +116,7 @@ describe("Alerts Component", () => {
     render(<Alerts {...mockProps} />);
 
     expect(screen.getByText("Proceso en ejecución")).toBeInTheDocument();
-    
+
     fireEvent.click(screen.getByText("Cancelar"));
     expect(mockProps.onCancel).toHaveBeenCalled();
   });

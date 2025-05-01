@@ -133,6 +133,7 @@ function DeleteModal({ config }) {
                 onPress={closeDeleteModal}
                 color="default"
                 variant="light"
+                isDisabled={isDeletingBatch}
                 className="py-2.5 px-5 text-sm font-medium text-primary bg-white rounded-lg border border-gray-200 hover:bg-primary/10 hover:text-primary"
                 auto
               >

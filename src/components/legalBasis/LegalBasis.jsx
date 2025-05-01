@@ -901,10 +901,12 @@ export default function LegalBasis() {
   const closeDeleteModal = () => setShowDeleteModal(false);
   const openSendModal = () => setShowSendModal(true);
   const closeSendModal = () => setShowSendModal(false);
+
   const openSendModalFromRow = (id) => {
     setSelectedKeys(new Set([id]));
     setShowSendModal(true);          
-  };  
+  };
+    
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));

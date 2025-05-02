@@ -40,6 +40,7 @@ function DescriptionModal({ isOpen, onClose, title, description }) {
             <ModalBody>
               <ScrollShadow
                 isEnabled={false}
+                hideScrollBar
                 orientation="vertical"
                 className="max-h-[500px]"
               >

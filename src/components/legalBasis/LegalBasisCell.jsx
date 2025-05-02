@@ -13,7 +13,7 @@ import watch_icon from "../../assets/ver.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
 import send_icon from "../../assets/enviar_blue.png";
-import think_icon_blue from "../../assets/cerebroBlue.png";
+import think_icon_blue from "../../assets/ia-blue.png";
 /**
  * LegalBasisCell component
  *

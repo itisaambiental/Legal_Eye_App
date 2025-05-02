@@ -95,6 +95,7 @@ function SendModal({ config }) {
             onOpenChange={onClose}
             backdrop="opaque"
             placement="center"
+            hideCloseButton={true}
             isDismissable={!showProgress}
             isKeyboardDismissDisabled={showProgress}
             classNames={{

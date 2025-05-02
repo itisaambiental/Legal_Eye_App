@@ -9,9 +9,10 @@ import left_arrow_icon from "../assets/flecha_izquierda.png";
 import users from "../assets/users.png";
 import legal_basis_icon from "../assets/fundamento-legal.png";
 import requirement_icon from "../assets/requirement.png"
-import think_icon from "../assets/cerebro.png";
+import think_icon from "../assets/ia.png";
 import materias_icon from "../assets/materias.png";
-import requerimentType from '../assets/requerimentType.png'
+import replace from "../assets/remplazar.png";
+import requerimentType from '../assets/tipos.png'
 import user from "../assets/usuario.png";
 import {
   Dropdown,
@@ -217,6 +218,28 @@ function Dashboard() {
             </li>
             <li>
               <Link
+                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+              >
+                <img
+                  src={requerimentType}
+                  className="flex-shrink-0 w-5 h-5 transition duration-75"
+                />
+                <span className="ms-3 font-medium">Tipos de Requerimiento</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+              >
+                <img
+                  src={replace}
+                  className="flex-shrink-0 w-5 h-5 transition duration-75"
+                />
+                <span className="ms-3 font-medium">Verbos Legales</span>
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/requirements"
                 className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
                   /\/requirements(\/\d+\/articles)?$/.test(location.pathname)
@@ -225,7 +248,7 @@ function Dashboard() {
                 }`}
               >
                 <img
-                  src={think_icon}
+                  src={requirement_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
                 <span className="ms-3 font-medium"> Instrucciones de Análisis</span>
@@ -236,21 +259,10 @@ function Dashboard() {
                 className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
               >
                 <img
-                  src={requirement_icon}
+                  src={think_icon}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"
                 />
                 <span className="ms-3 font-medium">Requerimiento Legales</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
-              >
-                <img
-                  src={requerimentType}
-                  className="flex-shrink-0 w-5 h-5 transition duration-75"
-                />
-                <span className="ms-3 font-medium">Tipos de Requerimiento</span>
               </Link>
             </li>
             <li>

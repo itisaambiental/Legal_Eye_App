@@ -28,7 +28,7 @@ import SendModal from "./sendModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import trash_icon from "../../assets/papelera-mas.png";
-import think_icon from "../../assets/cerebro.png";
+import think_icon from "../../assets/ia.png";
 import send_icon from "../../assets/enviar.png";
 
 const columns = [
@@ -906,7 +906,7 @@ export default function LegalBasis() {
     setSelectedKeys(new Set([id]));
     setShowSendModal(true);          
   };
-    
+
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));

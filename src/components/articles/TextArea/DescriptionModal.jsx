@@ -39,7 +39,7 @@ function DescriptionModal({ isOpen, onClose, title, description }) {
             <Divider />
             <ModalBody>
               <ScrollShadow
-                hideScrollBar
+                isEnabled={false}
                 orientation="vertical"
                 className="max-h-[500px]"
               >

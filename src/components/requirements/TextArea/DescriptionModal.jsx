@@ -39,7 +39,7 @@ import {
               <Divider />
               <ModalBody>
                 <ScrollShadow
-                  hideScrollBar
+                  isEnabled={false}
                   orientation="vertical"
                   className="max-h-[500px]"
                 >

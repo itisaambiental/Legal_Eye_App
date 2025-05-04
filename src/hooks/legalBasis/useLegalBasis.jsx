@@ -110,7 +110,7 @@ export default function useLegalBasis() {
     setStateLegalBasis({ loading: true, error: null });
     try {
       const legalBasis = await getLegalBasis({ token: jwt });
-      setLegalBasis(legalBasis.reverse());
+      setLegalBasis(legalBasis);
       setStateLegalBasis({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
@@ -175,7 +175,7 @@ export default function useLegalBasis() {
       setStateLegalBasis({ loading: true, error: null });
       try {
         const legalBasis = await getLegalBasisByName({ legalName, token: jwt });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -211,7 +211,7 @@ export default function useLegalBasis() {
           abbreviation,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -247,7 +247,7 @@ export default function useLegalBasis() {
           classification,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -283,7 +283,7 @@ export default function useLegalBasis() {
           jurisdiction,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -316,7 +316,7 @@ export default function useLegalBasis() {
       setStateLegalBasis({ loading: true, error: null });
       try {
         const legalBasis = await getLegalBasisByState({ state, token: jwt });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -348,12 +348,12 @@ export default function useLegalBasis() {
     async (state, municipalities) => {
       setStateLegalBasis({ loading: true, error: null });
       try {
-        const legalBasisData = await getLegalBasisByStateAndMunicipalities({
+        const legalBasis = await getLegalBasisByStateAndMunicipalities({
           state,
           municipalities,
           token: jwt,
         });
-        setLegalBasis(legalBasisData.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -389,7 +389,7 @@ export default function useLegalBasis() {
           subjectId,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -427,7 +427,7 @@ export default function useLegalBasis() {
           aspectsIds,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -471,7 +471,7 @@ export default function useLegalBasis() {
           aspectIds,
           token: jwt,
         });
-        setLegalBasis(legalBasis.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -505,12 +505,12 @@ export default function useLegalBasis() {
     async (from, to) => {
       setStateLegalBasis({ loading: true, error: null });
       try {
-        const legalBasisData = await getLegalBasisByLastReform({
+        const legalBasis = await getLegalBasisByLastReform({
           from,
           to,
           token: jwt,
         });
-        setLegalBasis(legalBasisData.reverse());
+        setLegalBasis(legalBasis);
         setStateLegalBasis({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;

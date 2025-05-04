@@ -114,7 +114,7 @@ export default function useRequirement() {
     setStateRequirements({ loading: true, error: null });
     try {
       const requirements = await getRequirements({ token: jwt });
-      setRequirements(requirements.reverse());
+      setRequirements(requirements);
       setStateRequirements({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
@@ -179,7 +179,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByName({ name: requirementName, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -213,7 +213,7 @@ export default function useRequirement() {
           number: requirementNumber,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -247,7 +247,7 @@ export default function useRequirement() {
           subjectId,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -285,7 +285,7 @@ export default function useRequirement() {
           aspectsIds,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -410,7 +410,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByCondition({ condition, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -439,7 +439,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByEvidence({ evidence, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -557,7 +557,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByPeriodicity({ periodicity, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;

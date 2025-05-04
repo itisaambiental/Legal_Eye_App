@@ -1,11 +1,15 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getRequirementTypes from "../../services/requirementService/requirementTypesService/getRequirementTypes.js";
-import createRequirementType from "../../services/requirementService/requirementTypesService/createRequirementType.js";
-import updateRequirementType from "../../services/requirementService/requirementTypesService/updateRequirementType.js";
-import deleteRequirementType from "../../services/requirementService/requirementTypesService/deleteRequirementType.js";
+import getRequirementTypesById from "../../services/requirementService/requirementTypesService/getRequirementTypesById.js"
+import getRequirementTypesByName from "../../services/requirementService/requirementTypesService/getRequirementTypesByName.js"
+import getRequirementTypesByClassification from "../../services/requirementService/requirementTypesService/getRequirementTypesByClassification.js"
+import getRequirmentTypesByDescription from "../../services/requirementService/requirementTypesService/getRequirementTypesByDescription.js"
+import createRequirementTypes from "../../services/requirementService/requirementTypesService/createRequirementTypes.js";
+import updateRequirementTypes from "../../services/requirementService/requirementTypesService/updateRequirementTypes.js";
 import deleteRequirementTypes from "../../services/requirementService/requirementTypesService/deleteRequirementTypes.js";
-import RequirementTypeErrors from "../../errors/requirementTypes/RequirementTypeErrors.js";
+import deleteRequirementTypesBatch from "../../services/requirementService/requirementTypesService/deleteRequirementTypesBatch.js";
+import RequirementTypesErrors from "../../errors/requirements/RequirementTypesErrors.js";
 
 /**
  * Custom hook for managing requirement types and performing CRUD operations.

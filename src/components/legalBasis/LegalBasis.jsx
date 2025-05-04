@@ -1335,6 +1335,7 @@ export default function LegalBasis() {
           config={{
             showSendModal: showSendModal,
             closeSendModal: closeSendModal,
+            legalBasis: legalBasis,
             sendLegalBasis: sendLegalBasis,
             selectedKeys: selectedKeys,
             setSelectedKeys: setSelectedKeys,

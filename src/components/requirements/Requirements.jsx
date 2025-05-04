@@ -53,7 +53,7 @@ const columns = [
  * filters, pagination, and modals for adding, editing, and deleting Requirements.
  *
  */
-export default function Requirement() {
+export default function Requirements() {
   const {
     requirements,
     loading,

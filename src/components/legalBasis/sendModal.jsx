@@ -23,6 +23,7 @@ import Progress from './sendProgress/Progress.jsx';
  * @param {Object} props.config - Configuration object for the component.
  * @param {boolean} props.config.showSendModal - Controls whether the modal is visible.
  * @param {Function} props.config.closeSendModal - Function to close the modal.
+ * @param {Array} props.config.legalBasis - Array of all legalBasis objects.
  * @param {Function} props.config.sendLegalBasis - Function to send selected Legal Basis entries.
  * @param {Set|string} props.config.selectedKeys - Selected item IDs to send or "all" for sending all.
  * @param {Function} props.config.setSelectedKeys - Function to reset selected items after sending.
@@ -34,6 +35,7 @@ function SendModal({ config }) {
     const {
         showSendModal,
         closeSendModal,
+        legalBasis,
         sendLegalBasis,
         selectedKeys,
         setSelectedKeys,
@@ -61,33 +63,37 @@ function SendModal({ config }) {
     const handleSend = useCallback(async () => {
         setIsLoading(true);
         try {
-            const idsToSend = selectedKeys === "all" ? "all" : Array.from(selectedKeys);
-            const { success, jobId, error } = await sendLegalBasis({ legalBasisIds: idsToSend });
-
-            if (success) {
-                toast.info(
-                    selectedKeys.size === 1
-                        ? "Fundamento Legal enviado exitosamente."
-                        : "Fundamentos Legales enviados exitosamente.",
-                    {
-                        icon: () => <img src={check} alt="Ícono de éxito" />,
-                        progressStyle: {
-                            background: "#113c53",
-                        },
-                    }
-                );
-                setJobId(jobId);
-                setShowProgress(true);
-            } else {
-                toast.error(error);
-            }
+          const idsToSend = selectedKeys === "all"
+            ? legalBasis.map((legalBase) => legalBase.id)
+            : Array.from(selectedKeys).map((id) => Number(id));
+      
+          const { success, jobId, error } = await sendLegalBasis({ legalBasisIds: idsToSend });
+      
+          if (success) {
+            toast.info(
+              idsToSend.length === 1
+                ? "Fundamento Legal enviado exitosamente."
+                : "Fundamentos Legales enviados exitosamente.",
+              {
+                icon: () => <img src={check} alt="Ícono de éxito" />,
+                progressStyle: {
+                  background: "#113c53",
+                },
+              }
+            );
+            setJobId(jobId);
+            setShowProgress(true);
+          } else {
+            toast.error(error);
+          }
         } catch (err) {
-            console.error(err);
-            toast.error("Algo salió mal al enviar los fundamentos legales. Inténtalo de nuevo.");
+          console.error(err);
+          toast.error("Algo salió mal al enviar los fundamentos legales. Inténtalo de nuevo.");
         } finally {
-            setIsLoading(false);
+          setIsLoading(false);
         }
-    }, [sendLegalBasis, selectedKeys, check]);
+      }, [sendLegalBasis, selectedKeys, legalBasis, check]);
+      
 
     return (
         <Modal
@@ -157,6 +163,7 @@ SendModal.propTypes = {
     config: PropTypes.shape({
         showSendModal: PropTypes.bool.isRequired,
         closeSendModal: PropTypes.func.isRequired,
+        legalBasis: PropTypes.array.isRequired,
         sendLegalBasis: PropTypes.func.isRequired,
         selectedKeys: PropTypes.oneOfType([
             PropTypes.string,

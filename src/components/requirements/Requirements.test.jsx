@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Requirement from "./Requirements";
+import Requirements from "./Requirements";
 import useRequirements from "../../hooks/requirement/useRequirements";
 import useSubjects from "../../hooks/subject/useSubjects";
 import useAspects from "../../hooks/aspect/useAspects";
@@ -97,7 +97,7 @@ describe("Requirement Component", () => {
   test("renders Requirement component headers", () => {
     render(
       <MemoryRouter>
-        <Requirement />
+        <Requirements />
       </MemoryRouter>
     );
     expect(screen.getByText("Orden")).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe("Requirement Component", () => {
   test("renders requirement data correctly in the table", () => {
     render(
       <MemoryRouter>
-        <Requirement />
+        <Requirements />
       </MemoryRouter>
     );
 
@@ -130,7 +130,7 @@ describe("Requirement Component", () => {
 
     render(
       <MemoryRouter>
-        <Requirement />
+        <Requirements />
       </MemoryRouter>
     );
 

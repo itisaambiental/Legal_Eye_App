@@ -101,7 +101,7 @@ describe("SendModal Component for Legal Basis", () => {
       expect(
         screen.getByText("Cuando se termine el proceso se te notificará vía correo electrónico.")
       ).toBeInTheDocument();
-      expect(screen.getByText("Cerrar")).toBeInTheDocument();
+      expect(screen.getByText("Procesando...")).toBeInTheDocument();
     });
   });
 

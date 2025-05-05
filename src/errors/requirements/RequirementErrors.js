@@ -46,7 +46,7 @@ class RequirementErrors {
       },
       [RequirementErrors.NUMBER_DUPLICATED_REQUIREMENT]: {
         title: "Numero de Requerimiento duplicado",
-        message: "Ya existe un requerimiento con el mismo número. Por favor, utiliza otro.",
+        message: "Ya existe un requerimiento con el mismo orden. Por favor, utiliza otro.",
       },
       [RequirementErrors.NAME_DUPLICATED_REQUIREMENT]: {
         title: "Nombre de Requerimiento duplicado",

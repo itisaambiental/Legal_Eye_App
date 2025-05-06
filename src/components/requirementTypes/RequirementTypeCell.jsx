@@ -6,10 +6,12 @@ import {
   Button,
   DropdownTrigger,
   DropdownMenu,
+  Tooltip
 } from "@heroui/react";
 import menu_icon from "../../assets/aplicaciones.png";
 import update_icon from "../../assets/actualizar.png";
 import delete_icon from "../../assets/eliminar.png";
+import watch_icon from "../../assets/ver.png";
 
 /**
  * RequirementTypeCell component
@@ -23,11 +25,12 @@ import delete_icon from "../../assets/eliminar.png";
  * @param {Function} props.handleDelete - Function to delete a type.
  */
 const RequirementTypeCell = ({
-     requirement_type, 
-     columnKey, 
-     openEditModal, 
-     handleDelete 
-    }) => {
+  requirement_type,
+  columnKey,
+  openEditModal,
+  handleDelete,
+  openModalDescription
+}) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
       case "name":
@@ -44,9 +47,19 @@ const RequirementTypeCell = ({
         );
       case "classification":
         return (
-          <div className="flex flex-col">
-            <p className="text-sm capitalize">{requirement_type.classification || "N/A"}</p>
-          </div>
+          <div className="flex items-center relative ml-4">
+          <Tooltip content="Ver Clasificación">
+            <Button
+              isIconOnly
+              aria-label="Ver Clasificación"
+              color="primary"
+              variant="light"
+              onPress={() => openModalDescription(requirement_type, "classification", "Clasificación")}
+            >
+              <img src={watch_icon} alt="Ver" className="w-5 h-5" />
+            </Button>
+          </Tooltip>
+        </div>
         );
       case "actions":
         return (
@@ -89,13 +102,13 @@ const RequirementTypeCell = ({
       default:
         return null;
     }
-  }, [requirement_type, columnKey, openEditModal, handleDelete]);
+  }, [requirement_type, columnKey, openEditModal, handleDelete, openModalDescription]);
 
   return renderCell();
 };
 
 RequirementTypeCell.propTypes = {
-    requirement_type: PropTypes.shape({
+  requirement_type: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string,
     description: PropTypes.string,

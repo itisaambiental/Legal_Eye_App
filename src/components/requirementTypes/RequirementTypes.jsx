@@ -14,6 +14,7 @@ import useRequirementTypes from "../../hooks/requirement/useRequirementTypes";
 import TopContent from "./TopContent";
 import RequirementTypeCell from "./RequirementTypeCell";
 import BottomContent from "../utils/BottomContent";
+import DescriptionModal from "../requirements/TextArea/DescriptionModal.jsx";
 import Error from "../utils/Error";
 import CreateModal from "./CreateModal";
 import EditModal from "./EditModal";
@@ -60,6 +61,7 @@ export default function RequirementTypes() {
   const [filterByName, setFilterByName] = useState("");
   const [filterByDescription, setFilterByDescription] = useState("");
   const [filterByClassification, setFilterByClassification] = useState("");
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -256,6 +258,23 @@ export default function RequirementTypes() {
     setPage(1);
   }, []);
 
+  const openModalDescription = (requirement, field, title) => {
+    setSelectedRequirementType({
+      title: title,
+      description: requirement[field] || "No hay información disponible"
+    });
+    setShowDescriptionModal(true);
+  };
+
+
+  const closeModalDescription = () => {
+    setShowDescriptionModal(false);
+    setSelectedRequirementType(null);
+  };
+
+
+
+
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const onPageChange = (newPage) => setPage(newPage);
@@ -385,6 +404,7 @@ export default function RequirementTypes() {
                         columnKey={columnKey}
                         openEditModal={openEditModal}
                         handleDelete={handleDelete}
+                        openModalDescription={openModalDescription}
                       />
                     </TableCell>
                   )}
@@ -420,6 +440,14 @@ export default function RequirementTypes() {
             filteredItems: requirementTypes,
           }}
         />
+        {selectedRequirementType && (
+          <DescriptionModal
+            isOpen={showDescriptionModal}
+            onClose={closeModalDescription}
+            title={selectedRequirementType?.title || ""}
+            description={selectedRequirementType?.description || ""}
+          />
+        )}
         {isCreateModalOpen && (
           <CreateModal
             config={{

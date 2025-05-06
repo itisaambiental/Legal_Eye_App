@@ -1,4 +1,4 @@
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Creates a new requirement type in the system.

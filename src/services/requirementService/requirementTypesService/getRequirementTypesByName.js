@@ -1,5 +1,5 @@
 // src/services/requirementService/requirementTypesService/getRequirementTypesByName.js
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Retrieves requirement types by name or partial name.
@@ -17,7 +17,7 @@ import server from "../../config/server.js";
 export default async function getRequirementTypesByName({ name, token }) {
   try {
     const response = await server.get(
-      `/requirement-types/name?name=${encodeURIComponent(name)}`,
+      `/requirement-types/search/name?name=${encodeURIComponent(name)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,5 +1,5 @@
 // src/services/requirementService/requirementTypesService/getRequirementTypesByDescription.js
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Retrieves requirement types by description or partial description.
@@ -17,7 +17,7 @@ import server from "../../config/server.js";
 export default async function getRequirementTypesByDescription({ description, token }) {
   try {
     const response = await server.get(
-      `/requirement-types/description?description=${encodeURIComponent(description)}`,
+     `/requirement-types/search/description?description=${encodeURIComponent(description)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

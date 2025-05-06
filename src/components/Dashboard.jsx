@@ -114,8 +114,8 @@ function Dashboard() {
                         {isAdmin
                           ? "Admin"
                           : isAnalyst
-                          ? "Analista"
-                          : "Invitado"}
+                            ? "Analista"
+                            : "Invitado"}
                       </p>
                       <p className="font-normal mb-1 text-secondary">
                         {email || "example@isaambiental.com"}
@@ -147,9 +147,8 @@ function Dashboard() {
       </nav>
       <aside
         id="logo-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } bg-primary border-r border-primary lg:translate-x-0`}
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } bg-primary border-r border-primary lg:translate-x-0`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-primary">
@@ -157,9 +156,8 @@ function Dashboard() {
             <li>
               <Link
                 to="/"
-                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
-                  location.pathname === "/" ? "bg-white/20" : ""
-                }`}
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === "/" ? "bg-white/20" : ""
+                  }`}
               >
                 <img
                   src={hogar}
@@ -172,9 +170,8 @@ function Dashboard() {
               <li>
                 <Link
                   to="/users"
-                  className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
-                    location.pathname === "/users" ? "bg-white/20" : ""
-                  }`}
+                  className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === "/users" ? "bg-white/20" : ""
+                    }`}
                 >
                   <img
                     src={users}
@@ -187,11 +184,10 @@ function Dashboard() {
             <li>
               <Link
                 to="/subjects"
-                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
-                  /\/subjects(\/\d+\/aspects)?$/.test(location.pathname)
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${/\/subjects(\/\d+\/aspects)?$/.test(location.pathname)
                     ? "bg-white/20"
                     : ""
-                }`}
+                  }`}
               >
                 <img
                   src={materias_icon}
@@ -203,11 +199,10 @@ function Dashboard() {
             <li>
               <Link
                 to="/legal_basis"
-                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
-                  /\/legal_basis(\/\d+\/articles)?$/.test(location.pathname)
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${/\/legal_basis(\/\d+\/articles)?$/.test(location.pathname)
                     ? "bg-white/20"
                     : ""
-                }`}
+                  }`}
               >
                 <img
                   src={legal_basis_icon}
@@ -218,7 +213,9 @@ function Dashboard() {
             </li>
             <li>
               <Link
-                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
+                to="/requirement_types"
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === "/requirement_types" ? "bg-white/20" : ""
+                  }`}
               >
                 <img
                   src={requerimentType}
@@ -241,11 +238,8 @@ function Dashboard() {
             <li>
               <Link
                 to="/requirements"
-                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${
-                  /\/requirements(\/\d+\/articles)?$/.test(location.pathname)
-                    ? "bg-white/20"
-                    : ""
-                }`}
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === "/requirements" ? "bg-white/20" : ""
+                  }`}
               >
                 <img
                   src={requirement_icon}

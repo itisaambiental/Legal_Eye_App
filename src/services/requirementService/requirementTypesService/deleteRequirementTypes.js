@@ -1,4 +1,4 @@
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Deletes a requirement type by its ID.

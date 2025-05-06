@@ -19,7 +19,7 @@ function TopContent({ config }) {
     onFilterByDescription,
     onFilterByClassification,
     onClear,
-    totalTypes,
+    totalRequirementTypes,
     onRowsPerPageChange,
     openModalCreate,
   } = config;
@@ -63,7 +63,7 @@ function TopContent({ config }) {
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <span className="text-default-400">Tipos de requerimiento totales: {totalTypes}</span>
+        <span className="text-default-400">Tipos de requerimiento totales: {totalRequirementTypes}</span>
         <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto sm:ml-auto">
           <label className="flex items-center text-default-400 gap-2">
             Filas por página:
@@ -82,7 +82,7 @@ function TopContent({ config }) {
             className="w-full sm:w-auto"
             endContent={<img src={mas_icon} alt="Add Icon" className="w-4 h-4" />}
           >
-            Nuevo Tipo
+            Nuevo Tipo de Requerimiento
           </Button>
         </div>
       </div>
@@ -99,7 +99,7 @@ TopContent.propTypes = {
     onFilterByDescription: PropTypes.func.isRequired,
     onFilterByClassification: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
-    totalTypes: PropTypes.number.isRequired,
+    totalRequirementTypes: PropTypes.number.isRequired,
     onRowsPerPageChange: PropTypes.func.isRequired,
     openModalCreate: PropTypes.func.isRequired,
   }).isRequired,

@@ -14,6 +14,7 @@ import Subjects from './components/subjects/Subjects.jsx'
 import Aspects from './components/aspects/Aspects.jsx'
 import LegalBasis from './components/legalBasis/LegalBasis.jsx'
 import Requirements from './components/requirements/Requirements.jsx'
+import RequirementTypes from './components/requirementTypes/RequirementTypes.jsx'
 import Articles from './components/articles/Articles.jsx'
 
 /**
@@ -41,11 +42,12 @@ const AppRoutes = () => {
         <Route path="/legal_basis" element={<LegalBasis />} />
         <Route path="/legal_basis/:id/articles" element={<Articles />} />
         <Route path='/requirements' element={<Requirements />} />
+        <Route path='/requirement_types' element={<RequirementTypes />} />
       </Route>
 
       {/* Error and Unauthorized routes */}
-      <Route path="/unauthorized" element={<Unauthorized />} /> 
-      <Route path="*" element={<NotFound />} /> 
+      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import getRequirementTypes from "../../services/requirementService/requirementTypesService/getRequirementTypes.js";
-import getRequirementTypesById from "../../services/requirementService/requirementTypesService/getRequirementTypesById.js"
-import getRequirementTypesByName from "../../services/requirementService/requirementTypesService/getRequirementTypesByName.js"
-import getRequirementTypesByClassification from "../../services/requirementService/requirementTypesService/getRequirementTypesByClassification.js"
-import getRequirmentTypesByDescription from "../../services/requirementService/requirementTypesService/getRequirementTypesByDescription.js"
+import getRequirementTypesById from "../../services/requirementService/requirementTypesService/getRequirementTypesById.js";
+import getRequirementTypesByName from "../../services/requirementService/requirementTypesService/getRequirementTypesByName.js";
+import getRequirementTypesByClassification from "../../services/requirementService/requirementTypesService/getRequirementTypesByClassification.js";
+import getRequirmentTypesByDescription from "../../services/requirementService/requirementTypesService/getRequirementTypesByDescription.js";
 import createRequirementTypes from "../../services/requirementService/requirementTypesService/createRequirementTypes.js";
 import updateRequirementTypes from "../../services/requirementService/requirementTypesService/updateRequirementTypes.js";
 import deleteRequirementTypes from "../../services/requirementService/requirementTypesService/deleteRequirementTypes.js";
@@ -24,46 +24,184 @@ export default function useRequirementTypes() {
   });
 
   /**
-   * Fetches all requirement types.
+   * Fetches the complete list of requirement types.
+   * @async
+   * @function fetchRequirementTypes
+   * @returns {Promise<void>} - Updates the requirement types list and loading state.
+   * @throws {Object} - Updates error state if fetching fails.
    */
   const fetchRequirementTypes = useCallback(async () => {
     setState({ loading: true, error: null });
     try {
-      const types = await getRequirementTypes(jwt);
-      setRequirementTypes(types);
+      const requirementTypes = await getRequirementTypes({ token: jwt });
+      setRequirementTypes(requirementTypes);
       setState({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
       const errorMessage = error.response?.data?.message;
       const clientMessage = error.message;
-      const handledError = RequirementTypeErrors.handleError({
+      const handledError = RequirementTypesErrors.handleError({
         code: errorCode,
         error: errorMessage,
         httpError: clientMessage,
       });
-      setState({ loading: false, error: handledError });
+      setState({
+        loading: false,
+        error: handledError
+      });
     }
   }, [jwt]);
 
   /**
-   * Adds a new requirement type.
+   * Fetches a requirement type by its ID.
+   * @async
+   * @function fetchRequirementTypeById
+   * @param {number} id - The ID of the requirement type.
+   * @returns {Promise<Object>} - The retrieved requirement type or error object.
    */
-  const addRequirementType = useCallback(
+  const fetchRequirementTypeById = useCallback(
+    async (id) => {
+      try {
+        const requirementTypes = await getRequirementTypesById({ id, token: jwt });
+        return { success: true, data: requirementTypes };
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementTypesErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: [id],
+        });
+        return { success: false, error: handledError };
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Fetches requirement types by name.
+   * @async
+   * @function fetchRequirementTypesByName
+   * @param {string} name - Partial or full name to search.
+   * @returns {Promise<void>} - Updates the requirement types list.
+   */
+  const fetchRequirementTypesByName = useCallback(
+    async (name) => {
+      setState({ loading: true, error: null });
+      try {
+        const requirementTypes = await getRequirementTypesByName({ name, token: jwt });
+        setRequirementTypes(requirementTypes);
+        setState({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementTypesErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setState({
+          loading: false,
+          error: handledError
+        });
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Fetches requirement types by classification.
+   * @async
+   * @function fetchRequirementTypesByClassification
+   * @param {string} classification - The classification to filter by.
+   * @returns {Promise<void>} - Updates the requirement types list.
+   */
+  const fetchRequirementTypesByClassification = useCallback(
+    async (classification) => {
+      setState({ loading: true, error: null });
+      try {
+        const requirementTypes = await getRequirementTypesByClassification({ classification, token: jwt });
+        setRequirementTypes(requirementTypes);
+        setState({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementTypesErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setState({
+          loading: false,
+          error: handledError
+        });
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Fetches requirement types by description.
+   * @async
+   * @function fetchRequirementTypesByDescription
+   * @param {string} description - Partial description to search.
+   * @returns {Promise<void>} - Updates the requirement types list.
+   */
+  const fetchRequirementTypesByDescription = useCallback(
+    async (description) => {
+      setState({ loading: true, error: null });
+      try {
+        const requirementTypes = await getRequirmentTypesByDescription({ description, token: jwt });
+        setRequirementTypes(requirementTypes);
+        setState({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementTypesErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setState({
+          loading: false,
+          error: handledError
+        });
+      }
+    },
+    [jwt]
+  );
+
+  /**
+   * Adds a new requirement type to the list.
+   * @async
+   * @function addRequirementTypes
+   * @param {Object} params - Requirement type data.
+   * @param {string} params.name - The name of the requirement type.
+   * @param {string} params.description - The description of the type.
+   * @param {string} params.classification - The classification category.
+   * @returns {Promise<Object>} - Result of the operation with success or error.
+   */
+  const addRequirementTypes = useCallback(
     async ({ name, description, classification }) => {
       try {
-        const newType = await createRequirementType({
+        const newRequirementType = await createRequirementTypes({
           name,
           description,
           classification,
           token: jwt,
         });
-        setRequirementTypes((prev) => [...prev, newType]);
+        setRequirementTypes((prevRequirementTypes) => [...prevRequirementTypes, newRequirementType]);
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
-        const handledError = RequirementTypeErrors.handleError({
+        const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
@@ -75,27 +213,33 @@ export default function useRequirementTypes() {
   );
 
   /**
-   * Updates a requirement type by ID.
+   * Updates an existing requirement type.
+   * @async
+   * @function modifyRequirementType
+   * @param {Object} params - Requirement type data including ID.
+   * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const modifyRequirementType = useCallback(
     async ({ id, name, description, classification }) => {
       try {
-        const updatedType = await updateRequirementType({
+        const updatedRequirementType = await updateRequirementTypes({
           id,
           name,
           description,
           classification,
           token: jwt,
         });
-        setRequirementTypes((prev) =>
-          prev.map((type) => (type.id === id ? updatedType : type))
+        setRequirementTypes((prevRequirementTypes) =>
+          prevRequirementTypes.map((prevRequirementType) =>
+            prevRequirementType.id === id ? updatedRequirementType : prevRequirementType
+          )
         );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
-        const handledError = RequirementTypeErrors.handleError({
+        const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
@@ -109,20 +253,24 @@ export default function useRequirementTypes() {
 
   /**
    * Deletes a requirement type by ID.
+   * @async
+   * @function removeRequirementType
+   * @param {number} id - ID of the requirement type to delete.
+   * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const removeRequirementType = useCallback(
     async (id) => {
       try {
-        await deleteRequirementType({ id, token: jwt });
-        setRequirementTypes((prev) =>
-          prev.filter((type) => type.id !== id)
+        await deleteRequirementTypes({ id, token: jwt });
+        setRequirementTypes((prevRequirementTypes) =>
+          prevRequirementTypes.filter((type) => type.id !== id)
         );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
-        const handledError = RequirementTypeErrors.handleError({
+        const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
@@ -136,37 +284,33 @@ export default function useRequirementTypes() {
 
   /**
    * Deletes multiple requirement types by their IDs.
+   * @async
+   * @function removeRequirementTypesBatch
+   * @param {Array<number>} requirementTypeIds - Array of IDs to delete.
+   * @returns {Promise<Object>} - Result of the operation with success or error.
    */
-  const deleteRequirementTypesBatch = useCallback(
-    async (ids) => {
+  const removeRequirementTypesBatch = useCallback(
+    async (requirementTypeIds) => {
       try {
-        const success = await deleteRequirementTypes({ ids, token: jwt });
-        if (success) {
-          setRequirementTypes((prev) =>
-            prev.filter((type) => !ids.includes(type.id))
-          );
-          return { success: true };
-        }
+        await deleteRequirementTypesBatch({ requirementTypeIds, token: jwt });
+        setRequirementTypes((prevRequirementTypes) =>
+          prevRequirementTypes.filter((type) => !requirementTypeIds.includes(type.id)));
+        return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
-        const items =
-          error.response?.data?.errors?.associatedTypes?.map(
-            (type) => type.name
-          ) || ids;
-        const handledError = RequirementTypeErrors.handleError({
+        const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items,
+          items: requirementTypeIds,
         });
         return { success: false, error: handledError.message };
       }
     },
     [jwt]
   );
-
   useEffect(() => {
     fetchRequirementTypes();
   }, [fetchRequirementTypes]);
@@ -176,9 +320,13 @@ export default function useRequirementTypes() {
     loading: state.loading,
     error: state.error,
     fetchRequirementTypes,
-    addRequirementType,
+    fetchRequirementTypeById,
+    fetchRequirementTypesByName,
+    fetchRequirementTypesByClassification,
+    fetchRequirementTypesByDescription,
+    addRequirementTypes,
     modifyRequirementType,
     removeRequirementType,
-    deleteRequirementTypesBatch,
+    removeRequirementTypesBatch,
   };
 }

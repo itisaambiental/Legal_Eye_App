@@ -1,4 +1,4 @@
-import server from "../../config/server.js";
+import server from "../../../config/server.js";
 
 /**
  * Deletes multiple requirement types by their requirementTypeIds.
@@ -15,7 +15,7 @@ import server from "../../config/server.js";
  */
 export default async function deleteRequirementTypesBatch({ requirementTypeIds, token }) {
   try {
-    const response = await server.delete(`/requirement-types/batch`, {
+    const response = await server.delete(`/requirement-types/delete/batch`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

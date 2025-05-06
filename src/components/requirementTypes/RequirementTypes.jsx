@@ -414,18 +414,20 @@ export default function RequirementTypes() {
           </Table>
         )}
         <div className="relative w-full">
-          {selectedKeys.size > 0 && (
-            <Tooltip content="Eliminar" size="sm">
-              <Button
-                isIconOnly
-                size="sm"
-                className="mt-4 bg-primary"
-                aria-label="Eliminar seleccionados"
-                onPress={openDeleteModal}
-              >
-                <img src={trashIcon} alt="delete" className="w-5 h-5" />
-              </Button>
-            </Tooltip>
+          {(selectedKeys.size > 0 || selectedKeys === "all") && (
+            <>
+              <Tooltip content="Eliminar" size="sm">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="absolute left-0 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
+                  aria-label="Eliminar seleccionados"
+                  onPress={openDeleteModal}
+                >
+                  <img src={trashIcon} alt="delete" className="w-5 h-5" />
+                </Button>
+              </Tooltip>
+            </>
           )}
         </div>
 

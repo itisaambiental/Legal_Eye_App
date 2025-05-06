@@ -56,7 +56,7 @@ export default function RequirementTypes() {
     removeRequirementTypesBatch,
   } = useRequirementTypes();
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isFirstRender, setIsFirstRender] = useState(true);
   const [filterByName, setFilterByName] = useState("");
   const [filterByDescription, setFilterByDescription] = useState("");

@@ -154,7 +154,7 @@ DeleteModal.propTypes = {
     setIsDeletingBatch: PropTypes.func.isRequired,
     isDeletingBatch: PropTypes.bool.isRequired,
     selectedKeys: PropTypes.oneOfType([
-      PropTypes.string, // "all"
+      PropTypes.string,
       PropTypes.instanceOf(Set),
     ]).isRequired,
     requirementTypes: PropTypes.arrayOf(

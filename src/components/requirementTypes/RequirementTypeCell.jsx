@@ -17,13 +17,13 @@ import delete_icon from "../../assets/eliminar.png";
  * Handles rendering of individual cells in the requirement types table.
  *
  * @param {Object} props
- * @param {Object} props.type - The requirement type object.
+ * @param {Object} props.requirement_type - The requirement type object.
  * @param {string} props.columnKey - The key of the column.
  * @param {Function} props.openEditModal - Function to open edit modal.
  * @param {Function} props.handleDelete - Function to delete a type.
  */
 const RequirementTypeCell = ({
-     type, 
+     requirement_type, 
      columnKey, 
      openEditModal, 
      handleDelete 
@@ -33,19 +33,19 @@ const RequirementTypeCell = ({
       case "name":
         return (
           <div className="flex flex-col">
-            <p className="text-sm font-medium capitalize">{type.name || "N/A"}</p>
+            <p className="text-sm font-medium capitalize">{requirement_type.name || "N/A"}</p>
           </div>
         );
       case "description":
         return (
           <div className="flex flex-col">
-            <p className="text-sm text-gray-700">{type.description || "Sin descripción"}</p>
+            <p className="text-sm text-gray-700">{requirement_type.description || "N/A"}</p>
           </div>
         );
       case "classification":
         return (
           <div className="flex flex-col">
-            <p className="text-sm capitalize">{type.classification || "No clasificado"}</p>
+            <p className="text-sm capitalize">{requirement_type.classification || "N/A"}</p>
           </div>
         );
       case "actions":
@@ -66,21 +66,21 @@ const RequirementTypeCell = ({
               <DropdownMenu aria-label="Acciones del tipo" variant="light">
                 <DropdownItem
                   key="edit"
-                  textValue="Editar tipo"
+                  textValue="Editar tipo de requerimiento"
                   startContent={<img src={update_icon} alt="Edit" className="w-4 h-4" />}
                   className="hover:bg-primary/20"
-                  onPress={() => openEditModal(type)}
+                  onPress={() => openEditModal(requirement_type)}
                 >
-                  <span className="text-primary">Editar tipo</span>
+                  <span className="text-primary">Editar tipo de requerimiento</span>
                 </DropdownItem>
                 <DropdownItem
                   key="delete"
-                  textValue="Eliminar tipo"
+                  textValue="Eliminar tipo de requerimiento"
                   startContent={<img src={delete_icon} alt="Delete" className="w-4 h-4" />}
                   className="hover:bg-red/20"
-                  onPress={() => handleDelete(type.id)}
+                  onPress={() => handleDelete(requirement_type.id)}
                 >
-                  <span className="text-red">Eliminar tipo</span>
+                  <span className="text-red">Eliminar tipo de requerimiento</span>
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -89,13 +89,13 @@ const RequirementTypeCell = ({
       default:
         return null;
     }
-  }, [type, columnKey, openEditModal, handleDelete]);
+  }, [requirement_type, columnKey, openEditModal, handleDelete]);
 
   return renderCell();
 };
 
 RequirementTypeCell.propTypes = {
-  type: PropTypes.shape({
+    requirement_type: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string,
     description: PropTypes.string,

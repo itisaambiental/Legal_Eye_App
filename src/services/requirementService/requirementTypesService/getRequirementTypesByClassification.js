@@ -16,14 +16,14 @@ import server from "../../../config/server.js";
  */
 export default async function getRequirementTypesByClassification({ classification, token }) {
   try {
-    const response = await server.get(
-     `/requirement-types/search/classification?classification=${encodeURIComponent(classification)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await server.get("/requirement-types/search/classification", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        classification,
+      },
+    });
 
     if (response.status !== 200) {
       throw new Error("Failed to retrieve requirement types by classification");

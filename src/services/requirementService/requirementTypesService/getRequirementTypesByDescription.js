@@ -16,14 +16,14 @@ import server from "../../../config/server.js";
  */
 export default async function getRequirementTypesByDescription({ description, token }) {
   try {
-    const response = await server.get(
-     `/requirement-types/search/description?description=${encodeURIComponent(description)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await server.get("/requirement-types/search/description", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        description,
+      },
+    });
 
     if (response.status !== 200) {
       throw new Error("Failed to retrieve requirement types by description");

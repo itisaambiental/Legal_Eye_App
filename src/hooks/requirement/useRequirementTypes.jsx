@@ -1,13 +1,13 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
+import createRequirementType from "../../services/requirementService/requirementTypesService/createRequirementType.js";
 import getRequirementTypes from "../../services/requirementService/requirementTypesService/getRequirementTypes.js";
-import getRequirementTypesById from "../../services/requirementService/requirementTypesService/getRequirementTypesById.js";
+import getRequirementTypeById from "../../services/requirementService/requirementTypesService/getRequirementTypeById.js";
 import getRequirementTypesByName from "../../services/requirementService/requirementTypesService/getRequirementTypesByName.js";
 import getRequirementTypesByClassification from "../../services/requirementService/requirementTypesService/getRequirementTypesByClassification.js";
 import getRequirmentTypesByDescription from "../../services/requirementService/requirementTypesService/getRequirementTypesByDescription.js";
-import createRequirementTypes from "../../services/requirementService/requirementTypesService/createRequirementTypes.js";
-import updateRequirementTypes from "../../services/requirementService/requirementTypesService/updateRequirementTypes.js";
-import deleteRequirementTypes from "../../services/requirementService/requirementTypesService/deleteRequirementTypes.js";
+import updateRequirementType from "../../services/requirementService/requirementTypesService/updateRequirementType.js";
+import deleteRequirementType from "../../services/requirementService/requirementTypesService/deleteRequirementType.js";
 import deleteRequirementTypesBatch from "../../services/requirementService/requirementTypesService/deleteRequirementTypesBatch.js";
 import RequirementTypesErrors from "../../errors/requirements/RequirementTypesErrors.js";
 
@@ -22,6 +22,46 @@ export default function useRequirementTypes() {
     loading: true,
     error: null,
   });
+
+    /**
+   * Adds a new requirement type to the list.
+   * @async
+   * @function addRequirementType
+   * @param {Object} params - Requirement type data.
+   * @param {string} params.name - The name of the requirement type.
+   * @param {string} params.description - The description of the type.
+   * @param {string} params.classification - The classification category.
+   * @returns {Promise<Object>} - Result of the operation with success or error.
+   */
+    const addRequirementType = useCallback(
+      async ({ name, description, classification }) => {
+        try {
+          const newRequirementType = await createRequirementType({
+            name,
+            description,
+            classification,
+            token: jwt,
+          });
+          setRequirementTypes((prevRequirementTypes) => [
+            newRequirementType,
+            ...prevRequirementTypes,
+          ]);
+          return { success: true };
+        } catch (error) {
+          const errorCode = error.response?.status;
+          const serverMessage = error.response?.data?.message;
+          const clientMessage = error.message;
+          const handledError = RequirementTypesErrors.handleError({
+            code: errorCode,
+            error: serverMessage,
+            httpError: clientMessage,
+          });
+          return { success: false, error: handledError.message };
+        }
+      },
+      [jwt]
+    );
+  
 
   /**
    * Fetches the complete list of requirement types.
@@ -62,8 +102,8 @@ export default function useRequirementTypes() {
   const fetchRequirementTypeById = useCallback(
     async (id) => {
       try {
-        const requirementTypes = await getRequirementTypesById({ id, token: jwt });
-        return { success: true, data: requirementTypes };
+        const requirementType = await getRequirementTypeById({ id, token: jwt });
+        return { success: true, data: requirementType };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
@@ -177,42 +217,6 @@ export default function useRequirementTypes() {
   );
 
   /**
-   * Adds a new requirement type to the list.
-   * @async
-   * @function addRequirementTypes
-   * @param {Object} params - Requirement type data.
-   * @param {string} params.name - The name of the requirement type.
-   * @param {string} params.description - The description of the type.
-   * @param {string} params.classification - The classification category.
-   * @returns {Promise<Object>} - Result of the operation with success or error.
-   */
-  const addRequirementTypes = useCallback(
-    async ({ name, description, classification }) => {
-      try {
-        const newRequirementType = await createRequirementTypes({
-          name,
-          description,
-          classification,
-          token: jwt,
-        });
-        setRequirementTypes((prevRequirementTypes) => [...prevRequirementTypes, newRequirementType]);
-        return { success: true };
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementTypesErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        return { success: false, error: handledError.message };
-      }
-    },
-    [jwt]
-  );
-
-  /**
    * Updates an existing requirement type.
    * @async
    * @function modifyRequirementType
@@ -222,7 +226,7 @@ export default function useRequirementTypes() {
   const modifyRequirementType = useCallback(
     async ({ id, name, description, classification }) => {
       try {
-        const updatedRequirementType = await updateRequirementTypes({
+        const updatedRequirementType = await updateRequirementType({
           id,
           name,
           description,
@@ -261,7 +265,7 @@ export default function useRequirementTypes() {
   const removeRequirementType = useCallback(
     async (id) => {
       try {
-        await deleteRequirementTypes({ id, token: jwt });
+        await deleteRequirementType({ id, token: jwt });
         setRequirementTypes((prevRequirementTypes) =>
           prevRequirementTypes.filter((type) => type.id !== id)
         );
@@ -286,15 +290,15 @@ export default function useRequirementTypes() {
    * Deletes multiple requirement types by their IDs.
    * @async
    * @function removeRequirementTypesBatch
-   * @param {Array<number>} requirementTypeIds - Array of IDs to delete.
+   * @param {Array<number>} requirementTypesIds - Array of IDs to delete.
    * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const removeRequirementTypesBatch = useCallback(
-    async (requirementTypeIds) => {
+    async (requirementTypesIds) => {
       try {
-        await deleteRequirementTypesBatch({ requirementTypeIds, token: jwt });
+        await deleteRequirementTypesBatch({ requirementTypesIds, token: jwt });
         setRequirementTypes((prevRequirementTypes) =>
-          prevRequirementTypes.filter((type) => !requirementTypeIds.includes(type.id)));
+          prevRequirementTypes.filter((type) => !requirementTypesIds.includes(type.id)));
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -304,7 +308,7 @@ export default function useRequirementTypes() {
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: requirementTypeIds,
+          items: requirementTypesIds,
         });
         return { success: false, error: handledError.message };
       }
@@ -319,12 +323,12 @@ export default function useRequirementTypes() {
     requirementTypes,
     loading: state.loading,
     error: state.error,
+    addRequirementType,
     fetchRequirementTypes,
     fetchRequirementTypeById,
     fetchRequirementTypesByName,
     fetchRequirementTypesByClassification,
     fetchRequirementTypesByDescription,
-    addRequirementTypes,
     modifyRequirementType,
     removeRequirementType,
     removeRequirementTypesBatch,

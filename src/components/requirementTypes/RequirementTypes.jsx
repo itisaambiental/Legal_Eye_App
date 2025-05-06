@@ -29,19 +29,30 @@ const columns = [
   { name: "Acciones", uid: "actions", align: "center" },
 ];
 
+/**
+ * Requirements Types component
+ *
+ * This component provides an interface for managing requirements Types, including features for listing,
+ * pagination, and CRUD operations. Requirements types can be added, edited, or deleted, with appropriate
+ * feedback displayed for each action.
+ *
+ * @returns {JSX.Element} Rendered requirements types component, displaying the requirement type management interface with
+ * filters, pagination, and modals for adding, editing, and deleting requirements types.
+ *
+ */
 export default function RequirementTypes() {
   const {
     requirementTypes,
     loading,
     error,
-    addRequirementTypes,
+    addRequirementType,
     fetchRequirementTypes,
-    modifyRequirementTypes,
-    removeRequirementTypes,
-    removeRequirementTypesBatch,
     fetchRequirementTypesByName,
     fetchRequirementTypesByClassification,
     fetchRequirementTypesByDescription,
+    modifyRequirementType,
+    removeRequirementType,
+    removeRequirementTypesBatch,
   } = useRequirementTypes();
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -53,7 +64,7 @@ export default function RequirementTypes() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
-  const [selectedRequirementTypes, setSelectedRequirementTypes] = useState(null);
+  const [selectedRequirementType, setSelectedRequirementType] = useState(null);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const debounceTimeout = useRef(null);
@@ -179,15 +190,15 @@ export default function RequirementTypes() {
 
   }
 
-  const openEditModal = (requirementTypes) => {
-    setSelectedRequirementTypes(requirementTypes);
-    setFormData(requirementTypes);
+  const openEditModal = (requirementType) => {
+    setSelectedRequirementType(requirementType);
+    setFormData(requirementType);
     setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
-    setSelectedRequirementTypes(null);
+    setSelectedRequirementType(null);
     setNameInputError("");
     setClassificationInputError("");
     setDescriptionInputError("");
@@ -220,6 +231,7 @@ export default function RequirementTypes() {
     },
     [descriptionInputError, setFormData, setDescriptionInputError]
   );
+
   const handleClassificationChange = useCallback(
     (e) => {
       const { value } = e.target;
@@ -253,18 +265,18 @@ export default function RequirementTypes() {
 
 
   const handleDelete = useCallback(
-    async (requirementTypesIds) => {
-      const toastId = toast.loading("Eliminando requerimiento...", {
+    async (requirementTypeId) => {
+      const toastId = toast.loading("Eliminando tipo de requerimiento...", {
         icon: <Spinner size="sm" />,
         progressStyle: {
           background: "#113c53",
         },
       });
       try {
-        const { success, error } = await removeRequirementTypes(requirementTypesIds);
+        const { success, error } = await removeRequirementType(requirementTypeId);
         if (success) {
           toast.update(toastId, {
-            render: "Requerimiento eliminado con éxito",
+            render: "Tipo de Requerimiento eliminado con éxito",
             type: "info",
             icon: <img src={check} alt="Success Icon" />,
             progressStyle: {
@@ -287,7 +299,7 @@ export default function RequirementTypes() {
         console.error(error);
         toast.update(toastId, {
           render:
-            "Algo mal sucedió al eliminar el requerimiento. Intente de nuevo.",
+            "Algo mal sucedió al eliminar el tipo requerimiento. Intente de nuevo.",
           type: "error",
           icon: null,
           progressStyle: {},
@@ -296,7 +308,7 @@ export default function RequirementTypes() {
         });
       }
     },
-    [removeRequirementTypes]
+    [removeRequirementType]
   );
 
 
@@ -369,7 +381,7 @@ export default function RequirementTypes() {
                   {(columnKey) => (
                     <TableCell>
                       <RequirementTypeCell
-                        type={requirementTypes}
+                        requirement_type={requirementTypes}
                         columnKey={columnKey}
                         openEditModal={openEditModal}
                         handleDelete={handleDelete}
@@ -383,7 +395,7 @@ export default function RequirementTypes() {
         )}
         <div className="relative w-full">
           {selectedKeys.size > 0 && (
-            <Tooltip content="Eliminar selección" size="sm">
+            <Tooltip content="Eliminar" size="sm">
               <Button
                 isIconOnly
                 size="sm"
@@ -414,7 +426,7 @@ export default function RequirementTypes() {
               isOpen: isCreateModalOpen,
               closeModalCreate: closeModalCreate,
               formData: formData,
-              addRequirementTypes: addRequirementTypes,
+              addRequirementType: addRequirementType,
               nameError: nameInputError,
               setNameError: setNameInputError,
               handleNameChange: handleNameChange,
@@ -434,8 +446,8 @@ export default function RequirementTypes() {
               closeModalEdit: closeEditModal,
               formData: formData,
               setFormData: setFormData,
-              editRequirementTypes: modifyRequirementTypes,
-              selectedRequirementTypes: selectedRequirementTypes,
+              editRequirementType: modifyRequirementType,
+              selectedRequirementType: selectedRequirementType,
               nameError: nameInputError,
               setNameError: setNameInputError,
               handleNameChange: handleNameChange,

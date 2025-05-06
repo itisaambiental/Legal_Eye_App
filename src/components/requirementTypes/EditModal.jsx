@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Modal,
@@ -15,19 +15,38 @@ import check from "../../assets/check.png";
 /**
  * EditModal component for Requirement Types
  *
- * Provides a form to edit an existing requirement type with fields for name, description and classification.
+ * This component provides a modal to edit an existing requirement type.
+ * It preloads data into the form, validates required fields, and shows success or error feedback.
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {Object} props.config - Configuration for modal and form logic.
- * @returns {JSX.Element} Rendered EditModal component
+ * @param {Object} props.config - Configuration object for modal state and form behavior.
+ * @param {boolean} props.config.isOpen - Whether the modal is open.
+ * @param {Function} props.config.closeModalEdit - Function to close the modal.
+ * @param {Function} props.config.editRequirementType - Function to submit updated data.
+ * @param {Object} props.config.formData - Current form values.
+ * @param {Function} props.config.setFormData - Setter to update formData.
+ * @param {Object} props.config.selectedRequirementType - The selected requirement type to edit.
+ * @param {string|null} props.config.nameError - Error for name field.
+ * @param {Function} props.config.setNameError - Setter for name error.
+ * @param {Function} props.config.handleNameChange - Input handler for name.
+ * @param {string|null} props.config.descriptionError - Error for description.
+ * @param {Function} props.config.setDescriptionError - Setter for description error.
+ * @param {Function} props.config.handleDescriptionChange - Input handler for description.
+ * @param {string|null} props.config.classificationError - Error for classification.
+ * @param {Function} props.config.setClassificationError - Setter for classification error.
+ * @param {Function} props.config.handleClassificationChange - Input handler for classification.
+ *
+ * @returns {JSX.Element} Rendered EditModal component.
  */
 function EditModal({ config }) {
   const {
     isOpen,
     closeModalEdit,
-    editRequirementTypes,
+    editRequirementType,
     formData,
+    setFormData,
+    selectedRequirementType,
     nameError,
     setNameError,
     handleNameChange,
@@ -41,11 +60,24 @@ function EditModal({ config }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleUpdate = async (e) => {
+  useEffect(() => {
+    if (selectedRequirementType) {
+      setFormData({
+        id: selectedRequirementType.id,
+        name: selectedRequirementType.name,
+        description: selectedRequirementType.description,
+        classification: selectedRequirementType.classification,
+      });
+    }
+  }, [selectedRequirementType, setFormData]);
+
+  const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!formData.name.trim()) {
+    const { id, name, description, classification } = formData;
+
+    if (!name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -53,7 +85,7 @@ function EditModal({ config }) {
       setNameError(null);
     }
 
-    if (!formData.description.trim()) {
+    if (!description.trim()) {
       setDescriptionError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -61,7 +93,7 @@ function EditModal({ config }) {
       setDescriptionError(null);
     }
 
-    if (!formData.classification.trim()) {
+    if (!classification.trim()) {
       setClassificationError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -70,8 +102,13 @@ function EditModal({ config }) {
     }
 
     try {
-      const { success, error } = await editRequirementTypes(formData);
-
+      const requirementTypeData = { 
+        id, 
+        name, 
+        description, 
+        classification 
+      };
+      const { success, error } = await editRequirementType(requirementTypeData);
       if (success) {
         toast.info("El tipo de requerimiento ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -79,7 +116,7 @@ function EditModal({ config }) {
         });
         closeModalEdit();
       } else {
-        toast.error(error || "No se pudo actualizar el tipo.");
+        toast.error(error);
       }
     } catch (err) {
       console.error(err);
@@ -106,7 +143,7 @@ function EditModal({ config }) {
               Editar Tipo de Requerimiento
             </ModalHeader>
             <ModalBody>
-              <form onSubmit={handleUpdate} className="space-y-6">
+              <form onSubmit={handleEdit} className="space-y-6">
                 <div className="relative z-0 w-full group">
                   <input
                     type="text"
@@ -123,9 +160,7 @@ function EditModal({ config }) {
                   >
                     Nombre
                   </label>
-                  {nameError && (
-                    <p className="mt-2 text-sm text-red">{nameError}</p>
-                  )}
+                  {nameError && <p className="mt-2 text-sm text-red">{nameError}</p>}
                 </div>
 
                 <div className="w-full">
@@ -136,7 +171,8 @@ function EditModal({ config }) {
                     onChange={handleDescriptionChange}
                     classNames={{
                       base: "max-w-lg",
-                      input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                      input:
+                        "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                     }}
                     label="Descripción"
                     placeholder="Escribir la descripción."
@@ -155,7 +191,8 @@ function EditModal({ config }) {
                     onChange={handleClassificationChange}
                     classNames={{
                       base: "max-w-lg",
-                      input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                      input:
+                        "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                     }}
                     label="Clasificación Obligatoria"
                     placeholder="Escribir la clasificación."
@@ -165,6 +202,7 @@ function EditModal({ config }) {
                     <p className="mt-2 text-sm text-red">{classificationError}</p>
                   )}
                 </div>
+
                 <div className="w-full mt-4">
                   <Button
                     type="submit"
@@ -172,7 +210,11 @@ function EditModal({ config }) {
                     disabled={isLoading}
                     className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                   >
-                    {isLoading ? <Spinner size="sm" color="white" /> : "Editar Tipo de Requerimiento"}
+                    {isLoading ? (
+                      <Spinner size="sm" color="white" />
+                    ) : (
+                      "Editar Tipo de Requerimiento"
+                    )}
                   </Button>
                 </div>
               </form>
@@ -188,12 +230,20 @@ EditModal.propTypes = {
   config: PropTypes.shape({
     isOpen: PropTypes.bool.isRequired,
     closeModalEdit: PropTypes.func.isRequired,
-    editRequirementTypes: PropTypes.func.isRequired,
+    editRequirementType: PropTypes.func.isRequired,
     formData: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      classification: PropTypes.string.isRequired,
+    }).isRequired,
+    setFormData: PropTypes.func.isRequired,
+    selectedRequirementType: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       name: PropTypes.string,
       description: PropTypes.string,
       classification: PropTypes.string,
-    }).isRequired,
+    }),
     nameError: PropTypes.string,
     setNameError: PropTypes.func.isRequired,
     handleNameChange: PropTypes.func.isRequired,

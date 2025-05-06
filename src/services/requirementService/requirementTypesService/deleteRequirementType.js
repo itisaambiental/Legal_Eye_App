@@ -15,7 +15,7 @@ import server from "../../../config/server.js";
  */
 export default async function deleteRequirementType({ id, token }) {
   try {
-    const response = await server.delete(`/requirement-type/${id}`, {
+    const response = await server.delete(`/requirement-types/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

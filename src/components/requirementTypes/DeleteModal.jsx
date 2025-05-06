@@ -14,14 +14,24 @@ import { toast } from "react-toastify";
 /**
  * DeleteModal component for Requirement Types
  *
- * This component displays a modal dialog to confirm the deletion of one or multiple requirement types.
- * It includes options to proceed with deletion or cancel the action, with appropriate feedback displayed
- * to the user upon success or failure.
+ * This component displays a confirmation modal for deleting one or more requirement types.
+ * It shows a warning message and offers options to confirm or cancel the deletion.
+ * Upon confirmation, it triggers the batch deletion function and gives user feedback via toast notifications.
  *
  * @component
  * @param {Object} props - Component properties.
  * @param {Object} props.config - Configuration object for the component.
- * @returns {JSX.Element} Rendered DeleteModal component
+ * @param {boolean} props.config.showDeleteModal - Controls whether the modal is visible.
+ * @param {Function} props.config.closeDeleteModal - Function to close the modal.
+ * @param {Function} props.config.setIsDeletingBatch - Setter function for the isDeletingBatch flag.
+ * @param {boolean} props.config.isDeletingBatch - Flag indicating if the deletion process is ongoing.
+ * @param {string|Set<number|string>} props.config.selectedKeys - Selected requirement type IDs or "all".
+ * @param {Array<Object>} props.config.requirementTypes - Full list of requirement types available.
+ * @param {Function} props.config.deleteRequirementTypesBatch - Function to delete requirement types by ID array.
+ * @param {Function} props.config.setSelectedKeys - Function to reset the selected items.
+ * @param {string} props.config.check - Path or URL to the icon displayed on success toast.
+ *
+ * @returns {JSX.Element} Rendered DeleteModal component for confirming requirement type deletion.
  */
 function DeleteModal({ config }) {
   const {
@@ -38,6 +48,7 @@ function DeleteModal({ config }) {
 
   const handleDeleteBatch = useCallback(async () => {
     setIsDeletingBatch(true);
+
     const idsToDelete =
       selectedKeys === "all"
         ? requirementTypes.map((item) => item.id)
@@ -59,7 +70,7 @@ function DeleteModal({ config }) {
         setSelectedKeys(new Set());
         closeDeleteModal();
       } else {
-        toast.error(error || "No se pudo completar la eliminación.");
+        toast.error(error);
       }
     } catch (err) {
       console.error(err);
@@ -143,10 +154,17 @@ DeleteModal.propTypes = {
     setIsDeletingBatch: PropTypes.func.isRequired,
     isDeletingBatch: PropTypes.bool.isRequired,
     selectedKeys: PropTypes.oneOfType([
-      PropTypes.string,
+      PropTypes.string, // "all"
       PropTypes.instanceOf(Set),
     ]).isRequired,
-    requirementTypes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    requirementTypes: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        classification: PropTypes.string,
+      })
+    ).isRequired,
     deleteRequirementTypesBatch: PropTypes.func.isRequired,
     setSelectedKeys: PropTypes.func.isRequired,
     check: PropTypes.string.isRequired,

@@ -15,18 +15,34 @@ import check from "../../assets/check.png";
 /**
  * CreateModal component for Requirement Types
  *
- * Provides a form to create a new requirement type with fields for name, description and classification.
+ * This component provides a form to create a new requirement type, including fields for name, description, and classification.
+ * It validates the required fields and displays error messages accordingly.
+ * On submit, it triggers the addRequirementTypes function, and shows feedback via toast notifications.
  *
  * @component
  * @param {Object} props - Component properties.
- * @param {Object} props.config - Configuration for modal and form logic.
- * @returns {JSX.Element} Rendered CreateModal component
+ * @param {Object} props.config - Configuration object for the component.
+ * @param {boolean} props.config.isOpen - Controls whether the modal is open.
+ * @param {Function} props.config.closeModalCreate - Function to close the modal.
+ * @param {Function} props.config.addRequirementType - Function to create a new requirement type.
+ * @param {Object} props.config.formData - Object containing form values: name, description, classification.
+ * @param {string|null} props.config.nameError - Error message for the name input field.
+ * @param {string|null} props.config.descriptionError - Error message for the description input field.
+ * @param {string|null} props.config.classificationError - Error message for the classification input field.
+ * @param {Function} props.config.setNameError - Setter function for nameError.
+ * @param {Function} props.config.setDescriptionError - Setter function for descriptionError.
+ * @param {Function} props.config.setClassificationError - Setter function for classificationError.
+ * @param {Function} props.config.handleNameChange - Handler for name input change.
+ * @param {Function} props.config.handleDescriptionChange - Handler for description input change.
+ * @param {Function} props.config.handleClassificationChange - Handler for classification input change.
+ *
+ * @returns {JSX.Element} Rendered CreateModal component with form inputs and validations.
  */
 function CreateModal({ config }) {
   const {
     isOpen,
     closeModalCreate,
-    addRequirementTypes,
+    addRequirementType,
     formData,
     nameError,
     setNameError,
@@ -45,7 +61,9 @@ function CreateModal({ config }) {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!formData.name.trim()) {
+    const { name, description, classification } = formData;
+
+    if (!name.trim()) {
       setNameError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -53,7 +71,7 @@ function CreateModal({ config }) {
       setNameError(null);
     }
 
-    if (!formData.description.trim()) {
+    if (!description.trim()) {
       setDescriptionError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -61,7 +79,7 @@ function CreateModal({ config }) {
       setDescriptionError(null);
     }
 
-    if (!formData.classification.trim()) {
+    if (!classification.trim()) {
       setClassificationError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -70,7 +88,12 @@ function CreateModal({ config }) {
     }
 
     try {
-      const { success, error } = await addRequirementTypes(formData);
+      const requirementTypeData = { 
+        name, 
+        description, 
+        classification 
+      };
+      const { success, error } = await addRequirementType(requirementTypeData);
 
       if (success) {
         toast.info("El tipo de requerimiento ha sido creado correctamente", {
@@ -81,7 +104,7 @@ function CreateModal({ config }) {
         });
         closeModalCreate();
       } else {
-        toast.error(error || "No se pudo crear el tipo.");
+        toast.error(error);
       }
     } catch (err) {
       console.error(err);
@@ -129,6 +152,7 @@ function CreateModal({ config }) {
                     <p className="mt-2 text-sm text-red">{nameError}</p>
                   )}
                 </div>
+
                 <div className="w-full">
                   <Textarea
                     disableAnimation
@@ -166,6 +190,7 @@ function CreateModal({ config }) {
                     <p className="mt-2 text-sm text-red">{classificationError}</p>
                   )}
                 </div>
+
                 <div className="w-full mt-4">
                   <Button
                     type="submit"
@@ -189,20 +214,20 @@ CreateModal.propTypes = {
   config: PropTypes.shape({
     isOpen: PropTypes.bool.isRequired,
     closeModalCreate: PropTypes.func.isRequired,
-    addRequirementTypes: PropTypes.func.isRequired,
+    addRequirementType: PropTypes.func.isRequired,
     formData: PropTypes.shape({
-      name: PropTypes.string,
-      description: PropTypes.string,
-      classification: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      classification: PropTypes.string.isRequired,
     }).isRequired,
     nameError: PropTypes.string,
-    setNameError: PropTypes.func.isRequired,
-    handleNameChange: PropTypes.func.isRequired,
     descriptionError: PropTypes.string,
-    setDescriptionError: PropTypes.func.isRequired,
-    handleDescriptionChange: PropTypes.func.isRequired,
     classificationError: PropTypes.string,
+    setNameError: PropTypes.func.isRequired,
+    setDescriptionError: PropTypes.func.isRequired,
     setClassificationError: PropTypes.func.isRequired,
+    handleNameChange: PropTypes.func.isRequired,
+    handleDescriptionChange: PropTypes.func.isRequired,
     handleClassificationChange: PropTypes.func.isRequired,
   }).isRequired,
 };

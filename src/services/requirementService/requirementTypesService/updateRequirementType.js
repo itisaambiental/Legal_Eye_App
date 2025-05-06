@@ -19,7 +19,7 @@ import server from "../../../config/server.js";
 export default async function updateRequirementType({ id, name, description, classification, token }) {
   try {
     const response = await server.patch(
-      `/requirement-type/${id}`,
+      `/requirement-types/${id}`,
       { name, description, classification },
       {
         headers: {

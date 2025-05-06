@@ -11,8 +11,6 @@ class RequirementTypesErrors {
     static SERVER_ERROR = "SERVER_ERROR";
     static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
     static DUPLICATED_NAME = "DUPLICATED_NAME";
-    static ASSOCIATED_REQUIREMENTS = "ASSOCIATED_REQUIREMENTS";
-    static MULTIPLE_ASSOCIATED_REQUIREMENTS = "MULTIPLE_ASSOCIATED_REQUIREMENTS";
   
     /**
      * A map of error constants to user-friendly error objects.
@@ -57,20 +55,6 @@ class RequirementTypesErrors {
         title: "Nombre duplicado",
         message: "El nombre ya está en uso. Por favor, utilice otro.",
       },
-      [RequirementTypesErrors.ASSOCIATED_REQUIREMENTS]: {
-        title: "Asociación con Requerimientos",
-        message:
-          "Este tipo de requerimiento está vinculado a uno o más requerimientos legales y no puede ser eliminado.",
-      },
-      [RequirementTypesErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS]: {
-        title: "Asociación con Requerimientos",
-        message: ({ items }) =>
-          items.length === 1
-            ? `El tipo ${items[0]} está vinculado a uno o más requerimientos legales y no puede ser eliminado.`
-            : `Los tipos ${items.join(
-                ", "
-              )} están vinculados a uno o más requerimientos legales y no pueden ser eliminados.`,
-      },
     };
   
     /**
@@ -78,11 +62,7 @@ class RequirementTypesErrors {
      */
     static ErrorMessagesMap = {
       "Network Error": RequirementTypesErrors.NETWORK_ERROR,
-      "Requirement type already exists": RequirementTypesErrors.DUPLICATED_NAME,
-      "The requirement type is associated with one or more requirements":
-        RequirementTypesErrors.ASSOCIATED_REQUIREMENTS,
-      "Requirement types are associated with requirements":
-        RequirementTypesErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS,
+      "Requirement type name already exists": RequirementTypesErrors.DUPLICATED_NAME
     };
   
     /**
@@ -98,20 +78,8 @@ class RequirementTypesErrors {
       const message = error || httpError;
       if (message && RequirementTypesErrors.ErrorMessagesMap[message]) {
         const key = RequirementTypesErrors.ErrorMessagesMap[message];
-        const errorConfig = RequirementTypesErrors.errorMap[key];
-        if (
-          key === RequirementTypesErrors.MULTIPLE_ASSOCIATED_REQUIREMENTS &&
-          items &&
-          items.length > 0
-        ) {
-          return {
-            title: errorConfig.title,
-            message: errorConfig.message({ items }),
-          };
-        }
-        return errorConfig;
+        return RequirementTypesErrors.errorMap[key];
       }
-  
       switch (code) {
         case 400:
           return RequirementTypesErrors.errorMap[RequirementTypesErrors.VALIDATION_ERROR];

@@ -860,7 +860,7 @@ export default function Requirements() {
   const openModalDescription = (requirement, field, title) => {
     setSelectedRequirement({
       title: title,
-      description: requirement[field] || "No hay información disponible"
+      description: requirement[field]
     });
     setShowDescriptionModal(true);
   };

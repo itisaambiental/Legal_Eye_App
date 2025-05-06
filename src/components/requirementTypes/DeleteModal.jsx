@@ -105,10 +105,10 @@ function DeleteModal({ config }) {
           <>
             <ModalHeader className="text-center">
               {selectedKeys === "all"
-                ? "¿Deseas eliminar TODOS los tipos de requerimiento?"
+                ? "¿Estas seguro de que deseas eliminar TODOS los tipos de requerimiento?"
                 : selectedKeys.size <= 1
-                ? "¿Deseas eliminar este tipo de requerimiento?"
-                : "¿Deseas eliminar estos tipos de requerimiento?"}
+                ? "¿Estas seguro de que deseas eliminar este tipo de requerimiento?"
+                : "¿Estas seguro de que deseas eliminar estos tipos de requerimiento?"}
             </ModalHeader>
             <ModalBody className="text-center">
               <p className="mb-5 text-lg font-normal text-primary">

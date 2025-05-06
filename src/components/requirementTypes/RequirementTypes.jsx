@@ -261,27 +261,21 @@ export default function RequirementTypes() {
   const openModalDescription = (requirement, field, title) => {
     setSelectedRequirementType({
       title: title,
-      description: requirement[field] || "No hay información disponible"
+      description: requirement[field]
     });
     setShowDescriptionModal(true);
   };
-
 
   const closeModalDescription = () => {
     setShowDescriptionModal(false);
     setSelectedRequirementType(null);
   };
 
-
-
-
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
-
-
 
   const handleDelete = useCallback(
     async (requirementTypeId) => {
@@ -393,7 +387,7 @@ export default function RequirementTypes() {
                 (page - 1) * rowsPerPage,
                 page * rowsPerPage
               )}
-              emptyContent="No hay tipos para mostrar"
+              emptyContent="No hay tipos de requerimientos para mostrar"
             >
               {(requirementTypes) => (
                 <TableRow key={requirementTypes.id}>

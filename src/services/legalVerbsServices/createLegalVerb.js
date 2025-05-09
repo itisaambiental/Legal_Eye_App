@@ -36,8 +36,8 @@ export default async function createLegalVerb({
       throw new Error("Failed to create legal verb");
     }
 
-    const { LegalVerb } = response.data;
-    return LegalVerb;
+    const { legalVerb } = response.data;
+    return legalVerb;
   } catch (error) {
     console.error("Error creating legal verb: ", error);
     throw error;

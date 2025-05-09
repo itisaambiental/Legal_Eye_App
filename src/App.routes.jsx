@@ -15,6 +15,7 @@ import Aspects from './components/aspects/Aspects.jsx'
 import LegalBasis from './components/legalBasis/LegalBasis.jsx'
 import Requirements from './components/requirements/Requirements.jsx'
 import RequirementTypes from './components/requirementTypes/RequirementTypes.jsx'
+import LegalVerbs from './components/legalVerbs/LegalVerbs.jsx'
 import Articles from './components/articles/Articles.jsx'
 
 /**
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         <Route path="/legal_basis/:id/articles" element={<Articles />} />
         <Route path='/requirements' element={<Requirements />} />
         <Route path='/requirement_types' element={<RequirementTypes />} />
+        <Route path='/legal_verbs' element={<LegalVerbs/>} />
       </Route>
 
       {/* Error and Unauthorized routes */}

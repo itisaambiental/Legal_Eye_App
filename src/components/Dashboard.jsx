@@ -185,8 +185,8 @@ function Dashboard() {
               <Link
                 to="/subjects"
                 className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${/\/subjects(\/\d+\/aspects)?$/.test(location.pathname)
-                    ? "bg-white/20"
-                    : ""
+                  ? "bg-white/20"
+                  : ""
                   }`}
               >
                 <img
@@ -200,8 +200,8 @@ function Dashboard() {
               <Link
                 to="/legal_basis"
                 className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${/\/legal_basis(\/\d+\/articles)?$/.test(location.pathname)
-                    ? "bg-white/20"
-                    : ""
+                  ? "bg-white/20"
+                  : ""
                   }`}
               >
                 <img
@@ -226,8 +226,9 @@ function Dashboard() {
             </li>
             <li>
               <Link
-                className={'flex items-center p-2 text-white rounded-lg hover:bg-white/15 group'}
-              >
+                to="/legal_verbs"
+                className={`flex items-center p-2 text-white rounded-lg hover:bg-white/15 group ${location.pathname === "/legal_verbs" ? "bg-white/20" : ""
+                  }`}    >
                 <img
                   src={replace}
                   className="flex-shrink-0 w-5 h-5 transition duration-75"

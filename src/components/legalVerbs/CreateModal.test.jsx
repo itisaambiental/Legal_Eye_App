@@ -4,27 +4,27 @@ import "@testing-library/jest-dom";
 import { ToastContainer } from "react-toastify";
 import CreateModal from "./CreateModal";
 
-describe("CreateModal Component for RequirementTypes", () => {
+describe("CreateModal Component for LegalVerbs", () => {
   let config;
 
   beforeEach(() => {
     config = {
       isOpen: true,
       closeModalCreate: vi.fn(),
-      addRequirementType: vi.fn().mockResolvedValue({ success: true }),
+      addLegalVerb: vi.fn().mockResolvedValue({ success: true }),
       nameError: null,
       setNameError: vi.fn(),
       handleNameChange: vi.fn(),
       descriptionError: null,
       setDescriptionError: vi.fn(),
       handleDescriptionChange: vi.fn(),
-      classificationError: null,
-      setClassificationError: vi.fn(),
-      handleClassificationChange: vi.fn(),
+      translationError: null,
+      setTranslationError: vi.fn(),
+      handleTranslationChange: vi.fn(),
       formData: {
         name: "",
         description: "",
-        classification: "",
+        translation: "",
       },
     };
   });
@@ -33,12 +33,12 @@ describe("CreateModal Component for RequirementTypes", () => {
     render(<CreateModal config={config} />);
     expect(screen.getByLabelText("Nombre")).toBeInTheDocument();
     expect(screen.getByLabelText("Descripción")).toBeInTheDocument();
-    expect(screen.getByLabelText("Clasificación")).toBeInTheDocument();
+    expect(screen.getByLabelText("Traducción")).toBeInTheDocument();
   });
 
   it("validates that it cannot be sent if the fields are empty", async () => {
     render(<CreateModal config={config} />);
-    fireEvent.submit(screen.getByRole("button", { name: /crear tipo de requerimiento/i }));
+    fireEvent.submit(screen.getByRole("button", { name: /crear verbo legal/i }));
     await waitFor(() => {
       expect(config.setNameError).toHaveBeenCalledWith("Este campo es obligatorio");
     });
@@ -48,17 +48,17 @@ describe("CreateModal Component for RequirementTypes", () => {
     config.formData = {
       name: "Tipo 1",
       description: "Descripción",
-      classification: "Clase",
+      translation: "Clase",
     };
 
     render(<CreateModal config={config} />);
-    fireEvent.submit(screen.getByRole("button", { name: /crear tipo de requerimiento/i }));
+    fireEvent.submit(screen.getByRole("button", { name: /crear verbo legal/i }));
 
     await waitFor(() => {
-      expect(config.addRequirementType).toHaveBeenCalledWith({
+      expect(config.addLegalVerb).toHaveBeenCalledWith({
         name: "Tipo 1",
         description: "Descripción",
-        classification: "Clase",
+        translation: "Clase",
       });
       expect(config.closeModalCreate).toHaveBeenCalled();
     });
@@ -68,9 +68,9 @@ describe("CreateModal Component for RequirementTypes", () => {
     config.formData = {
       name: "Tipo 1",
       description: "Descripción",
-      classification: "Clase",
+      translation: "Clase",
     };
-    config.addRequirementType = vi.fn().mockResolvedValue({ success: false, error: "Error grave" });
+    config.addLegalVerb = vi.fn().mockResolvedValue({ success: false, error: "Error grave" });
 
     render(
       <>
@@ -79,7 +79,7 @@ describe("CreateModal Component for RequirementTypes", () => {
       </>
     );
 
-    fireEvent.submit(screen.getByRole("button", { name: /crear tipo de requerimiento/i }));
+    fireEvent.submit(screen.getByRole("button", { name: /crear verbo legal/i }));
 
     await waitFor(() => {
       expect(config.closeModalCreate).not.toHaveBeenCalled();

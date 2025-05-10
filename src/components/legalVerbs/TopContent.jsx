@@ -80,7 +80,7 @@ function TopContent({ config }) {
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <span className="text-default-400">
-          Tipos de requerimiento totales: {totalLegalVerbs}
+          Verbos legales totales: {totalLegalVerbs}
         </span>
         <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto sm:ml-auto">
           <label className="flex items-center text-default-400 gap-2">
@@ -100,7 +100,7 @@ function TopContent({ config }) {
             className="w-full sm:w-auto"
             endContent={<img src={mas_icon} alt="Icono de agregar" className="w-4 h-4" />}
           >
-            Nuevo Verbo Legal 
+            Nuevo Verbo Legal
           </Button>
         </div>
       </div>

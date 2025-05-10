@@ -1,5 +1,4 @@
-// src/services/requirementService/requirementTypesService/getRequirementTypesByClassification.js
-import server from "../../../config/server.js";
+import server from "../../config/server.js";
 
 /**
  * Retrieves requirement types by classification or partial classification.

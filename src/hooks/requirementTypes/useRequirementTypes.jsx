@@ -1,14 +1,14 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
-import createRequirementType from "../../services/requirementService/requirementTypesService/createRequirementType.js";
-import getRequirementTypes from "../../services/requirementService/requirementTypesService/getRequirementTypes.js";
-import getRequirementTypeById from "../../services/requirementService/requirementTypesService/getRequirementTypeById.js";
-import getRequirementTypesByName from "../../services/requirementService/requirementTypesService/getRequirementTypesByName.js";
-import getRequirementTypesByClassification from "../../services/requirementService/requirementTypesService/getRequirementTypesByClassification.js";
-import getRequirmentTypesByDescription from "../../services/requirementService/requirementTypesService/getRequirementTypesByDescription.js";
-import updateRequirementType from "../../services/requirementService/requirementTypesService/updateRequirementType.js";
-import deleteRequirementType from "../../services/requirementService/requirementTypesService/deleteRequirementType.js";
-import deleteRequirementTypesBatch from "../../services/requirementService/requirementTypesService/deleteRequirementTypesBatch.js";
+import createRequirementType from "../../services/requirementTypesService/createRequirementType.js";
+import getRequirementTypes from "../../services/requirementTypesService/getRequirementTypes.js";
+import getRequirementTypeById from "../../services/requirementTypesService/getRequirementTypeById.js";
+import getRequirementTypesByName from "../../services/requirementTypesService/getRequirementTypesByName.js";
+import getRequirementTypesByClassification from "../../services/requirementTypesService/getRequirementTypesByClassification.js";
+import getRequirmentTypesByDescription from "../../services/requirementTypesService/getRequirementTypesByDescription.js";
+import updateRequirementType from "../../services/requirementTypesService/updateRequirementType.js";
+import deleteRequirementType from "../../services/requirementTypesService/deleteRequirementType.js";
+import deleteRequirementTypesBatch from "../../services/requirementTypesService/deleteRequirementTypesBatch.js";
 import RequirementTypesErrors from "../../errors/requirements/RequirementTypesErrors.js";
 
 /**

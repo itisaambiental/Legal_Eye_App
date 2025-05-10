@@ -1,5 +1,4 @@
-// src/services/requirementService/requirementTypesService/getRequirementTypesByName.js
-import server from "../../../config/server.js";
+import server from "../../config/server.js";
 
 /**
  * Retrieves requirement types by name or partial name.

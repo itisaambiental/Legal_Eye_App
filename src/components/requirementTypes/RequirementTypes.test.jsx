@@ -2,10 +2,10 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import RequirementTypes from "./RequirementTypes";
-import useRequirementTypes from "../../hooks/requirement/useRequirementTypes";
+import useRequirementTypes from "../../hooks/requirementTypes/useRequirementTypes";
 import { vi } from "vitest";
 
-vi.mock("../../hooks/requirement/useRequirementTypes");
+vi.mock("../../hooks/requirementTypes/useRequirementTypes");
 
 describe("RequirementTypes Component", () => {
   const mockRequirementTypes = [

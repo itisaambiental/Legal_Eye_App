@@ -1,5 +1,4 @@
-// src/services/requirementService/requirementTypesService/getRequirementTypesByDescription.js
-import server from "../../../config/server.js";
+import server from "../../config/server.js";
 
 /**
  * Retrieves requirement types by description or partial description.

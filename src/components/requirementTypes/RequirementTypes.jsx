@@ -10,11 +10,11 @@ import {
   Button,
   Tooltip,
 } from "@heroui/react";
-import useRequirementTypes from "../../hooks/requirement/useRequirementTypes";
+import useRequirementTypes from "../../hooks/requirementTypes/useRequirementTypes";
 import TopContent from "./TopContent";
 import RequirementTypeCell from "./RequirementTypeCell";
 import BottomContent from "../utils/BottomContent";
-import DescriptionModal from "../requirements/TextArea/DescriptionModal.jsx";
+import DescriptionModal from "./TextArea/DescriptionModal";
 import Error from "../utils/Error";
 import CreateModal from "./CreateModal";
 import EditModal from "./EditModal";

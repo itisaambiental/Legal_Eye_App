@@ -1,5 +1,4 @@
-// src/services/requirementService/requirementTypesService/getRequirementTypeById.js
-import server from "../../../config/server.js";
+import server from "../../config/server.js";
 
 /**
  * Retrieves a specific requirement type by its ID.

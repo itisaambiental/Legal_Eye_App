@@ -9,7 +9,7 @@ import getRequirmentTypesByDescription from "../../services/requirementTypesServ
 import updateRequirementType from "../../services/requirementTypesService/updateRequirementType.js";
 import deleteRequirementType from "../../services/requirementTypesService/deleteRequirementType.js";
 import deleteRequirementTypesBatch from "../../services/requirementTypesService/deleteRequirementTypesBatch.js";
-import RequirementTypesErrors from "../../errors/requirements/RequirementTypesErrors.js";
+import RequirementTypesErrors from "../../errors/requirementTypes/RequirementTypesErrors.js";
 
 /**
  * Custom hook for managing requirement types and performing CRUD operations.

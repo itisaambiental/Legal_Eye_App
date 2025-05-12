@@ -9,17 +9,13 @@ import getRequirementsBySubject from "../../services/requirementService/getRequi
 import getRequirementsBySubjectAndAspects from "../../services/requirementService/getRequirementsBySubjectAndAspects";
 import getRequirementsByComplementaryDescription from "../../services/requirementService/getRequirementsByComplementaryDescription";
 import getRequirementsByComplementaryKeywords from "../../services/requirementService/getRequirementsByComplementaryKeywords";
-import getRequirementsByType from "../../services/requirementService/ getRequirementsByType"
 import getRequirementsByComplementarySentences from "../../services/requirementService/getRequirementsByComplementarySentences";
 import getRequirementsByCondition from "../../services/requirementService/getRequirementsByCondition";
 import getRequirementsByEvidence from "../../services/requirementService/getRequirementsByEvidence";
-import getRequirementsByJurisdiction from "../../services/requirementService/getRequirementsByJurisdiction";
 import getRequirementsByMandatoryDescription from "../../services/requirementService/getRequirementsByMandatoryDescription";
 import getRequirementsByMandatoryKeywords from "../../services/requirementService/getRequirementsByMandatoryKeywords";
 import getRequirementsByMandatorySentences from "../../services/requirementService/getRequirementsByMandatorySentences";
 import getRequirementsByPeriodicity from "../../services/requirementService/getRequirementsByPeriodicity";
-import getRequirementsByState from "../../services/requirementService/getRequirementsByState";
-import getRequirementsByStateAndMunicipalities from "../../services/requirementService/getRequirementsByStateAndMunicipalities";
 import updateRequirement from "../../services/requirementService/updateRequirement";
 import deleteRequirement from "../../services/requirementService/deleteRequirement";
 import delereRequirementBatch from "../../services/requirementService/deleteRequirementBatch";
@@ -42,7 +38,7 @@ export default function useRequirement() {
   * @function addRequirement
   * @param {Object} params - Parameters for creating a requirement.
   * @param {string} params.subjectId - ID of the subject linked to the requirement.
-  * @param {string} params.aspectId - ID of the aspect linked to the requirement.
+  * @param {string} params.aspectsIds - An array of aspect IDs linked to the requirement.
   * @param {string} params.requirementNumber - Unique number of the requirement.
   * @param {string} params.requirementName - Name/title of the requirement.
   * @param {string} params.mandatoryDescription - Mandatory description.
@@ -54,16 +50,12 @@ export default function useRequirement() {
   * @param {string} params.condition - Requirement condition ('Critical', 'Operational', 'Recommendation', 'Pending').
   * @param {string} params.evidence - Type of evidence required ('Procedure', 'Record', 'Specific', 'Document').
   * @param {string} params.periodicity - Periodicity ('Annual', '2 years', 'Per event', 'One-time').
-  * @param {string} params.requirementType - Type of requirement.
-  * @param {string} params.jurisdiction - Jurisdiction ('Federal', 'State', 'Local').
-  * @param {string} [params.state] - State associated with the requirement (optional).
-  * @param {string} [params.municipality] - Municipality associated with the requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with `success` and `data` or `error`.
   */
   const addRequirement = useCallback(
     async ({
       subjectId,
-      aspectId,
+      aspectsIds,
       requirementNumber,
       requirementName,
       mandatoryDescription,
@@ -74,16 +66,13 @@ export default function useRequirement() {
       complementaryKeywords = null,
       condition,
       evidence,
-      periodicity,
-      requirementType,
-      jurisdiction,
-      state = null,
-      municipality = null,
+      specifyEvidence,
+      periodicity
     }) => {
       try {
         const newRequirement = await createRequirement({
           subjectId,
-          aspectId,
+          aspectsIds,
           requirementNumber,
           requirementName,
           mandatoryDescription,
@@ -94,11 +83,8 @@ export default function useRequirement() {
           complementaryKeywords,
           condition,
           evidence,
+          specifyEvidence,
           periodicity,
-          requirementType,
-          jurisdiction,
-          state,
-          municipality,
           token: jwt,
         });
         setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
@@ -128,7 +114,7 @@ export default function useRequirement() {
     setStateRequirements({ loading: true, error: null });
     try {
       const requirements = await getRequirements({ token: jwt });
-      setRequirements(requirements.reverse());
+      setRequirements(requirements);
       setStateRequirements({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
@@ -193,7 +179,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByName({ name: requirementName, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -227,7 +213,7 @@ export default function useRequirement() {
           number: requirementNumber,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -261,7 +247,7 @@ export default function useRequirement() {
           subjectId,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -291,15 +277,15 @@ export default function useRequirement() {
    * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
    */
   const fetchRequirementsBySubjectAndAspects = useCallback(
-    async (subjectId, aspectIds) => {
+    async (subjectId, aspectsIds) => {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsBySubjectAndAspects({
           subjectId,
-          aspectIds,
+          aspectsIds,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -312,50 +298,12 @@ export default function useRequirement() {
         });
         setStateRequirements({
           loading: false,
-          error: handledError,
+          error: handledError,aspectsIds
         });
       }
     },
     [jwt]
   );
-  /**
- * Fetches the list of Requirements by Complementary Description.
- * @async
- * @function fetchRequirementsByType
- * @param {string} requirementType - The complementary description of the requirement.
- * @returns {Promise<void>} - Updates the requirements list and loading state.
- */
-
-  const fetchRequirementsByType = useCallback(
-    async (requirementType) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByType({
-          requirementType,
-          token: jwt
-        });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError,
-        });
-      }
-    },
-    [jwt]
-  );
-
-
-
 
   /**
    * Fetches the list of Requirements by Complementary Description.
@@ -372,7 +320,7 @@ export default function useRequirement() {
           description: complementaryDescription,
           token: jwt
         });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -401,7 +349,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByComplementaryKeywords({ keyword: complementaryKeywords, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -433,7 +381,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByComplementarySentences({ sentence: complementarySentences, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -462,7 +410,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByCondition({ condition, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -491,7 +439,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByEvidence({ evidence, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -509,34 +457,6 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
-  /**
-   * Fetches the list of Requirements by Jurisdiction.
-   * @async
-   * @function fetchRequirementsByJurisdiction
-   * @param {string} jurisdiction - The jurisdiction of the requirement.
-   */
-  const fetchRequirementsByJurisdiction = useCallback(
-    async (jurisdiction) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByJurisdiction({ jurisdiction, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError,
-        });
-      }
-    }, [jwt]);
 
   /**
    * Fetches the list of Requirements by Mandatory Description.
@@ -550,7 +470,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatoryDescription({ description: mandatoryDescription, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -579,7 +499,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatoryKeywords({ keyword: mandatoryKeywords, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -608,7 +528,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByMandatorySentences({ sentence: mandatorySentences, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -637,7 +557,7 @@ export default function useRequirement() {
       setStateRequirements({ loading: true, error: null });
       try {
         const requirements = await getRequirementsByPeriodicity({ periodicity, token: jwt });
-        setRequirements(requirements.reverse());
+        setRequirements(requirements);
         setStateRequirements({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -655,63 +575,6 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
-  /**
-   * Fetches the list of Requirements by State.
-   * @async
-   * @function fetchRequirementsByState
-   * @param {string} state - The state where the requirement applies.
-   */
-  const fetchRequirementsByState = useCallback(
-    async (state) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByState({ state, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError
-        });
-      }
-    }, [jwt]);
-  /**
-   * Fetches the list of Requirements by State and Municipalities.
-   * @async
-   * @function fetchRequirementsByStateAndMunicipalities
-   * @param {string} state - The state where the requirement applies.
-   * @param {Array<string>} municipalities - The municipalities where the requirement applies.
-   */
-  const fetchRequirementsByStateAndMunicipalities = useCallback(
-    async (state, municipalities) => {
-      setStateRequirements({ loading: true, error: null });
-      try {
-        const requirements = await getRequirementsByStateAndMunicipalities({ state, municipalities, token: jwt });
-        setRequirements(requirements.reverse());
-        setStateRequirements({ loading: false, error: null });
-      } catch (error) {
-        const errorCode = error.response?.status;
-        const serverMessage = error.response?.data?.message;
-        const clientMessage = error.message;
-        const handledError = RequirementErrors.handleError({
-          code: errorCode,
-          error: serverMessage,
-          httpError: clientMessage,
-        });
-        setStateRequirements({
-          loading: false,
-          error: handledError
-        });
-      }
-    }, [jwt]);
 
   /**
   * Updates an existing Requirement by ID.
@@ -720,7 +583,7 @@ export default function useRequirement() {
   * @param {Object} params - The data to update an existing Requirement.
   * @param {string} params.id - The ID of the requirement to update.
   * @param {string} [params.subjectId] - The new subject ID (optional).
-  * @param {string} [params.aspectId] - The new aspect ID (optional).
+   * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
   * @param {string} [params.requirementNumber] - The new requirement number (optional).
   * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
   * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
@@ -732,10 +595,6 @@ export default function useRequirement() {
   * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
   * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
   * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
-  * @param {string} [params.requirementType] - The new type of requirement (optional).
-  * @param {string} [params.jurisdiction] - The new jurisdiction ('Federal', 'Estatal', 'Local') (optional).
-  * @param {string} [params.state] - The new state associated with the requirement (optional).
-  * @param {string} [params.municipality] - The new municipality associated with the requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
   * @throws {Object} - Returns an error message if the update fails.
   */
@@ -743,7 +602,7 @@ export default function useRequirement() {
     async ({
       id,
       subjectId,
-      aspectId,
+      aspectsIds,
       requirementNumber,
       requirementName,
       mandatoryDescription,
@@ -754,17 +613,14 @@ export default function useRequirement() {
       complementaryKeywords,
       condition,
       evidence,
-      periodicity,
-      requirementType,
-      jurisdiction,
-      state,
-      municipality,
+      specifyEvidence,
+      periodicity
     }) => {
       try {
         const requirement = await updateRequirement({
           id,
           subjectId,
-          aspectId,
+          aspectsIds,
           requirementNumber,
           requirementName,
           mandatoryDescription,
@@ -775,11 +631,8 @@ export default function useRequirement() {
           complementaryKeywords,
           condition,
           evidence,
+          specifyEvidence,
           periodicity,
-          requirementType,
-          jurisdiction,
-          state,
-          municipality,
           token: jwt,
         });
         setRequirements((prevRequirements) =>
@@ -872,8 +725,6 @@ export default function useRequirement() {
     fetchRequirementsBySubjectAndAspects,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsByEvidence,
-    fetchRequirementsByJurisdiction,
-    fetchRequirementsByType,
     fetchRequirementsByComplementaryDescription,
     fetchRequirementsByComplementaryKeywords,
     fetchRequirementsByComplementarySentences,
@@ -881,8 +732,6 @@ export default function useRequirement() {
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByMandatorySentences,
     fetchRequirementsByPeriodicity,
-    fetchRequirementsByState,
-    fetchRequirementsByStateAndMunicipalities,
     addRequirement,
     modifyRequirement,
     removeRequirement,

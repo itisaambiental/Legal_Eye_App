@@ -18,6 +18,8 @@ class LegalBasisErrors {
   static ARTICLE_EXTRACTION_JOBS_CONFLICT = "ARTICLE_EXTRACTION_JOBS_CONFLICT";
   static MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT = "MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT";
   static ARTICLES_EXTRACTION_CONFLICT = "ARTICLES_EXTRACTION_CONFLICT";
+  static SEND_LEGAL_BASIS_JOBS_CONFLICT = "SEND_LEGAL_BASIS_JOBS_CONFLICT";
+  static MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT = "MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT";
   static DOCUMENT_CONFLICT = "DOCUMENT_CONFLICT";
   static REMOVE_DOCUMENT_PENDING_CONFLICT = "REMOVE_DOCUMENT_PENDING_CONFLICT";
   static NEW_DOCUMENT_PENDING_CONFLICT = "NEW_DOCUMENT_PENDING_CONFLICT";
@@ -29,62 +31,91 @@ class LegalBasisErrors {
   static errorMap = {
     [LegalBasisErrors.NETWORK_ERROR]: {
       title: "Error de conexión",
-      message: "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.",
+      message:
+        "Hubo un problema de red. Verifique su conexión a internet e intente nuevamente.",
     },
     [LegalBasisErrors.UNAUTHORIZED]: {
       title: "Acceso no autorizado",
-      message: "No tiene permisos para realizar esta acción. Verifique su sesión.",
+      message:
+        "No tiene permisos para realizar esta acción. Verifique su sesión.",
     },
     [LegalBasisErrors.SERVER_ERROR]: {
       title: "Error interno del servidor",
-      message: "Hubo un error en el servidor. Espere un momento e intente nuevamente.",
+      message:
+        "Hubo un error en el servidor. Espere un momento e intente nuevamente.",
     },
     [LegalBasisErrors.VALIDATION_ERROR]: {
       title: "Error de validación",
-      message: "Revisa los datos introducidos. Uno o más campos no son válidos.",
+      message:
+        "Revisa los datos introducidos. Uno o más campos no son válidos.",
     },
     [LegalBasisErrors.NOT_FOUND]: {
       title: "Fundamento legal no encontrado",
-      message: "El fundamento legal no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.",
+      message:
+        "El fundamento legal no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.",
     },
     [LegalBasisErrors.MULTIPLE_NOT_FOUND]: {
       title: "Varios fundamentos legales no encontrados",
-      message: "Uno o más fundamentos legales no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
+      message:
+        "Uno o más fundamentos legales no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
     },
     [LegalBasisErrors.SUBJECT_NOT_FOUND]: {
       title: "Materia no encontrada",
-      message: "La materia seleccionada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
+      message:
+        "La materia seleccionada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
     },
     [LegalBasisErrors.ASPECTS_NOT_FOUND]: {
       title: "Aspectos no encontrados",
-      message: "Algunos aspectos seleccionados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
+      message:
+        "Algunos aspectos seleccionados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
     },
     [LegalBasisErrors.DUPLICATED_NAME]: {
       title: "Nombre duplicado",
-      message: "Ya existe un fundamento legal con el mismo nombre. Por favor, utiliza otro.",
+      message:
+        "Ya existe un fundamento legal con el mismo nombre. Por favor, utiliza otro.",
     },
     [LegalBasisErrors.DUPLICATED_ABBREVIATION]: {
       title: "Abreviatura duplicada",
-      message: "Ya existe un fundamento legal con la misma abreviatura. Por favor, utiliza otra.",
-    },    
+      message:
+        "Ya existe un fundamento legal con la misma abreviatura. Por favor, utiliza otra.",
+    },
     [LegalBasisErrors.DOCUMENT_REQUIRED]: {
       title: "Documento requerido",
-      message: "Debe proporcionarse un documento si se desea extraer artículos.",
+      message:
+        "Debe proporcionarse un documento si se desea extraer artículos.",
     },
     [LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
-      message: "El fundamento legal no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
+      message:
+        "El fundamento legal no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
     },
     [LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
       message: ({ items }) =>
         items.length === 1
           ? `El fundamento legal ${items[0]} no puede ser eliminado porque se están extrayendo artículos de su documento asociado.`
-          : `Los fundamentos legales ${items.join(", ")} no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados.`,
+          : `Los fundamentos legales ${items.join(
+              ", "
+            )} no pueden ser eliminados porque se están extrayendo artículos de sus documentos asociados.`,
     },
     [LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT]: {
       title: "Conflicto de extracción de artículos",
-      message: "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de el documento asociado.",
+      message:
+        "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de el documento asociado.",
+    },
+    [LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de envío",
+      message:
+        "El fundamento legal no puede ser eliminado porque en este momento se está enviando a ACM Suite.",
+    },
+    [LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de envío",
+      message: ({ items }) =>
+        items.length === 1
+          ? `El fundamento legal ${items[0]} no puede ser eliminado porque en este momento se está enviando a ACM Suite.`
+          : `Los fundamentos legales ${items.join(
+              ", "
+            )} no pueden ser eliminados porque en este momento se están enviando a ACM Suite.`,
     },
     [LegalBasisErrors.DOCUMENT_CONFLICT]: {
       title: "Conflicto con el documento",
@@ -92,19 +123,23 @@ class LegalBasisErrors {
     },
     [LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT]: {
       title: "Conflicto al eliminar el documento",
-      message: "El documento no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
+      message:
+        "El documento no puede ser eliminado porque en este momento se están extrayendo artículos de su documento asociado.",
     },
     [LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT]: {
       title: "Conflicto al subir un nuevo documento",
-      message: "No se puede subir un nuevo documento porque en este momento se están extrayendo artículos de su documento asociado.",
+      message:
+        "No se puede subir un nuevo documento porque en este momento se están extrayendo artículos de su documento asociado.",
     },
-    [LegalBasisErrors.CONFLICT]: { 
+    [LegalBasisErrors.CONFLICT]: {
       title: "Conflicto detectado",
-      message: "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
     },
     [LegalBasisErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
-      message: "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
+      message:
+        "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
     },
   };
 
@@ -124,6 +159,8 @@ class LegalBasisErrors {
     "Aspects not found for IDs": LegalBasisErrors.ASPECTS_NOT_FOUND,
     "Cannot delete LegalBasis with pending Article Extraction jobs": LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT,
     "Cannot delete Legal Bases with pending Article Extraction jobs": LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT,
+    "Cannot delete LegalBasis with pending Send Legal Basis jobs": LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT,
+    "Cannot delete Legal Bases with pending Send Legal Basis jobs": LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
   };
 
   /**
@@ -142,7 +179,8 @@ class LegalBasisErrors {
       const key = LegalBasisErrors.ErrorMessagesMap[message];
       const errorConfig = LegalBasisErrors.errorMap[key];
       if (
-        key === LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT &&
+        (key === LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT ||
+          key === LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT) &&
         items &&
         items.length > 0
       ) {
@@ -164,7 +202,9 @@ class LegalBasisErrors {
           if (items.length === 1) {
             return LegalBasisErrors.errorMap[LegalBasisErrors.NOT_FOUND];
           } else {
-            return LegalBasisErrors.errorMap[LegalBasisErrors.MULTIPLE_NOT_FOUND];
+            return LegalBasisErrors.errorMap[
+              LegalBasisErrors.MULTIPLE_NOT_FOUND
+            ];
           }
         }
         return LegalBasisErrors.errorMap[LegalBasisErrors.MULTIPLE_NOT_FOUND];

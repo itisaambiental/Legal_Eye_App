@@ -92,6 +92,8 @@ function DeleteModal({ config }) {
       onOpenChange={closeDeleteModal}
       backdrop="opaque"
       placement="center"
+      hideCloseButton={true}
+      isDismissable={false} 
       classNames={{
         closeButton: "hover:bg-primary/20 text-primary active:bg-primary/10",
       }}
@@ -116,6 +118,7 @@ function DeleteModal({ config }) {
               <Button
                 onPress={handleDeleteBatch}
                 color="primary"
+                isDisabled={isDeletingBatch}
                 className="text-white bg-primary hover:bg-primary/90 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 mr-3"
                 auto
               >
@@ -129,6 +132,7 @@ function DeleteModal({ config }) {
                 onPress={closeDeleteModal}
                 color="default"
                 variant="light"
+                isDisabled={isDeletingBatch}
                 className="py-2.5 px-5 text-sm font-medium text-primary bg-white rounded-lg border border-gray-200 hover:bg-primary/10 hover:text-primary"
                 auto
               >

@@ -16,7 +16,7 @@ import delete_icon from "../../assets/eliminar.png";
  * SubjectCell component
  *
  * Functional component used for rendering table cells for the "subject" data type.
- * It supports rendering based on specific column keys such as "subject_name" and "actions".
+ * It supports rendering based on specific column keys such as "subject_order", "subject_name", "subject_abbreviation" and "actions".
  * Actions include navigating to aspects, editing, and deleting subjects.
  *
  * @component
@@ -39,9 +39,18 @@ const SubjectCell = ({
 }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
+      case "subject_order":
+        return (
+          <p className="text-sm font-normal">{subject.order_index || 0}</p>
+        );
       case "subject_name":
         return (
           <p className="text-sm font-normal">{subject.subject_name || "N/A"}</p>
+        );
+
+      case "subject_abbreviation":
+        return (
+          <p className="text-sm font-normal">{subject.abbreviation || "N/A"}</p>
         );
 
       case "actions":
@@ -125,6 +134,8 @@ SubjectCell.propTypes = {
   subject: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     subject_name: PropTypes.string,
+    order_index: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    abbreviation: PropTypes.string,
   }).isRequired,
   columnKey: PropTypes.string.isRequired,
   goToAspects: PropTypes.func.isRequired,

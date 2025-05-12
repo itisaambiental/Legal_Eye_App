@@ -9,6 +9,8 @@ import server from "../../config/server.js";
  * @param {Object} params - Parameters for creating a new aspect.
  * @param {number} params.subjectId - The ID of the subject to link this aspect to.
  * @param {string} params.aspectName - The name of the aspect.
+ * @param {number} params.order - The order number of the aspect.
+ * @param {string} params.abbreviation - The abbreviation of the aspect.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} The created aspect data returned from the server.
@@ -17,21 +19,25 @@ import server from "../../config/server.js";
 export default async function createNewAspect({
   subjectId,
   aspectName,
+  order: orderIndex,
+  abbreviation,
   token,
 }) {
   try {
     const response = await server.post(
       `/subjects/${subjectId}/aspects`,
-      { aspectName },
+      { aspectName, orderIndex, abbreviation },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
+
     if (response.status !== 201) {
       throw new Error("Failed to create aspect");
     }
+
     const { aspect } = response.data;
     return aspect;
   } catch (error) {

@@ -27,7 +27,7 @@ export default function useUsers() {
     setStateUsers({ loading: true, error: null });
     try {
       const users = await getUsers({ token: jwt });
-      setUsers(users.reverse());
+      setUsers(users);
       setStateUsers({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
@@ -83,7 +83,7 @@ export default function useUsers() {
 
       try {
         const users = await getUserByRoleId({ roleId, token: jwt });
-        setUsers(users.reverse());
+        setUsers(users);
         setStateUsers({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -115,7 +115,7 @@ export default function useUsers() {
           nameOrEmail,
           token: jwt,
         });
-        setUsers(users.reverse());
+        setUsers(users);
         setStateUsers({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;

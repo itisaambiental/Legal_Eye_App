@@ -9,7 +9,7 @@ import server from "../../config/server.js";
  * @param {Object} params - Parameters for updating a requirement.
  * @param {string} params.id - The ID of the requirement to update.
  * @param {string} [params.subjectId] - The ID of the subject linked to the requirement (optional).
- * @param {string} [params.aspectId] - The ID of the aspect linked to the requirement (optional).
+ * @param {Array<string>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
  * @param {string} [params.requirementNumber] - The unique number identifying the requirement (optional).
  * @param {string} [params.requirementName] - The name/title of the requirement (optional).
  * @param {string} [params.mandatoryDescription] - The mandatory description of the requirement (optional).
@@ -21,10 +21,6 @@ import server from "../../config/server.js";
  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
- * @param {string} [params.requirementType] - The type of requirement (optional).
- * @param {string} [params.jurisdiction] - The jurisdiction ('Federal', 'Estatal', 'Local') (optional).
- * @param {string} [params.state] - The state associated with the requirement (optional).
- * @param {string} [params.municipality] - The municipality associated with the requirement (optional).
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} - The updated requirement data returned from the server.
@@ -33,7 +29,7 @@ import server from "../../config/server.js";
 export default async function updateRequirement({
   id,
   subjectId,
-  aspectId,
+  aspectsIds,
   requirementNumber,
   requirementName,
   mandatoryDescription,
@@ -44,17 +40,14 @@ export default async function updateRequirement({
   complementaryKeywords,
   condition,
   evidence,
+  specifyEvidence,
   periodicity,
-  requirementType,
-  jurisdiction,
-  state,
-  municipality,
   token,
 }) {
   try {
     const data = {
       ...(subjectId && { subjectId }),
-      ...(aspectId && { aspectId }),
+      ...(aspectsIds && { aspectsIds: JSON.stringify(aspectsIds.map(Number)) }), 
       ...(requirementNumber && { requirementNumber }),
       ...(requirementName && { requirementName }),
       ...(mandatoryDescription && { mandatoryDescription }),
@@ -65,13 +58,9 @@ export default async function updateRequirement({
       ...(complementaryKeywords && { complementaryKeywords }),
       ...(condition && { condition }),
       ...(evidence && { evidence }),
-      ...(periodicity && { periodicity }),
-      ...(requirementType && { requirementType }),
-      ...(jurisdiction && { jurisdiction }),
-      ...(state && { state }),
-      ...(municipality && { municipality }),
+      ...(specifyEvidence && { specifyEvidence }),
+      ...(periodicity && { periodicity })
     };
-
     const response = await server.patch(`/requirement/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,

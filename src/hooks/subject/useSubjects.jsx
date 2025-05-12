@@ -32,7 +32,7 @@ export default function useSubjects() {
     setStateSubjects({ loading: true, error: null });
     try {
       const subjects = await getSubjects(jwt);
-      setSubjects(subjects.reverse());
+      setSubjects(subjects);
       setStateSubjects({ loading: false, error: null });
     } catch (error) {
       const errorCode = error.response?.status;
@@ -79,33 +79,64 @@ export default function useSubjects() {
   );
 
   /**
-   * Adds a new subject to the list.
+   * Adds a new subject to the list, inserting it in the correct order.
    * @async
    * @function addSubject
-   * @param {string} subjectName - The name of the subject to add.
+   * @param {Object} params - Parameters for the subject to add.
+   * @param {string} params.subjectName - The name of the subject.
+   * @param {number} params.order - The order number of the subject.
+   * @param {string} params.abbreviation - The abbreviation of the subject.
    * @returns {Promise<Object>} - Result of the operation with success status and subject or error message.
    * @throws {Object} - Returns an error message if the addition fails.
    */
   const addSubject = useCallback(
-    async (subjectName) => {
+    async ({ subjectName, order, abbreviation }) => {
       try {
-        const newSubject = await createNewSubject({ subjectName, token: jwt });
-        setSubjects((prevSubjects) => [newSubject, ...prevSubjects]);
+        const newSubject = await createNewSubject({
+          subjectName,
+          order,
+          abbreviation,
+          token: jwt,
+        });
+
+        setSubjects((prevSubjects) => {
+          const updatedSubjects = [...prevSubjects];
+          const findInsertIndex = (subjects, newOrderIndex) => {
+            let left = 0;
+            let right = subjects.length;
+            while (left < right) {
+              const mid = Math.floor((left + right) / 2);
+              if (subjects[mid].order_index < newOrderIndex) {
+                left = mid + 1;
+              } else {
+                right = mid;
+              }
+            }
+            return left;
+          };
+          const insertIndex = findInsertIndex(updatedSubjects, newSubject.order_index);
+          updatedSubjects.splice(insertIndex, 0, newSubject);
+          return updatedSubjects;
+        });
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+
         const handledError = SubjectErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
         });
+
         return { success: false, error: handledError.message };
       }
     },
     [jwt]
   );
+
+
 
   /**
    * Fetches a specific subject by its name.
@@ -119,7 +150,7 @@ export default function useSubjects() {
       setStateSubjects({ loading: true, error: null });
       try {
         const subjects = await getSubjectsByName({ subjectName, token: jwt });
-        setSubjects(subjects.reverse());
+        setSubjects(subjects);
         setStateSubjects({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -140,43 +171,70 @@ export default function useSubjects() {
   );
 
   /**
-   * Updates an existing subject by ID.
-   * @async
-   * @function modifySubject
-   * @param {number} id - The ID of the subject to update.
-   * @param {string} subjectName - The new name of the subject.
-   * @returns {Promise<Object>} - Result of the operation with success status and updated subject or error message.
-   * @throws {Object} - Returns an error message if the update fails.
-   */
+  * Updates an existing subject by ID and reorders the subjects list if the order is updated.
+  * 
+  * @async
+  * @function modifySubject
+  * @param {Object} params - Parameters for the subject to add.
+  * @param {number} params.id - The ID of the subject to update.
+  * @param {string} params.subjectName - The name of the subject.
+  * @param {number} params.order - The order number of the subject.
+  * @param {string} params.abbreviation - The abbreviation of the subject.
+  * @returns {Promise<Object>} - Result of the operation with success status and updated subject or error message.
+  */
   const modifySubject = useCallback(
-    async (id, subjectName) => {
+    async ({ id, subjectName, order, abbreviation }) => {
       try {
         const updatedSubject = await updateSubject({
           id,
           subjectName,
+          order,
+          abbreviation,
           token: jwt,
         });
-        setSubjects((prevSubjects) =>
-          prevSubjects.map((subject) =>
-            subject.id === id ? updatedSubject : subject
-          )
-        );
+        setSubjects((prevSubjects) => {
+          const updatedSubjects = prevSubjects.filter((s) => s.id !== id);
+
+          const findInsertIndex = (subjects, newOrderIndex) => {
+            let left = 0;
+            let right = subjects.length;
+            while (left < right) {
+              const mid = Math.floor((left + right) / 2);
+              if (subjects[mid].order_index < newOrderIndex) {
+                left = mid + 1;
+              } else {
+                right = mid;
+              }
+            }
+            return left;
+          };
+
+          const insertIndex = findInsertIndex(updatedSubjects, updatedSubject.order_index);
+          updatedSubjects.splice(insertIndex, 0, updatedSubject);
+
+          return updatedSubjects;
+        });
+
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+
         const handledError = SubjectErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
           items: [id],
         });
+
         return { success: false, error: handledError.message };
       }
     },
     [jwt]
   );
+
+
 
   /**
    * Deletes an existing subject by ID.

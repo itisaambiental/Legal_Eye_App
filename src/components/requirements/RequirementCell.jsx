@@ -63,16 +63,14 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
       case "evidence":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-              {requirement.evidence || "N/A"}
+              {requirement.formatted_evidence || requirement.evidence || "N/A"}
             </p>
           </div>
         );
-
       case "periodicity":
         return (
           <div className="flex flex-col">
@@ -81,43 +79,6 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
-      case "requirement_type":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.requirement_type || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "jurisdiction":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.jurisdiction || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "state":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.state || "N/A"}
-            </p>
-          </div>
-        );
-
-      case "municipality":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">
-              {requirement.municipality || "N/A"}
-            </p>
-          </div>
-        );
-
       case "subject":
         return (
           <div className="flex flex-col">
@@ -126,16 +87,19 @@ const RequirementCell = ({
             </p>
           </div>
         );
-
-      case "aspect":
+      case "aspects":
         return (
           <div className="flex flex-col">
             <p className="text-bold text-sm capitalize">
-            {requirement.aspect?.aspect_name || "N/A"}
+              {requirement.aspects?.map((aspect, index) => (
+                <span key={aspect.aspect_id}>
+                  {aspect.aspect_name}
+                  {index < requirement.aspects.length - 1 ? ", " : ""}
+                </span>
+              )) || "N/A"}
             </p>
           </div>
         );
-
       case "mandatory_description":
         return (
           <div className="flex items-center justify-center">
@@ -313,10 +277,6 @@ RequirementCell.propTypes = {
     requirement_condition: PropTypes.string,
     evidence: PropTypes.string,
     periodicity: PropTypes.string,
-    requirement_type: PropTypes.string,
-    jurisdiction: PropTypes.string,
-    state: PropTypes.string,
-    municipality: PropTypes.string,
     subject: PropTypes.shape({
       subject_name: PropTypes.string,
     }),

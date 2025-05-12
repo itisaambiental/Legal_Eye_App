@@ -18,15 +18,17 @@ import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import { useFiles } from "../../hooks/files/useFiles.jsx";
 import TopContent from "./TopContent.jsx";
 import LegalBasisCell from "./LegalBasisCell.jsx";
+import FilterModal from "./FilterModal.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
 import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
+import SendModal from "./sendModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
 import trash_icon from "../../assets/papelera-mas.png";
-import think_icon from "../../assets/cerebro.png";
+import think_icon from "../../assets/ia.png";
 import send_icon from "../../assets/enviar.png";
 
 const columns = [
@@ -69,6 +71,8 @@ export default function LegalBasis() {
     fetchLegalBasisByLastReform,
     fetchLegalBasisBySubject,
     fetchLegalBasisBySubjectAndAspects,
+    fetchLegalBasisByCriteria,
+    sendLegalBasis,
     modifyLegalBasis,
     removeLegalBasis,
     removeLegalBasisBatch,
@@ -138,6 +142,8 @@ export default function LegalBasis() {
   const [selectedKeys, setSelectedKeys] = useState(new Set());
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -527,6 +533,32 @@ export default function LegalBasis() {
     setIntelligenceLevelInputError(null);
   };
 
+  const openFilterModal = () => {
+    setFormData({
+      jurisdiction: "",
+      state: "",
+      municipality: "",
+      subject: "",
+      aspects: [],
+    });
+    setIsFilterModalOpen(true);
+  };
+
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false);
+    setJurisdictionInputError(null);
+    setStateInputError(null);
+    setMunicipalityInputError(null);
+    setSubjectInputError(null);
+    setAspectInputError(null);
+    setIsStateActive(false);
+    setIsMunicipalityActive(false);
+    setIsAspectsActive(false);
+    clearMunicipalities();
+    clearAspects();
+  };
+
+
   const handleNameChange = useCallback(
     (e) => {
       const { value } = e.target;
@@ -867,6 +899,14 @@ export default function LegalBasis() {
 
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
+  const openSendModal = () => setShowSendModal(true);
+  const closeSendModal = () => setShowSendModal(false);
+
+  const openSendModalFromRow = (id) => {
+    setSelectedKeys(new Set([id]));
+    setShowSendModal(true);          
+  };
+
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
   const onNextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
@@ -992,12 +1032,12 @@ export default function LegalBasis() {
   if (error) return <Error title={error.title} message={error.message} />;
   if (subjectError)
     return <Error title={subjectError.title} message={subjectError.message} />;
-  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen)
     return <Error title={aspectError.title} message={aspectError.message} />;
   if (errorStates)
     return <Error title={errorStates.title} message={errorStates.message} />;
 
-  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
+  if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen) {
     return (
       <Error
         title={errorMunicipalities.title}
@@ -1011,6 +1051,8 @@ export default function LegalBasis() {
         config={{
           isCreateModalOpen: isCreateModalOpen,
           isEditModalOpen: isEditModalOpen,
+          isFilterModalOpen: isFilterModalOpen,
+          openFilterModal: openFilterModal,
           onRowsPerPageChange: onRowsPerPageChange,
           totalLegalBasis: legalBasis.length,
           openModalCreate: openModalCreate,
@@ -1086,6 +1128,7 @@ export default function LegalBasis() {
                         goToArticles={goToArticles}
                         handleDelete={handleDelete}
                         handleDownloadDocument={handleDownloadDocument}
+                        openSendModalFromRow={openSendModalFromRow}
                       />
                     </TableCell>
                   )}
@@ -1124,6 +1167,7 @@ export default function LegalBasis() {
                   size="sm"
                   className="absolute left-24 bottom-0 ml-5 bg-primary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
                   aria-label="Enviar a ACM Suite"
+                  onPress={openSendModal}
                 >
                   <img src={send_icon} alt="send" className="w-5 h-5" />
                 </Button>
@@ -1283,6 +1327,46 @@ export default function LegalBasis() {
             deleteLegalBasisBatch: removeLegalBasisBatch,
             setSelectedKeys: setSelectedKeys,
             check: check,
+          }}
+        />
+      )}
+      {showSendModal && (
+        <SendModal
+          config={{
+            showSendModal: showSendModal,
+            closeSendModal: closeSendModal,
+            legalBasis: legalBasis,
+            sendLegalBasis: sendLegalBasis,
+            selectedKeys: selectedKeys,
+            setSelectedKeys: setSelectedKeys,
+            check: check,
+          }}
+        />
+      )}
+      {isFilterModalOpen && (
+        <FilterModal
+          config={{
+            aspects: aspects,
+            aspectsLoading: aspectsLoading,
+            clearMunicipalities: clearMunicipalities,
+            errorAspects: aspectError,
+            errorMunicipalities: errorMunicipalities,
+            fetchLegalBasisByCriteria: fetchLegalBasisByCriteria,
+            formData: formData,
+            handleAspectsChange: handleAspectsChange,
+            handleJurisdictionChange: handleJurisdictionChange,
+            handleMunicipalityChange: handleMunicipalityChange,
+            handleStateChange: handleStateChange,
+            handleSubjectChange: handleSubjectChange,
+            isAspectsActive: isAspectsActive,
+            isMunicipalityActive: isMunicipalityActive,
+            isOpen: openFilterModal,
+            isStateActive: isStateActive,
+            loadingMunicipalities: loadingMunicipalities,
+            municipalities: municipalities,
+            onClose: closeFilterModal,
+            states: states,
+            subjects: subjects
           }}
         />
       )}

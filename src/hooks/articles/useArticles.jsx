@@ -329,11 +329,15 @@ const deleteArticlesBatch = useCallback(
       const errorCode = error.response?.status;
       const serverMessage = error.response?.data?.message;
       const clientMessage = error.message;
+      const articles =
+      error.response?.data?.errors?.articles?.map(
+        (article) => article.name
+      ) || articleIds;
       const handledError = ArticleErrors.handleError({
         code: errorCode,
         error: serverMessage,
         httpError: clientMessage,
-        items: articleIds,
+        items: articles,
       });
       return { success: false, error: handledError.message };
     }

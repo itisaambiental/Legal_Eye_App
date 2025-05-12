@@ -13,7 +13,6 @@ import {
 import useRequirement from "../../hooks/requirement/useRequirements.jsx";
 import useSubjects from "../../hooks/subject/useSubjects.jsx";
 import useAspects from "../../hooks/aspect/useAspects.jsx";
-import useCopomex from "../../hooks/copomex/useCopomex.jsx";
 import TopContent from "./TopContent.jsx";
 import RequirementCell from "./RequirementCell.jsx";
 import BottomContent from "../utils/BottomContent.jsx";
@@ -27,17 +26,13 @@ import check from "../../assets/check.png";
 import trash_icon from "../../assets/papelera-mas.png";
 
 const columns = [
-  { name: "Número", uid: "requirement_number", align: "start" },
-  { name: "Nombre", uid: "requirement_name", align: "start" },
+  { name: "Orden", uid: "requirement_number", align: "start" },
+  { name: "Requerimiento/Nombre", uid: "requirement_name", align: "start" },
   { name: "Condición", uid: "requirement_condition", align: "start" },
   { name: "Evidencia", uid: "evidence", align: "start" },
   { name: "Periodicidad", uid: "periodicity", align: "start" },
-  { name: "Jurisdicción", uid: "jurisdiction", align: "start" },
-  { name: "Estado", uid: "state", align: "start" },
-  { name: "Municipio", uid: "municipality", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
-  { name: "Aspecto", uid: "aspect", align: "start" },
-  { name: "Tipo", uid: "requirement_type", align: "start" },
+  { name: "Aspectos", uid: "aspects", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -58,7 +53,7 @@ const columns = [
  * filters, pagination, and modals for adding, editing, and deleting Requirements.
  *
  */
-export default function Requirement() {
+export default function Requirements() {
   const {
     requirements,
     loading,
@@ -70,10 +65,6 @@ export default function Requirement() {
     fetchRequirementsByCondition,
     fetchRequirementsByEvidence,
     fetchRequirementsByPeriodicity,
-    fetchRequirementsByType,
-    fetchRequirementsByJurisdiction,
-    fetchRequirementsByState,
-    fetchRequirementsByStateAndMunicipalities,
     fetchRequirementsByMandatoryDescription,
     fetchRequirementsBySubject,
     fetchRequirementsBySubjectAndAspects,
@@ -98,16 +89,6 @@ export default function Requirement() {
     clearAspects,
     fetchAspects,
   } = useAspects();
-  const {
-    states,
-    loadingStates,
-    errorStates,
-    municipalities,
-    loadingMunicipalities,
-    fetchMunicipalities,
-    errorMunicipalities,
-    clearMunicipalities,
-  } = useCopomex();
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -116,10 +97,6 @@ export default function Requirement() {
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [selectedPeriodicity, setSelectedPeriodicity] = useState(null);
-  const [selectedRequirementType, setSelectedRequirementType] = useState(null);
-  const [selectedJurisdiction, setSelectedJurisdiction] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedMunicipalities, setSelectedMunicipalities] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAspects, setSelectedAspects] = useState([]);
   const [filterByMandatoryDescription, setFilterByMandatoryDescription] = useState("");
@@ -139,12 +116,7 @@ export default function Requirement() {
   const [conditionInputError, setConditionInputError] = useState("");
   const [evidenceInputError, setEvidenceInputError] = useState("");
   const [periodicityInputError, setPeriodicityInputError] = useState("");
-  const [requirementTypeInputError, setRequirementTypeInputError] = useState("");
-  const [jurisdictionInputError, setJurisdictionInputError] = useState("");
-  const [stateInputError, setStateInputError] = useState("");
-  const [municipalityInputError, setMunicipalityInputError] = useState("");
-  const [isStateActive, setIsStateActive] = useState(false);
-  const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
+  const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState ("");
   const [subjectInputError, setSubjectInputError] = useState("");
   const [aspectInputError, setAspectInputError] = useState(null);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
@@ -163,13 +135,10 @@ export default function Requirement() {
     name: "",
     condition: "",
     evidence: "",
+    specifyEvidence: "",
     periodicity: "",
-    requirementType: "",
-    jurisdiction: "",
-    state: "",
-    municipality: "",
     subject: "",
-    aspect: "",
+    aspects: [],
     mandatoryDescription: "",
     complementaryDescription: "",
     mandatorySentences: "",
@@ -191,12 +160,8 @@ export default function Requirement() {
     setSelectedCondition(null);
     setSelectedEvidence(null);
     setSelectedPeriodicity(null);
-    setSelectedRequirementType(null);
-    setSelectedJurisdiction(null);
-    setSelectedState(null);
-    clearAspects();
-    clearMunicipalities();
-    setSelectedMunicipalities([]);
+    setSelectedSubject(null);
+    setSelectedAspects([]);
     setFilterByMandatoryDescription("");
     setFilterByComplementaryDescription("");
     setFilterByMandatorySentences("");
@@ -210,7 +175,7 @@ export default function Requirement() {
     setFilterByMandatoryKeywords("");
     setFilterByComplementaryKeywords("");
     fetchRequirements();
-  }, [fetchRequirements, clearMunicipalities, clearAspects]);
+  }, [fetchRequirements]);
 
   const resetSubjectAndAspects = useCallback(() => {
     if (selectedSubject) {
@@ -219,15 +184,6 @@ export default function Requirement() {
       clearAspects();
     }
   }, [selectedSubject, clearAspects]);
-
-  const resetStatesAndMunicipalities = useCallback(() => {
-    if (selectedState) {
-      setSelectedState(null);
-      setSelectedMunicipalities([]);
-      clearMunicipalities();
-    }
-  }, [selectedState, clearMunicipalities]);
-
 
 
   const handleFilter = useCallback(
@@ -252,24 +208,6 @@ export default function Requirement() {
           case "periodicity":
             await fetchRequirementsByPeriodicity(value);
             break;
-          case "requirementType":
-            await fetchRequirementsByType(value);
-            break;
-          case "jurisdiction":
-            await fetchRequirementsByJurisdiction(value);
-            break;
-          case "state":
-            await fetchRequirementsByState(value);
-            await fetchMunicipalities(value);
-            break;
-          case "stateAndMunicipalities": {
-            const { state, municipalities } = value;
-            await fetchRequirementsByStateAndMunicipalities(
-              state,
-              municipalities
-            );
-            break;
-          }
           case "subject":
             await fetchRequirementsBySubject(value);
             await fetchAspects(value);
@@ -309,11 +247,6 @@ export default function Requirement() {
       fetchRequirementsByCondition,
       fetchRequirementsByEvidence,
       fetchRequirementsByPeriodicity,
-      fetchRequirementsByType,
-      fetchRequirementsByJurisdiction,
-      fetchRequirementsByState,
-      fetchMunicipalities,
-      fetchRequirementsByStateAndMunicipalities,
       fetchRequirementsBySubject,
       fetchAspects,
       fetchRequirementsBySubjectAndAspects,
@@ -343,19 +276,13 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("number", value);
     },
     [
       handleFilter,
       handleClear,
       resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
     ]
   );
 
@@ -376,19 +303,13 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("name", value);
     },
     [
       handleFilter,
       handleClear,
       resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
     ]
   );
 
@@ -409,15 +330,10 @@ export default function Requirement() {
       setSelectedCondition(condition);
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("condition", condition);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByEvidence = useCallback(
@@ -437,15 +353,10 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence(evidence);
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("evidence", evidence);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByPeriodicity = useCallback(
@@ -465,124 +376,10 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity(periodicity);
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       handleFilter("periodicity", periodicity);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
-  );
-
-  const handleFilterByRequirementType = useCallback(
-    (requirementType) => {
-      if (!requirementType) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType(requirementType);
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
-      resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
-      handleFilter("requirementType", requirementType);
-    },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
-  );
-
-  const handleFilterByJurisdiction = useCallback(
-    (jurisdiction) => {
-      if (!jurisdiction) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction(jurisdiction);
-      setSelectedState("");
-      setSelectedMunicipalities([]);
-      resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
-      handleFilter("jurisdiction", jurisdiction);
-    },
-    [
-      handleClear,
-      handleFilter,
-      resetSubjectAndAspects,
-      resetStatesAndMunicipalities,
-    ]
-  );
-
-  const handleFilterByState = useCallback(
-    (state) => {
-      if (!state) {
-        handleClear();
-        return;
-      }
-      setFilterByNumber("");
-      setFilterByName("");
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState(state);
-      setSelectedMunicipalities([]);
-      resetSubjectAndAspects();
-      handleFilter("state", state);
-    },
     [handleFilter, handleClear, resetSubjectAndAspects]
-  );
-
-  const handleFilterByMunicipalities = useCallback(
-    (selectedIds) => {
-      setSelectedMunicipalities(selectedIds);
-      if (selectedIds.size === 0) {
-        if (selectedState) {
-          handleFilter("state", selectedState);
-        } else {
-          handleClear();
-        }
-        return;
-      }
-      const municipalitiesArray = Array.from(selectedIds);
-      const value = {
-        state: selectedState,
-        municipalities: municipalitiesArray,
-      };
-      handleFilter("stateAndMunicipalities", value);
-    },
-    [handleFilter, handleClear, selectedState]
   );
 
   const handleFilterBySubject = useCallback(
@@ -592,12 +389,10 @@ export default function Requirement() {
         return;
       }
       setFilterByName("");
-      setSelectedJurisdiction("");
-      resetStatesAndMunicipalities();
       setSelectedSubject(selectedId);
       handleFilter("subject", selectedId);
     },
-    [handleFilter, handleClear, resetStatesAndMunicipalities]
+    [handleFilter, handleClear]
   );
 
   const handleFilterByAspects = useCallback(
@@ -631,21 +426,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatoryDescription(value);
       handleFilter("mandatoryDescription", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByComplementaryDescription = useCallback(
@@ -659,21 +449,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementaryDescription(value);
       handleFilter("complementaryDescription", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
 
@@ -688,21 +473,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatorySentences(value);
       handleFilter("mandatorySentences", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByComplementarySentences = useCallback(
@@ -716,21 +496,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementarySentences(value);
       handleFilter("complementarySentences", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByMandatoryKeywords = useCallback(
@@ -744,21 +519,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByMandatoryKeywords(value);
       handleFilter("mandatoryKeywords", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const handleFilterByComplementaryKeywords = useCallback(
@@ -772,21 +542,16 @@ export default function Requirement() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
-      setSelectedRequirementType("");
-      setSelectedJurisdiction("");
-      setSelectedState("");
-      setSelectedMunicipalities([]);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       resetSubjectAndAspects();
-      resetStatesAndMunicipalities();
       setFilterByComplementaryKeywords(value);
       handleFilter("complementaryKeywords", value);
     },
-    [handleFilter, handleClear, resetSubjectAndAspects, resetStatesAndMunicipalities]
+    [handleFilter, handleClear, resetSubjectAndAspects]
   );
 
   const openModalCreate = () => {
@@ -796,13 +561,10 @@ export default function Requirement() {
       name: "",
       condition: "",
       evidence: "",
+      specifyEvidence: "", 
       periodicity: "",
-      requirementType: "",
-      jurisdiction: "",
-      state: "",
-      municipality: "",
       subject: "",
-      aspect: "",
+      aspects: [],
       mandatoryDescription: "",
       complementaryDescription: "",
       mandatorySentences: "",
@@ -811,7 +573,7 @@ export default function Requirement() {
       complementaryKeywords: "",
     });
     setIsCreateModalOpen(true);
-  };
+  };  
 
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
@@ -820,16 +582,9 @@ export default function Requirement() {
     setConditionInputError("");
     setEvidenceInputError("");
     setPeriodicityInputError("");
-    setRequirementTypeInputError("");
-    setJurisdictionInputError(null);
-    setStateInputError(null);
-    setMunicipalityInputError(null);
     setSubjectInputError(null);
     setAspectInputError(null);
-    setIsStateActive(false);
-    setIsMunicipalityActive(false);
     setIsAspectsActive(false);
-    clearMunicipalities();
     clearAspects();
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
@@ -852,16 +607,9 @@ export default function Requirement() {
     setConditionInputError("");
     setEvidenceInputError("");
     setPeriodicityInputError("");
-    setRequirementTypeInputError("");
-    setJurisdictionInputError(null);
-    setStateInputError(null);
-    setMunicipalityInputError(null);
     setSubjectInputError(null);
     setAspectInputError(null);
-    setIsStateActive(false);
-    setIsMunicipalityActive(false);
     setIsAspectsActive(false);
-    clearMunicipalities();
     clearAspects();
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
@@ -926,9 +674,10 @@ export default function Requirement() {
 
   const handleEvidenceChange = useCallback(
     (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setFormData((prev) => ({
+        ...prev,
         evidence: value,
+        specifyEvidence: value === "Específica" ? prev.specifyEvidence : "",
       }));
       if (evidenceInputError && value.trim() !== "") {
         setEvidenceInputError(null);
@@ -937,10 +686,21 @@ export default function Requirement() {
     [evidenceInputError, setFormData, setEvidenceInputError]
   );
 
+  const handlSpecifyEvidenceChange = useCallback((e) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      specifyEvidence: value,
+    }));
+    if (specifyEvidenceInputError && value.trim() !== "") {
+      setSpecifyEvidenceInputError(null);
+    }
+  }, [specifyEvidenceInputError, setFormData, setSpecifyEvidenceInputError]);
+
   const handlePeriodicityChange = useCallback(
     (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setFormData((prev) => ({
+        ...prev,
         periodicity: value,
       }));
       if (periodicityInputError && value.trim() !== "") {
@@ -950,164 +710,13 @@ export default function Requirement() {
     [periodicityInputError, setFormData, setPeriodicityInputError]
   );
 
-
-  const handleRequirementType = useCallback(
-
-    (value) => {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        requirementType: value,
-      }));
-      if (requirementTypeInputError && value.trim() !== "") {
-        setRequirementTypeInputError(null);
-      }
-    },
-    [requirementTypeInputError, setFormData, setRequirementTypeInputError]
-  );
-
-  const handleJurisdictionChange = useCallback(
-    (value) => {
-      if (!value) {
-        setStateInputError(null);
-        setMunicipalityInputError(null);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          jurisdiction: "",
-          state: "",
-          municipality: "",
-        }));
-        setIsStateActive(false);
-        setIsMunicipalityActive(false);
-        clearMunicipalities();
-        if (jurisdictionInputError) {
-          setJurisdictionInputError(null);
-        }
-        return;
-      }
-      setStateInputError(null);
-      setMunicipalityInputError(null);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        jurisdiction: value,
-        state: "",
-        municipality: "",
-      }));
-      if (jurisdictionInputError && value.trim() !== "") {
-        setJurisdictionInputError(null);
-      }
-      switch (value) {
-        case "Federal":
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Estatal":
-          setIsStateActive(true);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        case "Local":
-          setIsStateActive(true);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-        default:
-          setIsStateActive(false);
-          setIsMunicipalityActive(false);
-          clearMunicipalities();
-          break;
-      }
-    },
-    [
-      clearMunicipalities,
-      jurisdictionInputError,
-      setFormData,
-      setIsMunicipalityActive,
-      setIsStateActive,
-      setJurisdictionInputError,
-      setMunicipalityInputError,
-      setStateInputError,
-    ]
-  );
-
-  const handleStateChange = useCallback(
-    async (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          state: "",
-          municipality: "",
-        }));
-        if (stateInputError) {
-          setStateInputError(null);
-        }
-        if (municipalityInputError) {
-          setMunicipalityInputError(null);
-        }
-        clearMunicipalities();
-        setIsMunicipalityActive(false);
-        return;
-      }
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        state: value,
-        municipality: "",
-      }));
-      if (stateInputError && value.trim() !== "") {
-        setStateInputError(null);
-      }
-      if (formData.jurisdiction === "Local") {
-        setIsMunicipalityActive(true);
-        await fetchMunicipalities(value);
-      } else {
-        setIsMunicipalityActive(false);
-        clearMunicipalities();
-      }
-    },
-    [
-      clearMunicipalities,
-      fetchMunicipalities,
-      formData.jurisdiction,
-      municipalityInputError,
-      setFormData,
-      setIsMunicipalityActive,
-      setMunicipalityInputError,
-      setStateInputError,
-      stateInputError,
-    ]
-  );
-
-  const handleMunicipalityChange = useCallback(
-    (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          municipality: "",
-        }));
-        if (municipalityInputError) {
-          setMunicipalityInputError(null);
-        }
-        return;
-      }
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        municipality: value,
-      }));
-
-      if (municipalityInputError && value.trim() !== "") {
-        setMunicipalityInputError(null);
-      }
-    },
-    [municipalityInputError, setFormData, setMunicipalityInputError]
-  );
-
   const handleSubjectChange = useCallback(
     async (value) => {
       if (!value) {
         setFormData((prevFormData) => ({
           ...prevFormData,
           subject: "",
-          aspect: "",
+          aspects: [],
         }));
         if (subjectInputError) {
           setSubjectInputError(null);
@@ -1120,7 +729,7 @@ export default function Requirement() {
       setFormData((prevFormData) => ({
         ...prevFormData,
         subject: value,
-        aspect: "",
+        aspects: [],
       }));
       if (subjectInputError && value.trim() !== "") {
         setSubjectInputError(null);
@@ -1139,31 +748,18 @@ export default function Requirement() {
       subjectInputError,
     ]
   );
-
   const handleAspectsChange = useCallback(
-    (value) => {
-      if (!value) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          aspect: "",
-        }));
-        if (aspectInputError) {
-          setAspectInputError(null);
-        }
-        return;
-      }
+    (selectedIds) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        aspect: value,
+        aspects: Array.from(selectedIds),
       }));
-
-      if (aspectInputError && value.trim() !== "") {
+      if (aspectInputError && selectedIds.size > 0) {
         setAspectInputError(null);
       }
     },
     [aspectInputError, setFormData, setAspectInputError]
   );
-
 
   const handleMandatoryDescriptionChange = useCallback(
     (e) => {
@@ -1264,11 +860,11 @@ export default function Requirement() {
   const openModalDescription = (requirement, field, title) => {
     setSelectedRequirement({
       title: title,
-      description: requirement[field] || "No hay información disponible"
+      description: requirement[field]
     });
     setShowDescriptionModal(true);
   };
-  
+
 
   const closeModalDescription = () => {
     setShowDescriptionModal(false);
@@ -1329,34 +925,25 @@ export default function Requirement() {
   );
 
   if (loading && isFirstRender) {
-     return (
-       <div
-         role="status"
-         className="fixed inset-0 flex items-center justify-center"
-       >
-         <Spinner
-           className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
-           color="secondary"
-         />
-       </div>
-     );
-   }
-   if (error) return <Error title={error.title} message={error.message} />;
-   if (subjectError)
-     return <Error title={subjectError.title} message={subjectError.message} />;
-   if (aspectError && !isCreateModalOpen && !isEditModalOpen)
-     return <Error title={aspectError.title} message={aspectError.message} />;
-   if (errorStates)
-     return <Error title={errorStates.title} message={errorStates.message} />;
- 
-   if (errorMunicipalities && !isCreateModalOpen && !isEditModalOpen) {
-     return (
-       <Error
-         title={errorMunicipalities.title}
-         message={errorMunicipalities.message}
-       />
-     );
-   }
+    return (
+      <div
+        role="status"
+        className="fixed inset-0 flex items-center justify-center"
+      >
+        <Spinner
+          className="h-10 w-10 transform translate-x-0 lg:translate-x-28 xl:translate-x-32"
+          color="secondary"
+        />
+      </div>
+    );
+  }
+  
+  if (error) return <Error title={error.title} message={error.message} />;
+  if (subjectError)
+    return <Error title={subjectError.title} message={subjectError.message} />;
+  if (aspectError && !isCreateModalOpen && !isEditModalOpen)
+    return <Error title={aspectError.title} message={aspectError.message} />;
+
   return (
     <div className="mt-24 mb-4 -ml-60 mr-4 lg:-ml-0 lg:mr-0 xl:-ml-0 xl:mr-0 flex justify-center items-center flex-wrap">
       <TopContent
@@ -1385,19 +972,7 @@ export default function Requirement() {
           onFilterByEvidence: handleFilterByEvidence,
           selectedPeriodicity: selectedPeriodicity,
           onFilterByPeriodicity: handleFilterByPeriodicity,
-          selectedJurisdiction: selectedJurisdiction,
-          onFilterByJurisdiction: handleFilterByJurisdiction,
-          states: states,
-          selectedState: selectedState,
-          stateLoading: loadingStates,
-          onFilterByState: handleFilterByState,
-          municipalities: municipalities,
-          selectedMunicipalities: selectedMunicipalities,
-          municipalitiesLoading: loadingMunicipalities,
-          onFilterByMunicipalities: handleFilterByMunicipalities,
-          selectedRequirementType: selectedRequirementType,
           onFilterByMandatoryDescription: handleFilterByMandatoryDescription,
-          onFilterByRequirementType: handleFilterByRequirementType,
           filterByMandatoryDescription: filterByMandatoryDescription,
           filterByComplementaryDescription: filterByComplementaryDescription,
           onFilterByComplementaryDescription: handleFilterByComplementaryDescription,
@@ -1491,11 +1066,11 @@ export default function Requirement() {
         />
         {selectedRequirement && (
           <DescriptionModal
-          isOpen={showDescriptionModal}
-          onClose={closeModalDescription}
-          title={selectedRequirement?.title || ""}
-          description={selectedRequirement?.description || ""}
-        />
+            isOpen={showDescriptionModal}
+            onClose={closeModalDescription}
+            title={selectedRequirement?.title || ""}
+            description={selectedRequirement?.description || ""}
+          />
         )}
 
         {isCreateModalOpen && (
@@ -1520,26 +1095,11 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
-              requirementTypeError: requirementTypeInputError,
-              setRequirementTypeError: setRequirementTypeInputError,
-              handleRequirementType: handleRequirementType,
-              jurisdictionError: jurisdictionInputError,
-              setJurisdictionError: setJurisdictionInputError,
-              handleJurisdictionChange: handleJurisdictionChange,
-              states: states,
-              stateError: stateInputError,
-              setStateError: setStateInputError,
+              specifyEvidenceError: specifyEvidenceInputError,
+              setSpecifyEvidenceError: setSpecifyEvidenceInputError,
+              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+              specifyEvidence: formData.specifyEvidence,
               fetchRequirements: fetchRequirements,
-              isStateActive: isStateActive,
-              handleStateChange: handleStateChange,
-              clearMunicipalities: clearMunicipalities,
-              municipalities: municipalities,
-              municipalityError: municipalityInputError,
-              setMunicipalityError: setMunicipalityInputError,
-              isMunicipalityActive: isMunicipalityActive,
-              loadingMunicipalities: loadingMunicipalities,
-              errorMunicipalities: errorMunicipalities,
-              handleMunicipalityChange: handleMunicipalityChange,
               subjects: subjects,
               subjectInputError: subjectInputError,
               setSubjectError: setSubjectInputError,
@@ -1596,25 +1156,10 @@ export default function Requirement() {
               periodicityError: periodicityInputError,
               setPeriodicityError: setPeriodicityInputError,
               handlePeriodicityChange: handlePeriodicityChange,
-              requirementTypeError: requirementTypeInputError,
-              setRequirementTypeError: setRequirementTypeInputError,
-              handleRequirementType: handleRequirementType,
-              jurisdictionError: jurisdictionInputError,
-              setJurisdictionError: setJurisdictionInputError,
-              handleJurisdictionChange: handleJurisdictionChange,
-              states: states,
-              stateError: stateInputError,
-              setStateError: setStateInputError,
-              isStateActive: isStateActive,
-              handleStateChange: handleStateChange,
-              clearMunicipalities: clearMunicipalities,
-              municipalities: municipalities,
-              municipalityError: municipalityInputError,
-              setMunicipalityError: setMunicipalityInputError,
-              isMunicipalityActive: isMunicipalityActive,
-              loadingMunicipalities: loadingMunicipalities,
-              errorMunicipalities: errorMunicipalities,
-              handleMunicipalityChange: handleMunicipalityChange,
+              specifyEvidenceError: specifyEvidenceInputError,
+              setSpecifyEvidenceError: setSpecifyEvidenceInputError,
+              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+              specifyEvidence: formData.specifyEvidence,
               subjects: subjects,
               subjectInputError: subjectInputError,
               setSubjectError: setSubjectInputError,
@@ -1625,11 +1170,8 @@ export default function Requirement() {
               isAspectsActive: isAspectsActive,
               aspectsLoading: aspectsLoading,
               errorAspects: aspectError,
-              setIsStateActive: setIsStateActive,
-              setIsMunicipalityActive: setIsMunicipalityActive,
               setIsAspectsActive: setIsAspectsActive,
               clearAspects: clearAspects,
-              fetchMunicipalities: fetchMunicipalities,
               fetchAspects: fetchAspects,
               handleAspectsChange: handleAspectsChange,
               mandatoryDescriptionError: mandatoryDescriptionInputError,

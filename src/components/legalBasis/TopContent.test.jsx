@@ -10,6 +10,7 @@ const mockConfig = {
   onRowsPerPageChange: vi.fn(),
   totalLegalBasis: 100,
   openModalCreate: vi.fn(),
+  openFilterModal: vi.fn(),
   filterByName: "",
   filterByAbbreviation: "",
   onFilterByName: vi.fn(),
@@ -47,13 +48,21 @@ describe("TopContent Component for Legal Basis", () => {
     render(<TopContent config={mockConfig} />);
     expect(screen.getByText("Fundamentos totales: 100")).toBeInTheDocument();
   });
-  test("opens modal to create a new subject when 'Nuevo Fundamento' button is clicked", () => {
+
+  test("opens modal to create a Legal Base when 'Nuevo Fundamento' button is clicked", () => {
     render(<TopContent config={mockConfig} />);
     const newSubjectButton = screen.getByText("Nuevo Fundamento");
     fireEvent.click(newSubjectButton);
     expect(mockConfig.openModalCreate).toHaveBeenCalled();
   });
 
+  test("opens advanced search modal when 'Búsqueda Avanzada' button is clicked", () => {
+    render(<TopContent config={mockConfig} />);
+    const advancedSearchButton = screen.getByText("Búsqueda Avanzada");
+    fireEvent.click(advancedSearchButton);
+    expect(mockConfig.openFilterModal).toHaveBeenCalled();
+  });
+  
   test("changes rows per page when a new option is selected", () => {
     render(<TopContent config={mockConfig} />);
     const select = screen.getByLabelText("Filas por página:");

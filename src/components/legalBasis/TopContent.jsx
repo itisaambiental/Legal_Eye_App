@@ -10,6 +10,7 @@ import {
   DateRangePicker,
 } from "@heroui/react";
 import search_icon from "../../assets/busqueda_blue.png";
+import search_icon_white from "../../assets/busqueda.png";
 import mas_icon from "../../assets/mas.png";
 import { I18nProvider } from "@react-aria/i18n";
 
@@ -25,9 +26,11 @@ import { I18nProvider } from "@react-aria/i18n";
  * @param {Object} props.config - Configuration object for the component.
  * @param {boolean} props.config.isCreateModalOpen - Indicates whether the create modal is open.
  * @param {boolean} props.config.isEditModalOpen - Indicates whether the edit modal is open.
+ * @param {boolean} props.config.isFilterModalOpen - Indicates whether the filter modal is open.
  * @param {Function} props.config.onRowsPerPageChange - Callback to handle changes in rows per page.
  * @param {number} props.config.totalLegalBasis - Total number of legal basis entries.
  * @param {Function} props.config.openModalCreate - Function to open the create modal.
+ * @param {Function} props.config.openFilterModal, - Function to open the filter modal.
  * @param {string} props.config.filterByName - Current value of the name filter.
  * @param {Function} props.config.onFilterByName - Callback for name filter changes.
  * @param {string} props.config.filterByAbbreviation - Current value of the abbreviation filter.
@@ -64,9 +67,11 @@ function TopContent({ config }) {
   const {
     isCreateModalOpen,
     isEditModalOpen,
+    isFilterModalOpen,
     onRowsPerPageChange,
     totalLegalBasis,
     openModalCreate,
+    openFilterModal,
     filterByName,
     filterByAbbreviation,
     onFilterByName,
@@ -263,7 +268,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen
+                municipalitiesLoading && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedMunicipalities}
@@ -307,7 +312,7 @@ function TopContent({ config }) {
               }
               className="w-full"
               isLoading={
-                aspectsLoading && !isCreateModalOpen && !isEditModalOpen
+                aspectsLoading && !isCreateModalOpen && !isEditModalOpen && !isFilterModalOpen
               }
               selectionMode="multiple"
               selectedKeys={selectedAspects}
@@ -355,8 +360,8 @@ function TopContent({ config }) {
         <span className="text-default-400">
           Fundamentos totales: {totalLegalBasis}
         </span>
-        <div className="flex items-center gap-4 w-full sm:w-auto sm:ml-auto">
-          <label className="flex items-center text-default-400 gap-2">
+        <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto sm:ml-auto">
+          <label className="flex items-center text-default-400 gap-2 min-w-[150px]">
             Filas por página:
             <select
               className="bg-transparent outline-none text-default-400"
@@ -377,8 +382,22 @@ function TopContent({ config }) {
                 className="w-4 h-4 flex-shrink-0"
               />
             }
+            className="w-full sm:w-auto"
           >
             Nuevo Fundamento
+          </Button>
+          <Button
+            className="bg-secondary text-white w-full sm:w-auto"
+            onPress={openFilterModal}
+            endContent={
+              <img
+                src={search_icon_white}
+                alt="Search Icon"
+                className="w-4 h-4 flex-shrink-0"
+              />
+            }
+          >
+            Búsqueda Avanzada
           </Button>
         </div>
       </div>
@@ -390,9 +409,11 @@ TopContent.propTypes = {
   config: PropTypes.shape({
     isCreateModalOpen: PropTypes.bool.isRequired,
     isEditModalOpen: PropTypes.bool.isRequired,
+    isFilterModalOpen: PropTypes.bool.isRequired,
     onRowsPerPageChange: PropTypes.func.isRequired,
     totalLegalBasis: PropTypes.number.isRequired,
     openModalCreate: PropTypes.func.isRequired,
+    openFilterModal: PropTypes.func.isRequired,
     filterByName: PropTypes.string.isRequired,
     onFilterByName: PropTypes.func.isRequired,
     filterByAbbreviation: PropTypes.string.isRequired,

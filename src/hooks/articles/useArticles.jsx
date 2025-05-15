@@ -1,5 +1,6 @@
 import { useContext, useState, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
+import insertSortedItem from "../../utils/insertSortedItem.js";
 import createArticle from "../../services/articleService/createArticle.js";
 import getArticlesByLegalBasis from "../../services/articleService/getArticlesByLegalBasisId.js";
 import getArticlesByName from "../../services/articleService/getArticlesByName.js";
@@ -93,29 +94,9 @@ export default function useArticles() {
           order: article.order,
           token: jwt,
         });
-        setArticles((prevArticles) => {
-          const updatedArticles = [...prevArticles];
-          const findInsertIndex = (articles, newOrder) => {
-            let left = 0;
-            let right = articles.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (articles[mid].article_order < newOrder) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-          const insertIndex = findInsertIndex(
-            updatedArticles,
-            newArticle.article_order
-          );
-          updatedArticles.splice(insertIndex, 0, newArticle);
-
-          return updatedArticles;
-        });
+        setArticles((prevArticles) =>
+          insertSortedItem(prevArticles, newArticle, 'article_order')
+        );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -233,30 +214,9 @@ export default function useArticles() {
           token: jwt,
         });
         setArticles((prevArticles) => {
-          const updatedArticles = prevArticles.filter(
-            (existingArticle) => existingArticle.id !== articleId
-          );
-          const findInsertIndex = (articles, newOrder) => {
-            let left = 0;
-            let right = articles.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (articles[mid].article_order < newOrder) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-          const insertIndex = findInsertIndex(
-            updatedArticles,
-            updatedArticle.article_order
-          );
-          updatedArticles.splice(insertIndex, 0, updatedArticle);
-          return updatedArticles;
+          const filtered = prevArticles.filter((a) => a.id !== articleId);
+          return insertSortedItem(filtered, updatedArticle, 'article_order');
         });
-
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -315,35 +275,35 @@ export default function useArticles() {
  * @param {Array<number>} articleIds - The IDs of the articles to delete.
  * @returns {Promise<Object>} - Returns an object indicating success or failure, and an optional error message.
  */
-const deleteArticlesBatch = useCallback(
-  async (articleIds) => {
-    try {
-      const success = await deleteArticles({ articleIds, token: jwt });
-      if (success) {
-        setArticles((prevArticles) =>
-          prevArticles.filter((article) => !articleIds.includes(article.id))
-        );
-        return { success: true };
+  const deleteArticlesBatch = useCallback(
+    async (articleIds) => {
+      try {
+        const success = await deleteArticles({ articleIds, token: jwt });
+        if (success) {
+          setArticles((prevArticles) =>
+            prevArticles.filter((article) => !articleIds.includes(article.id))
+          );
+          return { success: true };
+        }
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const articles =
+          error.response?.data?.errors?.articles?.map(
+            (article) => article.name
+          ) || articleIds;
+        const handledError = ArticleErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+          items: articles,
+        });
+        return { success: false, error: handledError.message };
       }
-    } catch (error) {
-      const errorCode = error.response?.status;
-      const serverMessage = error.response?.data?.message;
-      const clientMessage = error.message;
-      const articles =
-      error.response?.data?.errors?.articles?.map(
-        (article) => article.name
-      ) || articleIds;
-      const handledError = ArticleErrors.handleError({
-        code: errorCode,
-        error: serverMessage,
-        httpError: clientMessage,
-        items: articles,
-      });
-      return { success: false, error: handledError.message };
-    }
-  },
-  [jwt]
-);
+    },
+    [jwt]
+  );
 
   return {
     articles,

@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext";
+import insertSortedItem from "../../utils/insertSortedItem";
 import createRequirement from "../../services/requirementService/createRequirement";
 import getRequirements from "../../services/requirementService/getRequirements";
 import getRequirementById from "../../services/requirementService/getRequirementById";
@@ -67,7 +68,7 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity
+      periodicity,
     }) => {
       try {
         const newRequirement = await createRequirement({
@@ -87,7 +88,9 @@ export default function useRequirement() {
           periodicity,
           token: jwt,
         });
-        setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
+        setRequirements((prevRequirements) =>
+          insertSortedItem(prevRequirements, newRequirement, 'requirement_number')
+        );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -98,9 +101,11 @@ export default function useRequirement() {
           error: serverMessage,
           httpError: clientMessage,
         });
+
         return { success: false, error: handledError.message };
       }
-    }, [jwt]
+    },
+    [jwt]
   );
 
   /**
@@ -298,7 +303,7 @@ export default function useRequirement() {
         });
         setStateRequirements({
           loading: false,
-          error: handledError,aspectsIds
+          error: handledError, aspectsIds
         });
       }
     },
@@ -577,13 +582,14 @@ export default function useRequirement() {
 
 
   /**
-  * Updates an existing Requirement by ID.
+  * Updates an existing Requirement by ID and reorders it by requirement_number.
+  *
   * @async
   * @function modifyRequirement
   * @param {Object} params - The data to update an existing Requirement.
   * @param {string} params.id - The ID of the requirement to update.
   * @param {string} [params.subjectId] - The new subject ID (optional).
-   * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
+  * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
   * @param {string} [params.requirementNumber] - The new requirement number (optional).
   * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
   * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
@@ -592,11 +598,11 @@ export default function useRequirement() {
   * @param {string} [params.complementarySentences] - The new complementary sentences (optional).
   * @param {string} [params.mandatoryKeywords] - The new mandatory keywords (optional).
   * @param {string} [params.complementaryKeywords] - The new complementary keywords (optional).
-  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
-  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
-  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
-  * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
-  * @throws {Object} - Returns an error message if the update fails.
+  * @param {string} [params.condition] - The requirement condition (optional).
+  * @param {string} [params.evidence] - The type of evidence required (optional).
+  * @param {string} [params.specifyEvidence] - The specific evidence detail if evidence is "Específica".
+  * @param {string} [params.periodicity] - The periodicity of the requirement (optional).
+  * @returns {Promise<Object>} - Result of the operation with success status or error message.
   */
   const modifyRequirement = useCallback(
     async ({
@@ -635,11 +641,10 @@ export default function useRequirement() {
           periodicity,
           token: jwt,
         });
-        setRequirements((prevRequirements) =>
-          prevRequirements.map((prevRequirement) =>
-            prevRequirement.id === requirement.id ? requirement : prevRequirement
-          )
-        );
+        setRequirements((prevRequirements) => {
+          const filtered = prevRequirements.filter((req) => req.id !== requirement.id);
+          return insertSortedItem(filtered, requirement, 'requirement_number');
+        });
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -651,6 +656,7 @@ export default function useRequirement() {
           httpError: clientMessage,
           items: [id],
         });
+
         return { success: false, error: handledError.message };
       }
     },

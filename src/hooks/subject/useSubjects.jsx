@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
+import insertSortedItem from "../../utils/insertSortedItem.js";
 import getSubjects from "../../services/subjectService/getSubjects.js";
 import getSubjectById from "../../services/subjectService/getSubjectById.js";
 import getSubjectsByName from "../../services/subjectService/getSubjectsByName.js";
@@ -79,16 +80,16 @@ export default function useSubjects() {
   );
 
   /**
-   * Adds a new subject to the list, inserting it in the correct order.
-   * @async
-   * @function addSubject
-   * @param {Object} params - Parameters for the subject to add.
-   * @param {string} params.subjectName - The name of the subject.
-   * @param {number} params.order - The order number of the subject.
-   * @param {string} params.abbreviation - The abbreviation of the subject.
-   * @returns {Promise<Object>} - Result of the operation with success status and subject or error message.
-   * @throws {Object} - Returns an error message if the addition fails.
-   */
+ * Adds a new subject to the list, inserting it in the correct order.
+ * @async
+ * @function addSubject
+ * @param {Object} params - Parameters for the subject to add.
+ * @param {string} params.subjectName - The name of the subject.
+ * @param {number} params.order - The order number of the subject.
+ * @param {string} params.abbreviation - The abbreviation of the subject.
+ * @returns {Promise<Object>} - Result of the operation with success status and subject or error message.
+ * @throws {Object} - Returns an error message if the addition fails.
+ */
   const addSubject = useCallback(
     async ({ subjectName, order, abbreviation }) => {
       try {
@@ -98,26 +99,9 @@ export default function useSubjects() {
           abbreviation,
           token: jwt,
         });
-
-        setSubjects((prevSubjects) => {
-          const updatedSubjects = [...prevSubjects];
-          const findInsertIndex = (subjects, newOrderIndex) => {
-            let left = 0;
-            let right = subjects.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (subjects[mid].order_index < newOrderIndex) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-          const insertIndex = findInsertIndex(updatedSubjects, newSubject.order_index);
-          updatedSubjects.splice(insertIndex, 0, newSubject);
-          return updatedSubjects;
-        });
+        setSubjects((prevSubjects) =>
+          insertSortedItem(prevSubjects, newSubject, 'order_index')
+        );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -135,8 +119,6 @@ export default function useSubjects() {
     },
     [jwt]
   );
-
-
 
   /**
    * Fetches a specific subject by its name.
@@ -193,28 +175,9 @@ export default function useSubjects() {
           token: jwt,
         });
         setSubjects((prevSubjects) => {
-          const updatedSubjects = prevSubjects.filter((s) => s.id !== id);
-
-          const findInsertIndex = (subjects, newOrderIndex) => {
-            let left = 0;
-            let right = subjects.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (subjects[mid].order_index < newOrderIndex) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-
-          const insertIndex = findInsertIndex(updatedSubjects, updatedSubject.order_index);
-          updatedSubjects.splice(insertIndex, 0, updatedSubject);
-
-          return updatedSubjects;
+          const filtered = prevSubjects.filter((s) => s.id !== id);
+          return insertSortedItem(filtered, updatedSubject, 'order_index');
         });
-
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -233,8 +196,6 @@ export default function useSubjects() {
     },
     [jwt]
   );
-
-
 
   /**
    * Deletes an existing subject by ID.

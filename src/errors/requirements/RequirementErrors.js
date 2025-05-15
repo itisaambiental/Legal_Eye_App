@@ -9,7 +9,6 @@ class RequirementErrors {
     static VALIDATION_ERROR = "VALIDATION_ERROR";
     static NOT_FOUND = "NOT_FOUND";
     static MULTIPLE_NOT_FOUND = "MULTIPLE_NOT_FOUND";
-    static NUMBER_DUPLICATED_REQUIREMENT = "NUMBER_DUPLICATED_REQUIREMENT";
     static NAME_DUPLICATED_REQUIREMENT = "NAME_DUPLICATED_REQUIREMENT";
     static CONFLICT = "CONFLICT";
     static SUBJECT_NOT_FOUND = "SUBJECT_NOT_FOUND";
@@ -44,10 +43,6 @@ class RequirementErrors {
         title: "Varios requerimientos legales no encontrados",
         message: "Uno o más requerimientos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
       },
-      [RequirementErrors.NUMBER_DUPLICATED_REQUIREMENT]: {
-        title: "Numero de Requerimiento duplicado",
-        message: "Ya existe un requerimiento con el mismo orden. Por favor, utiliza otro.",
-      },
       [RequirementErrors.NAME_DUPLICATED_REQUIREMENT]: {
         title: "Nombre de Requerimiento duplicado",
         message: "Ya existe un requerimiento con el mismo nombre. Por favor, utiliza otro.",
@@ -76,7 +71,6 @@ class RequirementErrors {
     static ErrorMessagesMap = {
       "Network Error": RequirementErrors.NETWORK_ERROR,
       "Validation failed": RequirementErrors.VALIDATION_ERROR,
-      "Requirement number already exists": RequirementErrors.NUMBER_DUPLICATED_REQUIREMENT,
       "Requirement name already exists": RequirementErrors.NAME_DUPLICATED_REQUIREMENT,
       "Requirement not found": RequirementErrors.NOT_FOUND,
       "Subject not found": RequirementErrors.SUBJECT_NOT_FOUND,

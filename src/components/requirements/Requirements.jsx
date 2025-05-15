@@ -27,13 +27,13 @@ import trash_icon from "../../assets/papelera-mas.png";
 
 const columns = [
   { name: "Orden", uid: "requirement_number", align: "start" },
-  { name: "Requerimiento/Nombre", uid: "requirement_name", align: "start" },
+  { name: "Requerimiento", uid: "requirement_name", align: "start" },
   { name: "Condición", uid: "requirement_condition", align: "start" },
   { name: "Evidencia", uid: "evidence", align: "start" },
   { name: "Periodicidad", uid: "periodicity", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
   { name: "Aspectos", uid: "aspects", align: "start" },
-  { name: "Criterios de Aceptación", uid: "acceptance_criteria", align: "start" },
+  { name: "Criterio de Aceptación", uid: "acceptance_criteria", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -61,7 +61,6 @@ export default function Requirements() {
     error,
     addRequirement,
     fetchRequirements,
-    fetchRequirementsByNumber,
     fetchRequirementsByName,
     fetchRequirementsByCondition,
     fetchRequirementsByEvidence,
@@ -94,7 +93,6 @@ export default function Requirements() {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isFirstRender, setIsFirstRender] = useState(true);
-  const [filterByNumber, setFilterByNumber] = useState("");
   const [filterByName, setFilterByName] = useState("");
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [selectedEvidence, setSelectedEvidence] = useState(null);
@@ -160,7 +158,6 @@ export default function Requirements() {
   }, [loading, isFirstRender]);
 
   const handleClear = useCallback(() => {
-    setFilterByNumber("");
     setFilterByName("");
     setSelectedCondition(null);
     setSelectedEvidence(null);
@@ -199,9 +196,6 @@ export default function Requirements() {
         setPage(1);
         setIsSearching(true);
         switch (field) {
-          case "number":
-            await fetchRequirementsByNumber(value);
-            break;
           case "name":
             await fetchRequirementsByName(value);
             break;
@@ -252,7 +246,6 @@ export default function Requirements() {
       }, 500);
     },
     [
-      fetchRequirementsByNumber,
       fetchRequirementsByName,
       fetchRequirementsByCondition,
       fetchRequirementsByEvidence,
@@ -270,33 +263,6 @@ export default function Requirements() {
     ]
   );
 
-  const handleFilterByNumber = useCallback(
-    (value) => {
-      if (value.trim() === "") {
-        handleClear();
-        return;
-      }
-      setFilterByName("");
-      setFilterByNumber(value);
-      setFilterByMandatoryDescription("");
-      setFilterByComplementaryDescription("");
-      setFilterByMandatorySentences("");
-      setFilterByComplementarySentences("");
-      setFilterByMandatoryKeywords("");
-      setFilterByComplementaryKeywords("");
-      setSelectedCondition("");
-      setSelectedEvidence("");
-      setSelectedPeriodicity("");
-      setfilterByAcceptanceCriteria("");
-      resetSubjectAndAspects();
-      handleFilter("number", value);
-    },
-    [
-      handleFilter,
-      handleClear,
-      resetSubjectAndAspects,
-    ]
-  );
 
   const handleFilterByName = useCallback(
     (value) => {
@@ -304,7 +270,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName(value);
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
@@ -332,7 +297,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
@@ -356,7 +320,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
@@ -380,7 +343,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
@@ -437,7 +399,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -461,7 +422,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -485,7 +445,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -510,7 +469,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -534,7 +492,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -558,7 +515,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -582,7 +538,6 @@ export default function Requirements() {
         handleClear();
         return;
       }
-      setFilterByNumber("");
       setFilterByName("");
       setSelectedCondition("");
       setSelectedEvidence("");
@@ -1016,8 +971,6 @@ export default function Requirements() {
           openModalCreate: openModalCreate,
           onRowsPerPageChange: onRowsPerPageChange,
           totalRequirements: requirements.length,
-          filterByNumber: filterByNumber,
-          onFilterByNumber: handleFilterByNumber,
           filterByName: filterByName,
           onFilterByName: handleFilterByName,
           onClear: handleClear,

@@ -201,16 +201,26 @@ const EditModal = ({ config }) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     if (step === 1) {
-      if (!formData.number.trim()) {
+      if (!formData.number) {
         setNumberError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else if (isNaN(formData.number)) {
+        setNumberError("Este campo debe ser un número válido.");
+        setIsLoading(false);
+        return;
+      } else if (Number(formData.number) <= 0) {
+        setNumberError("Este campo debe ser mayor a 0.");
+        setIsLoading(false);
+        return;
+      } else if (!Number.isInteger(Number(formData.number))) {
+        setNumberError("Este campo debe ser un número entero.");
         setIsLoading(false);
         return;
       } else {
         setNumberError(null);
       }
-
       if (!formData.name.trim()) {
         setNameError("Este campo es obligatorio.");
         setIsLoading(false);
@@ -443,7 +453,7 @@ const EditModal = ({ config }) => {
                       htmlFor="floating_nombre"
                       className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                      Requerimiento/Nombre
+                      Requerimiento
                     </label>
                     {nameError && (
                       <p className="mt-2 text-sm text-red">{nameError}</p>
@@ -610,10 +620,10 @@ const EditModal = ({ config }) => {
                     onChange={handleAcceptanceCriteriaChange}
                     classNames={{
                       base: "max-w-4xl",
-                      input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                      input: "resize-y min-h-[100px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                     }}
                     label="Criterio de Aceptación"
-                    placeholder=""
+                    placeholder="Escribir el criterio..."
                     variant="bordered"
                   />
                   {acceptanceCriteriaError && (

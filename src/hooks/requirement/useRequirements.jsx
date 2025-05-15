@@ -71,7 +71,7 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
-      acceptanceCriteria,,
+      acceptanceCriteria,
     }) => {
       try {
         const newRequirement = await createRequirement({

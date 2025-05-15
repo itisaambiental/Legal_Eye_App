@@ -2,7 +2,7 @@
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import VerifyCode from "./VerifyCode.jsx";
 import useAuth from "../../../hooks/user/auth/useAuth.jsx";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Mocking hooks and dependencies
 vi.mock("../../../hooks/user/auth/useAuth.jsx", () => ({
@@ -13,19 +13,23 @@ vi.mock("../../../hooks/user/auth/useAuth.jsx", () => ({
 vi.mock("react-router-dom", () => ({
   useNavigate: vi.fn(),
   useLocation: vi.fn(),
-  useParams: vi.fn(),
 }));
 
 describe("VerifyCode Component", () => {
   const mockVerifyCode = vi.fn();
   const mockResetPassword = vi.fn();
   const mockNavigate = vi.fn();
-  const mockLocation = { state: { fromRequest: true } };
-  const mockParams = { email: encodeURIComponent("test@test.com") };
+  const mockLocation = {
+    state: {
+      fromRequest: true,
+      email: "test@test.com",
+    },
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+
     useAuth.mockReturnValue({
       verify_code: mockVerifyCode,
       reset_password: mockResetPassword,
@@ -34,9 +38,9 @@ describe("VerifyCode Component", () => {
       isResetPasswordLoading: false,
       hasResetPasswordError: null,
     });
+
     useNavigate.mockReturnValue(mockNavigate);
     useLocation.mockReturnValue(mockLocation);
-    useParams.mockReturnValue(mockParams);
   });
 
   afterEach(() => {
@@ -92,7 +96,7 @@ describe("VerifyCode Component", () => {
       fireEvent.click(submitButton);
     });
 
-    expect(mockVerifyCode).toHaveBeenCalledWith(mockParams.email, "123456");
+    expect(mockVerifyCode).toHaveBeenCalledWith("test@test.com", "123456");
     expect(mockNavigate).toHaveBeenCalledWith("/reset-password/complete", {
       state: { fromVerify: true },
     });
@@ -141,7 +145,7 @@ describe("VerifyCode Component", () => {
     expect(screen.getByText("Error al reenviar el código")).toBeInTheDocument();
   });
 
-  test("resets timer and calls reset_password when 'Resend Code' is clicked", async () => {
+  test("resets timer and calls reset_password when 'Reenviar Código' is clicked", async () => {
     mockResetPassword.mockResolvedValue(true);
     render(<VerifyCode />);
 

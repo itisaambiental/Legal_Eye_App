@@ -107,7 +107,7 @@ function EditModal({ config }) {
       setNameError(null);
     }
 
-    if (formData.user_type === "") {
+    if (!formData.user_type) {
       setusertypeError("Este campo es obligatorio");
       setIsLoading(false);
       return;

@@ -238,7 +238,6 @@ export default function useUsers() {
     [jwt, logout]
   );
 
-  // Automatically fetch users when the hook is initialized
   useEffect(() => {
     fetchUsers();
   }, [jwt, fetchUsers]);

@@ -196,11 +196,10 @@ const EditModal = ({ config }) => {
   ]);
 
 
-  const handleBack = () => setStep(1);
-
   const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     if (step === 1) {
       if (!formData.number) {
         setNumberError("Este campo es obligatorio.");
@@ -221,6 +220,7 @@ const EditModal = ({ config }) => {
       } else {
         setNumberError(null);
       }
+
       if (!formData.name.trim()) {
         setNameError("Este campo es obligatorio.");
         setIsLoading(false);
@@ -229,7 +229,7 @@ const EditModal = ({ config }) => {
         setNameError(null);
       }
 
-      if (formData.condition === "") {
+      if (!formData.condition) {
         setConditionError("Debes seleccionar una condición.");
         setIsLoading(false);
         return;
@@ -237,18 +237,18 @@ const EditModal = ({ config }) => {
         setConditionError(null);
       }
 
-      if (formData.evidence === "") {
+      if (!formData.evidence) {
         setEvidenceError("Debes seleccionar una evidencia.");
         setIsLoading(false);
         return;
       } else {
         setEvidenceError(null);
       }
+
       if (
         formData.evidence === "Específica" &&
-        (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
+        (!formData.specifyEvidence || !formData.specifyEvidence.trim())
       ) {
-
         setSpecifyEvidenceError("Este campo es obligatorio si se selecciona el valor Específica.");
         setIsLoading(false);
         return;
@@ -256,7 +256,7 @@ const EditModal = ({ config }) => {
         setSpecifyEvidenceError(null);
       }
 
-      if (formData.subject === "") {
+      if (!formData.subject) {
         setSubjectError("Debes seleccionar una materia.");
         setIsLoading(false);
         return;
@@ -272,27 +272,29 @@ const EditModal = ({ config }) => {
         setAspectInputError(null);
       }
 
-      if (formData.periodicity === "") {
+      if (!formData.periodicity) {
         setPeriodicityError("Debes seleccionar una periodicidad.");
         setIsLoading(false);
         return;
       } else {
         setPeriodicityError(null);
       }
-      if (formData.acceptanceCriteria === "") {
+
+      if (!formData.acceptanceCriteria.trim()) {
         setAcceptanceCriteriaError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setAcceptanceCriteriaError(null);
       }
+
       setIsLoading(false);
       setStep(2);
       return;
     }
 
     if (step === 2) {
-      if (formData.mandatoryDescription === "") {
+      if (!formData.mandatoryDescription.trim()) {
         setMandatoryDescriptionError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
@@ -300,35 +302,39 @@ const EditModal = ({ config }) => {
         setMandatoryDescriptionError(null);
       }
 
-      if (formData.complementaryDescription === "") {
+      if (!formData.complementaryDescription.trim()) {
         setComplementaryDescriptionError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setComplementaryDescriptionError(null);
       }
-      if (formData.mandatorySentences === "") {
+
+      if (!formData.mandatorySentences.trim()) {
         setMandatorySentencesError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setMandatorySentencesError(null);
       }
-      if (formData.complementarySentences === "") {
+
+      if (!formData.complementarySentences.trim()) {
         setComplementarySentencesError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setComplementarySentencesError(null);
       }
-      if (formData.mandatoryKeywords === "") {
+
+      if (!formData.mandatoryKeywords.trim()) {
         setMandatoryKeywordsError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setMandatoryKeywordsError(null);
       }
-      if (formData.complementaryKeywords === "") {
+
+      if (!formData.complementaryKeywords.trim()) {
         setComplementaryKeywordsError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
@@ -336,51 +342,61 @@ const EditModal = ({ config }) => {
         setComplementaryKeywordsError(null);
       }
     }
+
     try {
       const requirementData = {
         id: formData.id,
         requirementNumber: formData.number,
-        requirementName: formData.name,
+        requirementName: formData.name.trim(),
         condition: formData.condition,
         evidence: formData.evidence,
-        specifyEvidence: formData.specifyEvidence,
+        specifyEvidence: formData.specifyEvidence?.trim() || null,
         periodicity: formData.periodicity,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
-        acceptanceCriteria: formData.acceptanceCriteria,
-        mandatoryDescription: formData.mandatoryDescription,
-        complementaryDescription: formData.complementaryDescription,
-        mandatorySentences: formData.mandatorySentences,
-        complementarySentences: formData.complementarySentences,
-        mandatoryKeywords: formData.mandatoryKeywords,
-        complementaryKeywords: formData.complementaryKeywords,
+        acceptanceCriteria: formData.acceptanceCriteria.trim(),
+        mandatoryDescription: formData.mandatoryDescription.trim(),
+        complementaryDescription: formData.complementaryDescription.trim(),
+        mandatorySentences: formData.mandatorySentences.trim(),
+        complementarySentences: formData.complementarySentences.trim(),
+        mandatoryKeywords: formData.mandatoryKeywords.trim(),
+        complementaryKeywords: formData.complementaryKeywords.trim(),
       };
 
-      const { success, error } = await editRequirement(
-        requirementData
-      );
+      const { success, error } = await editRequirement(requirementData);
+
       if (success) {
         toast.info("El requerimiento ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
-          progressStyle: {
-            background: "#113c53",
-          },
+          progressStyle: { background: "#113c53" },
         });
-        closeModalEdit()
+        closeModalEdit();
       } else {
         toast.error(error);
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        "Algo mal sucedió al actualizar el requerimiento. Intente de nuevo."
-      );
+      toast.error("Algo mal sucedió al actualizar el requerimiento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
+  };
 
-  }
 
+  const resetStepTwoErrors = () => {
+    setMandatoryDescriptionError(null);
+    setComplementaryDescriptionError(null);
+    setMandatorySentencesError(null);
+    setComplementarySentencesError(null);
+    setMandatoryKeywordsError(null);
+    setComplementaryKeywordsError(null);
+  };
+
+
+  const handleBack = () => {
+    resetStepTwoErrors();
+    setStep(1);
+  };
   return (
     <Modal
       isOpen={isOpen}

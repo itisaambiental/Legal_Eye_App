@@ -150,6 +150,7 @@ const CreateModal = ({ config }) => {
     const handleCreate = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+
         if (step === 1) {
             if (!formData.number) {
                 setNumberError("Este campo es obligatorio.");
@@ -170,6 +171,7 @@ const CreateModal = ({ config }) => {
             } else {
                 setNumberError(null);
             }
+
             if (!formData.name.trim()) {
                 setNameError("Este campo es obligatorio.");
                 setIsLoading(false);
@@ -178,7 +180,7 @@ const CreateModal = ({ config }) => {
                 setNameError(null);
             }
 
-            if (formData.condition === "") {
+            if (!formData.condition) {
                 setConditionError("Debes seleccionar una condición.");
                 setIsLoading(false);
                 return;
@@ -186,18 +188,18 @@ const CreateModal = ({ config }) => {
                 setConditionError(null);
             }
 
-            if (formData.evidence === "") {
+            if (!formData.evidence) {
                 setEvidenceError("Debes seleccionar una evidencia.");
                 setIsLoading(false);
                 return;
             } else {
                 setEvidenceError(null);
             }
+
             if (
                 formData.evidence === "Específica" &&
-                (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
+                (!formData.specifyEvidence || !formData.specifyEvidence.trim())
             ) {
-
                 setSpecifyEvidenceError("Este campo es obligatorio si se selecciona el valor Específica.");
                 setIsLoading(false);
                 return;
@@ -205,7 +207,7 @@ const CreateModal = ({ config }) => {
                 setSpecifyEvidenceError(null);
             }
 
-            if (formData.subject === "") {
+            if (!formData.subject) {
                 setSubjectError("Debes seleccionar una materia.");
                 setIsLoading(false);
                 return;
@@ -220,27 +222,30 @@ const CreateModal = ({ config }) => {
             } else {
                 setAspectInputError(null);
             }
-            if (formData.periodicity === "") {
+
+            if (!formData.periodicity) {
                 setPeriodicityError("Debes seleccionar una periodicidad.");
                 setIsLoading(false);
                 return;
             } else {
                 setPeriodicityError(null);
             }
-            if (formData.acceptanceCriteria === "") {
+
+            if (!formData.acceptanceCriteria.trim()) {
                 setAcceptanceCriteriaError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setAcceptanceCriteriaError(null);
             }
+
             setIsLoading(false);
             setStep(2);
             return;
         }
 
         if (step === 2) {
-            if (formData.mandatoryDescription === "") {
+            if (!formData.mandatoryDescription.trim()) {
                 setMandatoryDescriptionError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
@@ -248,35 +253,39 @@ const CreateModal = ({ config }) => {
                 setMandatoryDescriptionError(null);
             }
 
-            if (formData.complementaryDescription === "") {
+            if (!formData.complementaryDescription.trim()) {
                 setComplementaryDescriptionError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setComplementaryDescriptionError(null);
             }
-            if (formData.mandatorySentences === "") {
+
+            if (!formData.mandatorySentences.trim()) {
                 setMandatorySentencesError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setMandatorySentencesError(null);
             }
-            if (formData.complementarySentences === "") {
+
+            if (!formData.complementarySentences.trim()) {
                 setComplementarySentencesError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setComplementarySentencesError(null);
             }
-            if (formData.mandatoryKeywords === "") {
+
+            if (!formData.mandatoryKeywords.trim()) {
                 setMandatoryKeywordsError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
             } else {
                 setMandatoryKeywordsError(null);
             }
-            if (formData.complementaryKeywords === "") {
+
+            if (!formData.complementaryKeywords.trim()) {
                 setComplementaryKeywordsError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
@@ -284,31 +293,31 @@ const CreateModal = ({ config }) => {
                 setComplementaryKeywordsError(null);
             }
         }
+
         const requirementData = {
             requirementNumber: formData.number,
-            requirementName: formData.name,
+            requirementName: formData.name.trim(),
             condition: formData.condition,
             evidence: formData.evidence,
-            specifyEvidence: formData.specifyEvidence,
+            specifyEvidence: formData.specifyEvidence?.trim() || null,
             periodicity: formData.periodicity,
             subjectId: formData.subject,
             aspectsIds: formData.aspects,
-            acceptanceCriteria: formData.acceptanceCriteria,
-            mandatoryDescription: formData.mandatoryDescription,
-            complementaryDescription: formData.complementaryDescription,
-            mandatorySentences: formData.mandatorySentences,
-            complementarySentences: formData.complementarySentences,
-            mandatoryKeywords: formData.mandatoryKeywords,
-            complementaryKeywords: formData.complementaryKeywords,
+            acceptanceCriteria: formData.acceptanceCriteria.trim(),
+            mandatoryDescription: formData.mandatoryDescription.trim(),
+            complementaryDescription: formData.complementaryDescription.trim(),
+            mandatorySentences: formData.mandatorySentences.trim(),
+            complementarySentences: formData.complementarySentences.trim(),
+            mandatoryKeywords: formData.mandatoryKeywords.trim(),
+            complementaryKeywords: formData.complementaryKeywords.trim(),
         };
+
         try {
             const { success, error } = await addRequirement(requirementData);
             if (success) {
                 toast.info("El requerimiento ha sido registrado correctamente", {
                     icon: () => <img src={check} alt="Success Icon" />,
-                    progressStyle: {
-                        background: "#113c53",
-                    },
+                    progressStyle: { background: "#113c53" },
                 });
                 closeModalCreate();
             } else {
@@ -320,7 +329,8 @@ const CreateModal = ({ config }) => {
         } finally {
             setIsLoading(false);
         }
-    }
+    };
+
 
     const resetStepTwoErrors = () => {
         setMandatoryDescriptionError(null);

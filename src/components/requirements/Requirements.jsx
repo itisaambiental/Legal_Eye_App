@@ -33,6 +33,7 @@ const columns = [
   { name: "Periodicidad", uid: "periodicity", align: "start" },
   { name: "Materia", uid: "subject", align: "start" },
   { name: "Aspectos", uid: "aspects", align: "start" },
+  { name: "Criterios de Aceptación", uid: "acceptance_criteria", align: "start" },
   { name: "Descripción Obligatoria", uid: "mandatory_description", align: "start" },
   { name: "Descripción Complementaria", uid: "complementary_description", align: "start" },
   { name: "Frases Obligatorias", uid: "mandatory_sentences", align: "start" },
@@ -73,6 +74,7 @@ export default function Requirements() {
     fetchRequirementsByComplementarySentences,
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByComplementaryKeywords,
+    fetchRequirementsByAcceptanceCriteria,
     modifyRequirement,
     removeRequirement,
     removeRequirementBatch,
@@ -99,6 +101,7 @@ export default function Requirements() {
   const [selectedPeriodicity, setSelectedPeriodicity] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedAspects, setSelectedAspects] = useState([]);
+  const [filterByAcceptanceCriteria, setfilterByAcceptanceCriteria] = useState("");
   const [filterByMandatoryDescription, setFilterByMandatoryDescription] = useState("");
   const [filterByComplementaryDescription, setFilterByComplementaryDescription] = useState("");
   const [filterByMandatorySentences, setFilterByMandatorySentences] = useState("");
@@ -116,10 +119,11 @@ export default function Requirements() {
   const [conditionInputError, setConditionInputError] = useState("");
   const [evidenceInputError, setEvidenceInputError] = useState("");
   const [periodicityInputError, setPeriodicityInputError] = useState("");
-  const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState ("");
+  const [specifyEvidenceInputError, setSpecifyEvidenceInputError] = useState("");
   const [subjectInputError, setSubjectInputError] = useState("");
   const [aspectInputError, setAspectInputError] = useState(null);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
+  const [acceptanceCriteriaInputError, setAcceptanceCriteriaInputError] = useState("");
   const [mandatoryDescriptionInputError, setMandatoryDescriptionInputError] = useState("");
   const [complementaryDescriptionInputError, setComplementaryDescriptionInputError] = useState("");
   const [mandatorySentencesInputError, setMandatorySentencesInputError] = useState("");
@@ -139,6 +143,7 @@ export default function Requirements() {
     periodicity: "",
     subject: "",
     aspects: [],
+    acceptanceCriteria: "",
     mandatoryDescription: "",
     complementaryDescription: "",
     mandatorySentences: "",
@@ -173,6 +178,7 @@ export default function Requirements() {
     setFilterByMandatorySentences("");
     setFilterByComplementarySentences("");
     setFilterByMandatoryKeywords("");
+    setfilterByAcceptanceCriteria("");
     setFilterByComplementaryKeywords("");
     fetchRequirements();
   }, [fetchRequirements]);
@@ -208,6 +214,9 @@ export default function Requirements() {
           case "periodicity":
             await fetchRequirementsByPeriodicity(value);
             break;
+          case "acceptanceCriteria":
+            await fetchRequirementsByAcceptanceCriteria(value);
+            break;
           case "subject":
             await fetchRequirementsBySubject(value);
             await fetchAspects(value);
@@ -216,6 +225,7 @@ export default function Requirements() {
             const { subjectId, aspectsIds } = value;
             await fetchRequirementsBySubjectAndAspects(subjectId, aspectsIds);
             break;
+
           }
           case "mandatoryDescription":
             await fetchRequirementsByMandatoryDescription(value);
@@ -249,6 +259,7 @@ export default function Requirements() {
       fetchRequirementsByPeriodicity,
       fetchRequirementsBySubject,
       fetchAspects,
+      fetchRequirementsByAcceptanceCriteria,
       fetchRequirementsBySubjectAndAspects,
       fetchRequirementsByMandatoryDescription,
       fetchRequirementsByComplementaryDescription,
@@ -276,6 +287,7 @@ export default function Requirements() {
       setSelectedCondition("");
       setSelectedEvidence("");
       setSelectedPeriodicity("");
+      setfilterByAcceptanceCriteria("");
       resetSubjectAndAspects();
       handleFilter("number", value);
     },
@@ -297,6 +309,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -324,6 +337,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -347,6 +361,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -370,6 +385,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -415,6 +431,30 @@ export default function Requirements() {
     [handleFilter, handleClear, selectedSubject]
   );
 
+  const handleFilterByAcceptanceCriteria = useCallback(
+    (value) => {
+      if (value.trim() === "") {
+        handleClear();
+        return;
+      }
+      setFilterByNumber("");
+      setFilterByName("");
+      setSelectedCondition("");
+      setSelectedEvidence("");
+      setSelectedPeriodicity("");
+      setFilterByComplementaryDescription("");
+      setFilterByMandatorySentences("");
+      setFilterByComplementarySentences("");
+      setFilterByMandatoryKeywords("");
+      setFilterByComplementaryKeywords("");
+      resetSubjectAndAspects();
+      setFilterByMandatoryDescription("");
+      setfilterByAcceptanceCriteria(value);
+      handleFilter("acceptanceCriteria", value);
+    },
+    [handleFilter, handleClear, resetSubjectAndAspects]
+  );
+
   const handleFilterByMandatoryDescription = useCallback(
     (value) => {
       if (value.trim() === "") {
@@ -428,6 +468,7 @@ export default function Requirements() {
       setSelectedPeriodicity("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -451,6 +492,7 @@ export default function Requirements() {
       setSelectedPeriodicity("");
       setFilterByMandatoryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
@@ -479,6 +521,7 @@ export default function Requirements() {
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
+      setfilterByAcceptanceCriteria("");
       setFilterByMandatorySentences(value);
       handleFilter("mandatorySentences", value);
     },
@@ -499,6 +542,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByMandatoryKeywords("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
@@ -522,6 +566,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByComplementaryKeywords("");
       resetSubjectAndAspects();
@@ -545,6 +590,7 @@ export default function Requirements() {
       setFilterByMandatoryDescription("");
       setFilterByComplementaryDescription("");
       setFilterByMandatorySentences("");
+      setfilterByAcceptanceCriteria("");
       setFilterByComplementarySentences("");
       setFilterByMandatoryKeywords("");
       resetSubjectAndAspects();
@@ -561,10 +607,11 @@ export default function Requirements() {
       name: "",
       condition: "",
       evidence: "",
-      specifyEvidence: "", 
+      specifyEvidence: "",
       periodicity: "",
       subject: "",
       aspects: [],
+      acceptanceCriteria:"",
       mandatoryDescription: "",
       complementaryDescription: "",
       mandatorySentences: "",
@@ -573,7 +620,7 @@ export default function Requirements() {
       complementaryKeywords: "",
     });
     setIsCreateModalOpen(true);
-  };  
+  };
 
   const closeModalCreate = () => {
     setIsCreateModalOpen(false);
@@ -589,6 +636,7 @@ export default function Requirements() {
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
     setMandatorySentencesInputError("");
+    setAcceptanceCriteriaInputError("")
     setComplementarySentencesInputError("");
     setMandatoryKeywordsInputError("");
     setComplementaryKeywordsInputError("");
@@ -611,6 +659,7 @@ export default function Requirements() {
     setAspectInputError(null);
     setIsAspectsActive(false);
     clearAspects();
+    setAcceptanceCriteriaInputError("")
     setMandatoryDescriptionInputError("");
     setComplementaryDescriptionInputError("");
     setMandatorySentencesInputError("");
@@ -761,6 +810,20 @@ export default function Requirements() {
     [aspectInputError, setFormData, setAspectInputError]
   );
 
+
+  const handleAcceptanceCriteriaChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        acceptanceCriteria: value,
+      }));
+      if (acceptanceCriteriaInputError && value.trim() !== "") {
+        setAcceptanceCriteriaInputError(null);
+      }
+    },
+    [acceptanceCriteriaInputError, setFormData, setAcceptanceCriteriaInputError]
+  )
   const handleMandatoryDescriptionChange = useCallback(
     (e) => {
       const { value } = e.target;
@@ -937,7 +1000,7 @@ export default function Requirements() {
       </div>
     );
   }
-  
+
   if (error) return <Error title={error.title} message={error.message} />;
   if (subjectError)
     return <Error title={subjectError.title} message={subjectError.message} />;
@@ -972,6 +1035,8 @@ export default function Requirements() {
           onFilterByEvidence: handleFilterByEvidence,
           selectedPeriodicity: selectedPeriodicity,
           onFilterByPeriodicity: handleFilterByPeriodicity,
+          onFilterByAcceptanceCriteria: handleFilterByAcceptanceCriteria,
+          filterByAcceptanceCriteria: filterByAcceptanceCriteria,
           onFilterByMandatoryDescription: handleFilterByMandatoryDescription,
           filterByMandatoryDescription: filterByMandatoryDescription,
           filterByComplementaryDescription: filterByComplementaryDescription,
@@ -1097,7 +1162,7 @@ export default function Requirements() {
               handlePeriodicityChange: handlePeriodicityChange,
               specifyEvidenceError: specifyEvidenceInputError,
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
-              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+              handlSpecifyEvidenceChange: handlSpecifyEvidenceChange,
               specifyEvidence: formData.specifyEvidence,
               fetchRequirements: fetchRequirements,
               subjects: subjects,
@@ -1111,6 +1176,9 @@ export default function Requirements() {
               aspectsLoading: aspectsLoading,
               errorAspects: aspectError,
               handleAspectsChange: handleAspectsChange,
+              acceptanceCriteriaError: acceptanceCriteriaInputError,
+              handleAcceptanceCriteriaChange: handleAcceptanceCriteriaChange,
+              setAcceptanceCriteriaError: setAcceptanceCriteriaInputError,
               mandatoryDescriptionError: mandatoryDescriptionInputError,
               handleMandatoryDescriptionChange: handleMandatoryDescriptionChange,
               setMandatoryDescriptionError: setMandatoryDescriptionInputError,
@@ -1158,7 +1226,7 @@ export default function Requirements() {
               handlePeriodicityChange: handlePeriodicityChange,
               specifyEvidenceError: specifyEvidenceInputError,
               setSpecifyEvidenceError: setSpecifyEvidenceInputError,
-              handlSpecifyEvidenceChange:handlSpecifyEvidenceChange,
+              handlSpecifyEvidenceChange: handlSpecifyEvidenceChange,
               specifyEvidence: formData.specifyEvidence,
               subjects: subjects,
               subjectInputError: subjectInputError,
@@ -1174,6 +1242,9 @@ export default function Requirements() {
               clearAspects: clearAspects,
               fetchAspects: fetchAspects,
               handleAspectsChange: handleAspectsChange,
+              acceptanceCriteriaError: acceptanceCriteriaInputError,
+              handleAcceptanceCriteriaChange: handleAcceptanceCriteriaChange,
+              setAcceptanceCriteriaError: setAcceptanceCriteriaInputError,
               mandatoryDescriptionError: mandatoryDescriptionInputError,
               handleMandatoryDescriptionChange: handleMandatoryDescriptionChange,
               setMandatoryDescriptionError: setMandatoryDescriptionInputError,

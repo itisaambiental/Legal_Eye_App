@@ -40,6 +40,7 @@ export default async function createRequirement({
   evidence,
   specifyEvidence,
   periodicity,
+  acceptanceCriteria,
   token,
 }) {
   try {
@@ -57,7 +58,8 @@ export default async function createRequirement({
       condition,
       evidence,
       specifyEvidence,
-      periodicity
+      periodicity,
+      acceptanceCriteria
     };
 
     const response = await server.post("/requirements", data, {

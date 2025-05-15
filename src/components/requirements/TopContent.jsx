@@ -89,6 +89,8 @@ function TopContent({ config }) {
     selectedAspects,
     onFilterByAspects,
     filterByComplementaryDescription,
+    filterByAcceptanceCriteria,
+    onFilterByAcceptanceCriteria,
     filterByMandatoryDescription,
     onFilterByMandatoryDescription,
     onFilterByComplementaryDescription,
@@ -214,7 +216,23 @@ function TopContent({ config }) {
             </AutocompleteItem>
           )}
         </Autocomplete>
-
+        <Input
+          color="primary"
+          variant="faded"
+          isClearable
+          value={filterByAcceptanceCriteria}
+          className="w-full"
+          placeholder="Buscar por criterio de aceptación..."
+          startContent={
+            <img
+              src={search_icon}
+              alt="Search Icon"
+              className="w-4 h-4 flex-shrink-0"
+            />
+          }
+          onClear={onClear}
+          onValueChange={onFilterByAcceptanceCriteria}
+        />
         <Input
           color="primary"
           variant="faded"
@@ -388,6 +406,8 @@ TopContent.propTypes = {
     onFilterByEvidence: PropTypes.func.isRequired,
     selectedPeriodicity: PropTypes.string,
     onFilterByPeriodicity: PropTypes.func.isRequired,
+    filterByAcceptanceCriteria: PropTypes.string,
+    onFilterByAcceptanceCriteria: PropTypes.func,
     filterByMandatoryDescription: PropTypes.string,
     onFilterByMandatoryDescription: PropTypes.func,
     filterByComplementaryDescription: PropTypes.string,

@@ -602,14 +602,14 @@ const EditModal = ({ config }) => {
                     </p>
                   )}
                 </div>
-                <div className="w-full">
+                <div className="w-full mt-4">
                   <Textarea
                     disableAnimation
                     disableAutosize
                     value={formData.acceptanceCriteria}
                     onChange={handleAcceptanceCriteriaChange}
                     classNames={{
-                      base: "max-w-lg",
+                      base: "max-w-4xl",
                       input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                     }}
                     label="Criterio de Aceptación"

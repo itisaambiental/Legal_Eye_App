@@ -151,13 +151,26 @@ const CreateModal = ({ config }) => {
         e.preventDefault();
         setIsLoading(true);
         if (step === 1) {
+            const numberValue = Number(formData.number);
             if (!formData.number.trim()) {
                 setNumberError("Este campo es obligatorio.");
                 setIsLoading(false);
                 return;
+            } else if (isNaN(numberValue)) {
+                setNumberError("Este campo debe ser un número válido.");
+                setIsLoading(false);
+                return;
+            } else if (numberValue <= 0) {
+                setNumberError("Este campo debe ser mayor a 0.");
+                setIsLoading(false);
+                return;
+            } else if (!Number.isInteger(numberValue)) {
+                setNumberError("Este campo debe ser un número entero.");
+                setIsLoading(false);
+                return;
             } else {
                 setNumberError(null);
-            }
+            }   
 
             if (!formData.name.trim()) {
                 setNameError("Este campo es obligatorio.");
@@ -563,7 +576,7 @@ const CreateModal = ({ config }) => {
                                         value={formData.acceptanceCriteria}
                                         onChange={handleAcceptanceCriteriaChange}
                                         classNames={{
-                                            base: "max-w-lg",
+                                            base: "max-w-4xl",
                                             input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
                                         }}
                                         label="Criterio de Aceptación"

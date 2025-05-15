@@ -21,6 +21,7 @@ import server from "../../config/server.js";
  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
+ * * @param {string} [params.acceptanceCriteria] - The acceptance criteria (optional).
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} - The updated requirement data returned from the server.
@@ -42,6 +43,7 @@ export default async function updateRequirement({
   evidence,
   specifyEvidence,
   periodicity,
+  acceptanceCriteria,
   token,
 }) {
   try {
@@ -59,7 +61,8 @@ export default async function updateRequirement({
       ...(condition && { condition }),
       ...(evidence && { evidence }),
       ...(specifyEvidence && { specifyEvidence }),
-      ...(periodicity && { periodicity })
+      ...(periodicity && { periodicity }),
+      ...(acceptanceCriteria && {acceptanceCriteria})
     };
     const response = await server.patch(`/requirement/${id}`, data, {
       headers: {

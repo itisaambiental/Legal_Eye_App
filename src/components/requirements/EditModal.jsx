@@ -58,6 +58,9 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.aspectError - Error message for the "Aspect" dropdown.
  * @param {Function} props.config.setAspectInputError - Setter for "Aspect" field error.
  * @param {Function} props.config.handleAspectsChange - Change handler for the "Aspect" dropdown.
+ * @param {Function} props.config.handleAcceptanceCriteriaChange - Handler for the "Acceptance Criteria" textarea.
+ * @param {string|null} props.config.acceptanceCriteriaError - Error message for the "Acceptance Criteria" textarea.
+ * @param {Function} props.config.setacceptanceCriteriaError - Setter for the "Acceptance Criteria" field error.
  * @param {string|null} props.config.mandatoryDescriptionError - Error for the "Mandatory Description" textarea.
  * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" error.
  * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for "Mandatory Description" textarea.
@@ -119,6 +122,9 @@ const EditModal = ({ config }) => {
     aspectError,
     setAspectInputError,
     handleAspectsChange,
+    acceptanceCriteriaError,
+    setAcceptanceCriteriaError,
+    handleAcceptanceCriteriaChange,
     mandatoryDescriptionError,
     setMandatoryDescriptionError,
     handleMandatoryDescriptionChange,
@@ -160,6 +166,7 @@ const EditModal = ({ config }) => {
         evidence: selectedRequirement.evidence,
         specifyEvidence: selectedRequirement.specify_evidence || "",
         periodicity: selectedRequirement.periodicity,
+        acceptanceCriteria: selectedRequirement.acceptance_criteria,
         subject: selectedRequirement.subject?.subject_id.toString(),
         aspects: selectedRequirement.aspects?.map((aspect) =>
           aspect.aspect_id.toString()
@@ -262,6 +269,13 @@ const EditModal = ({ config }) => {
       } else {
         setPeriodicityError(null);
       }
+      if (formData.acceptanceCriteria === "") {
+        setAcceptanceCriteriaError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else {
+        setAcceptanceCriteriaError(null);
+      }
       setIsLoading(false);
       setStep(2);
       return;
@@ -323,6 +337,7 @@ const EditModal = ({ config }) => {
         periodicity: formData.periodicity,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
+        acceptanceCriteria: formData.acceptanceCriteria,
         mandatoryDescription: formData.mandatoryDescription,
         complementaryDescription: formData.complementaryDescription,
         mandatorySentences: formData.mandatorySentences,
@@ -396,9 +411,9 @@ const EditModal = ({ config }) => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="relative z-0 w-full group">
                     <input
-                      type="text"
+                      type="number"
                       name="number"
-                      id="floating_number"
+                      id="floating_order"
                       value={formData.number}
                       onChange={handleNumberChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
@@ -585,6 +600,24 @@ const EditModal = ({ config }) => {
                     <p className="mt-2 text-sm text-red">
                       {periodicityError}
                     </p>
+                  )}
+                </div>
+                <div className="w-full">
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    value={formData.acceptanceCriteria}
+                    onChange={handleAcceptanceCriteriaChange}
+                    classNames={{
+                      base: "max-w-lg",
+                      input: "resize-y py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                    }}
+                    label="Criterio de Aceptación"
+                    placeholder=""
+                    variant="bordered"
+                  />
+                  {acceptanceCriteriaError && (
+                    <p className="mt-2 text-sm text-red">{acceptanceCriteriaError}</p>
                   )}
                 </div>
                 <div className="w-full mt-4">
@@ -778,6 +811,10 @@ EditModal.propTypes = {
     aspectError: PropTypes.string,
     setAspectInputError: PropTypes.func.isRequired,
     handleAspectsChange: PropTypes.func.isRequired,
+
+    acceptanceCriteriaError: PropTypes.string,
+    setAcceptanceCriteriaError: PropTypes.func.isRequired,
+    handleAcceptanceCriteriaChange: PropTypes.func.isRequired,
 
     mandatoryDescriptionError: PropTypes.string,
     setMandatoryDescriptionError: PropTypes.func.isRequired,

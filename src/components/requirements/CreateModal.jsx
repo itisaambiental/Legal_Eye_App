@@ -61,6 +61,9 @@ import go_back from "../../assets/volver.png";
  * @param {boolean} props.config.aspectsLoading - Indicates if aspects are loading.
  * @param {string|null} props.config.errorAspects - Error message when aspects cannot be loaded.
  * @param {Function} props.config.handleAspectsChange - Function to handle changes in the "Aspects" field.
+ * @param {Function} props.config.handleAcceptanceCriteriaChange - Handler for the "Acceptance Criteria" textarea.
+ * @param {string|null} props.config.acceptanceCriteriaError - Error message for the "Acceptance Criteria" textarea.
+ * @param {Function} props.config.setacceptanceCriteriaError - Setter for the "Acceptance Criteria" field error.
  * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for the "Mandatory Description" textarea.
  * @param {string|null} props.config.mandatoryDescriptionError - Error message for the "Mandatory Description" textarea.
  * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" field error.
@@ -118,6 +121,9 @@ const CreateModal = ({ config }) => {
         aspectsLoading,
         errorAspects,
         handleAspectsChange,
+        handleAcceptanceCriteriaChange,
+        acceptanceCriteriaError,
+        setAcceptanceCriteriaError,
         handleMandatoryDescriptionChange,
         mandatoryDescriptionError,
         setMandatoryDescriptionError,
@@ -210,6 +216,13 @@ const CreateModal = ({ config }) => {
             } else {
                 setPeriodicityError(null);
             }
+            if (formData.acceptanceCriteria === "") {
+                setAcceptanceCriteriaError("Este campo es obligatorio.");
+                setIsLoading(false);
+                return;
+            } else {
+                setAcceptanceCriteriaError(null);
+            }
             setIsLoading(false);
             setStep(2);
             return;
@@ -269,6 +282,7 @@ const CreateModal = ({ config }) => {
             periodicity: formData.periodicity,
             subjectId: formData.subject,
             aspectsIds: formData.aspects,
+            acceptanceCriteria: formData.acceptanceCriteria,
             mandatoryDescription: formData.mandatoryDescription,
             complementaryDescription: formData.complementaryDescription,
             mandatorySentences: formData.mandatorySentences,
@@ -350,9 +364,9 @@ const CreateModal = ({ config }) => {
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="relative z-0 w-full group">
                                         <input
-                                            type="text"
+                                            type="number"
                                             name="number"
-                                            id="floating_number"
+                                            id="floating_order"
                                             value={formData.number}
                                             onChange={handleNumberChange}
                                             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
@@ -520,28 +534,46 @@ const CreateModal = ({ config }) => {
                                     </div>
                                 </div>
                                 <div className="w-full mt-4">
-                                        <Autocomplete
-                                            size="sm"
-                                            variant="bordered"
-                                            label="Periodicidad"
-                                            selectedKey={formData.periodicity}
-                                            onSelectionChange={handlePeriodicityChange}
-                                            listboxProps={{
-                                                emptyContent: "Periodicidad no encontrada",
-                                            }}
-                                        >
-                                            <AutocompleteItem key="Anual">Anual</AutocompleteItem>
-                                            <AutocompleteItem key="2 años">2 años</AutocompleteItem>
-                                            <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
-                                            <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
-                                            <AutocompleteItem key="Específica">Específica</AutocompleteItem>
-                                        </Autocomplete>
-                                        {periodicityError && (
-                                            <p className="mt-2 text-sm text-red">
-                                                {periodicityError}
-                                            </p>
-                                        )}
-                                    </div>
+                                    <Autocomplete
+                                        size="sm"
+                                        variant="bordered"
+                                        label="Periodicidad"
+                                        selectedKey={formData.periodicity}
+                                        onSelectionChange={handlePeriodicityChange}
+                                        listboxProps={{
+                                            emptyContent: "Periodicidad no encontrada",
+                                        }}
+                                    >
+                                        <AutocompleteItem key="Anual">Anual</AutocompleteItem>
+                                        <AutocompleteItem key="2 años">2 años</AutocompleteItem>
+                                        <AutocompleteItem key="Por evento">Por evento</AutocompleteItem>
+                                        <AutocompleteItem key="Única vez">Única vez</AutocompleteItem>
+                                        <AutocompleteItem key="Específica">Específica</AutocompleteItem>
+                                    </Autocomplete>
+                                    {periodicityError && (
+                                        <p className="mt-2 text-sm text-red">
+                                            {periodicityError}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="w-full  mt-4">
+                                    <Textarea
+                                        disableAnimation
+                                        disableAutosize
+                                        value={formData.acceptanceCriteria}
+                                        onChange={handleAcceptanceCriteriaChange}
+                                        classNames={{
+                                            base: "max-w-lg",
+                                            input: "resize-y min-h-[80px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                                        }}
+                                        label="Criterio de Aceptación"
+                                        placeholder="Escribir el criterio."
+                                        variant="bordered"
+                                    />
+                                    {acceptanceCriteriaError && (
+                                        <p className="mt-2 text-sm text-red">{acceptanceCriteriaError}</p>
+                                    )}
+                                </div>
                                 <div className="w-full mt-4">
                                     <Button
                                         type="submit"
@@ -730,6 +762,9 @@ CreateModal.propTypes = {
         aspectsLoading: PropTypes.bool.isRequired,
         errorAspects: PropTypes.object,
         handleAspectsChange: PropTypes.func.isRequired,
+        handleAcceptanceCriteriaChange: PropTypes.func.isRequired,
+        acceptanceCriteriaError: PropTypes.string,
+        setAcceptanceCriteriaError: PropTypes.func.isRequired,
         handleMandatoryDescriptionChange: PropTypes.func.isRequired,
         mandatoryDescriptionError: PropTypes.string,
         setMandatoryDescriptionError: PropTypes.func.isRequired,

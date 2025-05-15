@@ -17,6 +17,7 @@ import getRequirementsByMandatoryDescription from "../../services/requirementSer
 import getRequirementsByMandatoryKeywords from "../../services/requirementService/getRequirementsByMandatoryKeywords";
 import getRequirementsByMandatorySentences from "../../services/requirementService/getRequirementsByMandatorySentences";
 import getRequirementsByPeriodicity from "../../services/requirementService/getRequirementsByPeriodicity";
+import getRequirementsByAcceptanceCriteria from "../../services/requirementService/getRequirementsByAcceptanceCriteria";
 import updateRequirement from "../../services/requirementService/updateRequirement";
 import deleteRequirement from "../../services/requirementService/deleteRequirement";
 import delereRequirementBatch from "../../services/requirementService/deleteRequirementBatch";
@@ -51,6 +52,7 @@ export default function useRequirement() {
   * @param {string} params.condition - Requirement condition ('Critical', 'Operational', 'Recommendation', 'Pending').
   * @param {string} params.evidence - Type of evidence required ('Procedure', 'Record', 'Specific', 'Document').
   * @param {string} params.periodicity - Periodicity ('Annual', '2 years', 'Per event', 'One-time').
+  * @param {string} [params.acceptanceCriteria] -Acceptance Criteria (optional).
   * @returns {Promise<Object>} - Result of the operation with `success` and `data` or `error`.
   */
   const addRequirement = useCallback(
@@ -69,6 +71,7 @@ export default function useRequirement() {
       evidence,
       specifyEvidence,
       periodicity,
+      acceptanceCriteria,,
     }) => {
       try {
         const newRequirement = await createRequirement({
@@ -86,6 +89,7 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
+          acceptanceCriteria,
           token: jwt,
         });
         setRequirements((prevRequirements) =>
@@ -580,6 +584,34 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
+  /**
+* Fetches the list of Requirements by Acceptance Criteria.
+* @async
+* @function fetchRequirementsByAcceptanceCriteria
+* @param {string} acceptanceCriteria - The acceptance criteria of the requirement.
+*/
+  const fetchRequirementsByAcceptanceCriteria = useCallback(
+    async (acceptanceCriteria) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByAcceptanceCriteria({ acceptanceCriteria: acceptanceCriteria, token: jwt });
+        setRequirements(requirements);
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError
+        });
+      }
+    }, [jwt]);
 
   /**
   * Updates an existing Requirement by ID and reorders it by requirement_number.
@@ -603,6 +635,12 @@ export default function useRequirement() {
   * @param {string} [params.specifyEvidence] - The specific evidence detail if evidence is "Específica".
   * @param {string} [params.periodicity] - The periodicity of the requirement (optional).
   * @returns {Promise<Object>} - Result of the operation with success status or error message.
+  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
+  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
+  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
+  * @param {string} [params.acceptanceCriteria] - The new acceptance criteria (optional).
+  * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
+  * @throws {Object} - Returns an error message if the update fails.
   */
   const modifyRequirement = useCallback(
     async ({
@@ -620,7 +658,8 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity
+      periodicity,
+      acceptanceCriteria,
     }) => {
       try {
         const requirement = await updateRequirement({
@@ -639,6 +678,7 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
+          acceptanceCriteria,
           token: jwt,
         });
         setRequirements((prevRequirements) => {
@@ -738,6 +778,7 @@ export default function useRequirement() {
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByMandatorySentences,
     fetchRequirementsByPeriodicity,
+    fetchRequirementsByAcceptanceCriteria,
     addRequirement,
     modifyRequirement,
     removeRequirement,

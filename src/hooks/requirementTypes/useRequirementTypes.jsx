@@ -220,7 +220,11 @@ export default function useRequirementTypes() {
    * Updates an existing requirement type.
    * @async
    * @function modifyRequirementType
-   * @param {Object} params - Requirement type data including ID.
+   * @param {Object} params - Requirement type data.
+   * @param {number} params.id - The id of the requirement type.
+   * @param {string} params.name - The name of the requirement type.
+   * @param {string} params.description - The description of the type.
+   * @param {string} params.classification - The classification category.
    * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const modifyRequirementType = useCallback(

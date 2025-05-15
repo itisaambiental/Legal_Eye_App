@@ -72,10 +72,13 @@ function CreateModal({ config }) {
       setOrderError("Este campo debe ser mayor a 0.");
       setIsLoading(false);
       return;
+    } else if (!Number.isInteger(Number(formData.order))) {
+      setOrderError("Este campo debe ser un número entero.");
+      setIsLoading(false);
+      return;
     } else {
       setOrderError(null);
     }
-    
     if (formData.abbreviation?.trim().length > 10) {
       setAbbreviationError("La abreviatura no puede tener más de 10 caracteres.");
       setIsLoading(false);

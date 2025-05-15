@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @async
  * @function getRequirementById
  * @param {Object} params - Parameters for the request.
- * @param {string} params.id - The ID of the requirement to retrieve.
+ * @param {number} params.id - The ID of the requirement to retrieve.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} - The retrieved requirement data.

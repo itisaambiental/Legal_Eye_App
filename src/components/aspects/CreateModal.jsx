@@ -72,6 +72,10 @@ function CreateModal({ config }) {
       setOrderError("Este campo debe ser mayor a 0.");
       setIsLoading(false);
       return;
+    } else if (!Number.isInteger(Number(formData.order))) {
+      setOrderError("Este campo debe ser un número entero.");
+      setIsLoading(false);
+      return;
     } else {
       setOrderError(null);
     }

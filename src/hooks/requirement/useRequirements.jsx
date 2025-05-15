@@ -38,9 +38,9 @@ export default function useRequirement() {
   * @async
   * @function addRequirement
   * @param {Object} params - Parameters for creating a requirement.
-  * @param {string} params.subjectId - ID of the subject linked to the requirement.
-  * @param {string} params.aspectsIds - An array of aspect IDs linked to the requirement.
-  * @param {string} params.requirementNumber - Unique number of the requirement.
+  * @param {number} params.subjectId - ID of the subject linked to the requirement.
+  * @param {Array<number>} params.aspectsIds - An array of aspect IDs linked to the requirement.
+  * @param {number} params.requirementNumber - Unique number of the requirement.
   * @param {string} params.requirementName - Name/title of the requirement.
   * @param {string} params.mandatoryDescription - Mandatory description.
   * @param {string} [params.complementaryDescription] - Complementary description (optional).
@@ -206,7 +206,7 @@ export default function useRequirement() {
   * Fetches the list of Requiremeent by number. 
   * @async
   * @function fetchRequirementsByNumber
-  * @param {string} requirementNumber - The number of the requirement to retrieve.
+  * @param {number} requirementNumber - The number of the requirement to retrieve.
   * @returns {Promise<void>} - Updates the requirement list and loading state.
   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
   */
@@ -587,10 +587,10 @@ export default function useRequirement() {
   * @async
   * @function modifyRequirement
   * @param {Object} params - The data to update an existing Requirement.
-  * @param {string} params.id - The ID of the requirement to update.
-  * @param {string} [params.subjectId] - The new subject ID (optional).
-  * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
-  * @param {string} [params.requirementNumber] - The new requirement number (optional).
+  * @param {number} params.id - The ID of the requirement to update.
+  * @param {number} [params.subjectId] - The new subject ID (optional).
+  * @param {Array<number>} [params.aspectsIds] - The new aspects IDs (optional).
+  * @param {number} [params.requirementNumber] - The new requirement number (optional).
   * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
   * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
   * @param {string} [params.complementaryDescription] - The new complementary description (optional).

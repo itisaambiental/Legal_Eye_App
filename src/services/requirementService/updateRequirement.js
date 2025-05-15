@@ -7,10 +7,10 @@ import server from "../../config/server.js";
  * @async
  * @function updateRequirement
  * @param {Object} params - Parameters for updating a requirement.
- * @param {string} params.id - The ID of the requirement to update.
- * @param {string} [params.subjectId] - The ID of the subject linked to the requirement (optional).
- * @param {Array<string>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
- * @param {string} [params.requirementNumber] - The unique number identifying the requirement (optional).
+ * @param {number} params.id - The ID of the requirement to update.
+ * @param {number} [params.subjectId] - The ID of the subject linked to the requirement (optional).
+ * @param {Array<number>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
+ * @param {number} [params.requirementNumber] - The unique number identifying the requirement (optional).
  * @param {string} [params.requirementName] - The name/title of the requirement (optional).
  * @param {string} [params.mandatoryDescription] - The mandatory description of the requirement (optional).
  * @param {string} [params.complementaryDescription] - The complementary description (optional).

@@ -7,9 +7,9 @@ import server from "../../config/server.js";
  * @async
  * @function createRequirement
  * @param {Object} params - Parameters for creating a new requirement.
- * @param {string|number} params.subjectId - The ID of the subject linked to the requirement.
- * @param {Array<string|number>} params.aspectsIds - An array of aspect IDs linked to the requirement.
- * @param {string} params.requirementNumber - The unique number identifying the requirement.
+ * @param {number} params.subjectId - The ID of the subject linked to the requirement.
+ * @param {Array<number>} params.aspectsIds - An array of aspect IDs linked to the requirement.
+ * @param {number} params.requirementNumber - The unique number identifying the requirement.
  * @param {string} params.requirementName - The name/title of the requirement.
  * @param {string} params.mandatoryDescription - The mandatory description of the requirement.
  * @param {string} [params.complementaryDescription] - The complementary description (optional).

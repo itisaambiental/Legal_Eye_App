@@ -219,7 +219,11 @@ export default function useLegalVerbs() {
    * Updates an existing legal verb.
    * @async
    * @function modifyLegalVerb
-   * @param {Object} params - Legal verb data including ID.
+   * @param {Object} params - Legal verb data.
+   * @param {number} params.id - The id of the legal verb.
+   * @param {string} params.name - The name of the legal verb.
+   * @param {string} params.description - The description of the verb.
+   * @param {string} params.translation - The translation category.
    * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const modifyLegalVerb = useCallback(

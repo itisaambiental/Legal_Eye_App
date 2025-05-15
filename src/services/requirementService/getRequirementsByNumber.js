@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @async
  * @function getRequirementsByNumber
  * @param {Object} params - Parameters for the request.
- * @param {string} params.number - The requirement number or partial match.
+ * @param {number} params.number - The requirement number or partial match.
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Array<Object>>} - A list of matching requirements.

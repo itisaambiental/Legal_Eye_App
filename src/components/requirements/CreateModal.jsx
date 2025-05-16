@@ -351,6 +351,7 @@ const CreateModal = ({ config }) => {
         <Modal
             isOpen={isOpen}
             onClose={closeModalCreate}
+            isDismissable={false}
             placement="center"
             className="w-full sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-4xl"
             classNames={{

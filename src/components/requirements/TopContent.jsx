@@ -37,8 +37,6 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onFilterByMandatoryDescription - Callback for filtering by mandatory description.
  * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description.
  * @param {Function} props.config.onFilterByComplementaryDescription - Callback for filtering by complementary description.
- * @param {string} props.config.filterByObligatoryDescription - Current value for filtering by mandatory sentences.
- * @param {Function} props.config.onFilterByObligatoryDescription - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByMandatorySentences - Current value for filtering by mandatory sentences.
  * @param {Function} props.config.onFilterByMandatorySentences - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByComplementarySentences - Current value for filtering by complementary sentences.

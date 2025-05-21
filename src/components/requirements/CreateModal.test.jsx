@@ -40,6 +40,9 @@ describe("CreateModal Component for Requirements", () => {
       isAspectsActive: true,
       aspectsLoading: false,
       errorAspects: null,
+      handleAcceptanceCriteriaChange: vi.fn(),
+      acceptanceCriteriaError: null,
+      setAcceptanceCriteriaError: vi.fn(),
       handleAspectsChange: vi.fn(),
       mandatoryDescriptionError: null,
       setMandatoryDescriptionError: vi.fn(),
@@ -53,7 +56,6 @@ describe("CreateModal Component for Requirements", () => {
       setMandatoryKeywordsError: vi.fn(),
       complementaryKeywordsError: null,
       setComplementaryKeywordsError: vi.fn(),
-
       formData: {
         number: "",
         name: "",
@@ -63,6 +65,7 @@ describe("CreateModal Component for Requirements", () => {
         periodicity: "",
         subject: "",
         aspects: ["1"],
+        acceptanceCriteria: "",
         mandatoryDescription: "",
         complementaryDescription: "",
         mandatorySentences: "",
@@ -96,7 +99,7 @@ describe("CreateModal Component for Requirements", () => {
     expect(screen.getByText("Crear Nuevo Requerimiento")).toBeInTheDocument();
   });
 
-  it("validates empty number and name on submit", async () => {
+  it("validates empty number, name and acceptanceCriteria on submit", async () => {
     config.formData = {
       ...config.formData,
       condition: "Crítica",
@@ -106,6 +109,7 @@ describe("CreateModal Component for Requirements", () => {
       aspects: ["1"],
       number: "",
       name: "",
+      acceptanceCriteria: "",
     };
 
     render(<CreateModal config={config} />);
@@ -113,6 +117,8 @@ describe("CreateModal Component for Requirements", () => {
 
     await waitFor(() => {
       expect(config.setNumberError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setNameError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setAcceptanceCriteriaError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
 
@@ -126,6 +132,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "Debe ser verificado por el responsable",
     };
 
     render(<CreateModal config={config} />);
@@ -146,6 +153,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "ok",
       mandatoryDescription: "",
       complementaryDescription: "",
       mandatorySentences: "",
@@ -165,6 +173,11 @@ describe("CreateModal Component for Requirements", () => {
 
     await waitFor(() => {
       expect(config.setMandatoryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setComplementaryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setMandatorySentencesError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setComplementarySentencesError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setMandatoryKeywordsError).toHaveBeenCalledWith("Este campo es obligatorio.");
+      expect(config.setComplementaryKeywordsError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
 
@@ -178,6 +191,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "Debe verificarse",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -211,6 +225,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "criterio",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -256,6 +271,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "criterio",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",

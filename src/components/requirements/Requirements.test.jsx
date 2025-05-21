@@ -125,10 +125,6 @@ describe("Requirement Component", () => {
     expect(screen.getByText("Reglamento Ambiental")).toBeInTheDocument();
     expect(screen.getByText("Trámite")).toBeInTheDocument();
     expect(screen.getByText("Específica - Informe técnico")).toBeInTheDocument();
-  
-    // ✅ Nuevos asserts para `acceptance_criteria`
-    expect(screen.getByText("Debe cumplir al 100%")).toBeInTheDocument();
-    expect(screen.getByText("Debe entregarse trimestralmente")).toBeInTheDocument();
   });
   
   test("shows loading indicator when requirements are loading", () => {

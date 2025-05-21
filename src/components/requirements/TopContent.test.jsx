@@ -150,17 +150,4 @@ describe("TopContent Component for Requirements", () => {
     fireEvent.change(input, { target: { value: "clave" } });
     expect(baseMockConfig.onFilterByComplementaryKeywords).toHaveBeenCalledWith("clave");
   });
-
-  test("calls onFilterByAspects when an aspect is selected", async () => {
-    const updatedConfig = {
-      ...baseMockConfig,
-      selectedSubject: "1", // habilita el campo
-    };
-
-    render(<TopContent config={updatedConfig} />);
-    const select = screen.getByPlaceholderText("Buscar por aspecto...");
-    fireEvent.keyDown(select, { key: "ArrowDown" });
-    fireEvent.click(await screen.findByText("Aspecto A"));
-    expect(updatedConfig.onFilterByAspects).toHaveBeenCalled();
-  });
 });

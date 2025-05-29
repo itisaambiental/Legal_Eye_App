@@ -47,7 +47,7 @@ const IdentificationModal = ({
         name: "",
         description: "",
     });
-    const [intelligenceLevel, setIntelligenceLevel] = useState("Low");
+    const [intelligenceLevel, setIntelligenceLevel] = useState("");
     const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState("");
     useEffect(() => {
         if (!isOpen || selectedLegalBases.length === 0) return;
@@ -77,15 +77,15 @@ const IdentificationModal = ({
     };
     const validate = () => {
         if (!form.name.trim()) {
-            setErrors({ name: "El nombre es obligatorio.", description: "" });
+            setErrors({ name: "Este campo es obligatorio.", description: "" });
             return false;
         }
         if (!form.description.trim()) {
-            setErrors({ name: "", description: "La descripción es obligatoria." });
+            setErrors({ name: "", description: "Este campo es obligatorio." });
             return false;
         }
         if (!intelligenceLevel) {
-            setIntelligenceLevelInputError("El nivel de inteligencia es obligatorio.");
+            setIntelligenceLevelInputError("Este campo es obligatorio.");
             return false;
         }
 

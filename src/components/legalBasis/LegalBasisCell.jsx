@@ -39,6 +39,7 @@ const LegalBasisCell = ({
   handleDelete,
   handleDownloadDocument,
   openSendModalFromRow,
+  openIdentificationModalFromRow,
 }) => {
   const renderCell = useCallback(() => {
     switch (columnKey) {
@@ -212,9 +213,11 @@ const LegalBasisCell = ({
                   className="hover:bg-primary/20"
                   key="send-requirements"
                   textValue="Identificar Requerimientos"
+                  onPress={() => openIdentificationModalFromRow(legalBase)}
                 >
                   <p className="font-normal text-primary">Identificar Requerimientos</p>
                 </DropdownItem>
+
                 <DropdownItem
                   aria-label="Editar Fundamento"
                   startContent={
@@ -263,6 +266,7 @@ const LegalBasisCell = ({
     handleDelete,
     handleDownloadDocument,
     openSendModalFromRow,
+    openIdentificationModalFromRow,
   ]);
 
   return renderCell();
@@ -295,6 +299,7 @@ LegalBasisCell.propTypes = {
   goToArticles: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   handleDownloadDocument: PropTypes.func.isRequired,
+  openIdentificationModalFromRow: PropTypes.func,
 };
 
 export default LegalBasisCell;

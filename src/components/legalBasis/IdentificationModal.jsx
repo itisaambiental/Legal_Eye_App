@@ -11,6 +11,7 @@ import {
     Radio,
     RadioGroup,
 } from "@heroui/react";
+import { toast } from "react-toastify";
 
 /**
  * IdentificationModal.jsx
@@ -51,25 +52,52 @@ const IdentificationModal = ({
     const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState("");
     useEffect(() => {
         if (!isOpen || selectedLegalBases.length === 0) return;
-
+      
         const [first] = selectedLegalBases;
-
-        const uniqueAspects = Array.from(
-            new Set(
-                selectedLegalBases.flatMap((base) =>
-                    base.aspects?.map((a) => a.aspect_name) || []
-                )
-            )
+      
+        const firstJurisdiction = first.jurisdiction?.trim().toLowerCase() || "";
+        const firstSubjectName = first.subject?.subject_name?.trim().toLowerCase() || "";
+      
+        const sameJurisdiction = selectedLegalBases.every(
+          (b) => b.jurisdiction?.trim().toLowerCase() === firstJurisdiction
         );
-
+      
+        const sameSubject = selectedLegalBases.every(
+          (b) =>
+            b.subject?.subject_name?.trim().toLowerCase() === firstSubjectName
+        );
+      
+        if (!sameJurisdiction) {
+          toast.error("Todos los fundamentos deben tener la misma jurisdicción.");
+          onClose();
+          return;
+        }
+      
+        if (!sameSubject) {
+          toast.error("Todos los fundamentos deben tener la misma materia.");
+          onClose();
+          return;
+        }
+      
+        const uniqueAspects = Array.from(
+          new Set(
+            selectedLegalBases.flatMap((base) =>
+              base.aspects?.map((a) => a.aspect_name) || []
+            )
+          )
+        );
+      
         setFormValues({
-            jurisdiction: first.jurisdiction || "",
-            state: first.state || "",
-            municipality: first.municipality || "",
-            subject: first.subject?.subject_name || "",
-            aspects: uniqueAspects,
+          jurisdiction: first.jurisdiction || "",
+          state: first.state || "",
+          municipality: first.municipality || "",
+          subject: first.subject?.subject_name || "",
+          aspects: uniqueAspects,
         });
-    }, [isOpen, selectedLegalBases]);
+      }, [isOpen, selectedLegalBases, onClose]);
+      
+    
+
 
     const handleChange = (field, value) => {
         setForm({ ...form, [field]: value });

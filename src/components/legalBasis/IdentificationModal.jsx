@@ -52,51 +52,51 @@ const IdentificationModal = ({
     const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState("");
     useEffect(() => {
         if (!isOpen || selectedLegalBases.length === 0) return;
-      
+
         const [first] = selectedLegalBases;
-      
+
         const firstJurisdiction = first.jurisdiction?.trim().toLowerCase() || "";
         const firstSubjectName = first.subject?.subject_name?.trim().toLowerCase() || "";
-      
+
         const sameJurisdiction = selectedLegalBases.every(
-          (b) => b.jurisdiction?.trim().toLowerCase() === firstJurisdiction
+            (b) => b.jurisdiction?.trim().toLowerCase() === firstJurisdiction
         );
-      
+
         const sameSubject = selectedLegalBases.every(
-          (b) =>
-            b.subject?.subject_name?.trim().toLowerCase() === firstSubjectName
+            (b) =>
+                b.subject?.subject_name?.trim().toLowerCase() === firstSubjectName
         );
-      
+
         if (!sameJurisdiction) {
-          toast.error("Todos los fundamentos deben tener la misma jurisdicción.");
-          onClose();
-          return;
+            toast.error("Todos los fundamentos deben tener la misma jurisdicción.");
+            onClose();
+            return;
         }
-      
+
         if (!sameSubject) {
-          toast.error("Todos los fundamentos deben tener la misma materia.");
-          onClose();
-          return;
+            toast.error("Todos los fundamentos deben tener la misma materia.");
+            onClose();
+            return;
         }
-      
+
         const uniqueAspects = Array.from(
-          new Set(
-            selectedLegalBases.flatMap((base) =>
-              base.aspects?.map((a) => a.aspect_name) || []
+            new Set(
+                selectedLegalBases.flatMap((base) =>
+                    base.aspects?.map((a) => a.aspect_name) || []
+                )
             )
-          )
         );
-      
+
         setFormValues({
-          jurisdiction: first.jurisdiction || "",
-          state: first.state || "",
-          municipality: first.municipality || "",
-          subject: first.subject?.subject_name || "",
-          aspects: uniqueAspects,
+            jurisdiction: first.jurisdiction || "",
+            state: first.state || "",
+            municipality: first.municipality || "",
+            subject: first.subject?.subject_name || "",
+            aspects: uniqueAspects,
         });
-      }, [isOpen, selectedLegalBases, onClose]);
-      
-    
+    }, [isOpen, selectedLegalBases, onClose]);
+
+
 
 
     const handleChange = (field, value) => {
@@ -120,6 +120,13 @@ const IdentificationModal = ({
         setErrors({ name: "", description: "" });
         setIntelligenceLevelInputError("");
         return true;
+    };
+
+    const handleIntelligenceLevelChange = (value) => {
+        setIntelligenceLevel(value);
+        if (value) {
+            setIntelligenceLevelInputError("");
+        }
     };
 
 
@@ -238,7 +245,7 @@ const IdentificationModal = ({
                                     orientation="horizontal"
                                     label="Nivel de Inteligencia:"
                                     value={intelligenceLevel}
-                                    onValueChange={setIntelligenceLevel}
+                                    onValueChange={handleIntelligenceLevelChange}
                                 >
                                     <Radio
                                         description="Inteligencia baja: más rápida, pero menos precisa."

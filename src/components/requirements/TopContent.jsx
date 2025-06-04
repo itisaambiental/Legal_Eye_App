@@ -261,18 +261,6 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByMandatorySentences}
         />
-
-        <Input
-          color="primary"
-          variant="faded"
-          isClearable
-          value={filterByComplementarySentences}
-          className="w-full"
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          placeholder="Buscar por frases complementarias..."
-          onClear={onClear}
-          onValueChange={onFilterByComplementarySentences}
-        />
         <Tooltip
           content="Debes seleccionar una materia"
           isDisabled={!!selectedSubject}
@@ -317,6 +305,19 @@ function TopContent({ config }) {
             </Select>
           </div>
         </Tooltip>
+
+        <Input
+          color="primary"
+          variant="faded"
+          isClearable
+          value={filterByComplementarySentences}
+          className="w-full"
+          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
+          placeholder="Buscar por frases complementarias..."
+          onClear={onClear}
+          onValueChange={onFilterByComplementarySentences}
+        />
+
 
         <Input
           color="primary"

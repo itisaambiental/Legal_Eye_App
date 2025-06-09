@@ -21,14 +21,14 @@ import { toast } from "react-toastify";
  *
  * @param {boolean} isOpen - Controls the modal visibility.
  * @param {function} onClose - Function to close the modal.
- * @param {Array<Object>} selectedLegalBases - List of selected legal bases to pre-fill jurisdictional data.
+ * @param {Array<Object>} selectedIdentificationRequirement - List of selected legal bases to pre-fill jurisdictional data.
  * @param {function} [onSuccess] - Optional callback triggered when the form is successfully submitted.
  */
 
 const IdentificationModal = ({
     isOpen,
     onClose,
-    selectedLegalBases,
+    selectedIdentificationRequirement,
     onSuccess }) => {
 
     const [form, setForm] = useState({
@@ -51,18 +51,18 @@ const IdentificationModal = ({
     const [intelligenceLevel, setIntelligenceLevel] = useState("");
     const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState("");
     useEffect(() => {
-        if (!isOpen || selectedLegalBases.length === 0) return;
+        if (!isOpen || selectedIdentificationRequirement.length === 0) return;
 
-        const [first] = selectedLegalBases;
+        const [first] = selectedIdentificationRequirement;
 
         const firstJurisdiction = first.jurisdiction?.trim().toLowerCase() || "";
         const firstSubjectName = first.subject?.subject_name?.trim().toLowerCase() || "";
 
-        const sameJurisdiction = selectedLegalBases.every(
+        const sameJurisdiction = selectedIdentificationRequirement.every(
             (b) => b.jurisdiction?.trim().toLowerCase() === firstJurisdiction
         );
 
-        const sameSubject = selectedLegalBases.every(
+        const sameSubject = selectedIdentificationRequirement.every(
             (b) =>
                 b.subject?.subject_name?.trim().toLowerCase() === firstSubjectName
         );
@@ -81,7 +81,7 @@ const IdentificationModal = ({
 
         const uniqueAspects = Array.from(
             new Set(
-                selectedLegalBases.flatMap((base) =>
+                selectedIdentificationRequirement.flatMap((base) =>
                     base.aspects?.map((a) => a.aspect_name) || []
                 )
             )
@@ -94,7 +94,7 @@ const IdentificationModal = ({
             subject: first.subject?.subject_name || "",
             aspects: uniqueAspects,
         });
-    }, [isOpen, selectedLegalBases, onClose]);
+    }, [isOpen, selectedIdentificationRequirement, onClose]);
 
 
 
@@ -285,7 +285,7 @@ const IdentificationModal = ({
 IdentificationModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    selectedLegalBases: PropTypes.arrayOf(
+    selectedIdentificationRequirement: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
             jurisdiction: PropTypes.string,

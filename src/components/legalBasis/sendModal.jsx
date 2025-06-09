@@ -40,6 +40,7 @@ function SendModal({ config }) {
         selectedKeys,
         setSelectedKeys,
         check,
+        singleSendId, 
     } = config;
 
     const [isLoading, setIsLoading] = useState(false);
@@ -63,37 +64,44 @@ function SendModal({ config }) {
     const handleSend = useCallback(async () => {
         setIsLoading(true);
         try {
-          const idsToSend = selectedKeys === "all"
-            ? legalBasis.map((legalBase) => legalBase.id)
-            : Array.from(selectedKeys).map((id) => Number(id));
-      
-          const { success, jobId, error } = await sendLegalBasis({ legalBasisIds: idsToSend });
-      
-          if (success) {
-            toast.info(
-              idsToSend.length === 1
-                ? "Fundamento Legal enviado exitosamente."
-                : "Fundamentos Legales enviados exitosamente.",
-              {
-                icon: () => <img src={check} alt="Ícono de éxito" />,
-                progressStyle: {
-                  background: "#113c53",
-                },
-              }
-            );
-            setJobId(jobId);
-            setShowProgress(true);
-          } else {
-            toast.error(error);
-          }
+            const idsToSend = singleSendId
+                ? [Number(singleSendId)]
+                : selectedKeys === "all"
+                    ? legalBasis.map((legalBase) => legalBase.id)
+                    : Array.from(selectedKeys).map((id) => Number(id));
+
+            const { success, jobId, error } = await sendLegalBasis({ legalBasisIds: idsToSend });
+
+            if (success) {
+                toast.info(
+                    idsToSend.length === 1
+                        ? "Fundamento Legal enviado exitosamente."
+                        : "Fundamentos Legales enviados exitosamente.",
+                    {
+                        icon: () => <img src={check} alt="Ícono de éxito" />,
+                        progressStyle: { background: "#113c53" },
+                    }
+                );
+
+                setSelectedKeys(new Set());
+
+                if (jobId) {
+                    setJobId(jobId);
+                    setShowProgress(true);
+                } else {
+                    closeSendModal();
+                }
+            }
+            else {
+                toast.error(error);
+            }
         } catch (err) {
-          console.error(err);
-          toast.error("Algo salió mal al enviar los fundamentos legales. Inténtalo de nuevo.");
+            console.error(err);
+            toast.error("Algo salió mal al enviar los fundamentos legales. Inténtalo de nuevo.");
         } finally {
-          setIsLoading(false);
+            setIsLoading(false);
         }
-      }, [sendLegalBasis, selectedKeys, legalBasis, check]);
-      
+    }, [sendLegalBasis, selectedKeys, singleSendId, legalBasis, check, closeSendModal, setSelectedKeys]);
 
     return (
         <Modal
@@ -120,10 +128,10 @@ function SendModal({ config }) {
                 ) : (
                     <>
                         <ModalHeader className="text-center">
-                            {selectedKeys === "all"
-                                ? "¿Estás seguro de que deseas enviar TODOS los Fundamentos Legales a ACM Suite?"
-                                : selectedKeys.size <= 1
-                                    ? "¿Estás seguro de que deseas enviar este Fundamento Legal a ACM Suite?"
+                            {singleSendId
+                                ? "¿Estás seguro de que deseas enviar este Fundamento Legal a ACM Suite?"
+                                : selectedKeys === "all"
+                                    ? "¿Estás seguro de que deseas enviar TODOS los Fundamentos Legales a ACM Suite?"
                                     : "¿Estás seguro de que deseas enviar estos Fundamentos Legales a ACM Suite?"}
                         </ModalHeader>
                         <ModalBody className="text-center">
@@ -171,6 +179,7 @@ SendModal.propTypes = {
         ]).isRequired,
         setSelectedKeys: PropTypes.func.isRequired,
         check: PropTypes.string.isRequired,
+        singleSendId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     }).isRequired,
 };
 

@@ -91,9 +91,15 @@ describe("ResetPassword Component", () => {
 
     expect(mockResetPassword).toHaveBeenCalledWith("test@test.com");
     expect(mockNavigate).toHaveBeenCalledWith(
-      "/reset-password/verify/test%40test.com",
-      { state: { fromRequest: true } }
+      "/reset-password/verify",
+      {
+        state: {
+          fromRequest: true,
+          email: "test@test.com",
+        },
+      }
     );
+
   });
 
   test("displays error message on reset password error", async () => {

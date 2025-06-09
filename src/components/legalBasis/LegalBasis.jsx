@@ -121,8 +121,7 @@ export default function LegalBasis() {
   const [selectedLegalBase, setSelectedLegalBase] = useState(null);
   const [nameInputError, setNameInputError] = useState(null);
   const [abbreviationInputError, setAbbreviationInputError] = useState(null);
-  const [classificationInputError, setClassificationInputError] =
-    useState(null);
+  const [classificationInputError, setClassificationInputError] = useState(null);
   const [jurisdictionInputError, setJurisdictionInputError] = useState(null);
   const [stateInputError, setStateInputError] = useState(null);
   const [municipalityInputError, setMunicipalityInputError] = useState(null);
@@ -133,11 +132,9 @@ export default function LegalBasis() {
   const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
   const [fileError, setFileError] = useState(null);
-  const [extractArticlesInputError, setExtractArticlesInputError] =
-    useState(null);
+  const [extractArticlesInputError, setExtractArticlesInputError] = useState(null);
   const [isExtracArticlesChecked, setIsExtracArticlesChecked] = useState(false);
-  const [intelligenceLevelInputError, setIntelligenceLevelInputError] =
-    useState(null);
+  const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -146,7 +143,9 @@ export default function LegalBasis() {
   const [showSendModal, setShowSendModal] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isIdentificationModalOpen, setIsIdentificationModalOpen] = useState(false);
-  const [selectedLegalBases, setSelectedLegalBases] = useState([]);
+  const [selectedIdentificationRequirement, setSelectedIdentificationRequirement] = useState([]);
+  const [singleSendId, setSingleSendId] = useState(null);
+
 
   const [formData, setFormData] = useState({
     id: "",
@@ -170,8 +169,6 @@ export default function LegalBasis() {
       setIsFirstRender(false);
     }
   }, [loading, isFirstRender]);
-
-
 
   const handleClear = useCallback(() => {
     setFilterByName("");
@@ -906,7 +903,11 @@ export default function LegalBasis() {
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const openSendModal = () => setShowSendModal(true);
-  const closeSendModal = () => setShowSendModal(false);
+  const closeSendModal = () => {
+    setShowSendModal(false);
+    setSingleSendId(null);
+  };
+
 
   const validarLegalBasesSeleccionadas = (bases) => {
     if (bases.length === 0) {
@@ -961,14 +962,15 @@ export default function LegalBasis() {
 
     if (!validarLegalBasesSeleccionadas(bases)) return;
 
-    setSelectedLegalBases(bases);
+    setSelectedIdentificationRequirement(bases);
     setIsIdentificationModalOpen(true);
   };
 
   const openSendModalFromRow = (id) => {
-    setSelectedKeys(new Set([id]));
+    setSingleSendId(id);
     setShowSendModal(true);
   };
+
 
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
@@ -1195,7 +1197,7 @@ export default function LegalBasis() {
                         openSendModalFromRow={openSendModalFromRow}
                         openIdentificationModalFromRow={(row) => {
                           if (!validarLegalBasesSeleccionadas([row])) return;
-                          setSelectedLegalBases([row]);
+                          setSelectedIdentificationRequirement([row]);
                           setIsIdentificationModalOpen(true);
                         }}
 
@@ -1406,10 +1408,9 @@ export default function LegalBasis() {
         <IdentificationModal
           isOpen={isIdentificationModalOpen}
           onClose={() => setIsIdentificationModalOpen(false)}
-          selectedLegalBases={selectedLegalBases}
+          selectedIdentificationRequirement={selectedIdentificationRequirement}
           onSuccess={(data) => {
             console.log("Análisis generado:", data);
-            // aquí podrías redirigir a una vista resumen o mostrarlo
           }}
         />
       )}
@@ -1423,8 +1424,10 @@ export default function LegalBasis() {
             selectedKeys: selectedKeys,
             setSelectedKeys: setSelectedKeys,
             check: check,
+            singleSendId: singleSendId,
           }}
         />
+
       )}
       {isFilterModalOpen && (
         <FilterModal

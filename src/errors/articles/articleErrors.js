@@ -8,8 +8,16 @@ class ArticleErrors {
   static UNAUTHORIZED = "UNAUTHORIZED";
   static NOT_FOUND = "NOT_FOUND";
   static MULTIPLE_NOT_FOUND = "MULTIPLE_NOT_FOUND";
+  static ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT =
+    "ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT";
+  static REQ_IDENTIFICATION_JOBS_CONFLICT = "REQ_IDENTIFICATION_JOBS_CONFLICT";
+  static MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT =
+    "MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT";
+  static MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT =
+    "MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT";
   static SEND_LEGAL_BASIS_JOBS_CONFLICT = "SEND_LEGAL_BASIS_JOBS_CONFLICT";
-  static MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT = "MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT";
+  static MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT =
+    "MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT";
   static LEGAL_BASIS_NOT_FOUND = "LEGAL_BASIS_NOT_FOUND";
   static CONFLICT = "CONFLICT";
   static SERVER_ERROR = "SERVER_ERROR";
@@ -47,6 +55,34 @@ class ArticleErrors {
       message:
         "Uno o más artículos no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
     },
+    [ArticleErrors.ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT]: {
+      title: "Artículo vinculado a una identificación de requerimientos",
+      message:
+        "El artículo está vinculado a una o más identificación de requerimientos y no puede ser eliminado.",
+    },
+    [ArticleErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message:
+        "El artículo no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.",
+    },
+    [ArticleErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT]: {
+      title: "Artículos vinculados a identificaciones de requerimientos",
+      message: ({ items }) =>
+        items.length === 1
+          ? `El artículo ${items[0]} está vinculado a una o más identificación de requerimientos y no puede ser eliminado.`
+          : `Los artículos ${items.join(
+              ", "
+            )} están vinculados a una o más identificación de requerimientos y no pueden ser eliminados.`,
+    },
+    [ArticleErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message: ({ items }) =>
+        items.length === 1
+          ? `El artículo ${items[0]} no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.`
+          : `Los artículos ${items.join(
+              ", "
+            )} no pueden ser eliminados porque se están utilizando en una identificación de requerimientos.`,
+    },
     [ArticleErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de envío",
       message:
@@ -83,20 +119,30 @@ class ArticleErrors {
     },
   };
 
-    /**
-     * A map of specific error messages to their corresponding error constants.
-     * This map is used to translate error messages from the server or HTTP Errors into standardized error types.
-     *
-     * @type {Object.<string, ArticleErrors>}
-     */
-    static ErrorMessagesMap = {
-      "Network Error": ArticleErrors.NETWORK_ERROR,
-      "Validation failed": ArticleErrors.VALIDATION_ERROR,
-      "Unauthorized": ArticleErrors.UNAUTHORIZED,
-      "LegalBasis not found": ArticleErrors.LEGAL_BASIS_NOT_FOUND,
-      "Cannot delete Article with pending Send Legal Basis jobs": ArticleErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT,
-      "Cannot delete Articles with pending Send Legal Basis jobs": ArticleErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,  
-    };
+  /**
+   * A map of specific error messages to their corresponding error constants.
+   * This map is used to translate error messages from the server or HTTP Errors into standardized error types.
+   *
+   * @type {Object.<string, ArticleErrors>}
+   */
+  static ErrorMessagesMap = {
+    "Network Error": ArticleErrors.NETWORK_ERROR,
+    "Validation failed": ArticleErrors.VALIDATION_ERROR,
+    Unauthorized: ArticleErrors.UNAUTHORIZED,
+    "LegalBasis not found": ArticleErrors.LEGAL_BASIS_NOT_FOUND,
+    "The Article is associated with one or more requirement identifications":
+      ArticleErrors.ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+    "Cannot delete Article with pending Requirement Identification jobs":
+      ArticleErrors.REQ_IDENTIFICATION_JOBS_CONFLICT,
+    "Some Articles are associated with requirement identifications":
+      ArticleErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+    "Cannot delete Articles with pending Requirement Identification jobs":
+      ArticleErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
+    "Cannot delete Article with pending Send Legal Basis jobs":
+      ArticleErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT,
+    "Cannot delete Articles with pending Send Legal Basis jobs":
+      ArticleErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
+  };
 
   /**
    * Handles errors by mapping error codes or messages to a user-friendly error object.
@@ -114,7 +160,11 @@ class ArticleErrors {
       const key = ArticleErrors.ErrorMessagesMap[message];
       const errorConfig = ArticleErrors.errorMap[key];
       if (
-        key === ArticleErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT &&
+        [
+          ArticleErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
+          ArticleErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+          ArticleErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
+        ].includes(key) &&
         items &&
         items.length > 0
       ) {

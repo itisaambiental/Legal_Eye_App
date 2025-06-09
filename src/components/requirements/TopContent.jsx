@@ -25,8 +25,6 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onRowsPerPageChange - Callback for changing rows per page.
  * @param {number} props.config.totalRequirements - Total number of requirements.
  * @param {Function} props.config.openModalCreate - Function to open the create modal.
- * @param {string} props.config.filterByNumber - Current value for filtering by requirement number.
- * @param {Function} props.config.onFilterByNumber - Callback for filtering by requirement number.
  * @param {string} props.config.filterByName - Current value for filtering by requirement name.
  * @param {Function} props.config.onFilterByName - Callback for filtering by requirement name.
  * @param {string} props.config.selectedCondition - Selected condition filter.
@@ -39,8 +37,6 @@ import mas_icon from "../../assets/mas.png";
  * @param {Function} props.config.onFilterByMandatoryDescription - Callback for filtering by mandatory description.
  * @param {string} props.config.filterByComplementaryDescription - Current value for filtering by complementary description.
  * @param {Function} props.config.onFilterByComplementaryDescription - Callback for filtering by complementary description.
- * @param {string} props.config.filterByObligatoryDescription - Current value for filtering by mandatory sentences.
- * @param {Function} props.config.onFilterByObligatoryDescription - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByMandatorySentences - Current value for filtering by mandatory sentences.
  * @param {Function} props.config.onFilterByMandatorySentences - Callback for filtering by mandatory sentences.
  * @param {string} props.config.filterByComplementarySentences - Current value for filtering by complementary sentences.
@@ -69,8 +65,6 @@ function TopContent({ config }) {
     onRowsPerPageChange,
     totalRequirements,
     openModalCreate,
-    filterByNumber,
-    onFilterByNumber,
     filterByName,
     onFilterByName,
     selectedCondition,
@@ -89,6 +83,8 @@ function TopContent({ config }) {
     selectedAspects,
     onFilterByAspects,
     filterByComplementaryDescription,
+    filterByAcceptanceCriteria,
+    onFilterByAcceptanceCriteria,
     filterByMandatoryDescription,
     onFilterByMandatoryDescription,
     onFilterByComplementaryDescription,
@@ -105,17 +101,6 @@ function TopContent({ config }) {
   return (
     <div className="flex flex-col gap-4 mb-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        <Input
-          color="primary"
-          variant="faded"
-          isClearable
-          value={filterByNumber}
-          className="w-full"
-          placeholder="Buscar por orden..."
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          onClear={onClear}
-          onValueChange={onFilterByNumber}
-        />
         <Input
           color="primary"
           variant="faded"
@@ -214,7 +199,23 @@ function TopContent({ config }) {
             </AutocompleteItem>
           )}
         </Autocomplete>
-
+        <Input
+          color="primary"
+          variant="faded"
+          isClearable
+          value={filterByAcceptanceCriteria}
+          className="w-full"
+          placeholder="Buscar por criterio de aceptación..."
+          startContent={
+            <img
+              src={search_icon}
+              alt="Search Icon"
+              className="w-4 h-4 flex-shrink-0"
+            />
+          }
+          onClear={onClear}
+          onValueChange={onFilterByAcceptanceCriteria}
+        />
         <Input
           color="primary"
           variant="faded"
@@ -260,18 +261,6 @@ function TopContent({ config }) {
           onClear={onClear}
           onValueChange={onFilterByMandatorySentences}
         />
-
-        <Input
-          color="primary"
-          variant="faded"
-          isClearable
-          value={filterByComplementarySentences}
-          className="w-full"
-          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
-          placeholder="Buscar por frases complementarias..."
-          onClear={onClear}
-          onValueChange={onFilterByComplementarySentences}
-        />
         <Tooltip
           content="Debes seleccionar una materia"
           isDisabled={!!selectedSubject}
@@ -316,6 +305,19 @@ function TopContent({ config }) {
             </Select>
           </div>
         </Tooltip>
+
+        <Input
+          color="primary"
+          variant="faded"
+          isClearable
+          value={filterByComplementarySentences}
+          className="w-full"
+          startContent={<img src={search_icon} alt="Search Icon" className="w-4 h-4" />}
+          placeholder="Buscar por frases complementarias..."
+          onClear={onClear}
+          onValueChange={onFilterByComplementarySentences}
+        />
+
 
         <Input
           color="primary"
@@ -388,6 +390,8 @@ TopContent.propTypes = {
     onFilterByEvidence: PropTypes.func.isRequired,
     selectedPeriodicity: PropTypes.string,
     onFilterByPeriodicity: PropTypes.func.isRequired,
+    filterByAcceptanceCriteria: PropTypes.string,
+    onFilterByAcceptanceCriteria: PropTypes.func,
     filterByMandatoryDescription: PropTypes.string,
     onFilterByMandatoryDescription: PropTypes.func,
     filterByComplementaryDescription: PropTypes.string,

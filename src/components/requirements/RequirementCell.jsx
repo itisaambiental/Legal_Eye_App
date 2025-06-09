@@ -100,6 +100,23 @@ const RequirementCell = ({
             </p>
           </div>
         );
+        case "acceptance_criteria":
+        return (
+          <div className="flex items-center justify-center">
+            <Tooltip content="Ver Criterio de Aceptación">
+              <Button
+                isIconOnly
+                aria-label="Ver Criterio de Aceptación"
+                color="primary"
+                variant="light"
+                onPress={() => openModalDescription(requirement, "acceptance_criteria", "Criterio de Aceptación")}
+              >
+                <img src={watch_icon} alt="Ver" className="w-5 h-5" />
+              </Button>
+            </Tooltip>
+          </div>
+        );
+
       case "mandatory_description":
         return (
           <div className="flex items-center justify-center">
@@ -287,6 +304,7 @@ RequirementCell.propTypes = {
         aspect_name: PropTypes.string.isRequired,
       })
     ),
+    acceptance_criteria: PropTypes.string,
     mandatory_description: PropTypes.string,
     complementary_description: PropTypes.string,
     mandatory_sentences: PropTypes.string,

@@ -112,7 +112,7 @@ function CreateModal({ config }) {
       setEmailError(null);
     }
 
-    if (formData.user_type === "") {
+    if (!formData.user_type) {
       setusertypeError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -154,6 +154,7 @@ function CreateModal({ config }) {
     <Modal
       isOpen={isOpen}
       onOpenChange={closeModalCreate}
+      isDismissable={false}
       backdrop="opaque"
       placement="center"
       classNames={{

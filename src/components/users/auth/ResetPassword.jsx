@@ -62,13 +62,11 @@ function ResetPassword() {
     } else {
       setUsernameError(false);
     }
-
     if (isValid) {
       const success = await reset_password(email);
       if (success) {
-        const encodedEmail = encodeURIComponent(email);
-        navigate(`/reset-password/verify/${encodedEmail}`, {
-          state: { fromRequest: true },
+        navigate("/reset-password/verify", {
+          state: { fromRequest: true, email },
         });
       }
     }
@@ -126,9 +124,8 @@ function ResetPassword() {
             <div className="w-full">
               <input
                 type="email"
-                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${
-                  showEmailError ? "border-primary" : ""
-                }`}
+                className={`w-full border py-2 px-4 rounded-md placeholder-secondary outline-none ${showEmailError ? "border-primary" : ""
+                  }`}
                 placeholder="Dirección de correo"
                 onChange={(e) =>
                   handleInputChange(e, setEmail, setUsernameError)

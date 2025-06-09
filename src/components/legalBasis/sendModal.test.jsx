@@ -30,8 +30,8 @@ describe("SendModal Component for Legal Basis", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(toast, "info").mockImplementation(() => {});
-    vi.spyOn(toast, "error").mockImplementation(() => {});
+    vi.spyOn(toast, "info").mockImplementation(() => { });
+    vi.spyOn(toast, "error").mockImplementation(() => { });
   });
 
   test("renders correctly with multiple selected", () => {
@@ -42,11 +42,12 @@ describe("SendModal Component for Legal Basis", () => {
   });
 
   test("renders correctly with one selected", () => {
-    renderModal({ selectedKeys: new Set([1]) });
+    renderModal({ selectedKeys: new Set([1]), singleSendId: 1 });
     expect(
       screen.getByText("¿Estás seguro de que deseas enviar este Fundamento Legal a ACM Suite?")
     ).toBeInTheDocument();
   });
+
 
   test("renders correctly with all selected", () => {
     renderModal({ selectedKeys: "all" });

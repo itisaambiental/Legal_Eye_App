@@ -24,6 +24,7 @@ import Error from "../utils/Error.jsx";
 import CreateModal from "./CreateModal.jsx";
 import EditModal from "./EditModal.jsx";
 import DeleteModal from "./deleteModal.jsx";
+import IdentificationModal from "./IdentificationModal.jsx";
 import SendModal from "./sendModal.jsx";
 import { toast } from "react-toastify";
 import check from "../../assets/check.png";
@@ -120,8 +121,7 @@ export default function LegalBasis() {
   const [selectedLegalBase, setSelectedLegalBase] = useState(null);
   const [nameInputError, setNameInputError] = useState(null);
   const [abbreviationInputError, setAbbreviationInputError] = useState(null);
-  const [classificationInputError, setClassificationInputError] =
-    useState(null);
+  const [classificationInputError, setClassificationInputError] = useState(null);
   const [jurisdictionInputError, setJurisdictionInputError] = useState(null);
   const [stateInputError, setStateInputError] = useState(null);
   const [municipalityInputError, setMunicipalityInputError] = useState(null);
@@ -132,11 +132,9 @@ export default function LegalBasis() {
   const [isMunicipalityActive, setIsMunicipalityActive] = useState(false);
   const [isAspectsActive, setIsAspectsActive] = useState(false);
   const [fileError, setFileError] = useState(null);
-  const [extractArticlesInputError, setExtractArticlesInputError] =
-    useState(null);
+  const [extractArticlesInputError, setExtractArticlesInputError] = useState(null);
   const [isExtracArticlesChecked, setIsExtracArticlesChecked] = useState(false);
-  const [intelligenceLevelInputError, setIntelligenceLevelInputError] =
-    useState(null);
+  const [intelligenceLevelInputError, setIntelligenceLevelInputError] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [selectedKeys, setSelectedKeys] = useState(new Set());
@@ -144,6 +142,11 @@ export default function LegalBasis() {
   const [isDeletingBatch, setIsDeletingBatch] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isIdentificationModalOpen, setIsIdentificationModalOpen] = useState(false);
+  const [selectedIdentificationRequirement, setSelectedIdentificationRequirement] = useState([]);
+  const [singleSendId, setSingleSendId] = useState(null);
+
+
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -900,12 +903,74 @@ export default function LegalBasis() {
   const openDeleteModal = () => setShowDeleteModal(true);
   const closeDeleteModal = () => setShowDeleteModal(false);
   const openSendModal = () => setShowSendModal(true);
-  const closeSendModal = () => setShowSendModal(false);
+  const closeSendModal = () => {
+    setShowSendModal(false);
+    setSingleSendId(null);
+  };
+
+
+  const validarLegalBasesSeleccionadas = (bases) => {
+    if (bases.length === 0) {
+      toast.error("Selecciona al menos un fundamento legal.");
+      return false;
+    }
+
+    const [first] = bases;
+
+    const allSame = (key, nested = false) =>
+      bases.every((b) =>
+        nested ? b[key]?.id === first[key]?.id : b[key] === first[key]
+      );
+
+    if (!allSame("subject", true)) {
+      toast.error("Todos los fundamentos deben tener la misma materia.");
+      return false;
+    }
+
+    if (!allSame("jurisdiction")) {
+      toast.error("Todos los fundamentos deben tener la misma jurisdicción.");
+      return false;
+    }
+
+    const { jurisdiction } = first;
+
+    if (jurisdiction === "Estatal" && !allSame("state")) {
+      toast.error("Todos los fundamentos deben pertenecer al mismo estado.");
+      return false;
+    }
+
+    if (
+      jurisdiction === "Local" &&
+      (!allSame("state") || !allSame("municipality"))
+    ) {
+      toast.error("Todos los fundamentos deben pertenecer al mismo estado y municipio.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const openIdentificationModal = () => {
+
+    let bases = [];
+
+    if (selectedKeys === "all") {
+      bases = legalBasis;
+    } else {
+      bases = legalBasis.filter((b) => selectedKeys.has(String(b.id)));
+    }
+
+    if (!validarLegalBasesSeleccionadas(bases)) return;
+
+    setSelectedIdentificationRequirement(bases);
+    setIsIdentificationModalOpen(true);
+  };
 
   const openSendModalFromRow = (id) => {
-    setSelectedKeys(new Set([id]));
-    setShowSendModal(true);          
+    setSingleSendId(id);
+    setShowSendModal(true);
   };
+
 
   const onPageChange = (newPage) => setPage(newPage);
   const onPreviousPage = () => setPage((prev) => Math.max(prev - 1, 1));
@@ -1015,6 +1080,7 @@ export default function LegalBasis() {
       });
     }
   };
+
 
   if (loading && isFirstRender) {
     return (
@@ -1129,6 +1195,12 @@ export default function LegalBasis() {
                         handleDelete={handleDelete}
                         handleDownloadDocument={handleDownloadDocument}
                         openSendModalFromRow={openSendModalFromRow}
+                        openIdentificationModalFromRow={(row) => {
+                          if (!validarLegalBasesSeleccionadas([row])) return;
+                          setSelectedIdentificationRequirement([row]);
+                          setIsIdentificationModalOpen(true);
+                        }}
+
                       />
                     </TableCell>
                   )}
@@ -1156,11 +1228,13 @@ export default function LegalBasis() {
                   isIconOnly
                   size="sm"
                   className="absolute left-12 bottom-0 ml-5 bg-secondary transform translate-y-32 sm:translate-y-24 md:translate-y-24 lg:translate-y-24 xl:translate-y-10"
-                  aria-label="Identificar"
+                  aria-label="Identificar Requerimientos"
+                  onPress={openIdentificationModal}
                 >
-                  <img src={think_icon} alt="edit" className="w-5 h-5" />
+                  <img src={think_icon} alt="identificar" className="w-5 h-5" />
                 </Button>
               </Tooltip>
+
               <Tooltip content="Enviar a ACM Suite" size="sm">
                 <Button
                   isIconOnly
@@ -1330,6 +1404,16 @@ export default function LegalBasis() {
           }}
         />
       )}
+      {isIdentificationModalOpen && (
+        <IdentificationModal
+          isOpen={isIdentificationModalOpen}
+          onClose={() => setIsIdentificationModalOpen(false)}
+          selectedIdentificationRequirement={selectedIdentificationRequirement}
+          onSuccess={(data) => {
+            console.log("Análisis generado:", data);
+          }}
+        />
+      )}
       {showSendModal && (
         <SendModal
           config={{
@@ -1340,8 +1424,10 @@ export default function LegalBasis() {
             selectedKeys: selectedKeys,
             setSelectedKeys: setSelectedKeys,
             check: check,
+            singleSendId: singleSendId,
           }}
         />
+
       )}
       {isFilterModalOpen && (
         <FilterModal

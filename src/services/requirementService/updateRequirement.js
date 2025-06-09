@@ -7,10 +7,10 @@ import server from "../../config/server.js";
  * @async
  * @function updateRequirement
  * @param {Object} params - Parameters for updating a requirement.
- * @param {string} params.id - The ID of the requirement to update.
- * @param {string} [params.subjectId] - The ID of the subject linked to the requirement (optional).
- * @param {Array<string>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
- * @param {string} [params.requirementNumber] - The unique number identifying the requirement (optional).
+ * @param {number} params.id - The ID of the requirement to update.
+ * @param {number} [params.subjectId] - The ID of the subject linked to the requirement (optional).
+ * @param {Array<number>} [params.aspectsIds] - An array of aspect IDs linked to the requirement (optional).
+ * @param {number} [params.requirementNumber] - The unique number identifying the requirement (optional).
  * @param {string} [params.requirementName] - The name/title of the requirement (optional).
  * @param {string} [params.mandatoryDescription] - The mandatory description of the requirement (optional).
  * @param {string} [params.complementaryDescription] - The complementary description (optional).
@@ -21,6 +21,7 @@ import server from "../../config/server.js";
  * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
  * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
  * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
+ * * @param {string} [params.acceptanceCriteria] - The acceptance criteria (optional).
  * @param {string} params.token - The authorization token for the request.
  *
  * @returns {Promise<Object>} - The updated requirement data returned from the server.
@@ -42,6 +43,7 @@ export default async function updateRequirement({
   evidence,
   specifyEvidence,
   periodicity,
+  acceptanceCriteria,
   token,
 }) {
   try {
@@ -59,7 +61,8 @@ export default async function updateRequirement({
       ...(condition && { condition }),
       ...(evidence && { evidence }),
       ...(specifyEvidence && { specifyEvidence }),
-      ...(periodicity && { periodicity })
+      ...(periodicity && { periodicity }),
+      ...(acceptanceCriteria && {acceptanceCriteria})
     };
     const response = await server.patch(`/requirement/${id}`, data, {
       headers: {

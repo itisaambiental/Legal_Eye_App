@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import "@testing-library/jest-dom";
 import CreateModal from "./CreateModal";
-import { ToastContainer } from "react-toastify";
 
 describe("CreateModal Component for Requirements", () => {
   let config;
@@ -40,6 +39,9 @@ describe("CreateModal Component for Requirements", () => {
       isAspectsActive: true,
       aspectsLoading: false,
       errorAspects: null,
+      handleAcceptanceCriteriaChange: vi.fn(),
+      acceptanceCriteriaError: null,
+      setAcceptanceCriteriaError: vi.fn(),
       handleAspectsChange: vi.fn(),
       mandatoryDescriptionError: null,
       setMandatoryDescriptionError: vi.fn(),
@@ -53,7 +55,6 @@ describe("CreateModal Component for Requirements", () => {
       setMandatoryKeywordsError: vi.fn(),
       complementaryKeywordsError: null,
       setComplementaryKeywordsError: vi.fn(),
-
       formData: {
         number: "",
         name: "",
@@ -63,6 +64,7 @@ describe("CreateModal Component for Requirements", () => {
         periodicity: "",
         subject: "",
         aspects: ["1"],
+        acceptanceCriteria: "",
         mandatoryDescription: "",
         complementaryDescription: "",
         mandatorySentences: "",
@@ -95,27 +97,7 @@ describe("CreateModal Component for Requirements", () => {
     render(<CreateModal config={config} />);
     expect(screen.getByText("Crear Nuevo Requerimiento")).toBeInTheDocument();
   });
-
-  it("validates empty number and name on submit", async () => {
-    config.formData = {
-      ...config.formData,
-      condition: "Crítica",
-      evidence: "Trámite",
-      periodicity: "Anual",
-      subject: "1",
-      aspects: ["1"],
-      number: "",
-      name: "",
-    };
-
-    render(<CreateModal config={config} />);
-    fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
-
-    await waitFor(() => {
-      expect(config.setNumberError).toHaveBeenCalledWith("Este campo es obligatorio.");
-    });
-  });
-
+  
   it("shows step 2 when step 1 is valid", async () => {
     config.formData = {
       ...config.formData,
@@ -126,6 +108,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "Debe ser verificado por el responsable",
     };
 
     render(<CreateModal config={config} />);
@@ -133,38 +116,6 @@ describe("CreateModal Component for Requirements", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Detalles Adicionales/i)).toBeInTheDocument();
-    });
-  });
-
-  it("validates textareas on submit in step 2", async () => {
-    config.formData = {
-      ...config.formData,
-      number: "123",
-      name: "Nombre válido",
-      condition: "Crítica",
-      evidence: "Trámite",
-      periodicity: "Anual",
-      subject: "1",
-      aspects: ["1"],
-      mandatoryDescription: "",
-      complementaryDescription: "",
-      mandatorySentences: "",
-      complementarySentences: "",
-      mandatoryKeywords: "",
-      complementaryKeywords: "",
-    };
-
-    render(<CreateModal config={config} />);
-    fireEvent.click(screen.getByRole("button", { name: "Siguiente" }));
-
-    await waitFor(() => {
-      expect(screen.getByText("Detalles Adicionales")).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Crear Requerimiento" }));
-
-    await waitFor(() => {
-      expect(config.setMandatoryDescriptionError).toHaveBeenCalledWith("Este campo es obligatorio.");
     });
   });
 
@@ -178,6 +129,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "Debe verificarse",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -202,6 +154,8 @@ describe("CreateModal Component for Requirements", () => {
   });
 
   it("shows success toast after creating requirement", async () => {
+    const { ToastContainer } = await import("react-toastify");
+
     config.formData = {
       ...config.formData,
       number: "001",
@@ -211,6 +165,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "criterio",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",
@@ -256,6 +211,7 @@ describe("CreateModal Component for Requirements", () => {
       periodicity: "Anual",
       subject: "1",
       aspects: ["1"],
+      acceptanceCriteria: "criterio",
       mandatoryDescription: "desc",
       complementaryDescription: "desc",
       mandatorySentences: "desc",

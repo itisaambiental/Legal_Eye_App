@@ -58,6 +58,9 @@ import go_back from "../../assets/volver.png";
  * @param {string|null} props.config.aspectError - Error message for the "Aspect" dropdown.
  * @param {Function} props.config.setAspectInputError - Setter for "Aspect" field error.
  * @param {Function} props.config.handleAspectsChange - Change handler for the "Aspect" dropdown.
+ * @param {Function} props.config.handleAcceptanceCriteriaChange - Handler for the "Acceptance Criteria" textarea.
+ * @param {string|null} props.config.acceptanceCriteriaError - Error message for the "Acceptance Criteria" textarea.
+ * @param {Function} props.config.setacceptanceCriteriaError - Setter for the "Acceptance Criteria" field error.
  * @param {string|null} props.config.mandatoryDescriptionError - Error for the "Mandatory Description" textarea.
  * @param {Function} props.config.setMandatoryDescriptionError - Setter for the "Mandatory Description" error.
  * @param {Function} props.config.handleMandatoryDescriptionChange - Handler for "Mandatory Description" textarea.
@@ -119,6 +122,9 @@ const EditModal = ({ config }) => {
     aspectError,
     setAspectInputError,
     handleAspectsChange,
+    acceptanceCriteriaError,
+    setAcceptanceCriteriaError,
+    handleAcceptanceCriteriaChange,
     mandatoryDescriptionError,
     setMandatoryDescriptionError,
     handleMandatoryDescriptionChange,
@@ -160,6 +166,7 @@ const EditModal = ({ config }) => {
         evidence: selectedRequirement.evidence,
         specifyEvidence: selectedRequirement.specify_evidence || "",
         periodicity: selectedRequirement.periodicity,
+        acceptanceCriteria: selectedRequirement.acceptance_criteria,
         subject: selectedRequirement.subject?.subject_id.toString(),
         aspects: selectedRequirement.aspects?.map((aspect) =>
           aspect.aspect_id.toString()
@@ -189,15 +196,25 @@ const EditModal = ({ config }) => {
   ]);
 
 
-  const handleBack = () => setStep(1);
-
   const handleEdit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     if (step === 1) {
-      if (!formData.number.trim()) {
+      if (!formData.number) {
         setNumberError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else if (isNaN(formData.number)) {
+        setNumberError("Este campo debe ser un número válido.");
+        setIsLoading(false);
+        return;
+      } else if (Number(formData.number) <= 0) {
+        setNumberError("Este campo debe ser mayor a 0.");
+        setIsLoading(false);
+        return;
+      } else if (!Number.isInteger(Number(formData.number))) {
+        setNumberError("Este campo debe ser un número entero.");
         setIsLoading(false);
         return;
       } else {
@@ -212,7 +229,7 @@ const EditModal = ({ config }) => {
         setNameError(null);
       }
 
-      if (formData.condition === "") {
+      if (!formData.condition) {
         setConditionError("Debes seleccionar una condición.");
         setIsLoading(false);
         return;
@@ -220,18 +237,18 @@ const EditModal = ({ config }) => {
         setConditionError(null);
       }
 
-      if (formData.evidence === "") {
+      if (!formData.evidence) {
         setEvidenceError("Debes seleccionar una evidencia.");
         setIsLoading(false);
         return;
       } else {
         setEvidenceError(null);
       }
+
       if (
         formData.evidence === "Específica" &&
-        (!formData.specifyEvidence || formData.specifyEvidence.trim() === "")
+        (!formData.specifyEvidence || !formData.specifyEvidence.trim())
       ) {
-
         setSpecifyEvidenceError("Este campo es obligatorio si se selecciona el valor Específica.");
         setIsLoading(false);
         return;
@@ -239,7 +256,7 @@ const EditModal = ({ config }) => {
         setSpecifyEvidenceError(null);
       }
 
-      if (formData.subject === "") {
+      if (!formData.subject) {
         setSubjectError("Debes seleccionar una materia.");
         setIsLoading(false);
         return;
@@ -255,20 +272,29 @@ const EditModal = ({ config }) => {
         setAspectInputError(null);
       }
 
-      if (formData.periodicity === "") {
+      if (!formData.periodicity) {
         setPeriodicityError("Debes seleccionar una periodicidad.");
         setIsLoading(false);
         return;
       } else {
         setPeriodicityError(null);
       }
+
+      if (!formData.acceptanceCriteria.trim()) {
+        setAcceptanceCriteriaError("Este campo es obligatorio.");
+        setIsLoading(false);
+        return;
+      } else {
+        setAcceptanceCriteriaError(null);
+      }
+
       setIsLoading(false);
       setStep(2);
       return;
     }
 
     if (step === 2) {
-      if (formData.mandatoryDescription === "") {
+      if (!formData.mandatoryDescription.trim()) {
         setMandatoryDescriptionError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
@@ -276,35 +302,39 @@ const EditModal = ({ config }) => {
         setMandatoryDescriptionError(null);
       }
 
-      if (formData.complementaryDescription === "") {
+      if (!formData.complementaryDescription.trim()) {
         setComplementaryDescriptionError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setComplementaryDescriptionError(null);
       }
-      if (formData.mandatorySentences === "") {
+
+      if (!formData.mandatorySentences.trim()) {
         setMandatorySentencesError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setMandatorySentencesError(null);
       }
-      if (formData.complementarySentences === "") {
+
+      if (!formData.complementarySentences.trim()) {
         setComplementarySentencesError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setComplementarySentencesError(null);
       }
-      if (formData.mandatoryKeywords === "") {
+
+      if (!formData.mandatoryKeywords.trim()) {
         setMandatoryKeywordsError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
       } else {
         setMandatoryKeywordsError(null);
       }
-      if (formData.complementaryKeywords === "") {
+
+      if (!formData.complementaryKeywords.trim()) {
         setComplementaryKeywordsError("Este campo es obligatorio.");
         setIsLoading(false);
         return;
@@ -312,50 +342,61 @@ const EditModal = ({ config }) => {
         setComplementaryKeywordsError(null);
       }
     }
+
     try {
       const requirementData = {
         id: formData.id,
         requirementNumber: formData.number,
-        requirementName: formData.name,
+        requirementName: formData.name.trim(),
         condition: formData.condition,
         evidence: formData.evidence,
-        specifyEvidence: formData.specifyEvidence,
+        specifyEvidence: formData.specifyEvidence?.trim() || null,
         periodicity: formData.periodicity,
         subjectId: formData.subject,
         aspectsIds: formData.aspects,
-        mandatoryDescription: formData.mandatoryDescription,
-        complementaryDescription: formData.complementaryDescription,
-        mandatorySentences: formData.mandatorySentences,
-        complementarySentences: formData.complementarySentences,
-        mandatoryKeywords: formData.mandatoryKeywords,
-        complementaryKeywords: formData.complementaryKeywords,
+        acceptanceCriteria: formData.acceptanceCriteria.trim(),
+        mandatoryDescription: formData.mandatoryDescription.trim(),
+        complementaryDescription: formData.complementaryDescription.trim(),
+        mandatorySentences: formData.mandatorySentences.trim(),
+        complementarySentences: formData.complementarySentences.trim(),
+        mandatoryKeywords: formData.mandatoryKeywords.trim(),
+        complementaryKeywords: formData.complementaryKeywords.trim(),
       };
 
-      const { success, error } = await editRequirement(
-        requirementData
-      );
+      const { success, error } = await editRequirement(requirementData);
+
       if (success) {
         toast.info("El requerimiento ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
-          progressStyle: {
-            background: "#113c53",
-          },
+          progressStyle: { background: "#113c53" },
         });
-        closeModalEdit()
+        closeModalEdit();
       } else {
         toast.error(error);
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        "Algo mal sucedió al actualizar el requerimiento. Intente de nuevo."
-      );
+      toast.error("Algo mal sucedió al actualizar el requerimiento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
+  };
 
-  }
 
+  const resetStepTwoErrors = () => {
+    setMandatoryDescriptionError(null);
+    setComplementaryDescriptionError(null);
+    setMandatorySentencesError(null);
+    setComplementarySentencesError(null);
+    setMandatoryKeywordsError(null);
+    setComplementaryKeywordsError(null);
+  };
+
+
+  const handleBack = () => {
+    resetStepTwoErrors();
+    setStep(1);
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -396,9 +437,9 @@ const EditModal = ({ config }) => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="relative z-0 w-full group">
                     <input
-                      type="text"
+                      type="number"
                       name="number"
-                      id="floating_number"
+                      id="floating_order"
                       value={formData.number}
                       onChange={handleNumberChange}
                       className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
@@ -428,7 +469,7 @@ const EditModal = ({ config }) => {
                       htmlFor="floating_nombre"
                       className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-0 peer-focus:left-0 peer-focus:text-primary peer-focus:dark:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                      Requerimiento/Nombre
+                      Requerimiento
                     </label>
                     {nameError && (
                       <p className="mt-2 text-sm text-red">{nameError}</p>
@@ -585,6 +626,24 @@ const EditModal = ({ config }) => {
                     <p className="mt-2 text-sm text-red">
                       {periodicityError}
                     </p>
+                  )}
+                </div>
+                <div className="w-full mt-4">
+                  <Textarea
+                    disableAnimation
+                    disableAutosize
+                    value={formData.acceptanceCriteria}
+                    onChange={handleAcceptanceCriteriaChange}
+                    classNames={{
+                      base: "max-w-4xl",
+                      input: "resize-y min-h-[100px] py-1 px-2 w-full text-xs text-gray-900 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-primary peer",
+                    }}
+                    label="Criterio de Aceptación"
+                    placeholder="Escribir el criterio..."
+                    variant="bordered"
+                  />
+                  {acceptanceCriteriaError && (
+                    <p className="mt-2 text-sm text-red">{acceptanceCriteriaError}</p>
                   )}
                 </div>
                 <div className="w-full mt-4">
@@ -778,6 +837,10 @@ EditModal.propTypes = {
     aspectError: PropTypes.string,
     setAspectInputError: PropTypes.func.isRequired,
     handleAspectsChange: PropTypes.func.isRequired,
+
+    acceptanceCriteriaError: PropTypes.string,
+    setAcceptanceCriteriaError: PropTypes.func.isRequired,
+    handleAcceptanceCriteriaChange: PropTypes.func.isRequired,
 
     mandatoryDescriptionError: PropTypes.string,
     setMandatoryDescriptionError: PropTypes.func.isRequired,

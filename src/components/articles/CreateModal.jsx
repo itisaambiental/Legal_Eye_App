@@ -52,7 +52,7 @@ function CreateModal({ config }) {
   } = config;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploadingPicture, setIsUploadingPicture] = useState(false); 
+  const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -68,6 +68,10 @@ function CreateModal({ config }) {
       return;
     } else if (formData.order <= 0) {
       setOrderError("Este campo debe ser mayor a 0.");
+      setIsLoading(false);
+      return;
+    } else if (!Number.isInteger(Number(formData.order))) {
+      setOrderError("Este campo debe ser un número entero.");
       setIsLoading(false);
       return;
     } else {
@@ -180,10 +184,10 @@ function CreateModal({ config }) {
                 </div>
 
                 <div>
-                   <Button
+                  <Button
                     type="submit"
                     color="primary"
-                    disabled={isLoading || isUploadingPicture} 
+                    disabled={isLoading || isUploadingPicture}
                     className="w-full rounded border mb-4 border-primary bg-primary p-3 text-white transition hover:bg-opacity-90"
                   >
                     {isLoading ? (

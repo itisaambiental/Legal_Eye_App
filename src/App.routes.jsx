@@ -31,7 +31,7 @@ const AppRoutes = () => {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/reset-password/request" element={<ResetPassword />} />
-      <Route path="/reset-password/verify/:email" element={<VerifyCode />} />
+      <Route path="/reset-password/verify" element={<VerifyCode />} />
       <Route path="/reset-password/complete" element={<CompleteReset />} />
 
       {/* Protected user routes */}

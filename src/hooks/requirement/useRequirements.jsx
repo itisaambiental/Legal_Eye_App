@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext";
+import insertSortedItem from "../../utils/insertSortedItem";
 import createRequirement from "../../services/requirementService/createRequirement";
 import getRequirements from "../../services/requirementService/getRequirements";
 import getRequirementById from "../../services/requirementService/getRequirementById";
@@ -16,6 +17,7 @@ import getRequirementsByMandatoryDescription from "../../services/requirementSer
 import getRequirementsByMandatoryKeywords from "../../services/requirementService/getRequirementsByMandatoryKeywords";
 import getRequirementsByMandatorySentences from "../../services/requirementService/getRequirementsByMandatorySentences";
 import getRequirementsByPeriodicity from "../../services/requirementService/getRequirementsByPeriodicity";
+import getRequirementsByAcceptanceCriteria from "../../services/requirementService/getRequirementsByAcceptanceCriteria";
 import updateRequirement from "../../services/requirementService/updateRequirement";
 import deleteRequirement from "../../services/requirementService/deleteRequirement";
 import delereRequirementBatch from "../../services/requirementService/deleteRequirementBatch";
@@ -37,9 +39,9 @@ export default function useRequirement() {
   * @async
   * @function addRequirement
   * @param {Object} params - Parameters for creating a requirement.
-  * @param {string} params.subjectId - ID of the subject linked to the requirement.
-  * @param {string} params.aspectsIds - An array of aspect IDs linked to the requirement.
-  * @param {string} params.requirementNumber - Unique number of the requirement.
+  * @param {number} params.subjectId - ID of the subject linked to the requirement.
+  * @param {Array<number>} params.aspectsIds - An array of aspect IDs linked to the requirement.
+  * @param {number} params.requirementNumber - Unique number of the requirement.
   * @param {string} params.requirementName - Name/title of the requirement.
   * @param {string} params.mandatoryDescription - Mandatory description.
   * @param {string} [params.complementaryDescription] - Complementary description (optional).
@@ -50,6 +52,7 @@ export default function useRequirement() {
   * @param {string} params.condition - Requirement condition ('Critical', 'Operational', 'Recommendation', 'Pending').
   * @param {string} params.evidence - Type of evidence required ('Procedure', 'Record', 'Specific', 'Document').
   * @param {string} params.periodicity - Periodicity ('Annual', '2 years', 'Per event', 'One-time').
+  * @param {string} [params.acceptanceCriteria] -Acceptance Criteria (optional).
   * @returns {Promise<Object>} - Result of the operation with `success` and `data` or `error`.
   */
   const addRequirement = useCallback(
@@ -67,7 +70,8 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity
+      periodicity,
+      acceptanceCriteria,
     }) => {
       try {
         const newRequirement = await createRequirement({
@@ -85,9 +89,12 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
+          acceptanceCriteria,
           token: jwt,
         });
-        setRequirements((prevRequirement) => [newRequirement, ...prevRequirement]);
+        setRequirements((prevRequirements) =>
+          insertSortedItem(prevRequirements, newRequirement, 'requirement_number')
+        );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -98,9 +105,11 @@ export default function useRequirement() {
           error: serverMessage,
           httpError: clientMessage,
         });
+
         return { success: false, error: handledError.message };
       }
-    }, [jwt]
+    },
+    [jwt]
   );
 
   /**
@@ -201,7 +210,7 @@ export default function useRequirement() {
   * Fetches the list of Requiremeent by number. 
   * @async
   * @function fetchRequirementsByNumber
-  * @param {string} requirementNumber - The number of the requirement to retrieve.
+  * @param {number} requirementNumber - The number of the requirement to retrieve.
   * @returns {Promise<void>} - Updates the requirement list and loading state.
   * @throws {Object} - Updates error state with the appropriate error message if fetching fails.
   */
@@ -298,7 +307,7 @@ export default function useRequirement() {
         });
         setStateRequirements({
           loading: false,
-          error: handledError,aspectsIds
+          error: handledError, aspectsIds
         });
       }
     },
@@ -575,16 +584,45 @@ export default function useRequirement() {
       }
     }, [jwt]);
 
+  /**
+* Fetches the list of Requirements by Acceptance Criteria.
+* @async
+* @function fetchRequirementsByAcceptanceCriteria
+* @param {string} acceptanceCriteria - The acceptance criteria of the requirement.
+*/
+  const fetchRequirementsByAcceptanceCriteria = useCallback(
+    async (acceptanceCriteria) => {
+      setStateRequirements({ loading: true, error: null });
+      try {
+        const requirements = await getRequirementsByAcceptanceCriteria({ acceptanceCriteria: acceptanceCriteria, token: jwt });
+        setRequirements(requirements);
+        setStateRequirements({ loading: false, error: null });
+      } catch (error) {
+        const errorCode = error.response?.status;
+        const serverMessage = error.response?.data?.message;
+        const clientMessage = error.message;
+        const handledError = RequirementErrors.handleError({
+          code: errorCode,
+          error: serverMessage,
+          httpError: clientMessage,
+        });
+        setStateRequirements({
+          loading: false,
+          error: handledError
+        });
+      }
+    }, [jwt]);
 
   /**
-  * Updates an existing Requirement by ID.
+  * Updates an existing Requirement by ID and reorders it by requirement_number.
+  *
   * @async
   * @function modifyRequirement
   * @param {Object} params - The data to update an existing Requirement.
-  * @param {string} params.id - The ID of the requirement to update.
-  * @param {string} [params.subjectId] - The new subject ID (optional).
-   * @param {Array<string>} [params.aspectsIds] - The new aspects IDs (optional).
-  * @param {string} [params.requirementNumber] - The new requirement number (optional).
+  * @param {number} params.id - The ID of the requirement to update.
+  * @param {number} [params.subjectId] - The new subject ID (optional).
+  * @param {Array<number>} [params.aspectsIds] - The new aspects IDs (optional).
+  * @param {number} [params.requirementNumber] - The new requirement number (optional).
   * @param {string} [params.requirementName] - The new name/title of the requirement (optional).
   * @param {string} [params.mandatoryDescription] - The new mandatory description (optional).
   * @param {string} [params.complementaryDescription] - The new complementary description (optional).
@@ -592,9 +630,15 @@ export default function useRequirement() {
   * @param {string} [params.complementarySentences] - The new complementary sentences (optional).
   * @param {string} [params.mandatoryKeywords] - The new mandatory keywords (optional).
   * @param {string} [params.complementaryKeywords] - The new complementary keywords (optional).
+  * @param {string} [params.condition] - The requirement condition (optional).
+  * @param {string} [params.evidence] - The type of evidence required (optional).
+  * @param {string} [params.specifyEvidence] - The specific evidence detail if evidence is "Específica".
+  * @param {string} [params.periodicity] - The periodicity of the requirement (optional).
+  * @returns {Promise<Object>} - Result of the operation with success status or error message.
   * @param {string} [params.condition] - The requirement condition ('Crítica', 'Operativa', 'Recomendación', 'Pendiente') (optional).
   * @param {string} [params.evidence] - The type of evidence required ('Trámite', 'Registro', 'Específico', 'Documento') (optional).
   * @param {string} [params.periodicity] - The periodicity of the requirement ('Anual', '2 años', 'Por evento', 'Única vez') (optional).
+  * @param {string} [params.acceptanceCriteria] - The new acceptance criteria (optional).
   * @returns {Promise<Object>} - Result of the operation with success status and updated Requirement or error message.
   * @throws {Object} - Returns an error message if the update fails.
   */
@@ -614,7 +658,8 @@ export default function useRequirement() {
       condition,
       evidence,
       specifyEvidence,
-      periodicity
+      periodicity,
+      acceptanceCriteria,
     }) => {
       try {
         const requirement = await updateRequirement({
@@ -633,13 +678,13 @@ export default function useRequirement() {
           evidence,
           specifyEvidence,
           periodicity,
+          acceptanceCriteria,
           token: jwt,
         });
-        setRequirements((prevRequirements) =>
-          prevRequirements.map((prevRequirement) =>
-            prevRequirement.id === requirement.id ? requirement : prevRequirement
-          )
-        );
+        setRequirements((prevRequirements) => {
+          const filtered = prevRequirements.filter((req) => req.id !== requirement.id);
+          return insertSortedItem(filtered, requirement, 'requirement_number');
+        });
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -651,6 +696,7 @@ export default function useRequirement() {
           httpError: clientMessage,
           items: [id],
         });
+
         return { success: false, error: handledError.message };
       }
     },
@@ -699,11 +745,15 @@ export default function useRequirement() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+        const requirements =
+          error.response?.data?.errors?.requirements?.map(
+            (requirement) => requirement.name
+          ) || requirementIds;
         const handledError = RequirementErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: requirementIds,
+          items: requirements,
         });
         return { success: false, error: handledError.message };
       }
@@ -732,6 +782,7 @@ export default function useRequirement() {
     fetchRequirementsByMandatoryKeywords,
     fetchRequirementsByMandatorySentences,
     fetchRequirementsByPeriodicity,
+    fetchRequirementsByAcceptanceCriteria,
     addRequirement,
     modifyRequirement,
     removeRequirement,

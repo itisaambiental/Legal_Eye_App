@@ -86,6 +86,10 @@ export class ExtractArticlesErrors {
     },
   };
 
+    /**
+   * A map of specific error messages to their corresponding error constants.
+   * @type {Object.<string, ExtractArticlesErrors>}
+   */
   static ErrorMessagesMap = {
     "Network Error": ExtractArticlesErrors.NETWORK_ERROR,
     "Job not found": ExtractArticlesErrors.JOB_NOT_FOUND,

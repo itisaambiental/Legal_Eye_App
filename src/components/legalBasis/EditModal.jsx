@@ -196,11 +196,11 @@ function EditModal({ config }) {
         document:
           selectedLegalBase.fileKey || selectedLegalBase.url
             ? {
-                file: selectedLegalBase.fileKey
-                  ? { name: selectedLegalBase.fileKey }
-                  : null,
-                previewUrl: selectedLegalBase.url || null,
-              }
+              file: selectedLegalBase.fileKey
+                ? { name: selectedLegalBase.fileKey }
+                : null,
+              previewUrl: selectedLegalBase.url || null,
+            }
             : null,
         lastReform: formattedLastReform ? parseDate(formattedLastReform) : null,
         extractArticles: false,
@@ -339,7 +339,7 @@ function EditModal({ config }) {
       setAbbreviationError(null);
     }
 
-    if (formData.classification === "") {
+    if (!formData.classification) {
       setClassificationError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -347,7 +347,7 @@ function EditModal({ config }) {
       setClassificationError(null);
     }
 
-    if (formData.jurisdiction === "") {
+    if (!formData.jurisdiction) {
       setJurisdictionError("Este campo es obligatorio");
       setIsLoading(false);
       return;
@@ -356,10 +356,8 @@ function EditModal({ config }) {
     }
 
     if (formData.jurisdiction === "Estatal") {
-      if (formData.state === "") {
-        setStateError(
-          "Este campo es obligatorio para la jurisdicción Estatal."
-        );
+      if (!formData.state) {
+        setStateError("Este campo es obligatorio para la jurisdicción Estatal.");
         setIsLoading(false);
         return;
       } else {
@@ -368,30 +366,30 @@ function EditModal({ config }) {
     }
 
     if (formData.jurisdiction === "Local") {
-      if (formData.state === "") {
+      if (!formData.state) {
         setStateError("Este campo es obligatorio para la jurisdicción Local.");
         setIsLoading(false);
         return;
       } else {
         setStateError(null);
       }
-      if (formData.municipality === "") {
-        setMunicipalityError(
-          "Este campo es obligatorio para la jurisdicción Local."
-        );
+      if (!formData.municipality) {
+        setMunicipalityError("Este campo es obligatorio para la jurisdicción Local.");
         setIsLoading(false);
         return;
       } else {
         setMunicipalityError(null);
       }
     }
-    if (formData.subject === "") {
+
+    if (!formData.subject) {
       setSubjectError("Este campo es obligatorio");
       setIsLoading(false);
       return;
     } else {
       setSubjectError(null);
     }
+
     if (!formData.aspects || formData.aspects.length === 0) {
       setAspectInputError("Debes seleccionar al menos un aspecto");
       setIsLoading(false);
@@ -399,16 +397,13 @@ function EditModal({ config }) {
     } else {
       setAspectInputError(null);
     }
+
     if (!formData.lastReform) {
       setLastReformError("Este campo es obligatorio");
       setIsLoading(false);
       return;
     }
-    if (!formData.lastReform) {
-      setLastReformError("Este campo es obligatorio");
-      setIsLoading(false);
-      return;
-    }
+
     const reformDate = formData.lastReform.toDate();
     if (
       isNaN(reformDate.getTime()) ||
@@ -423,16 +418,16 @@ function EditModal({ config }) {
     } else {
       setLastReformError(null);
     }
+
     if (isExtracArticlesChecked && !formData.document) {
-      setExtractArticlesInputError(
-        "Debes cargar un documento si seleccionas 'Extraer Articulos'."
-      );
+      setExtractArticlesInputError("Debes cargar un documento si seleccionas 'Extraer Articulos'.");
       setIsLoading(false);
       return;
     } else {
       setExtractArticlesInputError(null);
     }
-    if (isExtracArticlesChecked && formData.intelligenceLevel.trim() === "") {
+
+    if (isExtracArticlesChecked && !formData.intelligenceLevel.trim()) {
       setIntelligenceLevelInputError(
         'Este campo es obligatorio si se selecciona "Extraer Articulos"'
       );
@@ -441,6 +436,7 @@ function EditModal({ config }) {
     } else {
       setIntelligenceLevelInputError(null);
     }
+
     try {
       const legalBasisData = {
         id: formData.id,
@@ -461,9 +457,9 @@ function EditModal({ config }) {
             : null,
         removeDocument: formData.document === null,
       };
-      const { success, error, jobId, legalBasis } = await editLegalBasis(
-        legalBasisData
-      );
+
+      const { success, error, jobId, legalBasis } = await editLegalBasis(legalBasisData);
+
       if (success) {
         toast.info("El fundamento legal ha sido actualizado correctamente", {
           icon: () => <img src={check} alt="Success Icon" />,
@@ -483,9 +479,7 @@ function EditModal({ config }) {
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        "Algo mal sucedió al actualizar el fundamento. Intente de nuevo."
-      );
+      toast.error("Algo mal sucedió al actualizar el fundamento. Intente de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -907,7 +901,7 @@ function EditModal({ config }) {
                         value={formData.intelligenceLevel}
                         onValueChange={handleIntelligenceLevelChange}
                       >
-                          <Radio
+                        <Radio
                           description="Inteligencia baja: más rápida, pero menos precisa."
                           value="Low"
                         >

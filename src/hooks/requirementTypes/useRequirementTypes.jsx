@@ -220,7 +220,11 @@ export default function useRequirementTypes() {
    * Updates an existing requirement type.
    * @async
    * @function modifyRequirementType
-   * @param {Object} params - Requirement type data including ID.
+   * @param {Object} params - Requirement type data.
+   * @param {number} params.id - The id of the requirement type.
+   * @param {string} params.name - The name of the requirement type.
+   * @param {string} params.description - The description of the type.
+   * @param {string} params.classification - The classification category.
    * @returns {Promise<Object>} - Result of the operation with success or error.
    */
   const modifyRequirementType = useCallback(
@@ -304,17 +308,22 @@ export default function useRequirementTypes() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+        const requirementTypes =
+        error.response?.data?.errors?.requirementTypes?.map(
+            (requirement) => requirement.name
+          ) || requirementTypesIds;
         const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: requirementTypesIds,
+          items: requirementTypes,
         });
         return { success: false, error: handledError.message };
       }
     },
     [jwt]
   );
+  
   useEffect(() => {
     fetchRequirementTypes();
   }, [fetchRequirementTypes]);

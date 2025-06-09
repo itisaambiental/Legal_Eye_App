@@ -7,7 +7,6 @@ import useSubjects from "../../hooks/subject/useSubjects";
 import useAspects from "../../hooks/aspect/useAspects";
 import { vi } from "vitest";
 
-
 vi.mock("../../hooks/requirement/useRequirements");
 vi.mock("../../hooks/subject/useSubjects");
 vi.mock("../../hooks/aspect/useAspects");
@@ -26,6 +25,7 @@ describe("Requirement Component", () => {
         periodicity: "Anual",
         formatted_periodicity: "Anual",
         requirement_condition: "Crítica",
+        acceptance_criteria: "Debe cumplir al 100%", // ✅ NUEVO
         mandatory_description: "Desc obligatoria",
         complementary_description: "Desc complementaria",
         mandatory_sentences: "Frase obligatoria",
@@ -44,6 +44,7 @@ describe("Requirement Component", () => {
         periodicity: "Específica",
         formatted_periodicity: "Específica - Cada 6 meses",
         requirement_condition: "Operativa",
+        acceptance_criteria: "Debe entregarse trimestralmente", // ✅ NUEVO
         mandatory_description: "Obligatoria 2",
         complementary_description: "Complementaria 2",
         mandatory_sentences: "Frase 2",
@@ -69,6 +70,7 @@ describe("Requirement Component", () => {
     fetchRequirementsByComplementarySentences: vi.fn(),
     fetchRequirementsByMandatoryKeywords: vi.fn(),
     fetchRequirementsByComplementaryKeywords: vi.fn(),
+    fetchRequirementsByAcceptanceCriteria: vi.fn(),
     modifyRequirement: vi.fn(),
     removeRequirement: vi.fn(),
     removeRequirementBatch: vi.fn(),
@@ -100,14 +102,17 @@ describe("Requirement Component", () => {
         <Requirements />
       </MemoryRouter>
     );
+  
     expect(screen.getByText("Orden")).toBeInTheDocument();
-    expect(screen.getByText("Requerimiento/Nombre")).toBeInTheDocument();
+    expect(screen.getByText("Requerimiento")).toBeInTheDocument(); // Fix aquí
     expect(screen.getByText("Condición")).toBeInTheDocument();
     expect(screen.getByText("Evidencia")).toBeInTheDocument();
     expect(screen.getByText("Periodicidad")).toBeInTheDocument();
     expect(screen.getByText("Materia")).toBeInTheDocument();
     expect(screen.getByText("Aspectos")).toBeInTheDocument();
+    expect(screen.getByText("Criterio de Aceptación")).toBeInTheDocument(); // Nuevo campo
   });
+  
 
   test("renders requirement data correctly in the table", () => {
     render(
@@ -115,13 +120,13 @@ describe("Requirement Component", () => {
         <Requirements />
       </MemoryRouter>
     );
-
+  
     expect(screen.getByText("Ley General")).toBeInTheDocument();
     expect(screen.getByText("Reglamento Ambiental")).toBeInTheDocument();
     expect(screen.getByText("Trámite")).toBeInTheDocument();
     expect(screen.getByText("Específica - Informe técnico")).toBeInTheDocument();
   });
-
+  
   test("shows loading indicator when requirements are loading", () => {
     useRequirements.mockReturnValueOnce({
       ...defaultRequirementMock,

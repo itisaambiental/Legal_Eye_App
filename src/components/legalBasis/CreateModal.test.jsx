@@ -75,6 +75,7 @@ describe("CreateModal Component for Legal Basis", () => {
         lastReform: null,
         document: null,
         extractArticles: false,
+        intelligenceLevel: "Low",
       },
     };
   });
@@ -129,6 +130,7 @@ describe("CreateModal Component for Legal Basis", () => {
       lastReform: parseDate("2024-01-01"),
       document: { file: new File([""], "test.pdf") },
       extractArticles: true,
+      intelligenceLevel: "Low",
     };
 
     render(<CreateModal config={config} />);
@@ -150,6 +152,7 @@ describe("CreateModal Component for Legal Basis", () => {
         lastReform: expect.any(String),
         extractArticles: true,
         document: expect.any(File),
+        intelligenceLevel: "Low",
       });
     });
   });

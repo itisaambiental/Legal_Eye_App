@@ -19,6 +19,8 @@ const baseMockConfig = {
   onFilterByEvidence: vi.fn(),
   selectedPeriodicity: "",
   onFilterByPeriodicity: vi.fn(),
+  filterByAcceptanceCriteria: "",
+  onFilterByAcceptanceCriteria: vi.fn(),
   filterByMandatoryDescription: "",
   onFilterByMandatoryDescription: vi.fn(),
   filterByComplementaryDescription: "",
@@ -61,25 +63,6 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.openModalCreate).toHaveBeenCalled();
   });
 
-  test("calls onFilterByNumber when number input changes", () => {
-    render(<TopContent config={baseMockConfig} />);
-    const input = screen.getByPlaceholderText("Buscar por orden...");
-    fireEvent.change(input, { target: { value: "123" } });
-    expect(baseMockConfig.onFilterByNumber).toHaveBeenCalledWith("123");
-  });
-
-  test("calls onClear when clear button is pressed in number input", () => {
-    const updatedConfig = {
-      ...baseMockConfig,
-      filterByNumber: "123",
-    };
-    const { container } = render(<TopContent config={updatedConfig} />);
-    const wrapper = container.querySelector('input[placeholder="Buscar por orden..."]')?.closest("div");
-    const clearButton = wrapper?.querySelector("button");
-    fireEvent.click(clearButton);
-    expect(updatedConfig.onClear).toHaveBeenCalled();
-  });
-
   test("calls onFilterByName when name input changes", () => {
     render(<TopContent config={baseMockConfig} />);
     const input = screen.getByPlaceholderText("Buscar por Requerimiento...");
@@ -111,13 +94,19 @@ describe("TopContent Component for Requirements", () => {
     expect(baseMockConfig.onFilterByPeriodicity).toHaveBeenCalled();
   });
 
-
   test("calls onFilterBySubject when a subject is selected", async () => {
     render(<TopContent config={baseMockConfig} />);
     const combo = screen.getByPlaceholderText("Buscar por materia...");
     fireEvent.keyDown(combo, { key: "ArrowDown" });
     fireEvent.click(await screen.findByText("Fiscal"));
     expect(baseMockConfig.onFilterBySubject).toHaveBeenCalled();
+  });
+
+  test("calls onFilterByAcceptanceCriteria when input changes", () => {
+    render(<TopContent config={baseMockConfig} />);
+    const input = screen.getByPlaceholderText("Buscar por criterio de aceptación...");
+    fireEvent.change(input, { target: { value: "criterio" } });
+    expect(baseMockConfig.onFilterByAcceptanceCriteria).toHaveBeenCalledWith("criterio");
   });
 
   test("calls onFilterByMandatoryDescription when input changes", () => {

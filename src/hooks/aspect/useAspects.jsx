@@ -1,5 +1,6 @@
 import { useContext, useState, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
+import insertSortedItem from "../../utils/insertSortedItem.js";
 import getAspectsBySubject from "../../services/aspectService/getAspects.js";
 import createNewAspect from "../../services/aspectService/createAspect.js";
 import getAspectsByName from "../../services/aspectService/getAspectsByName.js";
@@ -88,27 +89,9 @@ export default function useAspects() {
           abbreviation,
           token: jwt,
         });
-        setAspects((prevAspects) => {
-          const updatedAspects = [...prevAspects];
-          const findInsertIndex = (items, newOrderIndex) => {
-            let left = 0;
-            let right = items.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (items[mid].order_index < newOrderIndex) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-
-          const insertIndex = findInsertIndex(updatedAspects, newAspect.order_index);
-          updatedAspects.splice(insertIndex, 0, newAspect);
-          return updatedAspects;
-        });
-
+        setAspects((prevAspects) =>
+          insertSortedItem(prevAspects, newAspect, 'order_index')
+        );
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
@@ -190,30 +173,10 @@ export default function useAspects() {
           abbreviation,
           token: jwt,
         });
-
         setAspects((prevAspects) => {
-          const filteredAspects = prevAspects.filter((a) => a.id !== id);
-
-          const findInsertIndex = (items, newOrderIndex) => {
-            let left = 0;
-            let right = items.length;
-            while (left < right) {
-              const mid = Math.floor((left + right) / 2);
-              if (items[mid].order_index < newOrderIndex) {
-                left = mid + 1;
-              } else {
-                right = mid;
-              }
-            }
-            return left;
-          };
-
-          const insertIndex = findInsertIndex(filteredAspects, updatedAspect.order_index);
-          filteredAspects.splice(insertIndex, 0, updatedAspect);
-
-          return filteredAspects;
+          const filtered = prevAspects.filter((a) => a.id !== id);
+          return insertSortedItem(filtered, updatedAspect, 'order_index');
         });
-
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;

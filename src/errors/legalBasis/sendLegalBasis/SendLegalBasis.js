@@ -42,6 +42,10 @@ export class SendLegalBasisErrors {
     },
   };
 
+    /**
+   * A map of specific error messages to their corresponding error constants.
+   * @type {Object.<string, SendLegalBasisErrors>}
+   */
   static ErrorMessagesMap = {
     "Network Error": SendLegalBasisErrors.NETWORK_ERROR,
     "Job not found": SendLegalBasisErrors.JOB_NOT_FOUND,

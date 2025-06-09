@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import useAuth from "../../../hooks/user/auth/useAuth.jsx";
 import { Spinner } from "@heroui/react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../../../assets/logo.png";
 import go_back from "../../../assets/volver.png";
 
@@ -9,12 +9,10 @@ import go_back from "../../../assets/volver.png";
  * VerifyCode component
  *
  * This component provides an interface for users to enter and verify a security code
- * sent to their email as part of the password reset process. The code is time-sensitive
- * and expires after a set duration. Users can also request a new code if the original expires.
+ * sent to their email as part of the password reset process.
  *
  * @component
- *
- * @returns {JSX.Element} - Rendered VerifyCode component.
+ * @returns {JSX.Element}
  */
 function VerifyCode() {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,8 +20,6 @@ function VerifyCode() {
   const [codeError, setCodeError] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [timer, setTimer] = useState(60);
-  const { email } = useParams();
-  const decodedEmail = decodeURIComponent(email);
   const {
     reset_password,
     isResetPasswordLoading,
@@ -35,12 +31,13 @@ function VerifyCode() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const email = location.state?.email;
 
   useEffect(() => {
-    if (!location.state || !location.state.fromRequest) {
+    if (!location.state || !location.state.fromRequest || !email) {
       navigate("/*", { replace: true });
     }
-  }, [location, navigate]);
+  }, [location, navigate, email]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -70,7 +67,6 @@ function VerifyCode() {
     setFormSubmitted(true);
 
     let isValid = true;
-
     if (code.trim() === "") {
       setCodeError(true);
       isValid = false;
@@ -81,13 +77,13 @@ function VerifyCode() {
     if (isValid) {
       const success = await verify_code(email, code);
       if (success) {
-        navigate(`/reset-password/complete`, { state: { fromVerify: true } });
+        navigate("/reset-password/complete", { state: { fromVerify: true } });
       }
     }
   };
 
   const handleResendCode = async () => {
-    const success = await reset_password(decodedEmail, true);
+    const success = await reset_password(email, true);
     if (success) {
       setTimer(60);
     }
@@ -134,13 +130,10 @@ function VerifyCode() {
           </div>
           <div className="flex flex-col items-center gap-1 mb-8">
             <h1 className="text-xl text-primary font-bold">Código enviado</h1>
-            <p className="text-secondary text-sm text-center mb-4">
+             <p className="text-secondary text-sm text-center mb-4">
               Se ha enviado un código de seguridad a la dirección de correo
-              <span className="text-primary text-sm font-medium">
-                {" "}
-                {decodedEmail}{" "}
-              </span>
-              . Revísalo y pégalo abajo.
+              <span className="text-primary text-sm font-medium"> {email}</span>.
+              Revísalo y pégalo abajo.
             </p>
             <h1 className="text-sm text-primary font-bold">
               El código expira dentro de: {Math.floor(timer / 60)}:

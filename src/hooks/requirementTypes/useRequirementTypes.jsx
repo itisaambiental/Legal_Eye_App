@@ -308,17 +308,22 @@ export default function useRequirementTypes() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+        const requirementTypes =
+        error.response?.data?.errors?.requirementTypes?.map(
+            (requirement) => requirement.name
+          ) || requirementTypesIds;
         const handledError = RequirementTypesErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: requirementTypesIds,
+          items: requirementTypes,
         });
         return { success: false, error: handledError.message };
       }
     },
     [jwt]
   );
+  
   useEffect(() => {
     fetchRequirementTypes();
   }, [fetchRequirementTypes]);

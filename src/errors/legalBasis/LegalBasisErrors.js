@@ -16,10 +16,19 @@ class LegalBasisErrors {
   static DUPLICATED_ABBREVIATION = "DUPLICATED_ABBREVIATION";
   static DOCUMENT_REQUIRED = "DOCUMENT_REQUIRED";
   static ARTICLE_EXTRACTION_JOBS_CONFLICT = "ARTICLE_EXTRACTION_JOBS_CONFLICT";
-  static MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT = "MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT";
+  static MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT =
+    "MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT";
   static ARTICLES_EXTRACTION_CONFLICT = "ARTICLES_EXTRACTION_CONFLICT";
+  static ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT =
+    "ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT";
+  static MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT =
+    "MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT";
+  static REQ_IDENTIFICATION_JOBS_CONFLICT = "REQ_IDENTIFICATION_JOBS_CONFLICT";
+  static MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT =
+    "MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT";
   static SEND_LEGAL_BASIS_JOBS_CONFLICT = "SEND_LEGAL_BASIS_JOBS_CONFLICT";
-  static MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT = "MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT";
+  static MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT =
+    "MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT";
   static DOCUMENT_CONFLICT = "DOCUMENT_CONFLICT";
   static REMOVE_DOCUMENT_PENDING_CONFLICT = "REMOVE_DOCUMENT_PENDING_CONFLICT";
   static NEW_DOCUMENT_PENDING_CONFLICT = "NEW_DOCUMENT_PENDING_CONFLICT";
@@ -103,6 +112,36 @@ class LegalBasisErrors {
       message:
         "No se pueden extraer artículos en este momento porque ya se están extrayendo artículos de el documento asociado.",
     },
+    [LegalBasisErrors.ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT]: {
+      title:
+        "Fundamento Legal vinculado a una identificación de requerimientos",
+      message:
+        "El fundamento legal está vinculado a una o más identificación de requerimientos y no puede ser eliminado.",
+    },
+    [LegalBasisErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT]: {
+      title:
+        "Fundamento Legales vinculados a una identificación de requerimientos",
+      message: ({ items }) =>
+        items.length === 1
+          ? `El fundamento legal ${items[0]} está vinculado a una o más identificación de requerimientos y no puede ser eliminado.`
+          : `Los fundamentos legales ${items.join(
+              ", "
+            )} están vinculados a una o más identificación de requerimientos y no pueden ser eliminados.`,
+    },
+    [LegalBasisErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message:
+        "El fundamento legal no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.",
+    },
+    [LegalBasisErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message: ({ items }) =>
+        items.length === 1
+          ? `El fundamento legal ${items[0]} no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.`
+          : `Los fundamentos legales ${items.join(
+              ", "
+            )}  no pueden ser eliminados porque se están utilizando en una identificación de requerimientos.`,
+    },
     [LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de envío",
       message:
@@ -145,22 +184,41 @@ class LegalBasisErrors {
 
   /**
    * A map of specific error messages to their corresponding error constants.
+   * @type {Object.<string, LegalBasisErrors>}
    */
   static ErrorMessagesMap = {
     "Network Error": LegalBasisErrors.NETWORK_ERROR,
     "LegalBasis already exists": LegalBasisErrors.DUPLICATED_NAME,
-    "LegalBasis abbreviation already exists": LegalBasisErrors.DUPLICATED_ABBREVIATION,
-    "A document must be provided if extractArticles is true": LegalBasisErrors.DOCUMENT_REQUIRED,
-    "Cannot provide a document if removeDocument is true": LegalBasisErrors.DOCUMENT_CONFLICT,
-    "The document cannot be removed because there are pending jobs for this Legal Basis": LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT,
-    "Articles cannot be extracted because there is already a process that does so": LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT,
-    "A new document cannot be uploaded because there are pending jobs for this Legal Basis": LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT,
+    "LegalBasis abbreviation already exists":
+      LegalBasisErrors.DUPLICATED_ABBREVIATION,
+    "A document must be provided if extractArticles is true":
+      LegalBasisErrors.DOCUMENT_REQUIRED,
+    "Cannot provide a document if removeDocument is true":
+      LegalBasisErrors.DOCUMENT_CONFLICT,
+    "The document cannot be removed because there are pending jobs for this Legal Basis":
+      LegalBasisErrors.REMOVE_DOCUMENT_PENDING_CONFLICT,
+    "Articles cannot be extracted because there is already a process that does so":
+      LegalBasisErrors.ARTICLES_EXTRACTION_CONFLICT,
+    "A new document cannot be uploaded because there are pending jobs for this Legal Basis":
+      LegalBasisErrors.NEW_DOCUMENT_PENDING_CONFLICT,
     "Subject not found": LegalBasisErrors.SUBJECT_NOT_FOUND,
     "Aspects not found for IDs": LegalBasisErrors.ASPECTS_NOT_FOUND,
-    "Cannot delete LegalBasis with pending Article Extraction jobs": LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT,
-    "Cannot delete Legal Bases with pending Article Extraction jobs": LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT,
-    "Cannot delete LegalBasis with pending Send Legal Basis jobs": LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT,
-    "Cannot delete Legal Bases with pending Send Legal Basis jobs": LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
+    "Cannot delete LegalBasis with pending Article Extraction jobs":
+      LegalBasisErrors.ARTICLE_EXTRACTION_JOBS_CONFLICT,
+    "Cannot delete Legal Bases with pending Article Extraction jobs":
+      LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT,
+    "The LegalBasis is associated with one or more requirement identifications":
+      LegalBasisErrors.ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+    "Some Legal Bases are associated with requirement identifications":
+      LegalBasisErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+    "Cannot delete LegalBasis with pending Requirement Identification jobs":
+      LegalBasisErrors.REQ_IDENTIFICATION_JOBS_CONFLICT,
+    "Cannot delete Legal Bases with pending Requirement Identification jobs":
+      LegalBasisErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
+    "Cannot delete LegalBasis with pending Send Legal Basis jobs":
+      LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT,
+    "Cannot delete Legal Bases with pending Send Legal Basis jobs":
+      LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
   };
 
   /**
@@ -179,8 +237,12 @@ class LegalBasisErrors {
       const key = LegalBasisErrors.ErrorMessagesMap[message];
       const errorConfig = LegalBasisErrors.errorMap[key];
       if (
-        (key === LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT ||
-          key === LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT) &&
+        [
+          LegalBasisErrors.MULTIPLE_ARTICLE_EXTRACTION_JOBS_CONFLICT,
+          LegalBasisErrors.MULTIPLE_SEND_LEGAL_BASIS_JOBS_CONFLICT,
+          LegalBasisErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT,
+          LegalBasisErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
+        ].includes(key) &&
         items &&
         items.length > 0
       ) {
@@ -189,6 +251,7 @@ class LegalBasisErrors {
           message: errorConfig.message({ items }),
         };
       }
+
       return errorConfig;
     }
     switch (code) {

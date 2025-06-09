@@ -307,11 +307,15 @@ export default function useLegalVerbs() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+          const legalVerbs =
+          error.response?.data?.errors?.legalVerbs?.map(
+            (requirement) => requirement.name
+          ) || legalVerbsIds;
         const handledError = LegalVerbsErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: legalVerbsIds,
+          items: legalVerbs,
         });
         return { success: false, error: handledError.message };
       }
@@ -319,7 +323,6 @@ export default function useLegalVerbs() {
     [jwt]
   );
 
-  // Auto-fetch legal verbs when hook is mounted
   useEffect(() => {
     fetchLegalVerbs();
   }, [fetchLegalVerbs]);

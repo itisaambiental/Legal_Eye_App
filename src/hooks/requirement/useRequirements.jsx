@@ -745,11 +745,15 @@ export default function useRequirement() {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
+        const requirements =
+          error.response?.data?.errors?.requirements?.map(
+            (requirement) => requirement.name
+          ) || requirementIds;
         const handledError = RequirementErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
-          items: requirementIds,
+          items: requirements,
         });
         return { success: false, error: handledError.message };
       }

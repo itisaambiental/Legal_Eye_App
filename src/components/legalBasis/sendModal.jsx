@@ -27,6 +27,7 @@ import Progress from './sendProgress/Progress.jsx';
  * @param {Function} props.config.sendLegalBasis - Function to send selected Legal Basis entries.
  * @param {Set|string} props.config.selectedKeys - Selected item IDs to send or "all" for sending all.
  * @param {Function} props.config.setSelectedKeys - Function to reset selected items after sending.
+ * @param {number} [props.config.singleSendId] - Optional ID for sending a single Legal Basis entry.
  * @param {string} props.config.check - URL or path for the success icon displayed in toast notifications.
  *
  * @returns {JSX.Element} Rendered SendModal component with send confirmation and background job progress.
@@ -39,8 +40,8 @@ function SendModal({ config }) {
         sendLegalBasis,
         selectedKeys,
         setSelectedKeys,
-        check,
         singleSendId, 
+        check
     } = config;
 
     const [isLoading, setIsLoading] = useState(false);

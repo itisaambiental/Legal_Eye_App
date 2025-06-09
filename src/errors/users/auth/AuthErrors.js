@@ -50,6 +50,7 @@ class AuthErrors {
 
     /**
      * A map of specific error messages to their corresponding error constants.
+     * @type {Object.<string, AuthErrors>}
      */
     static ErrorMessagesMap = {
         "Network Error": AuthErrors.NETWORK_ERROR,

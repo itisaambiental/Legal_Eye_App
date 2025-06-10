@@ -898,14 +898,15 @@ export default function LegalBasis() {
     }
 
     const [legalBase] = legalBasis;
-    const allMatchBy = (key, nested = false) =>
-      legalBasis.every((lb) =>
-        nested
-          ? lb[key]?.id === legalBase[key]?.id
-          : lb[key] === legalBase[key]
-      );
 
-    if (!allMatchBy("subject", true)) {
+    const allMatchBy = (key, nestedKey = null) =>
+      legalBasis.every((lb) => {
+        const value = nestedKey ? lb[key]?.[nestedKey] : lb[key];
+        const baseValue = nestedKey ? legalBase[key]?.[nestedKey] : legalBase[key];
+        return value === baseValue;
+      });
+
+    if (!allMatchBy("subject", "subject_id")) {
       toast.error("Todos los fundamentos deben tener la misma materia.");
       return false;
     }
@@ -918,7 +919,7 @@ export default function LegalBasis() {
     const { jurisdiction } = legalBase;
 
     if (jurisdiction === "Estatal" && !allMatchBy("state")) {
-      toast.error("Todos los fundamentos deben pertenecer al mismo estado.");
+      toast.error("Todos los fundamentos deben pertenecer al mismo estado si la jurisdicción es Estatal.");
       return false;
     }
 
@@ -927,7 +928,7 @@ export default function LegalBasis() {
       (!allMatchBy("state") || !allMatchBy("municipality"))
     ) {
       toast.error(
-        "Todos los fundamentos deben pertenecer al mismo estado y municipio."
+        "Todos los fundamentos deben pertenecer al mismo estado y municipio si la jurisdicción es Local."
       );
       return false;
     }
@@ -936,13 +937,23 @@ export default function LegalBasis() {
   };
 
   const openReqIdentificationModal = () => {
-    const selectedLegalBasis  = legalBasis.filter((legalBase) =>
-      selectedKeys.has(String(legalBase.id))
-    );
+    let selectedLegalBasis = [];
+    if (selectedKeys.size === 0) {
+      toast.error("Selecciona al menos un fundamento legal.");
+      return;
+    }
+    if (selectedKeys === "all") {
+      selectedLegalBasis = legalBasis;
+    } else {
+      selectedLegalBasis = legalBasis.filter((legalBase) =>
+        selectedKeys.has(String(legalBase.id))
+      );
+    }
     if (!validateLegalBasisSelected(selectedLegalBasis)) return;
     setSelectedLegalBasisToReqIdentification(selectedLegalBasis);
     setIsReqIdentificationModalOpen(true);
   };
+
 
   const openReqIdentificationModalFromRow = (legalBase) => {
     setSelectedLegalBasisToReqIdentification([legalBase]);
@@ -969,7 +980,7 @@ export default function LegalBasis() {
     navigate(`/legal_basis/${legalBaseId}/articles`);
   };
 
-    const totalPages = useMemo(
+  const totalPages = useMemo(
     () => Math.ceil(legalBasis.length / rowsPerPage),
     [legalBasis, rowsPerPage]
   );

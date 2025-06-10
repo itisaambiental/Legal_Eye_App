@@ -14,7 +14,7 @@ import {
 import { toast } from "react-toastify";
 
 /**
- * IdentificationModal.jsx
+ * ReqIdentificationModal.jsx
  *
  * Modal for creating a Requirement Identification based on selected Legal Basis records.
  * @param {Object} props - Component properties.
@@ -100,6 +100,7 @@ const ReqIdentificationModal = ({ isOpen, onClose, selectLegalBasis }) => {
       });
       return;
     }
+    console.log("Form submitted:", formValues.legalBasisIds, form);
     onClose();
   };
 

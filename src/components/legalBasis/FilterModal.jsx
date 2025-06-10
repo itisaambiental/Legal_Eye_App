@@ -26,6 +26,7 @@ import {
  * @param {Function} props.config.fetchLegalBasisByCriteria - Function to trigger filtered request.
  * @param {boolean} props.config.isOpen - Indicates if the modal is open.
  * @param {Function} props.config.onClose - Function to close the modal.
+ * @param {Function} props.config.setPage - Function to set the current page for results.
  * @param {Function} props.config.handleJurisdictionChange - Callback for jurisdiction selection.
  * @param {Array<string>} props.config.states - List of available states.
  * @param {boolean} props.config.isStateActive - Whether the state selector is enabled.
@@ -52,6 +53,7 @@ export default function FilterModal({ config }) {
     fetchLegalBasisByCriteria,
     isOpen,
     onClose,
+    setPage,
     handleJurisdictionChange,
     states,
     isStateActive,
@@ -106,6 +108,7 @@ export default function FilterModal({ config }) {
       municipality: formData.municipality,
     };
     fetchLegalBasisByCriteria(filterData);
+    setPage(1)
     onClose()
   };
 
@@ -286,6 +289,7 @@ FilterModal.propTypes = {
     fetchLegalBasisByCriteria: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    setPage: PropTypes.func.isRequired,
     handleJurisdictionChange: PropTypes.func.isRequired,
     states: PropTypes.arrayOf(PropTypes.string).isRequired,
     isStateActive: PropTypes.bool.isRequired,

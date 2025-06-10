@@ -1475,6 +1475,7 @@ export default function LegalBasis() {
             loadingMunicipalities: loadingMunicipalities,
             municipalities: municipalities,
             onClose: closeFilterModal,
+            setPage: setPage,
             states: states,
             subjects: subjects,
           }}

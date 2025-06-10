@@ -17,6 +17,7 @@ describe("FilterModal", () => {
       fetchLegalBasisByCriteria: vi.fn(),
       isOpen: true,
       onClose: vi.fn(),
+      setPage: vi.fn(),
       handleJurisdictionChange: vi.fn(),
       states: ["Nuevo León", "Jalisco"],
       isStateActive: false,

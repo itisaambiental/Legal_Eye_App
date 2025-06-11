@@ -927,9 +927,7 @@ export default function LegalBasis() {
       jurisdiction === "Local" &&
       (!allMatchBy("state") || !allMatchBy("municipality"))
     ) {
-      toast.error(
-        "Todos los fundamentos deben pertenecer al mismo estado y municipio si la jurisdicción es Local."
-      );
+      toast.error("Todos los fundamentos deben pertenecer al mismo estado y municipio si la jurisdicción es Local.");
       return false;
     }
 
@@ -1435,7 +1433,7 @@ export default function LegalBasis() {
       {isReqIdentificationModalOpen && (
         <ReqIdentificationModal
           isOpen={isReqIdentificationModalOpen}
-          onClose={closeReqIdentificationModal}
+          closeModal={closeReqIdentificationModal}
           selectLegalBasis={selectedLegalBasisToReqIdentification}
         />
       )}

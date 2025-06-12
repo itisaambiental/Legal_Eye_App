@@ -7,6 +7,8 @@ export class ReqIdentifyErrors {
   static NETWORK_ERROR = "NETWORK_ERROR";
   static UNAUTHORIZED = "UNAUTHORIZED";
   static JOB_NOT_FOUND = "JOB_NOT_FOUND";
+  static REQ_IDENTIFICATION_NOT_FOUND = "REQ_IDENTIFICATION_NOT_FOUND";
+  static REQ_IDENTIFICATION_FAILED = "REQ_IDENTIFICATION_FAILED";
   static SERVER_ERROR = "SERVER_ERROR";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
 
@@ -31,6 +33,14 @@ export class ReqIdentifyErrors {
       message:
         "La identificación de requerimientos fue cancelada anteriormente. Cierre esta ventana e intente nuevamente.",
     },
+    [ReqIdentifyErrors.REQ_IDENTIFICATION_NOT_FOUND]: {
+      title: "Identificación no encontrada",
+      message: "La identificación de requerimientos fue eliminada anteriormente. Cierre esta ventana e intente nuevamente.",
+    },
+    [ReqIdentifyErrors.REQ_IDENTIFICATION_FAILED]: {
+      title: "Identificación fallida",
+      message: "La identificación de requerimientos no se pudo completar correctamente. Intente de nuevo.",
+    },
     [ReqIdentifyErrors.SERVER_ERROR]: {
       title: "Error del servidor",
       message:
@@ -49,8 +59,9 @@ export class ReqIdentifyErrors {
   static ErrorMessagesMap = {
     "Network Error": ReqIdentifyErrors.NETWORK_ERROR,
     "Job not found": ReqIdentifyErrors.JOB_NOT_FOUND,
-    "Unexpected error identifying requirements":
-      ReqIdentifyErrors.UNEXPECTED_ERROR,
+    "Requirement identification not found": ReqIdentifyErrors.REQ_IDENTIFICATION_NOT_FOUND,
+    "Requirement Identification Error": ReqIdentifyErrors.REQ_IDENTIFICATION_FAILED,
+    "Unexpected error identifying requirements": ReqIdentifyErrors.UNEXPECTED_ERROR,
   };
 
   /**

@@ -32,8 +32,8 @@ export default async function updateReqIdentification({
     if (reqIdentificationDescription) {
       formData.append("reqIdentificationDescription", reqIdentificationDescription);
     }
-    if (newUserId !== undefined) {
-      formData.append("newUserId", String(newUserId));
+    if (newUserId) {
+      formData.append("newUserId", newUserId);
     }
 
     const response = await server.patch(`/req-identification/${id}`, formData, {
@@ -47,7 +47,8 @@ export default async function updateReqIdentification({
       throw new Error(`Failed to update requirement identification with ID ${id}`);
     }
 
-    return response.data.reqIdentification;
+    const { reqIdentification } = response.data;
+    return reqIdentification;
   } catch (error) {
     console.error(`Error updating requirement identification with ID ${id}:`, error);
     throw error;

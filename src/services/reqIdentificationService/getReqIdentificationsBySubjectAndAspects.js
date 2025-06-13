@@ -26,20 +26,24 @@ export default async function getReqIdentificationsBySubjectAndAspects({
           Authorization: `Bearer ${token}`,
         },
         params: {
-          aspectIds: Array.isArray(aspectIds)
-            ? aspectIds.join(",")
-            : aspectIds,
+          aspectIds,
         },
       }
     );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch requirement identifications by subject and aspects");
+      throw new Error(
+        "Failed to fetch requirement identifications by subject and aspects"
+      );
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by subject and aspects:", error);
+    console.error(
+      "Error fetching requirement identifications by subject and aspects:",
+      error
+    );
     throw error;
   }
 }

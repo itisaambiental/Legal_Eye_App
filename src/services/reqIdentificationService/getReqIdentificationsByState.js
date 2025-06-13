@@ -27,9 +27,13 @@ export default async function getReqIdentificationsByState({ state, token }) {
       throw new Error("Failed to fetch requirement identifications by state");
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by state:", error);
+    console.error(
+      "Error fetching requirement identifications by state:",
+      error
+    );
     throw error;
   }
 }

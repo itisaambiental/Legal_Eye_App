@@ -27,7 +27,8 @@ export default async function getReqIdentificationsByName({ name, token }) {
       throw new Error("Failed to fetch requirement identifications by name");
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
     console.error("Error fetching requirement identifications by name:", error);
     throw error;

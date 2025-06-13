@@ -21,12 +21,13 @@ export default async function getReqIdentificationById({ id, token }) {
     });
 
     if (response.status !== 200) {
-      throw new Error(`Failed to fetch requirement identification with ID ${id}`);
+      throw new Error("Failed to fetch requirement identification");
     }
 
-    return response.data.reqIdentification;
+    const { reqIdentification } = response.data;
+    return reqIdentification;
   } catch (error) {
-    console.error(`Error fetching requirement identification with ID ${id}:`, error);
+    console.error("Error fetching requirement identification");
     throw error;
   }
 }

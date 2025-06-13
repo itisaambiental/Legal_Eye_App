@@ -19,25 +19,32 @@ export default async function getReqIdentificationsByStateAndMunicipalities({
   token,
 }) {
   try {
-    const response = await server.get("/req-identification/search/state-municipalities", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        state,
-        municipalities: Array.isArray(municipalities)
-          ? municipalities.join(",")
-          : municipalities,
-      },
-    });
+    const response = await server.get(
+      "/req-identification/search/state-municipalities",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          state,
+          municipalities,
+        },
+      }
+    );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch requirement identifications by state and municipalities");
+      throw new Error(
+        "Failed to fetch requirement identifications by state and municipalities"
+      );
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by state and municipalities:", error);
+    console.error(
+      "Error fetching requirement identifications by state and municipalities:",
+      error
+    );
     throw error;
   }
 }

@@ -12,21 +12,33 @@ import server from "../../config/server.js";
  * @returns {Promise<Object[]>} - An array of requirement identifications for the given subject.
  * @throws {Error} - If the request fails or the response status is not 200.
  */
-export default async function getReqIdentificationsBySubjectId({ subjectId, token }) {
+export default async function getReqIdentificationsBySubjectId({
+  subjectId,
+  token,
+}) {
   try {
-    const response = await server.get(`/req-identification/search/subject/${subjectId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await server.get(
+      `/req-identification/search/subject/${subjectId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch requirement identifications by subject ID");
+      throw new Error(
+        "Failed to fetch requirement identifications by subject ID"
+      );
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;  
   } catch (error) {
-    console.error("Error fetching requirement identifications by subject ID:", error);
+    console.error(
+      "Error fetching requirement identifications by subject ID:",
+      error
+    );
     throw error;
   }
 }

@@ -24,7 +24,10 @@ export default async function deleteReqIdentification({ id, token }) {
       throw new Error("Failed to delete requirement identification");
     }
   } catch (error) {
-    console.error(`Error deleting requirement identification with ID ${id}:`, error);
+    console.error(
+      `Error deleting requirement identification with ID ${id}:`,
+      error
+    );
     throw error;
   }
 }

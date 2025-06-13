@@ -6,7 +6,7 @@ import server from "../../config/server.js";
  * @async
  * @function getReqIdentificationsByStatus
  * @param {Object} params - Parameters for the request.
- * @param {string} params.status - Status to filter by ("Active", "Completed", "Failed").
+ * @param {string} params.status - Status to filter by ('Activo' | 'Fallido' | 'Completado').
  * @param {string} params.token - Authorization token.
  *
  * @returns {Promise<Object[]>} - An array of requirement identifications with the specified status.
@@ -27,9 +27,13 @@ export default async function getReqIdentificationsByStatus({ status, token }) {
       throw new Error("Failed to fetch requirement identifications by status");
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by status:", error);
+    console.error(
+      "Error fetching requirement identifications by status:",
+      error
+    );
     throw error;
   }
 }

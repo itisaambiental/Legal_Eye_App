@@ -12,26 +12,36 @@ import server from "../../config/server.js";
  * @returns {Promise<Object[]>} - An array of requirement identifications.
  * @throws {Error} - If the request fails or the response status is not 200.
  */
-export default async function getReqIdentificationsByJurisdiction({ 
-    jurisdiction, token 
+export default async function getReqIdentificationsByJurisdiction({
+  jurisdiction,
+  token,
 }) {
   try {
-    const response = await server.get("/req-identification/search/jurisdiction", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        jurisdiction: jurisdiction,
-      },
-    });
+    const response = await server.get(
+      "/req-identification/search/jurisdiction",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          jurisdiction: jurisdiction,
+        },
+      }
+    );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch requirement identifications by jurisdiction");
+      throw new Error(
+        "Failed to fetch requirement identifications by jurisdiction"
+      );
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by jurisdiction:", error);
+    console.error(
+      "Error fetching requirement identifications by jurisdiction:",
+      error
+    );
     throw error;
   }
 }

@@ -12,7 +12,10 @@ import server from "../../config/server.js";
  * @returns {Promise<void>} - Resolves if deletion is successful.
  * @throws {Error} - If the request fails or the response status is not 204.
  */
-export default async function deleteReqIdentificationsBatch({ reqIdentificationIds, token }) {
+export default async function deleteReqIdentificationsBatch({
+  reqIdentificationIds,
+  token,
+}) {
   try {
     const response = await server.delete(`/req-identification/delete/batch`, {
       headers: {

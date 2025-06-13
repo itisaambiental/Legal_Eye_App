@@ -12,28 +12,36 @@ import server from "../../config/server.js";
  * @returns {Promise<Object[]>} - An array of matching requirement identifications.
  * @throws {Error} - If the request fails or the response status is not 200.
  */
-export default async function getReqIdentificationsByDescription({ 
-    description, token,
- }) {
+export default async function getReqIdentificationsByDescription({
+  description,
+  token,
+}) {
   try {
     const response = await server.get(
-        "/req-identification/search/description", 
-        {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        description,
-      },
-    });
+      "/req-identification/search/description",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          description,
+        },
+      }
+    );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch requirement identifications by description");
+      throw new Error(
+        "Failed to fetch requirement identifications by description"
+      );
     }
 
-    return response.data.reqIdentifications;
+    const { reqIdentifications } = response.data;
+    return reqIdentifications;
   } catch (error) {
-    console.error("Error fetching requirement identifications by description:", error);
+    console.error(
+      "Error fetching requirement identifications by description:",
+      error
+    );
     throw error;
   }
 }

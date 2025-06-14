@@ -63,7 +63,7 @@ class ArticleErrors {
     [ArticleErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de identificación de requerimientos",
       message:
-        "El artículo no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.",
+        "El artículo no puede ser eliminado porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.",
     },
     [ArticleErrors.MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT]: {
       title: "Artículos vinculados a identificaciones de requerimientos",
@@ -78,10 +78,10 @@ class ArticleErrors {
       title: "Conflicto con trabajos de identificación de requerimientos",
       message: ({ items }) =>
         items.length === 1
-          ? `El artículo ${items[0]} no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.`
+          ? `El artículo ${items[0]} no puede ser eliminado porque actualmente se está identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`
           : `Los artículos ${items.join(
               ", "
-            )} no pueden ser eliminados porque se están utilizando en una identificación de requerimientos.`,
+            )} no pueden ser eliminados porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`,
     },
     [ArticleErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de envío",

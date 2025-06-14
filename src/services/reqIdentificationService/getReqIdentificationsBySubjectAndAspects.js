@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @function getReqIdentificationsBySubjectAndAspects
  * @param {Object} params - Parameters for the request.
  * @param {number} params.subjectId - ID of the subject.
- * @param {number[]|string} params.aspectIds - Array of aspect IDs (or comma-separated string).
+ * @param {number[]} params.aspectIds - Array of aspect IDs.
  * @param {string} params.token - Authorization token.
  *
  * @returns {Promise<Object[]>} - An array of matching requirement identifications.

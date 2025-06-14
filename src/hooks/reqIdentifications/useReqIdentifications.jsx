@@ -2,8 +2,6 @@ import { useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/userContext.jsx";
 import createReqIdentification from "../../services/reqIdentificationService/createReqIdentification.js";
 import getReqIdentifications from "../../services/reqIdentificationService/getReqIdentifications.js";
-import deleteReqIdentification from "../../services/reqIdentificationService/deleteReqIdentification";
-import deleteReqIdentificationsBatch from "../../services/reqIdentificationService/deleteReqIdentificationsBatch";
 import getReqIdentificationById from "../../services/reqIdentificationService/getReqIdentificationById";
 import getReqIdentificationsByName from "../../services/reqIdentificationService/getReqIdentificationsByName";
 import getReqIdentificationsByDescription from "../../services/reqIdentificationService/getReqIdentificationsByDescription";
@@ -16,6 +14,8 @@ import getReqIdentificationsByUserId from "../../services/reqIdentificationServi
 import getReqIdentificationsBySubjectId from "../../services/reqIdentificationService/getReqIdentificationsBySubjectId";
 import getReqIdentificationsBySubjectAndAspects from "../../services/reqIdentificationService/getReqIdentificationsBySubjectAndAspects";
 import updateReqIdentification from "../../services/reqIdentificationService/updateReqIdentification";
+import deleteReqIdentification from "../../services/reqIdentificationService/deleteReqIdentification";
+import deleteReqIdentificationsBatch from "../../services/reqIdentificationService/deleteReqIdentificationsBatch";
 import ReqIdentificationErrors from "../../errors/reqIdentifications/ReqIdentificationErrors";
 
 /**
@@ -116,8 +116,8 @@ export default function useReqIdentifications() {
   const fetchReqIdentificationById = useCallback(
     async (id) => {
       try {
-        const identification = await getReqIdentificationById({ id, token: jwt });
-        return { success: true, data: identification };
+        const reqIdentification = await getReqIdentificationById({ id, token: jwt });
+        return { success: true, data: reqIdentification };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
@@ -151,8 +151,8 @@ export default function useReqIdentifications() {
     async (name) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByName({ name, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByName({ name, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -183,8 +183,8 @@ export default function useReqIdentifications() {
     async (description) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByDescription({ description, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByDescription({ description, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -216,8 +216,8 @@ export default function useReqIdentifications() {
     async (from, to) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByCreatedAt({ from, to, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByCreatedAt({ from, to, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -248,8 +248,8 @@ export default function useReqIdentifications() {
     async (jurisdiction) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByJurisdiction({ jurisdiction, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByJurisdiction({ jurisdiction, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -273,15 +273,15 @@ export default function useReqIdentifications() {
  *
  * @async
  * @function fetchReqIdentificationsByState
- * @param {string} stateName - The name of the state to filter by.
+ * @param {string} state - The state to filter by.
  * @returns {Promise<void>} - Updates the list of identifications or sets an error.
  */
   const fetchReqIdentificationsByState = useCallback(
-    async (stateName) => {
+    async (state) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByState({ state: stateName, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByState({ state, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -314,12 +314,12 @@ export default function useReqIdentifications() {
     async ({ state, municipalities }) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByStateAndMunicipalities({
+        const reqIdentifications = await getReqIdentificationsByStateAndMunicipalities({
           state,
           municipalities,
           token: jwt,
         });
-        setReqIdentifications(results);
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -343,15 +343,15 @@ export default function useReqIdentifications() {
    *
    * @async
    * @function fetchReqIdentificationsByStatus
-   * @param {string} status - The status to filter by ("Active", "Failed", or "Completed").
+   * @param {string} status - The status to filter by ('Activo' | 'Fallido' | 'Completado').
    * @returns {Promise<void>} - Updates the list of identifications or sets an error.
    */
   const fetchReqIdentificationsByStatus = useCallback(
     async (status) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByStatus({ status, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByStatus({ status, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -371,19 +371,19 @@ export default function useReqIdentifications() {
   );
 
   /**
-   * Fetches Requirement Identifications created by a specific user.
+   * Fetches Requirement Identifications associated with a specific user.
    *
    * @async
    * @function fetchReqIdentificationsByUserId
-   * @param {number} userId - The ID of the user whose identifications will be fetched.
+   * @param {number} userId - ID of the user to filter by.
    * @returns {Promise<void>} - Updates the list of identifications or sets an error.
    */
   const fetchReqIdentificationsByUserId = useCallback(
     async (userId) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsByUserId({ userId, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsByUserId({ userId, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -393,7 +393,7 @@ export default function useReqIdentifications() {
         const handledError = ReqIdentificationErrors.handleError({
           code: errorCode,
           error: serverMessage,
-          httpError: clientMessage,
+          httpError: clientMessage
         });
 
         setState({ loading: false, error: handledError });
@@ -414,8 +414,8 @@ export default function useReqIdentifications() {
     async (subjectId) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsBySubjectId({ subjectId, token: jwt });
-        setReqIdentifications(results);
+        const reqIdentifications = await getReqIdentificationsBySubjectId({ subjectId, token: jwt });
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -425,7 +425,7 @@ export default function useReqIdentifications() {
         const handledError = ReqIdentificationErrors.handleError({
           code: errorCode,
           error: serverMessage,
-          httpError: clientMessage,
+          httpError: clientMessage
         });
 
         setState({ loading: false, error: handledError });
@@ -448,12 +448,12 @@ export default function useReqIdentifications() {
     async ({ subjectId, aspectIds }) => {
       setState({ loading: true, error: null });
       try {
-        const results = await getReqIdentificationsBySubjectAndAspects({
+        const reqIdentifications = await getReqIdentificationsBySubjectAndAspects({
           subjectId,
           aspectIds,
           token: jwt,
         });
-        setReqIdentifications(results);
+        setReqIdentifications(reqIdentifications);
         setState({ loading: false, error: null });
       } catch (error) {
         const errorCode = error.response?.status;
@@ -481,17 +481,17 @@ export default function useReqIdentifications() {
    * @param {number} params.id - The ID of the identification to update.
    * @param {string} [params.reqIdentificationName] - New name (optional).
    * @param {string} [params.reqIdentificationDescription] - New description (optional).
-   * @param {string} [params.status] - New status (optional).
+   * @param {number} [params.newUserId] - New user ID (optional).
    * @returns {Object} - Result of the update process including success and updated data.
    */
   const editReqIdentification = useCallback(
-    async ({ id, reqIdentificationName, reqIdentificationDescription, status }) => {
+    async ({ id, reqIdentificationName, reqIdentificationDescription, newUserId }) => {
       try {
         const updated = await updateReqIdentification({
           id,
           reqIdentificationName,
           reqIdentificationDescription,
-          status,
+          newUserId,
           token: jwt,
         });
 
@@ -505,6 +505,7 @@ export default function useReqIdentifications() {
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
+          items: [id],
         });
 
         return { success: false, error: handledError.message };
@@ -535,6 +536,7 @@ export default function useReqIdentifications() {
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
+          items: [id],
         });
 
         return { success: false, error: handledError.message };
@@ -548,23 +550,28 @@ export default function useReqIdentifications() {
  *
  * @async
  * @function removeReqIdentificationsBatch
- * @param {number[]} ids - An array of identification IDs to delete.
+ * @param {number[]} reqIdentificationIds - An array of identification IDs to delete.
  * @returns {Object} - Result of the deletion process including success or error message.
  */
   const removeReqIdentificationsBatch = useCallback(
-    async (ids) => {
+    async (reqIdentificationIds) => {
       try {
-        await deleteReqIdentificationsBatch({ ids, token: jwt });
+        await deleteReqIdentificationsBatch({ reqIdentificationIds, token: jwt });
         return { success: true };
       } catch (error) {
         const errorCode = error.response?.status;
         const serverMessage = error.response?.data?.message;
         const clientMessage = error.message;
 
+        const reqIdentifications =
+          error.response?.data?.errors?.reqIdentifications?.map(
+            (reqIdentification) => reqIdentification.name
+          ) || reqIdentificationIds;
         const handledError = ReqIdentificationErrors.handleError({
           code: errorCode,
           error: serverMessage,
           httpError: clientMessage,
+          items: reqIdentifications,
         });
 
         return { success: false, error: handledError.message };
@@ -573,8 +580,7 @@ export default function useReqIdentifications() {
     [jwt]
   );
 
-
-
+  // Fetch all requirement identifications on initial load
   useEffect(() => {
     fetchReqIdentifications();
   }, [fetchReqIdentifications]);

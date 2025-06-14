@@ -16,6 +16,11 @@ class ReqIdentificationErrors {
   static STATES_NOT_MATCH = "STATES_NOT_MATCH";
   static MUNICIPALITIES_NOT_MATCH = "MUNICIPALITIES_NOT_MATCH";
   static REQUIREMENTS_NOT_FOUND = "REQUIREMENTS_NOT_FOUND";
+  static USER_NOT_FOUND = "USER_NOT_FOUND";
+  static SUBJECT_NOT_FOUND = "SUBJECT_NOT_FOUND";
+  static ASPECTS_NOT_FOUND = "ASPECTS_NOT_FOUND";
+  static REQ_IDENTIFICATION_JOBS_CONFLICT = "REQ_IDENTIFICATION_JOBS_CONFLICT";
+  static MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT = "MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
 
   /**
@@ -80,12 +85,41 @@ class ReqIdentificationErrors {
     [ReqIdentificationErrors.MUNICIPALITIES_NOT_MATCH]: {
       title: "Conflicto de municipio",
       message:
-        "Todos los fundamentos legales seleccionados deben pertenecer al mismo si la jurisdicción es Municipal.",
+        "Todos los fundamentos legales seleccionados deben pertenecer al mismo municipio si la jurisdicción es Municipal.",
     },
     [ReqIdentificationErrors.REQUIREMENTS_NOT_FOUND]: {
       title: "Requerimientos no encontrados",
       message:
         "No se encontraron requerimientos aplicables a la materia y aspectos seleccionados. Por favor, verifique que existen requerimientos registrados para la materia correspondiente y que los aspectos seleccionados estén correctamente asociados.",
+    },
+    [ReqIdentificationErrors.USER_NOT_FOUND]: {
+      title: "Usuario no encontrado",
+      message:
+        "El usuario seleccionado no fue encontrado. Verifique su existencia recargando la app e intente de nuevo.",
+    },
+    [ReqIdentificationErrors.SUBJECT_NOT_FOUND]: {
+      title: "Materia no encontrada",
+      message:
+        "La materia seleccionada no fue encontrada. Verifique su existencia recargando la app e intente de nuevo.",
+    },
+    [ReqIdentificationErrors.ASPECTS_NOT_FOUND]: {
+      title: "Aspectos no encontrados",
+      message:
+        "Uno o más aspectos seleccionados no fueron encontrados. Verifique su existencia recargando la app e intente de nuevo.",
+    },
+    [ReqIdentificationErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message:
+        "La identificación de requerimientos no puede ser eliminada porque actualmente se estan identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.",
+    },
+    [ReqIdentificationErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT]: {
+      title: "Conflicto con trabajos de identificación de requerimientos",
+      message: ({ items }) =>
+        items.length === 1
+          ? `La identificación de requerimientos ${items[0]} no puede ser eliminada porque actualmente se está identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`
+          : `Las identificaciones de requerimientos ${items.join(
+              ", "
+            )}  no pueden ser eliminadas porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`,
     },
     [ReqIdentificationErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
@@ -113,6 +147,11 @@ class ReqIdentificationErrors {
     "All selected legal bases must have the same municipality":
       ReqIdentificationErrors.MUNICIPALITIES_NOT_MATCH,
     "Requirements not found": ReqIdentificationErrors.REQUIREMENTS_NOT_FOUND,
+    "User not found": ReqIdentificationErrors.USER_NOT_FOUND,
+    "Subject not found": ReqIdentificationErrors.SUBJECT_NOT_FOUND,
+    "Aspects not found for IDs": ReqIdentificationErrors.ASPECTS_NOT_FOUND,
+    "Cannot delete Requirement Identification with pending Requirement Identification jobs": ReqIdentificationErrors.REQ_IDENTIFICATION_JOBS_CONFLICT,
+    "Cannot delete Requirements Identifications with pending Requirement Identification jobs": ReqIdentificationErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
   };
 
   /**
@@ -129,7 +168,21 @@ class ReqIdentificationErrors {
     const message = error || httpError;
     if (message && ReqIdentificationErrors.ErrorMessagesMap[message]) {
       const key = ReqIdentificationErrors.ErrorMessagesMap[message];
-      return ReqIdentificationErrors.errorMap[key];
+      const errorConfig = ReqIdentificationErrors.errorMap[key];
+      if (
+        [
+          ReqIdentificationErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT,
+        ].includes(key) &&
+        items &&
+        items.length > 0
+      ) {
+        return {
+          title: errorConfig.title,
+          message: errorConfig.message({ items }),
+        };
+      }
+
+      return errorConfig;
     }
 
     switch (code) {

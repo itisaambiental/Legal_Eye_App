@@ -78,16 +78,16 @@ class RequirementErrors {
     [RequirementErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
       message:
-        "Este requerimiento no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.",
+        "Este requerimiento no puede ser eliminado porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.",
     },
     [RequirementErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos pendientes",
       message: ({ items }) =>
         items.length === 1
-          ? `El requerimiento ${items[0]} no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.`
+          ? `El requerimiento ${items[0]} no puede ser eliminado porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`
           : `Los requerimientos ${items.join(
               ", "
-            )} no pueden ser eliminados porque se estan utilizando en una identificación de requerimientos.`,
+            )} no pueden ser eliminados porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`,
     },
     [RequirementErrors.CONFLICT]: {
       title: "Conflicto detectado",

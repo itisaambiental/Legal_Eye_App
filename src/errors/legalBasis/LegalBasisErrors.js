@@ -131,16 +131,16 @@ class LegalBasisErrors {
     [LegalBasisErrors.REQ_IDENTIFICATION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de identificación de requerimientos",
       message:
-        "El fundamento legal no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.",
+        "El fundamento legal no puede ser eliminado porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.",
     },
     [LegalBasisErrors.MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de identificación de requerimientos",
       message: ({ items }) =>
         items.length === 1
-          ? `El fundamento legal ${items[0]} no puede ser eliminado porque se esta utilizando en una identificación de requerimientos.`
+          ? `El fundamento legal ${items[0]} no puede ser eliminado porque actualmente se está identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`
           : `Los fundamentos legales ${items.join(
               ", "
-            )}  no pueden ser eliminados porque se están utilizando en una identificación de requerimientos.`,
+            )}  no pueden ser eliminados porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`,
     },
     [LegalBasisErrors.SEND_LEGAL_BASIS_JOBS_CONFLICT]: {
       title: "Conflicto con trabajos de envío",

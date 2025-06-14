@@ -7,7 +7,7 @@ import server from "../../config/server.js";
  * @function getReqIdentificationsByStateAndMunicipalities
  * @param {Object} params - Parameters for the request.
  * @param {string} params.state - Name of the state.
- * @param {string[]|string} params.municipalities - One or more municipality names.
+ * @param {string[]} params.municipalities - One or more municipality names.
  * @param {string} params.token - Authorization token.
  *
  * @returns {Promise<Object[]>} - An array of requirement identifications.

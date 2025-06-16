@@ -16,6 +16,7 @@ class AspectErrors {
   static ASSOCIATED_REQUIREMENTS = "ASSOCIATED_REQUIREMENTS";
   static MULTIPLE_ASSOCIATED_BASES = "MULTIPLE_ASSOCIATED_BASES";
   static MULTIPLE_ASSOCIATED_REQUIREMENTS = "MULTIPLE_ASSOCIATED_REQUIREMENTS";
+  static CONFLICT = "CONFLICT";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -96,6 +97,11 @@ class AspectErrors {
               ", "
             )} están vinculados a uno o más requerimientos legales y no pueden ser eliminados. Por favor, verifique e intente de nuevo.`,
     },
+    [AspectErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
   };
 
   /**
@@ -160,6 +166,8 @@ class AspectErrors {
             : AspectErrors.errorMap[AspectErrors.MULTIPLE_NOT_FOUND];
         }
         return AspectErrors.errorMap[AspectErrors.NOT_FOUND];
+      case 409:
+        return AspectErrors.errorMap[AspectErrors.CONFLICT];
       case 500:
         return AspectErrors.errorMap[AspectErrors.SERVER_ERROR];
       default:

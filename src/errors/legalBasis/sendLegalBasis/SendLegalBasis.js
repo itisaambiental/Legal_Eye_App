@@ -9,6 +9,7 @@ export class SendLegalBasisErrors {
   static JOB_NOT_FOUND = "JOB_NOT_FOUND";
   static SERVER_ERROR = "SERVER_ERROR";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
+  static CONFLICT = "CONFLICT";
 
 
   static errorMap = {
@@ -39,6 +40,11 @@ export class SendLegalBasisErrors {
     [SendLegalBasisErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
       message: "Ocurrió un error inesperado. Por favor, intente nuevamente más tarde.",
+    },
+    [SendLegalBasisErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
     },
   };
 
@@ -77,6 +83,10 @@ export class SendLegalBasisErrors {
         return SendLegalBasisErrors.errorMap[
           SendLegalBasisErrors.UNAUTHORIZED
         ];
+      case 404:
+        return SendLegalBasisErrors.errorMap[
+          SendLegalBasisErrors.JOB_NOT_FOUND
+        ];
       case 500:
         return SendLegalBasisErrors.errorMap[
           SendLegalBasisErrors.SERVER_ERROR
@@ -108,6 +118,8 @@ export class SendLegalBasisErrors {
       case 401:
       case 403:
         return SendLegalBasisErrors.UNAUTHORIZED;
+      case 404:
+        return SendLegalBasisErrors.JOB_NOT_FOUND;
       case 500:
         return SendLegalBasisErrors.SERVER_ERROR;
       default:

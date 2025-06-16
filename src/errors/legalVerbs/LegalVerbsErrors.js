@@ -15,6 +15,7 @@ class LegalVerbsErrors {
   static SERVER_ERROR = "SERVER_ERROR";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   static DUPLICATED_NAME = "DUPLICATED_NAME";
+  static CONFLICT = "CONFLICT";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -74,6 +75,11 @@ class LegalVerbsErrors {
       message:
         "El nombre del verbo legal ya está en uso. Por favor, utilice otro.",
     },
+    [LegalVerbsErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
   };
 
   /**
@@ -132,6 +138,8 @@ class LegalVerbsErrors {
             : LegalVerbsErrors.errorMap[LegalVerbsErrors.MULTIPLE_NOT_FOUND];
         }
         return LegalVerbsErrors.errorMap[LegalVerbsErrors.MULTIPLE_NOT_FOUND];
+      case 409:
+        return LegalVerbsErrors.errorMap[LegalVerbsErrors.CONFLICT];
       case 500:
         return LegalVerbsErrors.errorMap[LegalVerbsErrors.SERVER_ERROR];
       default:

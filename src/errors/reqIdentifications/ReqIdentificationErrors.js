@@ -21,6 +21,7 @@ class ReqIdentificationErrors {
   static ASPECTS_NOT_FOUND = "ASPECTS_NOT_FOUND";
   static REQ_IDENTIFICATION_JOBS_CONFLICT = "REQ_IDENTIFICATION_JOBS_CONFLICT";
   static MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT = "MULTIPLE_REQ_IDENTIFICATION_JOBS_CONFLICT";
+  static CONFLICT = "CONFLICT";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
 
   /**
@@ -121,6 +122,11 @@ class ReqIdentificationErrors {
               ", "
             )}  no pueden ser eliminadas porque actualmente se están identificando requerimientos. Por favor, espere a que se complete la identificación e intente nuevamente.`,
     },
+    [ReqIdentificationErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
     [ReqIdentificationErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
       message:
@@ -207,6 +213,10 @@ class ReqIdentificationErrors {
         }
         return ReqIdentificationErrors.errorMap[
           ReqIdentificationErrors.MULTIPLE_NOT_FOUND
+        ];
+      case 409:
+        return ReqIdentificationErrors.errorMap[
+          ReqIdentificationErrors.CONFLICT
         ];
       case 500:
         return ReqIdentificationErrors.errorMap[

@@ -10,6 +10,7 @@ export class ReqIdentifyErrors {
   static REQ_IDENTIFICATION_NOT_FOUND = "REQ_IDENTIFICATION_NOT_FOUND";
   static REQ_IDENTIFICATION_FAILED = "REQ_IDENTIFICATION_FAILED";
   static SERVER_ERROR = "SERVER_ERROR";
+  static CONFLICT = "CONFLICT";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
 
   static errorMap = {
@@ -45,6 +46,11 @@ export class ReqIdentifyErrors {
       title: "Error del servidor",
       message:
         "Hubo un error interno en el servidor. Espere un momento e intente nuevamente.",
+    },
+    [ReqIdentifyErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
     },
     [ReqIdentifyErrors.UNEXPECTED_ERROR]: {
       title: "Error inesperado",
@@ -85,6 +91,10 @@ export class ReqIdentifyErrors {
       case 401:
       case 403:
         return ReqIdentifyErrors.errorMap[ReqIdentifyErrors.UNAUTHORIZED];
+      case 404:
+        return ReqIdentifyErrors.errorMap[ReqIdentifyErrors.REQ_IDENTIFICATION_NOT_FOUND];
+      case 409:
+        return ReqIdentifyErrors.errorMap[ReqIdentifyErrors.CONFLICT];
       case 500:
         return ReqIdentifyErrors.errorMap[ReqIdentifyErrors.SERVER_ERROR];
       default:
@@ -113,6 +123,10 @@ export class ReqIdentifyErrors {
       case 401:
       case 403:
         return ReqIdentifyErrors.UNAUTHORIZED;
+      case 404:
+        return ReqIdentifyErrors.REQ_IDENTIFICATION_NOT_FOUND;
+      case 409:
+        return ReqIdentifyErrors.CONFLICT;
       case 500:
         return ReqIdentifyErrors.SERVER_ERROR;
       default:

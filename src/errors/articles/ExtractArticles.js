@@ -15,6 +15,7 @@ export class ExtractArticlesErrors {
   static DOCUMENT_PROCESSING_ERROR = "DOCUMENT_PROCESSING_ERROR";
   static INVALID_CLASSIFICATION = "INVALID_CLASSIFICATION";
   static ARTICLE_PROCESSING_ERROR = "ARTICLE_PROCESSING_ERROR";
+  static CONFLICT = "CONFLICT";
   static FAILED_TO_INSERT_ARTICLES = "FAILED_TO_INSERT_ARTICLES";
 
   static errorMap = {
@@ -78,7 +79,11 @@ export class ExtractArticlesErrors {
       message:
         "Hubo un problema al intentar guardar los artículos extraídos. Por favor, intente nuevamente.",
     },
-
+    [ExtractArticlesErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
     [ExtractArticlesErrors.JOB_CANCELED]: {
       title: "Extracción de artículos cancelada",
       message:
@@ -131,6 +136,10 @@ export class ExtractArticlesErrors {
       case 403:
         return ExtractArticlesErrors.errorMap[
           ExtractArticlesErrors.UNAUTHORIZED
+        ];
+      case 409:
+        return ExtractArticlesErrors.errorMap[
+          ExtractArticlesErrors.CONFLICT
         ];
       case 500:
         return ExtractArticlesErrors.errorMap[

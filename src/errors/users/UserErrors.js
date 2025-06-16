@@ -11,6 +11,7 @@ class UserErrors {
     static SERVER_ERROR = "SERVER_ERROR";
     static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
     static DUPLICATED_EMAIL = "DUPLICATED_EMAIL";
+    static CONFLICT = "CONFLICT";
   
     /**
      * A map of error constants to user-friendly error objects.
@@ -50,6 +51,10 @@ class UserErrors {
       [UserErrors.DUPLICATED_EMAIL]: {
         title: "Correo duplicado",
         message: "El correo ya está en uso. Por favor, utiliza otro.",
+      },
+      [UserErrors.CONFLICT]: {
+        title: "Conflicto",
+        message: "Ocurrió un conflicto al procesar la solicitud. Por favor, intente nuevamente.",
       },
     };
   
@@ -93,6 +98,8 @@ class UserErrors {
               : UserErrors.errorMap[UserErrors.MULTIPLE_NOT_FOUND];
           }
           return UserErrors.errorMap[UserErrors.NOT_FOUND];
+        case 409:
+          return UserErrors.errorMap[UserErrors.CONFLICT];
         case 500:
           return UserErrors.errorMap[UserErrors.SERVER_ERROR];
         default:

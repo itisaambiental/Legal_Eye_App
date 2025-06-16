@@ -15,6 +15,7 @@ class SubjectErrors {
   static ASSOCIATED_REQUIREMENTS = "ASSOCIATED_REQUIREMENTS";
   static MULTIPLE_ASSOCIATED_BASES = "MULTIPLE_ASSOCIATED_BASES";
   static MULTIPLE_ASSOCIATED_REQUIREMENTS = "MULTIPLE_ASSOCIATED_REQUIREMENTS";
+  static CONFLICT = "CONFLICT";
 
   /**
    * A map of error constants to user-friendly error objects.
@@ -91,6 +92,11 @@ class SubjectErrors {
               ", "
             )} están vinculadas a uno o más requerimientos legales y no pueden ser eliminadas. Por favor, verifique e intente de nuevo.`,
     },
+    [SubjectErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
+    },
   };
 
   /**
@@ -153,6 +159,8 @@ class SubjectErrors {
           }
         }
         return SubjectErrors.errorMap[SubjectErrors.MULTIPLE_NOT_FOUND];
+      case 409:
+        return SubjectErrors.errorMap[SubjectErrors.CONFLICT];
       case 500:
         return SubjectErrors.errorMap[SubjectErrors.SERVER_ERROR];
       default:

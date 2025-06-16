@@ -13,6 +13,7 @@ class RequirementTypesErrors {
   static MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT =
     "MULTIPLE_ASSOCIATED_TO_REQ_IDENTIFICATIONS_CONFLICT";
   static SERVER_ERROR = "SERVER_ERROR";
+  static CONFLICT = "CONFLICT";
   static UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
   static DUPLICATED_NAME = "DUPLICATED_NAME";
 
@@ -74,6 +75,11 @@ class RequirementTypesErrors {
       title: "Nombre duplicado",
       message:
         "El nombre del tipo de requerimiento ya está en uso. Por favor, utilice otro.",
+    },
+    [RequirementTypesErrors.CONFLICT]: {
+      title: "Conflicto de datos",
+      message:
+        "Ocurrió un conflicto con la operación. Verifique la información e intente nuevamente.",
     },
   };
 
@@ -141,6 +147,10 @@ class RequirementTypesErrors {
         }
         return RequirementTypesErrors.errorMap[
           RequirementTypesErrors.MULTIPLE_NOT_FOUND
+        ];
+      case 409:
+        return RequirementTypesErrors.errorMap[
+          RequirementTypesErrors.CONFLICT
         ];
       case 500:
         return RequirementTypesErrors.errorMap[
